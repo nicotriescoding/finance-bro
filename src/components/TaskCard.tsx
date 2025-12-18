@@ -1,17 +1,10 @@
+// src/components/TaskCard.tsx
 "use client";
 import React from "react";
 
-type Task = {
-    question: string;
-};
-
-type Variables = {
-    [key: string]: string | number;
-};
-
 type TaskCardProps = {
-    task: Task;
-    variables: Variables;
+    task: any;
+    variables: any;
     userAnswer: string;
     setUserAnswer: (val: string) => void;
     feedback: string | null;
@@ -32,14 +25,17 @@ export default function TaskCard({
                                  }: TaskCardProps) {
     return (
         <div className="bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
+            {/* Titel */}
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Aufgabe</h2>
+
+            {/* Frage */}
             <p className="text-gray-700 mb-6 text-base leading-relaxed">
-                {task.question
-                    .replace(/\{(\w+)\}/g, (_, key) =>
-                        variables[key] !== undefined ? variables[key].toString() : `{${key}}`
-                    )
-                    .replace(/'/g, "&apos;")}
+                {task.question.replace(/\{(\w+)\}/g, (_, key) =>
+                    variables[key] !== undefined ? variables[key].toString() : `{${key}}`
+                )}
             </p>
+
+            {/* Eingabe */}
             <input
                 type="text"
                 placeholder="Deine Antwort..."
@@ -56,6 +52,8 @@ export default function TaskCard({
                     answered ? "bg-gray-100 text-gray-500" : "bg-white text-black"
                 } border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none`}
             />
+
+            {/* Buttons */}
             <div className="mt-4 flex justify-end">
                 {!answered ? (
                     <button
@@ -73,6 +71,8 @@ export default function TaskCard({
                     </button>
                 )}
             </div>
+
+            {/* Feedback */}
             {feedback && (
                 <div
                     className={`mt-4 p-3 rounded-lg font-medium ${
