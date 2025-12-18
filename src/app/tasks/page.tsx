@@ -97,8 +97,10 @@ export default function TasksPage() {
             }
             scoreboard={
 
-                <Scoreboard score={score} level={Math.floor(score / 100) + 1} elapsedMs={elapsedMs} />
-            }
+                // old<Scoreboard score={score} level={Math.floor(score / 100) + 1} elapsedMs={elapsedMs} />
+
+<Scoreboard score={score}/>
+        }
         />
     );
 }
