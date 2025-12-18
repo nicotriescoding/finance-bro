@@ -14,7 +14,7 @@ export default function ProductsPage() {
 
                     {/* Produktkarte */}
                     <div className="flex gap-4 items-center mb-4">
-                        <Image
+                        <img
                             src="https://via.placeholder.com/150"
                             alt="Produkt"
                             className="w-32 h-32 object-cover rounded shadow"
@@ -36,7 +36,7 @@ export default function ProductsPage() {
                     </div>
 
                     <div className="flex gap-4 items-center">
-                        <Image
+                        <img
                             src="https://via.placeholder.com/150"
                             alt="Produkt"
                             className="w-32 h-32 object-cover rounded shadow"
