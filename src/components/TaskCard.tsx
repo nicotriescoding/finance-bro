@@ -1,10 +1,11 @@
-// src/components/TaskCard.tsx
 "use client";
 import React from "react";
 
 type TaskCardProps = {
-    task: any;
-    variables: any;
+    task: {
+        question: string;
+    };
+    variables: Record<string, string | number>;
     userAnswer: string;
     setUserAnswer: (val: string) => void;
     feedback: string | null;
@@ -26,12 +27,18 @@ export default function TaskCard({
     return (
         <div className="bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
             {/* Titel */}
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Aufgabe</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Aufgabe
+            </h2>
 
             {/* Frage */}
             <p className="text-gray-700 mb-6 text-base leading-relaxed">
-                {task.question.replace(/\{(\w+)\}/g, (_, key) =>
-                    variables[key] !== undefined ? variables[key].toString() : `{${key}}`
+                {task.question.replace(
+                    /\{(\w+)\}/g,
+                    (_match: string, key: string) =>
+                        variables[key] !== undefined
+                            ? String(variables[key])
+                            : `{${key}}`
                 )}
             </p>
 
@@ -49,7 +56,9 @@ export default function TaskCard({
                 }}
                 disabled={answered}
                 className={`w-full px-4 py-2 rounded-lg border ${
-                    answered ? "bg-gray-100 text-gray-500" : "bg-white text-black"
+                    answered
+                        ? "bg-gray-100 text-gray-500"
+                        : "bg-white text-black"
                 } border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none`}
             />
 
