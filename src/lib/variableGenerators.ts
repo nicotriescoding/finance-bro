@@ -4,6 +4,8 @@
 
 import { randInt, randFloat } from "./utils";
 
+
+
 export function generateFormulaVariables(type: string) {
     switch (type) {
         // --- INTEREST CALCULATION ---

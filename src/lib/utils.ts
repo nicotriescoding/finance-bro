@@ -16,6 +16,11 @@ export function parseVariables(vars: string | Record<string, any> | null): Recor
     return obj;
 }
 
+
+export function randFloat(min: number, max: number) {
+    return Math.random() * (max - min) + min;
+}
+
 export function randInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -516,6 +521,8 @@ export function generateVariables(formula: string) {
                 DeltaNWC: randInt(-30000, 40000),            // Veränderung Nettoumlaufvermögen (+ = Mittelabfluss)
                 CFI: randInt(-250000, -50000),               // Cashflow aus Investitionstätigkeit (meist negativ)
             };
+
+
 
 
         // --- DEFAULT ---
