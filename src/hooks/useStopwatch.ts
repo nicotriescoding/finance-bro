@@ -1,32 +1,48 @@
 // src/hooks/useStopwatch.ts
 import { useState, useEffect, useRef } from "react";
 
-export function useStopwatch(running: boolean) {
+export function useStopwatch() {
     const [elapsedMs, setElapsedMs] = useState(0);
+    const [running, setRunning] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        if (running) {
-            intervalRef.current = setInterval(() => {
-                setElapsedMs((prev) => prev + 1000);
-            }, 1000);
-        } else if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
+        if (!running) return;
+
+        intervalRef.current = setInterval(() => {
+            setElapsedMs((prev) => prev + 1000);
+        }, 1000);
 
         return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
         };
     }, [running]);
 
-    const reset = () => setElapsedMs(0);
+    const start = () => setRunning(true);
+
     const stop = () => {
+        setRunning(false);
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
     };
 
-    return { elapsedMs, reset, stop };
+    const reset = () => setElapsedMs(0);
+
+    const resetAndStart = () => {
+        reset();
+        start();
+    };
+
+    return {
+        elapsedMs,
+        start,
+        stop,
+        reset,
+        resetAndStart,
+    };
 }
