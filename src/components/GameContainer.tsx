@@ -87,12 +87,7 @@ export default function GameContainer() {
             )}
 
             {/* Scoreboard immer sichtbar */}
-            <Scoreboard
-                score={score}
-                totalTasks={tasks.length}
-                currentTaskIndex={currentTaskIndex}
-                elapsedMs={elapsedMs} // ⏱️ hier rein
-            />
+            <Scoreboard score={score} />
         </>
     );
 }
