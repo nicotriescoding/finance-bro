@@ -1,5 +1,5 @@
-// src/app/tasks/page.tsx
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import { useGame } from "@/hooks/useGame";
 import { useScore } from "@/hooks/useScore";
@@ -14,15 +14,23 @@ import AdSlot from "@/components/AdSlot";
 import Button from "@/components/ui/Button";
 
 export default function TasksPage() {
-    const { tasks, currentTaskIndex, setCurrentTaskIndex, variables, currentTask, correctAnswer } = useGame();
+    const {
+        tasks,
+        currentTaskIndex,
+        setCurrentTaskIndex,
+        variables,
+        currentTask,
+        correctAnswer,
+    } = useGame();
+
     const { score, addScore } = useScore();
 
     const [started, setStarted] = useState(false);
 
-    // ⏱ Stoppuhr steuert sich über "started"
-    const { elapsedMs, reset, stop } = useStopwatch(started);
+    // ⏱️ Stopwatch (neues API)
+    const { elapsedMs, start, stop, reset } = useStopwatch();
 
-    // Ref, damit wir beim Callback immer die aktuellste Zeit lesen (keine stale closures)
+    // Immer aktuelle Zeit für Callbacks
     const elapsedRef = useRef<number>(0);
     useEffect(() => {
         elapsedRef.current = elapsedMs;
@@ -30,25 +38,23 @@ export default function TasksPage() {
 
     const flow = useTaskFlow({
         correctAnswer: correctAnswer ?? "",
-        // onCorrect wird *ohne* Parameter aufgerufen von useTaskFlow.
-        // Wir lesen die aktuelle Zeit aus elapsedRef, stoppen die Uhr und addScore.
         onCorrect: () => {
-            // Stoppe die Uhr sofort beim Abgeben
             stop();
 
-            // Zeit in Sekunden (ganzzahlig)
             const timeSpentSec = Math.round(elapsedRef.current / 1000);
-
-            const diff = (currentTask?.difficulty as keyof typeof difficultyTimes) ?? "easy";
+            const diff =
+                (currentTask?.difficulty as keyof typeof difficultyTimes) ??
+                "easy";
             const target = difficultyTimes[diff] ?? 120;
 
             addScore(diff, timeSpentSec, target);
         },
         onNext: () => {
-            // Index vorwärts
-            setCurrentTaskIndex((prev) => (prev + 1 < tasks.length ? prev + 1 : 0));
-            // neue Aufgabe -> Uhr zurücksetzen (läuft weiter, falls started=true)
+            setCurrentTaskIndex((prev) =>
+                prev + 1 < tasks.length ? prev + 1 : 0
+            );
             reset();
+            start();
         },
     });
 
@@ -56,7 +62,6 @@ export default function TasksPage() {
         return <p className="p-4">Loading...</p>;
     }
 
-// Wenn Formel fehlt, gib lieber eine Debug-Meldung statt endlos zu laden
     if (!correctAnswer) {
         return (
             <div className="p-4 text-red-600">
@@ -80,11 +85,14 @@ export default function TasksPage() {
             task={
                 !started ? (
                     <div className="flex flex-col items-center justify-center h-full gap-6">
-                        <h1 className="text-2xl font-bold">🚀 Bereit für die Aufgaben?</h1>
+                        <h1 className="text-2xl font-bold">
+                            🚀 Bereit für die Aufgaben?
+                        </h1>
                         <Button
                             onClick={() => {
+                                reset();
+                                start();
                                 setStarted(true);
-                                reset(); // sicherstellen: Uhr startet bei 0
                             }}
                             variant="primary"
                         >
@@ -92,15 +100,14 @@ export default function TasksPage() {
                         </Button>
                     </div>
                 ) : (
-                    <TaskCard task={currentTask} variables={variables} {...flow} />
+                    <TaskCard
+                        task={currentTask}
+                        variables={variables}
+                        {...flow}
+                    />
                 )
             }
-            scoreboard={
-
-                // old<Scoreboard score={score} level={Math.floor(score / 100) + 1} elapsedMs={elapsedMs} />
-
-<Scoreboard score={score}/>
-        }
+            scoreboard={<Scoreboard score={score} />}
         />
     );
 }

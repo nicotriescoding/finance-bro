@@ -1,4 +1,3 @@
-// src/hooks/useStopwatch.ts
 import { useState, useEffect, useRef } from "react";
 
 export function useStopwatch() {
