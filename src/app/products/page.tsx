@@ -1,4 +1,4 @@
-// src/app/products/page.tsx
+
 import AdSlot from "@/components/AdSlot";
 
 export default function ProductsPage() {
