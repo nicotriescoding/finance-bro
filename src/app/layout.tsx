@@ -11,6 +11,8 @@ export const metadata: Metadata = {
     description: "Übungsaufgaben & mehr",
 };
 
+
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="de">
