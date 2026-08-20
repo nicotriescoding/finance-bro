@@ -1,19 +1,41 @@
 "use client";
 
-import NavLink from "@/components/ui/NavLink";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const LINKS = [
+    { href: "/quiz?subject=finance", label: "Quiz 🧠", match: "/quiz" },
+    { href: "/products", label: "Bro Shop 💸", match: "/products" },
+    { href: "/multiplayer", label: "Multiplayer 🥋", match: "/multiplayer" },
+    { href: "/language", label: "Language 🎤", match: "/language" },
+];
 
 export default function Navbar() {
-    return (
-        <nav className="w-full bg-white shadow-md border-b border-gray-200 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-                {/* Logo / Brand */}
-                <NavLink href="/">FinanceBRO's 💸</NavLink>
+    const pathname = usePathname();
 
-                {/* Navigation Links */}
-                <div className="flex gap-6">
-                    <NavLink href="/products">Only for True Finance Bro's 💸</NavLink>
-                    <NavLink href="/multiplayer">Multiplayer 🥋</NavLink>
-                    <NavLink href="/language">Language 🎤</NavLink>
+    return (
+        <nav className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/90 backdrop-blur">
+            <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+                <Link href="/" className="text-lg font-bold tracking-tight text-slate-900">
+                    finance-bro 💸
+                </Link>
+                <div className="flex gap-1 text-sm">
+                    {LINKS.map((link) => {
+                        const active = pathname === link.match;
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={`rounded-lg px-3 py-1.5 font-medium transition ${
+                                    active
+                                        ? "bg-slate-900 text-white"
+                                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                                }`}
+                            >
+                                {link.label}
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
         </nav>
