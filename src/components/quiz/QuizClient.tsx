@@ -39,6 +39,7 @@ export default function QuizClient() {
     const [session, setSession] = useState<QuestionInstance[] | null>(null);
     const [index, setIndex] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
+    const [answeredCount, setAnsweredCount] = useState(0);
 
     const { score, addScore } = useScore();
     const { elapsedMs, start, stop, reset } = useStopwatch();
@@ -63,12 +64,14 @@ export default function QuizClient() {
         setSession(built);
         setIndex(0);
         setCorrectCount(0);
+        setAnsweredCount(0);
         reset();
         start();
     };
 
     const handleAnswered = (correct: boolean) => {
         if (!session) return;
+        setAnsweredCount((c) => c + 1);
         if (!correct) return;
         setCorrectCount((c) => c + 1);
         const difficulty = session[index].question.difficulty;
@@ -232,7 +235,7 @@ export default function QuizClient() {
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm shadow-sm">
                         <p className="font-semibold text-slate-900">{subject.emoji} {subject.short}</p>
                         <p className="mt-1 text-slate-600">
-                            {correctCount} richtig · {index - correctCount} falsch
+                            {correctCount} richtig · {answeredCount - correctCount} falsch
                         </p>
                     </div>
                 </aside>
