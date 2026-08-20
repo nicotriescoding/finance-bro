@@ -1,16 +1,22 @@
 /** Shared number formatting + math helpers for question banks. */
 
-const de = (min = 2, max = 2) =>
-    new Intl.NumberFormat("de-DE", { minimumFractionDigits: min, maximumFractionDigits: max });
+/**
+ * The site is English, so numbers are en-US. A German edition only has to flip
+ * this one locale string - every number on screen goes through these helpers.
+ */
+const LOCALE = "en-US";
 
-/** 1234.5 -> "1.234,50" */
-export const n2 = (v: number) => de(2, 2).format(v);
-/** 1234.5 -> "1.234,5" (drops trailing zeros) */
-export const n = (v: number) => de(0, 2).format(v);
-/** 1234.5 -> "1.234,50 €" */
+const fmt = (min = 2, max = 2) =>
+    new Intl.NumberFormat(LOCALE, { minimumFractionDigits: min, maximumFractionDigits: max });
+
+/** 1234.5 -> "1,234.50" */
+export const n2 = (v: number) => fmt(2, 2).format(v);
+/** 1234.5 -> "1,234.5" (drops trailing zeros) */
+export const n = (v: number) => fmt(0, 2).format(v);
+/** 1234.5 -> "1,234.50 €" */
 export const eur = (v: number) => `${n2(v)} €`;
-/** 8.25 -> "8,25 %" */
-export const pct = (v: number) => `${de(0, 2).format(v)} %`;
+/** 8.25 -> "8.25 %" */
+export const pct = (v: number) => `${fmt(0, 2).format(v)} %`;
 
 /** Standard normal CDF (Abramowitz & Stegun 26.2.17, |err| < 7.5e-8). */
 export function normCdf(x: number): number {

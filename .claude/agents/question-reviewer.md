@@ -19,14 +19,20 @@ For each question in the diff:
    euros, `ratio` a bare factor. A rate returned as 0.0824 with `unit: "percent"`
    is a bug, not a rounding preference.
 3. **Check the prompt is answerable** from what it states plus `given`. Flag any
-   question that silently depends on an assumption a student can't know
-   (nachschüssig vs. vorschüssig, whether a rate is nominal or effective, which
-   period the cash flow lands in).
+   question that silently depends on an assumption a student can't know (ordinary
+   annuity vs. annuity due, whether a rate is nominal or effective, which period
+   the cash flow lands in).
 4. **Check the degenerate cases.** Can the drawn ranges produce a division by
    zero, a negative under a square root, `r <= g` in a growing perpetuity, or
    weights that don't sum to 1?
 5. **Check the topic tag** matches the content, and that multiple-choice
    distractors are wrong — not defensible alternative readings.
+6. **Check the English says what the German said.** The bank was translated from
+   German. Flag any prompt whose translation changed what is being asked, dropped
+   a qualifier the answer depends on, or rendered a German term with an English
+   one that means something else (`beizulegender Wert` is not `fair value` in an
+   HGB question). Flag hand-formatted numerals — every number on screen must come
+   from `eur`, `pct`, `n` or `n2`.
 
 Report only findings that make a question wrong, unanswerable, or misfiled.
 Do not report style preferences, wording taste, or difficulty calibration.

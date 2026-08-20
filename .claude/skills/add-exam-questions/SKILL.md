@@ -25,8 +25,12 @@ Append to the matching `src/content/questions/<subject>.ts`. Follow
 `.claude/rules/questions.md` exactly. Every question gets
 `source: "TUM <exam> <term>, A<n>"`.
 
-Keep the wording close to the original exam. Rephrase only to remove references
-the app can't show (a diagram, an attached balance sheet, "siehe Aufgabe 2").
+**The exams are German, the app is English — translate as you go.** Keep the
+wording as close to the original as English allows: same facts, same thing being
+asked, nothing added or dropped. A German statutory term the question actually
+tests (`HGB`, `§ 253 HGB`, `GmbH`, `beizulegender Wert`) stays verbatim with an
+English gloss in parentheses on first use. Rephrase only to remove references the
+app can't show (a diagram, an attached balance sheet, "siehe Aufgabe 2").
 If a question depends on an exhibit, either inline the data into `given` or skip
 it and list it as skipped.
 

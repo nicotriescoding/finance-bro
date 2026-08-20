@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "finance-bro — Klausurtraining für BWL";
+export const alt = "finance-bro — exam training for business administration";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -25,8 +25,8 @@ export default function OpengraphImage() {
                 <div style={{ display: "flex", fontSize: 30, opacity: 0.75, marginBottom: 20 }}>
                     finance-bro.de
                 </div>
-                <div style={{ display: "flex", fontSize: 88, fontWeight: 700 }}>Klausurtraining</div>
-                <div style={{ display: "flex", fontSize: 88, fontWeight: 700 }}>für BWL 💸</div>
+                <div style={{ display: "flex", fontSize: 88, fontWeight: 700 }}>Exam training</div>
+                <div style={{ display: "flex", fontSize: 88, fontWeight: 700 }}>for business 💸</div>
                 <div
                     style={{
                         display: "flex",

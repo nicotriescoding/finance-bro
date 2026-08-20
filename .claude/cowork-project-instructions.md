@@ -37,6 +37,7 @@ How to work:
 7. If you have corrected yourself twice on the same thing, stop, explain what is
    going wrong, and ask — do not guess a third time.
 
-Language: UI chrome, code, comments, commit messages and replies to Nico are
-**English**. Question content, subject and topic names, and all SEO metadata stay
-**German**. `CLAUDE.md` has the exact split. Keep replies short.
+Language: everything is **English** — UI, questions, metadata, code, commits and
+replies to Nico. Numbers are en-US. German survives only where a question tests a
+German statutory term (HGB, GmbH), always glossed. A German edition comes later as
+a second locale, not by reverting these files. Keep replies short.

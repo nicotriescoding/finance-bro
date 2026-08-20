@@ -8,19 +8,20 @@ Working on this repo? Read [CLAUDE.md](./CLAUDE.md) for the hard rules and comma
 and [BACKLOG.md](./BACKLOG.md) for what is open. This file explains the domain: how
 questions are written and how answers are graded.
 
-## Language split
+## Language
 
-| Layer | Language | Why |
-| --- | --- | --- |
-| UI chrome — nav, buttons, labels, input hints | English | |
-| Question prompts, `given` labels, explanations | German | The exams are German |
-| Subject and topic names (`src/content/subjects.ts`) | German | They are the course names |
-| Metadata, keywords, OG image, `lang="de"` | German | The audience searches in German |
-| Number formatting and unit suffixes (`€`, `Jahre`, `Stück`) | German | They sit inside German questions |
-| Code, comments, commit messages | English | |
+Everything is English — UI, questions, explanations, subject and topic names,
+metadata, code and commits. Numbers are en-US (`1,234.56`), set by one constant:
+`LOCALE` in `src/content/questions/_helpers.ts`.
 
-`npm run smoke` asserts both halves so a future full translation can't silently
-take the German SEO copy with it.
+Two things stay German on purpose: statutory terms a question actually tests
+(`HGB`, `§ 253 HGB`, `GmbH`, `beizulegender Wert`), always with an English gloss,
+and `source` values naming a real exam. Anything else German is a regression and
+`npm run smoke` fails on it.
+
+A German edition is planned as a **second locale**, not as a revert of these files.
+Every number on screen goes through the `_helpers.ts` formatters so that switch
+stays a one-line change.
 
 ## Why no database
 
@@ -49,7 +50,7 @@ src/
     types.ts                 Question types (numeric | choice)
     rng.ts                   Seeded RNG (mulberry32)
     engine.ts                Seed -> concrete question
-    grading.ts               Tolerance check, units, German number input
+    grading.ts               Tolerance check, units, locale-agnostic number input
   components/quiz/           TopicSelector, QuestionCard, QuizClient
 scripts/
   verify-questions.ts        Builds every question against 200 seeds
@@ -71,10 +72,10 @@ A question is an object in the bank for its subject. `topic` must be a topic id 
     difficulty: "medium",
     kind: "choice",
     source: "TUM Endterm WS24/25, A3",  // optional, rendered as a badge
-    prompt: "Frage …",
-    choices: ["richtig", "falsch A", "falsch B", "falsch C"],
+    prompt: "Question …",
+    choices: ["correct", "wrong A", "wrong B", "wrong C"],
     correct: 0,                         // index, or [0, 2] for multi-select
-    explanation: "Begründung …",
+    explanation: "Reasoning …",
 }
 ```
 
@@ -118,7 +119,9 @@ screen and the graded solution cannot drift apart.
 | years   | 1 %     | 0.02            |
 | units   | 0.5 %   | 0.5 units       |
 
-Input is parsed as German: `1.234,56`, `1234,56`, `1234.56`, `12,5 %`, `€1.200`.
+Input parsing is locale-agnostic — whichever separator comes last is the decimal
+one, so `1,234.56`, `1.234,56`, `1234.56`, `1234,56`, `12.5 %` and `€1,200` all
+work. A German student typing the format they are used to still passes.
 
 ## Commands
 

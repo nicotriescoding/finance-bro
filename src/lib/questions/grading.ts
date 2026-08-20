@@ -15,26 +15,36 @@ const TOLERANCE: Record<Unit, [number, number]> = {
     units: [0.005, 0.5],
 };
 
-/**
- * Stays German: these render glued to a number inside a German question, e.g.
- * "Korrekte Antwort: 3,50 Jahre" under a prompt that asked "Wie viele Jahre …".
- */
 export const UNIT_SUFFIX: Record<Unit, string> = {
     EUR: "€",
     percent: "%",
     ratio: "",
-    years: "Jahre",
+    years: "years",
     number: "",
-    units: "Stück",
+    units: "units",
 };
 
 /**
- * Accepts what a German student actually types:
- * "1.234,56"  "1234,56"  "1234.56"  "1 234,56"  "12,5 %"  "€1.200"
+ * Deliberately locale-agnostic. The app displays en-US, but the students are
+ * German and type what they are used to, so both conventions have to parse:
+ * "1,234.56" "1.234,56" "1234.56" "1234,56" "12.5 %" "€1,200" "-1.234,56".
+ *
+ * The one genuinely ambiguous case is a lone comma. "1,234" is read as en-US
+ * thousands, because that is the format the app itself puts on screen and a
+ * student re-typing a displayed number must not be marked wrong. Any other
+ * shape ("8,24", "0,5") is a German decimal comma. A German decimal with
+ * exactly three places and at most three integer digits therefore loses -
+ * accepted, because nobody writes 1,000 to mean one.
  */
 export function parseNumericInput(raw: string): number | null {
     if (!raw) return null;
     let s = raw.trim().replace(/[€%\s]/g, "").replace(/[a-zA-Z]/g, "");
+    if (!s) return null;
+
+    // Pull the sign off first so the shape tests below see digits only.
+    // U+2212 MINUS SIGN is what the prompts render, so accept it too.
+    const negative = /^[-−]/.test(s);
+    s = s.replace(/^[-−+]/, "");
     if (!s) return null;
 
     const hasComma = s.includes(",");
@@ -47,12 +57,16 @@ export function parseNumericInput(raw: string): number | null {
         s = s.split(thousandSep).join("");
         s = s.replace(decimalSep, ".");
     } else if (hasComma) {
-        s = s.replace(",", ".");
+        s = /^\d{1,3}(,\d{3})+$/.test(s) ? s.split(",").join("") : s.replace(",", ".");
+    } else if (hasDot && (s.match(/\./g)?.length ?? 0) > 1) {
+        // Two or more dots can only be German thousands ("1.234.567").
+        // A single dot stays the decimal separator.
+        s = s.split(".").join("");
     }
-    // a lone "." is treated as the decimal separator (typed input, not formatted)
 
     const n = Number(s);
-    return Number.isFinite(n) ? n : null;
+    if (!Number.isFinite(n)) return null;
+    return negative ? -n : n;
 }
 
 export function isWithinTolerance(
@@ -67,35 +81,31 @@ export function isWithinTolerance(
     return Math.abs(user - expected) <= allowed;
 }
 
-const DE = new Intl.NumberFormat("de-DE", {
+const NUM = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
 });
 
 export function formatAnswer(value: number, unit: Unit): string {
     if (!Number.isFinite(value)) return "-";
-    const n = DE.format(value);
+    const n = NUM.format(value);
     const suffix = UNIT_SUFFIX[unit];
     return suffix ? `${n} ${suffix}` : n;
 }
 
-/**
- * Human-readable hint about what the grader expects, shown in the input.
- * English (UI chrome) but with German example numbers, because the input is
- * parsed de-DE and the question above it is written in German.
- */
+/** Human-readable hint about what the grader expects, shown in the input. */
 export function unitHint(unit: Unit): string {
     switch (unit) {
         case "EUR":
-            return "Answer in € (e.g. 1234,56)";
+            return "Answer in € (e.g. 1234.56)";
         case "percent":
-            return "Answer in % (e.g. 8,24 for 8,24 %)";
+            return "Answer in % (e.g. 8.24 for 8.24 %)";
         case "years":
-            return "Answer in years (e.g. 3,5)";
+            return "Answer in years (e.g. 3.5)";
         case "units":
             return "Answer in units";
         case "ratio":
-            return "Answer as a factor (e.g. 1,45)";
+            return "Answer as a factor (e.g. 1.45)";
         default:
             return "Your answer";
     }

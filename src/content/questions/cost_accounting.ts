@@ -1,19 +1,19 @@
 import type { Question } from "@/lib/questions/types";
-import { eur, n2, pct } from "./_helpers";
+import { eur, n, n2, pct } from "./_helpers";
 
 export const costAccountingQuestions: Question[] = [
     {
         id: "ca-types-split",
         subject: "cost_accounting", topic: "cost_types", difficulty: "easy", kind: "choice",
-        prompt: "Welche Kostenart ist ein typisches Beispiel für **Einzelkosten**?",
+        prompt: "Which cost type is a typical example of **direct costs**?",
         choices: [
-            "Fertigungsmaterial, das direkt einem Produkt zurechenbar ist.",
-            "Die Miete der Verwaltungszentrale.",
-            "Das Gehalt des Geschäftsführers.",
-            "Die Abschreibung auf das Bürogebäude.",
+            "Production material that can be traced directly to a product.",
+            "The rent for the administrative headquarters.",
+            "The managing director's salary.",
+            "Depreciation on the office building.",
         ],
         correct: 0,
-        explanation: "Einzelkosten lassen sich einem Kostenträger direkt zurechnen. Alle genannten Alternativen sind Gemeinkosten.",
+        explanation: "Direct costs can be traced directly to a cost object. All of the other options are overhead costs.",
     },
     {
         id: "ca-types-degression",
@@ -24,10 +24,10 @@ export const costAccountingQuestions: Question[] = [
             const q2 = q1 * rng.int(2, 4);
             const answer = fix / q1 - fix / q2;
             return {
-                prompt: `Die Fixkosten betragen ${eur(fix)}. Die Ausbringungsmenge steigt von ${q1} auf ${q2} Stück. Um wie viel € sinken die **Fixkosten je Stück** (Fixkostendegression)?`,
-                given: { Fixkosten: eur(fix), "Menge alt": `${q1} Stück`, "Menge neu": `${q2} Stück` },
+                prompt: `Fixed costs are ${eur(fix)}. Output quantity rises from ${n(q1)} to ${n(q2)} units. By how many € does the **fixed cost per unit** fall (fixed cost degression)?`,
+                given: { "Fixed costs": eur(fix), "Old quantity": `${n(q1)} units`, "New quantity": `${n(q2)} units` },
                 answer,
-                explanation: `${eur(fix / q1)} − ${eur(fix / q2)} = ${eur(answer)} je Stück`,
+                explanation: `${eur(fix / q1)} − ${eur(fix / q2)} = ${eur(answer)} per unit`,
             };
         },
     },
@@ -39,25 +39,25 @@ export const costAccountingQuestions: Question[] = [
             const basis = rng.int(100, 600) * 1000;
             const answer = (gk / basis) * 100;
             return {
-                prompt: `Die Fertigungsgemeinkosten betragen ${eur(gk)}, die Fertigungslöhne (Zuschlagsbasis) ${eur(basis)}. Wie hoch ist der **Fertigungsgemeinkostenzuschlagssatz**?`,
-                given: { Fertigungsgemeinkosten: eur(gk), Fertigungslöhne: eur(basis) },
+                prompt: `Production overhead costs are ${eur(gk)}, direct production wages (the allocation base) are ${eur(basis)}. What is the **production overhead rate** as a percentage of that base?`,
+                given: { "Production overhead": eur(gk), "Production wages": eur(basis) },
                 answer,
-                explanation: `Zuschlagssatz = GK/Basis · 100 = ${pct(answer)}`,
+                explanation: `Overhead rate = overhead / base · 100 = ${pct(answer)}`,
             };
         },
     },
     {
         id: "ca-bab-purpose",
         subject: "cost_accounting", topic: "cost_centers", difficulty: "easy", kind: "choice",
-        prompt: "Wozu dient der Betriebsabrechnungsbogen (BAB)?",
+        prompt: "What is the purpose of the overhead allocation sheet (Betriebsabrechnungsbogen, BAB)?",
         choices: [
-            "Zur Verteilung der Gemeinkosten auf Kostenstellen und zur Ermittlung von Zuschlagssätzen.",
-            "Zur Ermittlung der Einzelkosten je Produkt.",
-            "Zur Aufstellung der Handelsbilanz.",
-            "Zur Berechnung der Umsatzsteuer.",
+            "To allocate overhead costs to cost centers and to derive overhead rates.",
+            "To determine the direct costs per product.",
+            "To prepare the commercial balance sheet.",
+            "To calculate value-added tax.",
         ],
         correct: 0,
-        explanation: "Der BAB ist das Instrument der Kostenstellenrechnung: Gemeinkostenverteilung, innerbetriebliche Leistungsverrechnung, Zuschlagssätze.",
+        explanation: "The BAB is the working tool of cost center accounting: allocating overhead, settling internal services between cost centers, and deriving overhead rates.",
     },
     {
         id: "ca-objects-zuschlag",
@@ -71,25 +71,25 @@ export const costAccountingQuestions: Question[] = [
             const hk = mek * (1 + mgkSatz / 100) + fek * (1 + fgkSatz / 100);
             const answer = hk * (1 + vvSatz / 100);
             return {
-                prompt: `Zuschlagskalkulation je Stück: Materialeinzelkosten ${eur(mek)}, MGK-Zuschlag ${pct(mgkSatz)}, Fertigungseinzelkosten ${eur(fek)}, FGK-Zuschlag ${pct(fgkSatz)}, Verwaltungs- und Vertriebszuschlag ${pct(vvSatz)} auf die Herstellkosten. Wie hoch sind die **Selbstkosten je Stück**?`,
-                given: { MEK: eur(mek), "MGK-Satz": pct(mgkSatz), FEK: eur(fek), "FGK-Satz": pct(fgkSatz), "VwVt-Satz": pct(vvSatz) },
+                prompt: `Overhead surcharge costing (Zuschlagskalkulation), per unit: direct material costs ${eur(mek)}, material overhead rate ${pct(mgkSatz)}, direct manufacturing costs ${eur(fek)}, production overhead rate ${pct(fgkSatz)}, administrative and selling overhead rate ${pct(vvSatz)} on the cost of goods manufactured (Herstellkosten). What is the **total cost per unit**?`,
+                given: { "Direct material": eur(mek), "Material overhead rate": pct(mgkSatz), "Direct manufacturing costs": eur(fek), "Production overhead rate": pct(fgkSatz), "Admin & selling rate": pct(vvSatz) },
                 answer,
-                explanation: `Herstellkosten = ${eur(hk)}; Selbstkosten = HK · (1 + ${n2(vvSatz / 100)}) = ${eur(answer)}`,
+                explanation: `Cost of goods manufactured = ${eur(hk)}; total cost = that · (1 + ${n2(vvSatz / 100)}) = ${eur(answer)}`,
             };
         },
     },
     {
         id: "ca-full-vs-direct",
         subject: "cost_accounting", topic: "full_vs_direct", difficulty: "medium", kind: "choice",
-        prompt: "Warum kann die Vollkostenrechnung bei kurzfristigen Entscheidungen zu Fehlentscheidungen führen?",
+        prompt: "Why can absorption costing lead to poor short-term decisions?",
         choices: [
-            "Weil sie Fixkosten proportionalisiert und dadurch Aufträge ablehnt, die einen positiven Deckungsbeitrag liefern.",
-            "Weil sie die variablen Kosten ignoriert.",
-            "Weil sie nur Einzelkosten berücksichtigt.",
-            "Weil sie zwingend gegen das HGB verstößt.",
+            "Because it spreads fixed costs as if they were variable and therefore rejects orders that would earn a positive contribution margin.",
+            "Because it ignores variable costs.",
+            "Because it only takes direct costs into account.",
+            "Because it necessarily violates the German Commercial Code (HGB).",
         ],
         correct: 0,
-        explanation: "Fixkosten fallen kurzfristig ohnehin an. Entscheidungsrelevant ist der Deckungsbeitrag, nicht der Vollkostensatz.",
+        explanation: "Fixed costs are incurred in the short run anyway. What is decision-relevant is the contribution margin, not the full cost rate.",
     },
     {
         id: "ca-db-unit",
@@ -99,10 +99,10 @@ export const costAccountingQuestions: Question[] = [
             const kv = rng.int(5, p - 3);
             const answer = p - kv;
             return {
-                prompt: `Der Verkaufspreis beträgt ${eur(p)}, die variablen Stückkosten ${eur(kv)}. Wie hoch ist der **Stückdeckungsbeitrag**?`,
-                given: { Verkaufspreis: eur(p), "variable Stückkosten": eur(kv) },
+                prompt: `The selling price is ${eur(p)} and the variable cost per unit is ${eur(kv)}. What is the **unit contribution margin**?`,
+                given: { "Selling price": eur(p), "Variable cost per unit": eur(kv) },
                 answer,
-                explanation: `db = p − k_v = ${eur(answer)}`,
+                explanation: `cm = p − k_v = ${eur(answer)}`,
             };
         },
     },
@@ -115,10 +115,10 @@ export const costAccountingQuestions: Question[] = [
             const kv = rng.int(10, p - 5);
             const answer = fix / (p - kv);
             return {
-                prompt: `Fixkosten ${eur(fix)}, Verkaufspreis ${eur(p)}, variable Stückkosten ${eur(kv)}. Wie viele Stück müssen verkauft werden, um die **Gewinnschwelle** zu erreichen?`,
-                given: { Fixkosten: eur(fix), Preis: eur(p), "k_var": eur(kv) },
+                prompt: `Fixed costs ${eur(fix)}, selling price ${eur(p)}, variable cost per unit ${eur(kv)}. How many units have to be sold to break even (**break-even quantity**)?`,
+                given: { "Fixed costs": eur(fix), Price: eur(p), "k_var": eur(kv) },
                 answer,
-                explanation: `x_BE = K_fix/(p − k_v) = ${eur(fix)}/${eur(p - kv)} = ${n2(answer)} Stück`,
+                explanation: `x_BE = K_fix/(p − k_v) = ${eur(fix)}/${eur(p - kv)} = ${n2(answer)} units`,
             };
         },
     },
@@ -132,10 +132,10 @@ export const costAccountingQuestions: Question[] = [
             const kv = rng.int(10, p - 8);
             const answer = (fix + ziel) / (p - kv);
             return {
-                prompt: `Fixkosten ${eur(fix)}, Zielgewinn ${eur(ziel)}, Preis ${eur(p)}, variable Stückkosten ${eur(kv)}. Wie viele Stück müssen verkauft werden?`,
-                given: { Fixkosten: eur(fix), Zielgewinn: eur(ziel), Preis: eur(p), "k_var": eur(kv) },
+                prompt: `Fixed costs ${eur(fix)}, target profit ${eur(ziel)}, price ${eur(p)}, variable cost per unit ${eur(kv)}. How many units have to be sold?`,
+                given: { "Fixed costs": eur(fix), "Target profit": eur(ziel), Price: eur(p), "k_var": eur(kv) },
                 answer,
-                explanation: `x = (K_fix + Zielgewinn)/db = ${n2(answer)} Stück`,
+                explanation: `x = (K_fix + target profit)/cm = ${n2(answer)} units`,
             };
         },
     },
@@ -148,25 +148,25 @@ export const costAccountingQuestions: Question[] = [
             const istMenge = rng.int(500, 5000);
             const answer = (istPreis - planPreis) * istMenge;
             return {
-                prompt: `Planpreis je Einheit ${eur(planPreis)}, Istpreis ${eur(istPreis)}, Istverbrauchsmenge ${istMenge} Einheiten. Wie hoch ist die **Preisabweichung**? (positiv = Mehrkosten)`,
-                given: { Planpreis: eur(planPreis), Istpreis: eur(istPreis), Istmenge: `${istMenge} Einheiten` },
+                prompt: `Standard price per unit ${eur(planPreis)}, actual price ${eur(istPreis)}, actual quantity consumed ${n(istMenge)} units. What is the **price variance**? (positive = extra cost)`,
+                given: { "Standard price": eur(planPreis), "Actual price": eur(istPreis), "Actual quantity": `${n(istMenge)} units` },
                 answer,
-                explanation: `Preisabweichung = (p_ist − p_plan)·m_ist = ${eur(answer)}`,
+                explanation: `Price variance = (p_actual − p_standard) · q_actual = ${eur(answer)}`,
             };
         },
     },
     {
         id: "ca-variance-concept",
         subject: "cost_accounting", topic: "variance", difficulty: "medium", kind: "choice",
-        prompt: "Was misst die Beschäftigungsabweichung in der flexiblen Plankostenrechnung?",
+        prompt: "What does the volume variance measure in flexible standard costing?",
         choices: [
-            "Den Teil der Abweichung, der auf die Proportionalisierung der Fixkosten bei abweichender Beschäftigung zurückgeht.",
-            "Die Abweichung durch veränderte Einkaufspreise.",
-            "Die Abweichung durch unwirtschaftlichen Materialverbrauch.",
-            "Die Differenz zwischen Plan- und Ist-Absatzmenge.",
+            "The part of the variance that stems from spreading fixed costs as if they were variable when actual activity differs from planned activity.",
+            "The variance caused by changed purchase prices.",
+            "The variance caused by inefficient material usage.",
+            "The difference between planned and actual sales volume.",
         ],
         correct: 0,
-        explanation: "Beschäftigungsabweichung = verrechnete Plankosten − Sollkosten; sie entsteht nur, weil Fixkosten in der Vollkostenrechnung auf die Planbeschäftigung verteilt werden.",
+        explanation: "Volume variance = absorbed standard costs − flexible budget costs (Sollkosten); it arises only because absorption costing spreads fixed costs over the planned activity level.",
     },
     {
         id: "ca-abc",
@@ -178,10 +178,10 @@ export const costAccountingQuestions: Question[] = [
             const satz = prozesskosten / anzahl;
             const answer = satz * proAuftrag;
             return {
-                prompt: `Der Prozess "Bestellung abwickeln" verursacht ${eur(prozesskosten)} pro Jahr bei ${anzahl} Prozessdurchführungen. Ein Auftrag löst ${proAuftrag} Bestellungen aus. Welche **Prozesskosten** sind dem Auftrag zuzurechnen?`,
-                given: { Prozesskosten: eur(prozesskosten), Prozessmenge: String(anzahl), "Durchführungen je Auftrag": String(proAuftrag) },
+                prompt: `The activity "process a purchase order" causes ${eur(prozesskosten)} per year across ${n(anzahl)} executions of the activity. One customer order triggers ${proAuftrag} purchase orders. How much **activity cost** is attributable to that order?`,
+                given: { "Activity cost per year": eur(prozesskosten), "Activity volume": n(anzahl), "Executions per order": String(proAuftrag) },
                 answer,
-                explanation: `Prozesskostensatz = ${eur(satz)}; × ${proAuftrag} = ${eur(answer)}`,
+                explanation: `Activity rate = ${eur(satz)}; × ${proAuftrag} = ${eur(answer)}`,
             };
         },
     },

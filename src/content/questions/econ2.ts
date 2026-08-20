@@ -1,19 +1,19 @@
 import type { Question } from "@/lib/questions/types";
-import { eur, n2, pct } from "./_helpers";
+import { eur, n, n2, pct } from "./_helpers";
 
 export const econ2Questions: Question[] = [
     {
         id: "e2-vgr-definition",
         subject: "econ2", topic: "national_accounts", difficulty: "easy", kind: "choice",
-        prompt: "Welche Position geht **nicht** in das BIP nach der Verwendungsrechnung ein?",
+        prompt: "Which item does **not** enter GDP under the expenditure approach?",
         choices: [
-            "Der Kauf einer gebrauchten Maschine von einem anderen inländischen Unternehmen.",
-            "Konsumausgaben der privaten Haushalte.",
-            "Bruttoanlageinvestitionen der Unternehmen.",
-            "Exporte abzüglich Importe.",
+            "The purchase of a used machine from another domestic firm.",
+            "Consumption spending by private households.",
+            "Gross fixed capital formation by firms.",
+            "Exports less imports.",
         ],
         correct: 0,
-        explanation: "Das BIP misst die in der Periode neu produzierte Wertschöpfung. Der Handel mit Gebrauchtgütern ist nur ein Vermögenstransfer.",
+        explanation: "GDP measures the value added newly produced during the period. Trade in second-hand goods is merely a transfer of assets.",
     },
     {
         id: "e2-vgr-calc",
@@ -26,10 +26,10 @@ export const econ2Questions: Question[] = [
             const M = rng.int(150, 480) * 1_000_000;
             const answer = C + I + G + X - M;
             return {
-                prompt: `Konsum ${eur(C)}, Investitionen ${eur(I)}, Staatsausgaben ${eur(G)}, Exporte ${eur(X)}, Importe ${eur(M)}. Wie hoch ist das **BIP**?`,
+                prompt: `Consumption ${eur(C)}, investment ${eur(I)}, government spending ${eur(G)}, exports ${eur(X)}, imports ${eur(M)}. What is **GDP**?`,
                 given: { C: eur(C), I: eur(I), G: eur(G), X: eur(X), M: eur(M) },
                 answer,
-                explanation: `BIP = C + I + G + (X − M) = ${eur(answer)}`,
+                explanation: `GDP = C + I + G + (X − M) = ${eur(answer)}`,
             };
         },
     },
@@ -41,8 +41,8 @@ export const econ2Questions: Question[] = [
             const inflation = rng.int(1, 9);
             const answer = ((1 + nominal / 100) / (1 + inflation / 100) - 1) * 100;
             return {
-                prompt: `Der Nominalzins beträgt ${pct(nominal)}, die Inflationsrate ${pct(inflation)}. Wie hoch ist der **exakte Realzins** (Fisher-Gleichung)?`,
-                given: { Nominalzins: pct(nominal), Inflation: pct(inflation) },
+                prompt: `The nominal interest rate is ${pct(nominal)} and the inflation rate is ${pct(inflation)}. What is the **exact real interest rate** (Fisher equation)?`,
+                given: { "Nominal rate": pct(nominal), Inflation: pct(inflation) },
                 answer,
                 explanation: `(1+i) = (1+r)(1+π) → r = (1+i)/(1+π) − 1 = ${pct(answer)}`,
             };
@@ -51,56 +51,56 @@ export const econ2Questions: Question[] = [
     {
         id: "e2-inflation-deflator",
         subject: "econ2", topic: "inflation", difficulty: "medium", kind: "choice",
-        prompt: "Worin unterscheidet sich der BIP-Deflator vom Verbraucherpreisindex (VPI)?",
+        prompt: "How does the GDP deflator differ from the consumer price index (CPI)?",
         choices: [
-            "Der Deflator erfasst alle im Inland produzierten Güter, der VPI einen festen Warenkorb inklusive Importgütern.",
-            "Der Deflator verwendet einen festen Warenkorb, der VPI einen variablen.",
-            "Beide messen exakt dasselbe, nur in anderen Einheiten.",
-            "Der VPI enthält Investitionsgüter, der Deflator nicht.",
+            "The deflator covers all domestically produced goods, the CPI a fixed basket that also includes imported goods.",
+            "The deflator uses a fixed basket of goods, the CPI a variable one.",
+            "Both measure exactly the same thing, only in different units.",
+            "The CPI contains capital goods, the deflator does not.",
         ],
         correct: 0,
-        explanation: "Der Deflator ist ein Paasche-Index über die inländische Produktion; der VPI ein Laspeyres-Index über einen festen Konsumwarenkorb, der auch Importe enthält.",
+        explanation: "The deflator is a Paasche index over domestic production; the CPI is a Laspeyres index over a fixed consumption basket that also contains imports.",
     },
     {
-        id: "e2-labour-rate",
-        subject: "econ2", topic: "labour", difficulty: "easy", kind: "numeric", unit: "percent",
+        id: "e2-labor-rate",
+        subject: "econ2", topic: "labor", difficulty: "easy", kind: "numeric", unit: "percent",
         build: (rng) => {
             const employed = rng.int(3000, 4500);
             const unemployed = rng.int(100, 400);
             const answer = (unemployed / (employed + unemployed)) * 100;
             return {
-                prompt: `In einer Volkswirtschaft sind ${employed} Tsd. Personen erwerbstätig und ${unemployed} Tsd. arbeitslos. Wie hoch ist die **Arbeitslosenquote**?`,
-                given: { Erwerbstätige: `${employed} Tsd.`, Arbeitslose: `${unemployed} Tsd.` },
+                prompt: `In an economy ${n(employed)} thousand people are employed and ${n(unemployed)} thousand are unemployed. What is the **unemployment rate**?`,
+                given: { Employed: `${n(employed)} thousand`, Unemployed: `${n(unemployed)} thousand` },
                 answer,
-                explanation: `u = AL/(ET + AL) = ${pct(answer)}`,
+                explanation: `u = U/(E + U) = ${pct(answer)}`,
             };
         },
     },
     {
-        id: "e2-labour-phillips",
-        subject: "econ2", topic: "labour", difficulty: "hard", kind: "choice",
-        prompt: "Was besagt die um Erwartungen erweiterte Phillips-Kurve langfristig?",
+        id: "e2-labor-phillips",
+        subject: "econ2", topic: "labor", difficulty: "hard", kind: "choice",
+        prompt: "What does the expectations-augmented Phillips curve imply for the long run?",
         choices: [
-            "Es gibt keinen dauerhaften Trade-off zwischen Inflation und Arbeitslosigkeit; die Arbeitslosigkeit kehrt zur natürlichen Rate zurück.",
-            "Höhere Inflation senkt die Arbeitslosigkeit dauerhaft.",
-            "Inflation und Arbeitslosigkeit steigen langfristig immer gemeinsam.",
-            "Die Erwartungen der Haushalte spielen keine Rolle.",
+            "There is no lasting trade-off between inflation and unemployment; unemployment returns to its natural rate.",
+            "Higher inflation lowers unemployment permanently.",
+            "In the long run inflation and unemployment always rise together.",
+            "Households' expectations play no role.",
         ],
         correct: 0,
-        explanation: "Sobald die Inflationserwartungen angepasst sind, ist die langfristige Phillips-Kurve senkrecht bei der natürlichen Arbeitslosenquote.",
+        explanation: "Once inflation expectations have adjusted, the long-run Phillips curve is vertical at the natural rate of unemployment.",
     },
     {
         id: "e2-monetary-tools",
         subject: "econ2", topic: "monetary", difficulty: "easy", kind: "choice",
-        prompt: "Die Zentralbank will die Inflation bekämpfen. Welche Maßnahme passt?",
+        prompt: "The central bank wants to fight inflation. Which measure fits?",
         choices: [
-            "Leitzins anheben und dem Markt Liquidität entziehen.",
-            "Leitzins senken und Anleihen ankaufen.",
-            "Mindestreservesatz senken.",
-            "Die Staatsausgaben erhöhen.",
+            "Raise the policy rate and withdraw liquidity from the market.",
+            "Cut the policy rate and buy bonds.",
+            "Lower the reserve requirement ratio.",
+            "Increase government spending.",
         ],
         correct: 0,
-        explanation: "Restriktive Geldpolitik: höherer Leitzins, weniger Liquidität. Staatsausgaben sind Fiskal-, nicht Geldpolitik.",
+        explanation: "Restrictive monetary policy: a higher policy rate, less liquidity. Government spending is fiscal policy, not monetary policy.",
     },
     {
         id: "e2-monetary-multiplier",
@@ -109,8 +109,8 @@ export const econ2Questions: Question[] = [
             const rr = rng.pick([1, 2, 4, 5, 10, 20]);
             const answer = 1 / (rr / 100);
             return {
-                prompt: `Der Mindestreservesatz beträgt ${pct(rr)}. Wie hoch ist der **einfache Geldschöpfungsmultiplikator**?`,
-                given: { Mindestreservesatz: pct(rr) },
+                prompt: `The reserve requirement ratio is ${pct(rr)}. What is the **simple money multiplier**?`,
+                given: { "Reserve requirement": pct(rr) },
                 answer,
                 explanation: `m = 1/r = 1/${n2(rr / 100)} = ${n2(answer)}`,
             };
@@ -124,7 +124,7 @@ export const econ2Questions: Question[] = [
             const dG = rng.int(5, 50) * 1_000_000;
             const answer = dG * (1 / (1 - mpc));
             return {
-                prompt: `Die marginale Konsumquote beträgt ${n2(mpc)}. Der Staat erhöht seine Ausgaben um ${eur(dG)}. Um wie viel steigt das Einkommen im einfachen Keynes-Modell?`,
+                prompt: `The marginal propensity to consume is ${n2(mpc)}. The government increases its spending by ${eur(dG)}. By how much does income rise in the simple Keynesian model?`,
                 given: { "MPC (c)": n2(mpc), "ΔG": eur(dG) },
                 answer,
                 explanation: `ΔY = ΔG · 1/(1 − c) = ${eur(dG)} · ${n2(1 / (1 - mpc))} = ${eur(answer)}`,
@@ -134,40 +134,40 @@ export const econ2Questions: Question[] = [
     {
         id: "e2-fiscal-crowding",
         subject: "econ2", topic: "fiscal", difficulty: "hard", kind: "choice",
-        prompt: "Was beschreibt der Crowding-out-Effekt?",
+        prompt: "What does the crowding-out effect describe?",
         choices: [
-            "Kreditfinanzierte Staatsausgaben treiben den Zins hoch und verdrängen private Investitionen.",
-            "Der Staat verdrängt private Anbieter durch günstigere Preise.",
-            "Importe verdrängen inländische Produktion.",
-            "Die Zentralbank verdrängt Geschäftsbanken aus dem Kreditgeschäft.",
+            "Debt-financed government spending drives the interest rate up and displaces private investment.",
+            "The state drives private suppliers out of the market with lower prices.",
+            "Imports displace domestic production.",
+            "The central bank displaces commercial banks from the lending business.",
         ],
         correct: 0,
-        explanation: "Höhere staatliche Kreditnachfrage erhöht den Zins, private Investitionen werden dadurch teurer und gehen zurück.",
+        explanation: "Higher government demand for credit raises the interest rate, which makes private investment more expensive and reduces it.",
     },
     {
         id: "e2-open-real-exchange",
         subject: "econ2", topic: "open_economy", difficulty: "hard", kind: "choice",
-        prompt: "Der reale Wechselkurs eines Landes steigt (reale Aufwertung). Was folgt typischerweise?",
+        prompt: "A country's real exchange rate rises (a real appreciation). What typically follows?",
         choices: [
-            "Exporte werden relativ teurer, der Nettoexport sinkt.",
-            "Exporte werden billiger, der Nettoexport steigt.",
-            "Der Nettoexport bleibt unverändert.",
-            "Die Importpreise steigen.",
+            "Exports become relatively more expensive, net exports fall.",
+            "Exports become cheaper, net exports rise.",
+            "Net exports stay unchanged.",
+            "Import prices rise.",
         ],
         correct: 0,
-        explanation: "Reale Aufwertung = inländische Güter werden im Vergleich zum Ausland teurer → Exporte sinken, Importe steigen.",
+        explanation: "A real appreciation means domestic goods become more expensive relative to foreign goods → exports fall, imports rise.",
     },
     {
         id: "e2-growth-solow",
         subject: "econ2", topic: "growth", difficulty: "hard", kind: "choice",
-        prompt: "Was gilt im Steady State des Solow-Modells ohne technischen Fortschritt?",
+        prompt: "What holds in the steady state of the Solow model without technological progress?",
         choices: [
-            "Das Pro-Kopf-Einkommen wächst nicht mehr; die Investitionen decken genau Abschreibung und Bevölkerungswachstum.",
-            "Das Pro-Kopf-Einkommen wächst mit der Sparquote.",
-            "Der Kapitalstock je Kopf wächst unbegrenzt.",
-            "Die Abschreibungen sind null.",
+            "Income per capita no longer grows; investment exactly covers depreciation and population growth.",
+            "Income per capita grows at the savings rate.",
+            "The capital stock per capita grows without limit.",
+            "Depreciation is zero.",
         ],
         correct: 0,
-        explanation: "Im Steady State gilt s·f(k) = (δ + n)·k — das Pro-Kopf-Kapital und damit das Pro-Kopf-Einkommen sind konstant.",
+        explanation: "In the steady state s·f(k) = (δ + n)·k — capital per capita, and hence income per capita, is constant.",
     },
 ];

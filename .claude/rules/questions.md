@@ -27,7 +27,7 @@ Multiple choice:
     kind: "choice",
     source: "TUM Endterm WS24/25, A3",
     prompt: "…",
-    choices: ["richtig", "falsch A", "falsch B", "falsch C"],
+    choices: ["correct", "wrong A", "wrong B", "wrong C"],
     correct: 0,              // or [0, 2] for multi-select
     explanation: "…",
 }
@@ -73,9 +73,12 @@ Numeric:
    `0.0824`. `unit: "EUR"` means euros, not cents.
 4. **Explanations show the worked path**, with the drawn numbers substituted, so
    a student who got it wrong can see where they diverged.
-5. **German throughout** — prompts, given labels, explanations. Use `eur`, `pct`,
-   `n`, `n2` from `_helpers.ts` for every number that reaches the screen. Never
-   interpolate a raw float.
+5. **English throughout** — prompts, given labels, choices, explanations. Use
+   `eur`, `pct`, `n`, `n2` from `_helpers.ts` for every number that reaches the
+   screen; never interpolate a raw float, and never hand-format a numeral, or the
+   German edition cannot switch locale in one place. Keep a German statutory term
+   (`HGB`, `§ 253 HGB`, `GmbH`, `beizulegender Wert`) verbatim when the question
+   turns on it, with an English gloss in parentheses on first use.
 6. **Verify after every change**: `npm run verify`. It builds each numeric
    question against 200 seeds and fails on NaN, Infinity, unfilled `{placeholder}`
    text, unknown topics, duplicate ids, and choice sets that lose their correct

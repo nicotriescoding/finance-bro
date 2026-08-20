@@ -5,72 +5,72 @@ export const marketingQuestions: Question[] = [
     {
         id: "mk-stp-order",
         subject: "marketing", topic: "basics_stp", difficulty: "easy", kind: "choice",
-        prompt: "In welcher Reihenfolge läuft der STP-Prozess ab?",
+        prompt: "In which order do the steps of the STP process run?",
         choices: [
-            "Segmentierung → Targeting → Positionierung",
-            "Targeting → Segmentierung → Positionierung",
-            "Positionierung → Segmentierung → Targeting",
-            "Segmentierung → Positionierung → Targeting",
+            "Segmentation → Targeting → Positioning",
+            "Targeting → Segmentation → Positioning",
+            "Positioning → Segmentation → Targeting",
+            "Segmentation → Positioning → Targeting",
         ],
         correct: 0,
-        explanation: "Erst den Markt aufteilen, dann attraktive Segmente auswählen, dann im Kopf der Zielgruppe positionieren.",
+        explanation: "First split the market, then pick the attractive segments, then position the offer in the mind of the target group.",
     },
     {
         id: "mk-stp-criteria",
         subject: "marketing", topic: "basics_stp", difficulty: "medium", kind: "choice",
-        prompt: "Welche Anforderung muss ein sinnvolles Marktsegment **nicht** erfüllen?",
+        prompt: "Which requirement does a useful market segment **not** have to meet?",
         choices: [
-            "Es muss möglichst viele unterschiedliche Kundentypen enthalten.",
-            "Es muss messbar sein.",
-            "Es muss über die gewählten Kanäle erreichbar sein.",
-            "Es muss wirtschaftlich substanziell sein.",
+            "It must contain as many different customer types as possible.",
+            "It must be measurable.",
+            "It must be reachable through the chosen channels.",
+            "It must be economically substantial.",
         ],
         correct: 0,
-        explanation: "Segmente sollen intern **homogen** und untereinander heterogen sein — nicht möglichst gemischt.",
+        explanation: "Segments should be internally **homogeneous** and heterogeneous towards one another — not as mixed as possible.",
     },
     {
         id: "mk-research-primary",
         subject: "marketing", topic: "research", difficulty: "easy", kind: "choice",
-        prompt: "Was ist ein Beispiel für **Sekundärforschung**?",
+        prompt: "What is an example of **secondary research**?",
         choices: [
-            "Auswertung bereits vorhandener Branchenstatistiken und interner Verkaufszahlen.",
-            "Durchführung einer eigenen Kundenbefragung.",
-            "Ein selbst durchgeführtes Fokusgruppeninterview.",
-            "Ein A/B-Test auf der eigenen Website.",
+            "Analyzing existing industry statistics and internal sales figures.",
+            "Running your own customer survey.",
+            "A focus group interview you conduct yourself.",
+            "An A/B test on your own website.",
         ],
         correct: 0,
-        explanation: "Sekundärforschung nutzt bereits erhobene Daten; Primärforschung erhebt neue Daten für die konkrete Fragestellung.",
+        explanation: "Secondary research uses data that has already been collected; primary research gathers new data for the specific question at hand.",
     },
     {
         id: "mk-research-bias",
         subject: "marketing", topic: "research", difficulty: "hard", kind: "choice",
-        prompt: "Eine Umfrage wird nur unter bestehenden Kunden durchgeführt und daraus auf den Gesamtmarkt geschlossen. Welcher Fehler liegt vor?",
+        prompt: "A survey is run among existing customers only, and the result is generalized to the whole market. Which error does this introduce?",
         choices: [
-            "Stichprobenverzerrung (Selection Bias) — die Stichprobe ist nicht repräsentativ für den Gesamtmarkt.",
-            "Ein reiner Messfehler des Fragebogens.",
-            "Ein Fehler in der Datenauswertung.",
-            "Kein Fehler, Bestandskunden sind der beste Indikator.",
+            "Sampling bias (selection bias) — the sample is not representative of the overall market.",
+            "A pure measurement error in the questionnaire.",
+            "An error in the data analysis.",
+            "No error, existing customers are the best indicator.",
         ],
         correct: 0,
-        explanation: "Wer bereits Kunde ist, hat sich bewusst für das Produkt entschieden — Nichtkäufer und ihre Gründe fehlen vollständig.",
+        explanation: "Anyone who is already a customer has deliberately chosen the product — non-buyers and their reasons are missing entirely.",
     },
     {
         id: "mk-product-lifecycle",
         subject: "marketing", topic: "product", difficulty: "medium", kind: "choice",
-        prompt: "In welcher Phase des Produktlebenszyklus ist der Gewinn typischerweise am höchsten?",
+        prompt: "In which phase of the product life cycle is profit typically highest?",
         choices: [
-            "Reifephase",
-            "Einführungsphase",
-            "Wachstumsphase",
-            "Degenerationsphase",
+            "Maturity",
+            "Introduction",
+            "Growth",
+            "Decline",
         ],
         correct: 0,
-        explanation: "In der Reife sind Umsätze hoch und die Stückkosten durch Erfahrungskurveneffekte niedrig; der Umsatzhöhepunkt liegt am Ende der Reife.",
+        explanation: "In maturity, revenue is high and unit costs are low thanks to experience-curve effects; the revenue peak falls at the end of maturity.",
     },
     {
         id: "mk-product-bcg",
         subject: "marketing", topic: "product", difficulty: "medium", kind: "choice",
-        prompt: "Ein Produkt hat hohen relativen Marktanteil in einem langsam wachsenden Markt. Wie heißt es in der BCG-Matrix?",
+        prompt: "A product has a high relative market share in a slow-growing market. What is it called in the BCG matrix?",
         choices: [
             "Cash Cow",
             "Star",
@@ -78,7 +78,7 @@ export const marketingQuestions: Question[] = [
             "Poor Dog",
         ],
         correct: 0,
-        explanation: "Hoher Marktanteil + geringes Wachstum = Cash Cow: finanziert die Stars und Question Marks.",
+        explanation: "High market share + low growth = Cash Cow: it funds the Stars and Question Marks.",
     },
     {
         id: "mk-pricing-breakeven",
@@ -88,43 +88,43 @@ export const marketingQuestions: Question[] = [
             const marge = rng.int(20, 120);
             const answer = kv * (1 + marge / 100);
             return {
-                prompt: `Die variablen Stückkosten betragen ${eur(kv)}. Es wird ein Aufschlag von ${pct(marge)} kalkuliert. Wie hoch ist der **Angebotspreis** (Cost-plus)?`,
-                given: { "variable Stückkosten": eur(kv), Aufschlag: pct(marge) },
+                prompt: `Variable unit costs are ${eur(kv)}. A markup of ${pct(marge)} is applied. What is the **selling price** (cost-plus)?`,
+                given: { "Variable unit costs": eur(kv), Markup: pct(marge) },
                 answer,
-                explanation: `p = k_v · (1 + Aufschlag) = ${eur(answer)}`,
+                explanation: `p = k_v · (1 + markup) = ${eur(answer)}`,
             };
         },
     },
     {
         id: "mk-pricing-skimming",
         subject: "marketing", topic: "pricing", difficulty: "medium", kind: "choice",
-        prompt: "Wann ist eine **Skimming**-Preisstrategie sinnvoll?",
+        prompt: "When does a **skimming** pricing strategy make sense?",
         choices: [
-            "Bei innovativen Produkten mit zahlungsbereiten Erstkäufern und geringem kurzfristigen Wettbewerbsdruck.",
-            "Wenn schnell hohe Marktanteile gegen viele Wettbewerber gewonnen werden sollen.",
-            "Bei stark preiselastischer Nachfrage und hohen Skaleneffekten.",
-            "Bei homogenen Massengütern.",
+            "For innovative products with early buyers willing to pay a premium and little short-term competitive pressure.",
+            "When high market share is to be won quickly against many competitors.",
+            "With highly price-elastic demand and large economies of scale.",
+            "For homogeneous mass-market goods.",
         ],
         correct: 0,
-        explanation: "Skimming schöpft zuerst die hohe Zahlungsbereitschaft ab und senkt den Preis schrittweise. Der Gegenpol ist die Penetrationsstrategie.",
+        explanation: "Skimming captures the high willingness to pay first and then lowers the price step by step. The opposite approach is penetration pricing.",
     },
     {
         id: "mk-distribution",
         subject: "marketing", topic: "distribution", difficulty: "easy", kind: "choice",
-        prompt: "Was kennzeichnet den **indirekten** Vertrieb?",
+        prompt: "What characterizes **indirect** distribution?",
         choices: [
-            "Der Absatz erfolgt über rechtlich selbstständige Absatzmittler wie Groß- und Einzelhandel.",
-            "Der Hersteller verkauft ausschließlich über den eigenen Onlineshop.",
-            "Der Außendienst des Herstellers besucht die Endkunden persönlich.",
-            "Es gibt gar keine Handelsstufe zwischen Hersteller und Kunde.",
+            "Sales run through legally independent intermediaries such as wholesalers and retailers.",
+            "The manufacturer sells exclusively through its own online shop.",
+            "The manufacturer's field sales force visits end customers in person.",
+            "There is no trade level at all between manufacturer and customer.",
         ],
         correct: 0,
-        explanation: "Indirekter Vertrieb schaltet selbstständige Absatzmittler ein; direkter Vertrieb verkauft ohne Zwischenstufe an den Endkunden.",
+        explanation: "Indirect distribution brings in independent intermediaries; direct distribution sells to the end customer with no stage in between.",
     },
     {
         id: "mk-communication-aida",
         subject: "marketing", topic: "communication", difficulty: "very_easy", kind: "choice",
-        prompt: "Wofür steht das A am Ende des AIDA-Modells?",
+        prompt: "What does the final A in the AIDA model stand for?",
         choices: [
             "Action",
             "Awareness",
@@ -137,15 +137,15 @@ export const marketingQuestions: Question[] = [
     {
         id: "mk-communication-push-pull",
         subject: "marketing", topic: "communication", difficulty: "medium", kind: "choice",
-        prompt: "Was beschreibt eine **Pull**-Strategie?",
+        prompt: "What describes a **pull** strategy?",
         choices: [
-            "Der Hersteller bewirbt das Produkt direkt beim Endkunden, damit dieser es beim Handel nachfragt.",
-            "Der Hersteller gewährt dem Handel Rabatte, damit dieser das Produkt listet.",
-            "Der Handel bewirbt das Produkt aus eigener Initiative.",
-            "Das Produkt wird ausschließlich über Außendienstmitarbeiter verkauft.",
+            "The manufacturer advertises the product directly to end customers so that they ask retailers for it.",
+            "The manufacturer grants retailers discounts so that they list the product.",
+            "Retailers advertise the product on their own initiative.",
+            "The product is sold exclusively through field sales representatives.",
         ],
         correct: 0,
-        explanation: "Pull zieht die Nachfrage über den Endkunden durch den Kanal; Push drückt die Ware über Handelsanreize in den Kanal.",
+        explanation: "Pull draws demand through the channel via the end customer; push presses the goods into the channel via trade incentives.",
     },
     {
         id: "mk-clv",
@@ -156,10 +156,10 @@ export const marketingQuestions: Question[] = [
             const r = rng.int(5, 12);
             const answer = db * ((retention / 100) / (1 + r / 100 - retention / 100));
             return {
-                prompt: `Ein Kunde erzeugt jährlich ${eur(db)} Deckungsbeitrag. Die Retention Rate beträgt ${pct(retention)}, der Kalkulationszins ${pct(r)}. Wie hoch ist der **Customer Lifetime Value** (ohne Akquisitionskosten, nachschüssig)?`,
-                given: { "DB p. a.": eur(db), Retention: pct(retention), Diskontsatz: pct(r) },
+                prompt: `A customer generates ${eur(db)} of contribution margin per year. The retention rate is ${pct(retention)} and the discount rate is ${pct(r)}. What is the **customer lifetime value** (excluding acquisition cost, payments in arrears)?`,
+                given: { "Contribution margin p.a.": eur(db), Retention: pct(retention), "Discount rate": pct(r) },
                 answer,
-                explanation: `CLV = DB · r_ret/(1 + i − r_ret) = ${eur(answer)}`,
+                explanation: `CLV = CM · r_ret/(1 + i − r_ret) = ${eur(answer)}`,
             };
         },
     },
@@ -171,10 +171,10 @@ export const marketingQuestions: Question[] = [
             const cac = rng.int(50, 900);
             const answer = clv / cac;
             return {
-                prompt: `Der CLV beträgt ${eur(clv)}, die Kundenakquisitionskosten ${eur(cac)}. Wie hoch ist das **CLV/CAC-Verhältnis**?`,
+                prompt: `The CLV is ${eur(clv)} and the customer acquisition cost is ${eur(cac)}. What is the **CLV/CAC ratio**?`,
                 given: { CLV: eur(clv), CAC: eur(cac) },
                 answer,
-                explanation: `CLV/CAC = ${n2(answer)} — als Faustregel gilt ein Wert ab 3 als gesund.`,
+                explanation: `CLV/CAC = ${n2(answer)} — as a rule of thumb, a value of 3 or above counts as healthy.`,
             };
         },
     },
@@ -186,10 +186,10 @@ export const marketingQuestions: Question[] = [
             const revenue = Math.round(spend * rng.float(0.6, 6, 2));
             const answer = revenue / spend;
             return {
-                prompt: `Eine Kampagne kostet ${eur(spend)} und erzeugt ${eur(revenue)} Umsatz. Wie hoch ist der **ROAS**?`,
-                given: { "Ad Spend": eur(spend), Umsatz: eur(revenue) },
+                prompt: `A campaign costs ${eur(spend)} and generates ${eur(revenue)} in revenue. What is the **ROAS**?`,
+                given: { "Ad spend": eur(spend), Revenue: eur(revenue) },
                 answer,
-                explanation: `ROAS = Umsatz / Ad Spend = ${n2(answer)}`,
+                explanation: `ROAS = revenue / ad spend = ${n2(answer)}`,
             };
         },
     },
@@ -206,10 +206,10 @@ export const marketingQuestions: Question[] = [
             const spend = (impressions / 1000) * cpm;
             const answer = spend / conversions;
             return {
-                prompt: `${n2(impressions / 1000)} Tsd. Impressions bei einem TKP von ${eur(cpm)}, CTR ${pct(ctr)}, Conversion Rate ${pct(cr)}. Wie hoch sind die **Kosten je Conversion (CPA)**?`,
-                given: { Impressions: n2(impressions), TKP: eur(cpm), CTR: pct(ctr), "Conversion Rate": pct(cr) },
+                prompt: `${n2(impressions / 1000)} thousand impressions at a CPM of ${eur(cpm)}, CTR ${pct(ctr)}, conversion rate ${pct(cr)}. What is the **cost per conversion (CPA)**?`,
+                given: { Impressions: n2(impressions), CPM: eur(cpm), CTR: pct(ctr), "Conversion rate": pct(cr) },
                 answer,
-                explanation: `Spend = ${eur(spend)}; Klicks = ${n2(clicks)}; Conversions = ${n2(conversions)}; CPA = ${eur(answer)}`,
+                explanation: `Spend = ${eur(spend)}; clicks = ${n2(clicks)}; conversions = ${n2(conversions)}; CPA = ${eur(answer)}`,
             };
         },
     },

@@ -96,20 +96,20 @@ try {
         "/ renders server-side (no empty loading shell)",
         homeHtml.includes("questions") && !/^\s*Loading\.\.\.\s*$/m.test(homeHtml)
     );
-    // The UI chrome is English, the question content is German. Both halves must
-    // survive: an accidental full translation would take the German SEO copy with it.
+    // The site is English end to end. A German edition is planned as a separate
+    // locale later - until then, stray German is a regression, not a feature.
     check(
-        "/ ships English UI chrome",
+        "/ ships English copy",
         homeHtml.includes("works fully offline") && homeHtml.includes("topics")
     );
+    check("/ declares lang=en", /<html[^>]+lang="en"/.test(homeHtml));
     check(
-        "/ keeps the German subject taxonomy",
-        homeHtml.includes("Zinsen") || homeHtml.includes("Kapitalkosten")
+        "/ has an English meta description",
+        /<meta name="description" content="Free exam trainer/.test(homeHtml)
     );
-    check(
-        "/ keeps the German meta description",
-        /<meta name="description" content="Kostenloser Klausurtrainer/.test(homeHtml)
-    );
+    for (const german of ["Zinsen", "Aufgaben", "Klausur", "Themen", "Kapitalkosten"]) {
+        check(`/ has no leftover German ("${german}")`, !homeHtml.includes(german));
+    }
 
     // --- dark-mode regression guard -------------------------------------
     // An unlayered `body { background }` rule behind a prefers-color-scheme

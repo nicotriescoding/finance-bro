@@ -8,6 +8,7 @@
 import { ALL_QUESTIONS } from "../src/content/questions";
 import { buildInstance } from "../src/lib/questions/engine";
 import { SUBJECT_MAP } from "../src/content/subjects";
+import { formatAnswer, isWithinTolerance, parseNumericInput } from "../src/lib/questions/grading";
 
 const SEEDS = 200;
 const errors: string[] = [];
@@ -65,6 +66,50 @@ for (const q of ALL_QUESTIONS) {
         }
         if (/(NaN|Infinity|undefined)/.test(inst.prompt + (inst.explanation ?? ""))) {
             errors.push(`${q.id} (seed ${seed}): NaN/Infinity/undefined leaked into text`);
+            break;
+        }
+    }
+}
+
+// ---------------------------------------------------------------- input parsing
+// The display locale is en-US, the students are German. Both conventions have to
+// parse, and above all a student who retypes the number the app just showed them
+// must be marked correct - "1,234" read as 1.234 silently failed correct answers.
+const PARSE_CASES: [string, number | null][] = [
+    ["1,234", 1234],          // en-US thousands, the format the app displays
+    ["12,345,678", 12345678],
+    ["1,234.56", 1234.56],
+    ["1.234,56", 1234.56],    // German
+    ["1.234.567", 1234567],
+    ["1234.56", 1234.56],
+    ["1234,56", 1234.56],
+    ["8,24", 8.24],           // German decimal comma, not thousands
+    ["0,5", 0.5],
+    ["1.234", 1.234],         // lone dot stays decimal
+    ["12.5 %", 12.5],
+    ["€1,200", 1200],
+    ["-1.234,56", -1234.56],
+    ["−7.19", -7.19],         // U+2212, what the prompts render
+    ["3.50 years", 3.5],
+    ["", null],
+    ["abc", null],
+];
+for (const [input, expected] of PARSE_CASES) {
+    const got = parseNumericInput(input);
+    if (got !== expected) errors.push(`parseNumericInput("${input}") = ${got}, expected ${expected}`);
+}
+
+// Round trip: whatever we print as the correct answer must grade as correct when
+// typed back verbatim. This is what catches a display/parse locale mismatch.
+for (const q of ALL_QUESTIONS) {
+    if (q.kind !== "numeric") continue;
+    for (const seed of [1, 2, 3, 5, 8, 13, 21, 34]) {
+        const inst = buildInstance(q, seed * 7919);
+        if (inst.answer === undefined || !Number.isFinite(inst.answer)) continue;
+        const shown = formatAnswer(inst.answer, q.unit);
+        const reparsed = parseNumericInput(shown);
+        if (reparsed === null || !isWithinTolerance(reparsed, inst.answer, q.unit, q.tolerance)) {
+            errors.push(`${q.id} (seed ${seed}): shows "${shown}" but retyping it grades wrong`);
             break;
         }
     }

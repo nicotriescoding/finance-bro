@@ -1,58 +1,61 @@
 import type { Question } from "@/lib/questions/types";
-import { eur, n2, pct } from "./_helpers";
+import { eur, n, n2, pct } from "./_helpers";
+
+/** Statutory minimum in a static prompt - still routed through the formatter. */
+const GMBH_MIN = `${n(25_000)} €`;
 
 export const entrepreneurshipQuestions: Question[] = [
     {
         id: "en-opp-effectuation",
         subject: "entrepreneurship", topic: "opportunity", difficulty: "medium", kind: "choice",
-        prompt: "Was unterscheidet **Effectuation** von **Causation**?",
+        prompt: "What distinguishes **effectuation** from **causation**?",
         choices: [
-            "Effectuation startet bei den vorhandenen Mitteln und formt daraus Ziele; Causation startet beim Ziel und beschafft die nötigen Mittel.",
-            "Effectuation ist die Planung mit vollständigen Marktdaten, Causation ohne.",
-            "Causation wird nur von Startups verwendet, Effectuation nur von Konzernen.",
-            "Es sind zwei Bezeichnungen für denselben Planungsprozess.",
+            "Effectuation starts from the means at hand and shapes goals out of them; causation starts from the goal and acquires the means needed for it.",
+            "Effectuation is planning with complete market data, causation without it.",
+            "Causation is used only by startups, effectuation only by large corporations.",
+            "They are two names for the same planning process.",
         ],
         correct: 0,
-        explanation: "Sarasvathy: Effectuation ist mittelorientiert und iterativ (leistbarer Verlust, Partnerschaften), Causation zielorientiert und planbasiert.",
+        explanation: "Sarasvathy: effectuation is means-driven and iterative (affordable loss, partnerships), causation is goal-driven and plan-based.",
     },
     {
         id: "en-bmc-blocks",
         subject: "entrepreneurship", topic: "business_model", difficulty: "easy", kind: "choice",
-        prompt: "Welches Element gehört **nicht** zu den neun Bausteinen des Business Model Canvas?",
+        prompt: "Which element is **not** one of the nine building blocks of the Business Model Canvas?",
         choices: [
-            "Wettbewerbsanalyse",
+            "Competitive analysis",
             "Value Proposition",
             "Key Activities",
             "Revenue Streams",
         ],
         correct: 0,
-        explanation: "Die neun Bausteine sind Customer Segments, Value Proposition, Channels, Customer Relationships, Revenue Streams, Key Resources, Key Activities, Key Partners, Cost Structure. Wettbewerbsanalyse ist kein Baustein.",
+        explanation: "The nine building blocks are Customer Segments, Value Proposition, Channels, Customer Relationships, Revenue Streams, Key Resources, Key Activities, Key Partners and Cost Structure. Competitive analysis is not a building block.",
     },
     {
         id: "en-lean-mvp",
         subject: "entrepreneurship", topic: "lean_startup", difficulty: "easy", kind: "choice",
-        prompt: "Was ist der Zweck eines MVP im Lean-Startup-Ansatz?",
+        prompt: "What is the purpose of an MVP in the Lean Startup approach?",
         choices: [
-            "Mit minimalem Aufwand maximal validiertes Lernen über eine Hypothese zu erzeugen.",
-            "Ein fertiges Produkt mit allen geplanten Features auszuliefern.",
-            "Möglichst schnell Umsatz zu maximieren.",
-            "Investoren einen fertigen Prototyp zu präsentieren.",
+            "To generate the maximum validated learning about a hypothesis with the minimum effort.",
+            "To ship a finished product with all the planned features.",
+            "To maximize revenue as quickly as possible.",
+            "To present investors with a finished prototype.",
         ],
         correct: 0,
-        explanation: "Das MVP dient dem Build-Measure-Learn-Zyklus: es testet die riskanteste Annahme mit dem geringsten Aufwand.",
+        explanation: "The MVP serves the build-measure-learn cycle: it tests the riskiest assumption with the least effort.",
     },
     {
         id: "en-lean-pivot",
         subject: "entrepreneurship", topic: "lean_startup", difficulty: "medium", kind: "choice",
-        prompt: "Wann sollte ein Startup laut Lean Startup einen Pivot in Betracht ziehen?",
+        prompt: "When should a startup consider a pivot according to Lean Startup?",
         choices: [
-            "Wenn die Kernhypothese trotz mehrerer Iterationen nicht validiert werden konnte.",
-            "Sobald der erste Kunde abspringt.",
-            "Wenn ein Wettbewerber ein ähnliches Produkt startet.",
-            "Nach einer festgelegten Anzahl von Monaten, unabhängig von den Daten.",
+            "When the core hypothesis could not be validated despite several iterations.",
+            "As soon as the first customer walks away.",
+            "When a competitor launches a similar product.",
+            "After a fixed number of months, regardless of the data.",
         ],
         correct: 0,
-        explanation: "Ein Pivot ist eine strukturierte Kurskorrektur, wenn die Messdaten die zentrale Annahme wiederholt widerlegen.",
+        explanation: "A pivot is a structured change of course taken when the measured data repeatedly refutes the central assumption.",
     },
     {
         id: "en-market-som",
@@ -64,8 +67,8 @@ export const entrepreneurshipQuestions: Question[] = [
             const sam = tam * (samShare / 100);
             const answer = sam * (somShare / 100);
             return {
-                prompt: `Der TAM beträgt ${eur(tam)}. Davon sind ${pct(samShare)} realistisch erreichbar (SAM). Von diesem SAM will das Startup ${pct(somShare)} Marktanteil gewinnen. Wie groß ist der **SOM**?`,
-                given: { TAM: eur(tam), "SAM-Anteil": pct(samShare), "Anteil am SAM": pct(somShare) },
+                prompt: `The TAM is ${eur(tam)}. Of that, ${pct(samShare)} is realistically reachable (SAM). Of this SAM the startup wants to win ${pct(somShare)} market share. How large is the **SOM**?`,
+                given: { TAM: eur(tam), "SAM share of TAM": pct(samShare), "Target share of SAM": pct(somShare) },
                 answer,
                 explanation: `SAM = ${eur(sam)}; SOM = SAM · ${n2(somShare / 100)} = ${eur(answer)}`,
             };
@@ -74,28 +77,28 @@ export const entrepreneurshipQuestions: Question[] = [
     {
         id: "en-market-approach",
         subject: "entrepreneurship", topic: "market_sizing", difficulty: "medium", kind: "choice",
-        prompt: "Was kennzeichnet den **Bottom-up**-Ansatz der Marktgrößenschätzung?",
+        prompt: "What characterizes the **bottom-up** approach to market sizing?",
         choices: [
-            "Hochrechnung aus Kundenanzahl × Kauffrequenz × Preis auf Basis eigener Annahmen.",
-            "Übernahme einer Marktstudie und Ableitung eines Prozentsatzes daraus.",
-            "Schätzung anhand des Bruttoinlandsprodukts.",
-            "Befragung der Wettbewerber nach ihren Umsätzen.",
+            "Extrapolating from number of customers × purchase frequency × price on the basis of your own assumptions.",
+            "Taking a market study and deriving a percentage from it.",
+            "Estimating on the basis of gross domestic product.",
+            "Asking competitors what their revenues are.",
         ],
         correct: 0,
-        explanation: "Bottom-up rechnet von konkreten Einheiten hoch und ist für Investoren meist überzeugender als eine Top-down-Ableitung aus Marktstudien.",
+        explanation: "Bottom-up builds up from concrete units and is usually more convincing to investors than a top-down derivation from market studies.",
     },
     {
         id: "en-funding-stages",
         subject: "entrepreneurship", topic: "funding", difficulty: "easy", kind: "choice",
-        prompt: "Welche Finanzierungsquelle ist typischerweise die **früheste** externe Quelle?",
+        prompt: "Which funding source is typically the **earliest** external source?",
         choices: [
-            "Business Angels",
-            "Later-Stage-Growth-Fonds",
-            "Börsengang (IPO)",
-            "Konsortialkredit einer Geschäftsbank",
+            "Business angels",
+            "Later-stage growth funds",
+            "Initial public offering (IPO)",
+            "Syndicated loan from a commercial bank",
         ],
         correct: 0,
-        explanation: "Reihenfolge grob: Bootstrapping / FFF → Business Angels → Seed-VC → Series A/B/C → Growth → IPO.",
+        explanation: "Rough order: bootstrapping / FFF → business angels → seed VC → Series A/B/C → growth → IPO.",
     },
     {
         id: "en-funding-runway",
@@ -105,10 +108,10 @@ export const entrepreneurshipQuestions: Question[] = [
             const burn = rng.int(20, 250) * 1000;
             const answer = cash / burn;
             return {
-                prompt: `Ein Startup hat ${eur(cash)} auf dem Konto bei einer monatlichen Netto-Burn-Rate von ${eur(burn)}. Wie viele **Monate Runway** bleiben?`,
-                given: { Liquidität: eur(cash), "Burn Rate p. M.": eur(burn) },
+                prompt: `A startup has ${eur(cash)} in the bank at a monthly net burn rate of ${eur(burn)}. How many **months of runway** are left?`,
+                given: { Cash: eur(cash), "Burn rate per month": eur(burn) },
                 answer,
-                explanation: `Runway = Cash / Burn = ${n2(answer)} Monate`,
+                explanation: `Runway = cash / burn = ${n2(answer)} months`,
             };
         },
     },
@@ -122,10 +125,10 @@ export const entrepreneurshipQuestions: Question[] = [
             const postMoney = preMoney + invest;
             const answer = founderBefore * (preMoney / postMoney);
             return {
-                prompt: `Die Gründer halten ${pct(founderBefore)}. Bei einer Pre-Money-Bewertung von ${eur(preMoney)} investiert ein VC ${eur(invest)}. Wie hoch ist der **Gründeranteil nach der Runde**?`,
-                given: { "Anteil vorher": pct(founderBefore), "Pre-Money": eur(preMoney), Investment: eur(invest) },
+                prompt: `The founders hold ${pct(founderBefore)}. At a pre-money valuation of ${eur(preMoney)} a VC invests ${eur(invest)}. How large is the **founders' stake after the round**?`,
+                given: { "Stake before": pct(founderBefore), "Pre-money": eur(preMoney), Investment: eur(invest) },
                 answer,
-                explanation: `Post-Money = ${eur(postMoney)}; Verwässerungsfaktor = Pre/Post = ${n2(preMoney / postMoney)}; neuer Anteil = ${pct(answer)}`,
+                explanation: `Post-money = ${eur(postMoney)}; dilution factor = pre / post = ${n2(preMoney / postMoney)}; new stake = ${pct(answer)}`,
             };
         },
     },
@@ -137,10 +140,10 @@ export const entrepreneurshipQuestions: Question[] = [
             const invest = rng.int(100, 2500) * 1000;
             const answer = (invest / (preMoney + invest)) * 100;
             return {
-                prompt: `Pre-Money-Bewertung ${eur(preMoney)}, Investment ${eur(invest)}. Welchen **Anteil** erhält der Investor?`,
-                given: { "Pre-Money": eur(preMoney), Investment: eur(invest) },
+                prompt: `Pre-money valuation ${eur(preMoney)}, investment ${eur(invest)}. What **share** does the investor receive?`,
+                given: { "Pre-money": eur(preMoney), Investment: eur(invest) },
                 answer,
-                explanation: `Anteil = Investment / (Pre-Money + Investment) = ${pct(answer)}`,
+                explanation: `Share = investment / (pre-money + investment) = ${pct(answer)}`,
             };
         },
     },
@@ -154,50 +157,50 @@ export const entrepreneurshipQuestions: Question[] = [
             const postMoney = exitValue / targetReturn;
             const answer = postMoney - invest;
             return {
-                prompt: `VC-Methode: erwarteter Exit-Erlös ${eur(exitValue)}, geforderter Multiple ${targetReturn}x, Investment ${eur(invest)}. Wie hoch ist die **Pre-Money-Bewertung**?`,
-                given: { Exit: eur(exitValue), "Ziel-Multiple": `${targetReturn}x`, Investment: eur(invest) },
+                prompt: `VC method: expected exit proceeds ${eur(exitValue)}, required multiple ${targetReturn}x, investment ${eur(invest)}. How high is the **pre-money valuation**?`,
+                given: { Exit: eur(exitValue), "Target multiple": `${targetReturn}x`, Investment: eur(invest) },
                 answer,
-                explanation: `Post-Money = Exit / Multiple = ${eur(postMoney)}; Pre-Money = Post − Investment = ${eur(answer)}`,
+                explanation: `Post-money = exit / multiple = ${eur(postMoney)}; pre-money = post − investment = ${eur(answer)}`,
             };
         },
     },
     {
         id: "en-valuation-why-dcf-fails",
         subject: "entrepreneurship", topic: "startup_valuation", difficulty: "medium", kind: "choice",
-        prompt: "Warum ist ein klassisches DCF-Modell für Frühphasen-Startups problematisch?",
+        prompt: "Why is a classic DCF model problematic for early-stage startups?",
         choices: [
-            "Die Cashflows sind hochgradig unsicher und der Terminal Value dominiert den gesamten Wert.",
-            "Weil DCF für nicht börsennotierte Unternehmen rechtlich unzulässig ist.",
-            "Weil Startups keine Kapitalkosten haben.",
-            "Weil DCF nur bei negativen Cashflows funktioniert.",
+            "The cash flows are highly uncertain and the terminal value dominates the entire valuation.",
+            "Because DCF is legally not permitted for companies that are not listed.",
+            "Because startups have no cost of capital.",
+            "Because DCF only works with negative cash flows.",
         ],
         correct: 0,
-        explanation: "Ohne belastbare Historie sind Prognosen sehr unsicher; fast der gesamte Barwert steckt im Terminal Value, der Wert reagiert extrem sensitiv auf Annahmen.",
+        explanation: "Without a reliable track record the forecasts are very uncertain; almost the whole present value sits in the terminal value, so the result reacts extremely sensitively to the assumptions.",
     },
     {
         id: "en-legal-gmbh",
         subject: "entrepreneurship", topic: "legal_team", difficulty: "easy", kind: "choice",
-        prompt: "Welche Aussage zur GmbH ist korrekt?",
+        prompt: "Which statement about the GmbH (private limited company) is correct?",
         choices: [
-            "Die Haftung ist grundsätzlich auf das Gesellschaftsvermögen beschränkt; das Mindeststammkapital beträgt 25.000 €.",
-            "Die Gesellschafter haften stets unbeschränkt mit ihrem Privatvermögen.",
-            "Es ist kein Stammkapital erforderlich.",
-            "Eine GmbH kann nur von mindestens drei Personen gegründet werden.",
+            `Liability is in principle limited to the company's assets; the minimum share capital is ${GMBH_MIN}.`,
+            "The shareholders are always liable without limitation with their private assets.",
+            "No share capital is required.",
+            "A GmbH can only be founded by at least three people.",
         ],
         correct: 0,
-        explanation: "§ 5 GmbHG: Mindeststammkapital 25.000 €, mindestens die Hälfte bei Anmeldung eingezahlt. Ein-Personen-GmbH ist zulässig.",
+        explanation: `§ 5 GmbHG sets the minimum share capital at ${GMBH_MIN}; § 7 (2) GmbHG requires at least half of that minimum to be paid in before registration. A single-shareholder GmbH is permitted.`,
     },
     {
         id: "en-legal-vesting",
         subject: "entrepreneurship", topic: "legal_team", difficulty: "medium", kind: "choice",
-        prompt: "Wozu dient eine **Vesting**-Klausel im Gründerteam?",
+        prompt: "What is the purpose of a **vesting** clause in a founding team?",
         choices: [
-            "Anteile werden erst über die Zeit endgültig verdient, damit ein früh ausscheidender Gründer nicht den vollen Anteil behält.",
-            "Sie sichert dem Investor ein Vetorecht bei allen Entscheidungen.",
-            "Sie legt die Höhe der Gründergehälter fest.",
-            "Sie verpflichtet die Gründer zu einer Mindestarbeitszeit pro Woche.",
+            "Shares are only fully earned over time, so that a founder who leaves early does not keep the full stake.",
+            "It secures the investor a veto right over all decisions.",
+            "It sets the level of the founders' salaries.",
+            "It obliges the founders to work a minimum number of hours per week.",
         ],
         correct: 0,
-        explanation: "Typisch sind 4 Jahre Vesting mit 1 Jahr Cliff — Schutz für das verbleibende Team und für Investoren.",
+        explanation: "Four years of vesting with a one-year cliff is typical — protection for the remaining team and for the investors.",
     },
 ];

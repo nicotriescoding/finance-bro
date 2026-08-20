@@ -3,20 +3,21 @@
 BWL-Klausurtrainer, live at finance-bro.de. Next.js 16 (App Router) · React 19 ·
 Tailwind 4 · TypeScript, deployed on Vercel from `main`.
 
-## Language split
+## Language
 
-**English**: UI chrome (nav, buttons, labels, input hints, loading and feedback
-strings), code, comments, commit messages, docs, and anything you write to Nico.
+**Everything is English** — UI, question prompts, `given` labels, explanations,
+subject and topic names, metadata, `lang="en"`, code, comments, commits, docs and
+replies to Nico. Numbers are en-US (`1,234.56`); the locale lives in one constant,
+`LOCALE` in `src/content/questions/_helpers.ts`.
 
-**German**: question prompts, `given` labels and explanations; subject and topic
-names in `src/content/subjects.ts`; everything SEO — `metadata` in
-`layout.tsx` and `quiz/page.tsx`, `opengraph-image.tsx`, `lang="de"`; the de-DE
-number formatting and the unit suffixes in `grading.ts` (`€`, `Jahre`, `Stück`),
-which render glued to a number inside a German question.
+Stray German is a regression — `npm run smoke` fails the build on it. The two
+deliberate exceptions are German statutory terms a question actually tests (`HGB`,
+`§ 253 HGB`, `GmbH`, `beizulegender Wert`), which stay verbatim with an English
+gloss in parentheses, and `source` values naming a real exam.
 
-The rule of thumb: if a student *reads it to answer the question*, or if Google
-reads it, it is German. If it is the app talking to the user, it is English.
-`npm run smoke` asserts both halves.
+A German edition is planned **later, as a second locale** — not by translating
+these files back. Until then keep every user-facing string going through the
+helpers so the locale swap stays a one-line change.
 
 ## Commands
 

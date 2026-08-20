@@ -21,8 +21,8 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(2, 8);
             const answer = C0 * (1 + N * (r / 100));
             return {
-                prompt: `Du legst ${eur(C0)} für ${N} Jahre zu ${pct(r)} p. a. an. Die Zinsen werden **nicht** mitverzinst (einfache Verzinsung). Welchen Betrag erhältst du am Ende?`,
-                given: { "Startkapital C₀": eur(C0), "Zinssatz r": pct(r), "Laufzeit N": `${N} Jahre` },
+                prompt: `You invest ${eur(C0)} for ${N} years at ${pct(r)} p.a. The interest is **not** itself reinvested (simple interest). What amount do you receive at the end?`,
+                given: { "Initial capital C₀": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
                 explanation: `C_N = C₀ · (1 + N · r) = ${eur(C0)} · (1 + ${N} · ${n(r / 100)}) = ${eur(answer)}`,
             };
@@ -41,10 +41,10 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(3, 15);
             const answer = C0 * (1 + r / 100) ** N;
             return {
-                prompt: `${eur(C0)} werden ${N} Jahre lang mit ${pct(r)} p. a. **verzinst und wiederangelegt**. Wie hoch ist das Endkapital?`,
-                given: { "Startkapital C₀": eur(C0), "Zinssatz r": pct(r), "Laufzeit N": `${N} Jahre` },
+                prompt: `${eur(C0)} earns ${pct(r)} p.a. for ${N} years, with the interest **reinvested each year (compound interest)**. What is the final capital?`,
+                given: { "Initial capital C₀": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
-                explanation: `C_N = C₀ · q^N mit q = 1 + r = ${n(1 + r / 100)} → ${eur(C0)} · ${n(1 + r / 100)}^${N} = ${eur(answer)}`,
+                explanation: `C_N = C₀ · q^N with q = 1 + r = ${n(1 + r / 100)} → ${eur(C0)} · ${n(1 + r / 100)}^${N} = ${eur(answer)}`,
             };
         },
     },
@@ -61,8 +61,8 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(2, 10);
             const answer = C0 * Math.exp((r / 100) * N);
             return {
-                prompt: `${eur(C0)} werden ${N} Jahre **stetig** mit ${pct(r)} p. a. verzinst. Wie hoch ist das Endkapital?`,
-                given: { "C₀": eur(C0), "r (stetig)": pct(r), "N": `${N} Jahre` },
+                prompt: `${eur(C0)} is compounded **continuously** at ${pct(r)} p.a. for ${N} years. What is the final capital?`,
+                given: { "C₀": eur(C0), "r (continuous)": pct(r), "N": `${N} years` },
                 answer,
                 explanation: `C_N = C₀ · e^(r·N) = ${eur(C0)} · e^(${n(r / 100)}·${N}) = ${eur(answer)}`,
             };
@@ -79,10 +79,10 @@ export const financeQuestions: NumericQuestion[] = [
             const r = rng.int(3, 12);
             const m = rng.pick([2, 4, 12]);
             const answer = ((1 + r / 100 / m) ** m - 1) * 100;
-            const label = m === 2 ? "halbjährlich" : m === 4 ? "quartalsweise" : "monatlich";
+            const label = m === 2 ? "semi-annually" : m === 4 ? "quarterly" : "monthly";
             return {
-                prompt: `Ein Nominalzins von ${pct(r)} p. a. wird ${label} verzinst (m = ${m}). Wie hoch ist der **effektive** Jahreszins?`,
-                given: { "Nominalzins r": pct(r), "Perioden m": String(m) },
+                prompt: `A nominal rate of ${pct(r)} p.a. is compounded ${label} (m = ${m}). What is the **effective** annual rate?`,
+                given: { "Nominal rate r": pct(r), "Periods m": String(m) },
                 answer,
                 explanation: `r_eff = (1 + r/m)^m − 1 = (1 + ${n(r / 100)}/${m})^${m} − 1 = ${pct(answer)}`,
             };
@@ -104,8 +104,8 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = C * ((q ** N - 1) / (q - 1));
             return {
-                prompt: `Du zahlst ${N} Jahre lang **jeweils am Jahresende** ${eur(C)} auf ein Konto mit ${pct(r)} p. a. ein. Wie hoch ist der Endwert?`,
-                given: { "Rate C": eur(C), "Zinssatz r": pct(r), "Anzahl Raten N": String(N) },
+                prompt: `For ${N} years you pay ${eur(C)} into an account earning ${pct(r)} p.a., **at the end of each year**. What is the future value?`,
+                given: { "Payment C": eur(C), "Interest rate r": pct(r), "Number of payments N": String(N) },
                 answer,
                 explanation: `FV = C · (q^N − 1)/(q − 1) = ${eur(C)} · (${n(q)}^${N} − 1)/${n(q - 1)} = ${eur(answer)}`,
             };
@@ -125,10 +125,10 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = C * ((q ** N - 1) / (q ** N * (q - 1))) * q;
             return {
-                prompt: `Eine Rente von ${eur(C)} wird ${N} Jahre lang **jeweils am Jahresanfang** (vorschüssig) gezahlt. Kalkulationszins ${pct(r)}. Wie hoch ist der Barwert?`,
-                given: { "Rate C": eur(C), "r": pct(r), "N": String(N), "Zahlungszeitpunkt": "vorschüssig" },
+                prompt: `An annuity of ${eur(C)} is paid for ${N} years, **at the beginning of each year** (annuity due). The discount rate is ${pct(r)}. What is the present value?`,
+                given: { "Payment C": eur(C), "r": pct(r), "N": String(N), "Payment timing": "annuity due (in advance)" },
                 answer,
-                explanation: `PV_vor = C · (q^N − 1)/(q^N·(q − 1)) · q = ${eur(answer)}`,
+                explanation: `PV_due = C · (q^N − 1)/(q^N·(q − 1)) · q = ${eur(answer)}`,
             };
         },
     },
@@ -144,8 +144,8 @@ export const financeQuestions: NumericQuestion[] = [
             const r = rng.int(3, 9);
             const answer = C / (r / 100);
             return {
-                prompt: `Eine **ewige** nachschüssige Rente zahlt jährlich ${eur(C)}. Der Kalkulationszins beträgt ${pct(r)}. Wie hoch ist der Barwert?`,
-                given: { "Rate C": eur(C), "r": pct(r) },
+                prompt: `A **perpetuity** pays ${eur(C)} per year in arrears. The discount rate is ${pct(r)}. What is the present value?`,
+                given: { "Payment C": eur(C), "r": pct(r) },
                 answer,
                 explanation: `PV = C / r = ${eur(C)} / ${n(r / 100)} = ${eur(answer)}`,
             };
@@ -164,8 +164,8 @@ export const financeQuestions: NumericQuestion[] = [
             const r = g + rng.int(2, 6);
             const answer = C / ((r - g) / 100);
             return {
-                prompt: `Eine ewige Rente startet im nächsten Jahr mit ${eur(C)} und wächst danach mit ${pct(g)} p. a. Der Kalkulationszins ist ${pct(r)}. Wie hoch ist der Barwert?`,
-                given: { "C₁": eur(C), "Wachstum g": pct(g), "r": pct(r) },
+                prompt: `A perpetuity starts next year at ${eur(C)} and grows at ${pct(g)} p.a. thereafter. The discount rate is ${pct(r)}. What is the present value?`,
+                given: { "C₁": eur(C), "Growth g": pct(g), "r": pct(r) },
                 answer,
                 explanation: `PV = C₁ / (r − g) = ${eur(C)} / (${n(r / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
             };
@@ -187,8 +187,8 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = D0 * ((q ** N * (q - 1)) / (q ** N - 1));
             return {
-                prompt: `Ein Annuitätendarlehen über ${eur(D0)} läuft ${N} Jahre bei ${pct(r)} p. a. Wie hoch ist die **jährliche Annuität**?`,
-                given: { "Darlehen D₀": eur(D0), "Zins r": pct(r), "Laufzeit N": `${N} Jahre` },
+                prompt: `An annuity loan of ${eur(D0)} runs for ${N} years at ${pct(r)} p.a. What is the **annual annuity payment**?`,
+                given: { "Loan D₀": eur(D0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
                 explanation: `A = D₀ · q^N·(q − 1)/(q^N − 1) = ${eur(answer)}`,
             };
@@ -209,8 +209,8 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = D0 * ((q ** N - q ** k) / (q ** N - 1));
             return {
-                prompt: `Ein Annuitätendarlehen über ${eur(D0)} (${pct(r)}, ${N} Jahre) läuft seit ${k} Jahren. Wie hoch ist die **Restschuld nach ${k} Jahren**?`,
-                given: { "D₀": eur(D0), "r": pct(r), "N": `${N} Jahre`, "k": `${k} Jahre` },
+                prompt: `An annuity loan of ${eur(D0)} (${pct(r)}, ${N} years) has been running for ${k} years. What is the **outstanding balance after ${k} years**?`,
+                given: { "D₀": eur(D0), "r": pct(r), "N": `${N} years`, "k": `${k} years` },
                 answer,
                 explanation: `D_k = D₀ · (q^N − q^k)/(q^N − 1) = ${eur(answer)}`,
             };
@@ -232,10 +232,10 @@ export const financeQuestions: NumericQuestion[] = [
             const zins = (D0 - tilgung * (k - 1)) * (r / 100);
             const answer = tilgung + zins;
             return {
-                prompt: `Ein **Ratendarlehen** über ${eur(D0)} wird in ${N} gleichen Tilgungsraten zurückgezahlt, Zinssatz ${pct(r)}. Wie hoch ist die Gesamtzahlung (Tilgung + Zinsen) im Jahr ${k}?`,
-                given: { "D₀": eur(D0), "r": pct(r), "N": String(N), "Jahr k": String(k) },
+                prompt: `An **installment loan** of ${eur(D0)} is repaid in ${N} equal principal repayments at an interest rate of ${pct(r)}. What is the total payment (principal repayment + interest) in year ${k}?`,
+                given: { "D₀": eur(D0), "r": pct(r), "N": String(N), "Year k": String(k) },
                 answer,
-                explanation: `Tilgung = D₀/N = ${eur(tilgung)}; Zinsen = Restschuld · r = ${eur(zins)}; Summe = ${eur(answer)}`,
+                explanation: `Principal repayment = D₀/N = ${eur(tilgung)}; interest = outstanding balance · r = ${eur(zins)}; total = ${eur(answer)}`,
             };
         },
     },
@@ -254,8 +254,8 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(2, 20);
             const answer = BN / (1 + r / 100) ** N;
             return {
-                prompt: `Ein Zerobond mit Nominalwert ${eur(BN)} wird in ${N} Jahren zurückgezahlt. Der Marktzins beträgt ${pct(r)}. Wie hoch ist der heutige Kurs?`,
-                given: { "Nominalwert": eur(BN), "Marktzins r": pct(r), "Restlaufzeit N": `${N} Jahre` },
+                prompt: `A zero-coupon bond with a face value of ${eur(BN)} is redeemed in ${N} years. The market rate is ${pct(r)}. What is its price today?`,
+                given: { "Face value": eur(BN), "Market rate r": pct(r), "Remaining term N": `${N} years` },
                 answer,
                 explanation: `B₀ = BN / (1 + r)^N = ${eur(answer)}`,
             };
@@ -276,8 +276,8 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(3, 15);
             const { price } = macaulayDuration(C, BN, r / 100, N);
             return {
-                prompt: `Eine Anleihe (Nominalwert ${eur(BN)}, Kupon ${pct(couponRate)}, Restlaufzeit ${N} Jahre) wird am Markt mit ${pct(r)} diskontiert. Wie hoch ist der faire Kurs?`,
-                given: { "Nominalwert": eur(BN), "Kupon p. a.": eur(C), "Marktzins r": pct(r), "N": `${N} Jahre` },
+                prompt: `A bond (face value ${eur(BN)}, coupon ${pct(couponRate)}, remaining term ${N} years) is discounted in the market at ${pct(r)}. What is its fair price?`,
+                given: { "Face value": eur(BN), "Coupon p.a.": eur(C), "Market rate r": pct(r), "N": `${N} years` },
                 answer: price,
                 explanation: `B₀ = Σ C/(1+r)^t + BN/(1+r)^N = ${eur(price)}`,
             };
@@ -298,10 +298,10 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(3, 10);
             const { duration } = macaulayDuration(C, BN, r / 100, N);
             return {
-                prompt: `Berechne die **Macaulay-Duration** einer Anleihe: Nominalwert ${eur(BN)}, Kupon ${pct(couponRate)}, Restlaufzeit ${N} Jahre, Marktzins ${pct(r)}.`,
-                given: { "Nominalwert": eur(BN), "Kupon": eur(C), "r": pct(r), "N": `${N} Jahre` },
+                prompt: `Compute the **Macaulay duration** of a bond: face value ${eur(BN)}, coupon ${pct(couponRate)}, remaining term ${N} years, market rate ${pct(r)}.`,
+                given: { "Face value": eur(BN), "Coupon": eur(C), "r": pct(r), "N": `${N} years` },
                 answer: duration,
-                explanation: `D = Σ t·CF_t/(1+r)^t ÷ Σ CF_t/(1+r)^t = ${n2(duration)} Jahre`,
+                explanation: `D = Σ t·CF_t/(1+r)^t ÷ Σ CF_t/(1+r)^t = ${n2(duration)} years`,
             };
         },
     },
@@ -318,13 +318,13 @@ export const financeQuestions: NumericQuestion[] = [
             const C = BN * (couponRate / 100);
             const r = rng.int(2, 8);
             const N = rng.int(4, 12);
-            const dr = rng.pick([25, 50, 75, 100]); // Basispunkte
+            const dr = rng.pick([25, 50, 75, 100]); // basis points
             const { duration } = macaulayDuration(C, BN, r / 100, N);
             const dMod = duration / (1 + r / 100);
             const answer = -dMod * (dr / 10000) * 100;
             return {
-                prompt: `Eine Anleihe (Kupon ${pct(couponRate)}, ${N} Jahre Restlaufzeit, Marktzins ${pct(r)}) hat eine Macaulay-Duration von ${n2(duration)} Jahren. Um wie viel **Prozent** ändert sich der Kurs näherungsweise, wenn der Marktzins um ${dr} Basispunkte **steigt**?`,
-                given: { "Duration D": `${n2(duration)} Jahre`, "r": pct(r), "Δr": `+${dr} bp` },
+                prompt: `A bond (coupon ${pct(couponRate)}, ${N} years remaining term, market rate ${pct(r)}) has a Macaulay duration of ${n2(duration)} years. By approximately what **percentage** does its price change if the market rate **rises** by ${dr} basis points?`,
+                given: { "Duration D": `${n2(duration)} years`, "r": pct(r), "Δr": `+${dr} bp` },
                 answer,
                 explanation: `D_mod = D/(1+r) = ${n2(dMod)}; ΔB/B ≈ −D_mod · Δr = ${pct(answer)}`,
             };
@@ -344,8 +344,8 @@ export const financeQuestions: NumericQuestion[] = [
             const iT = iS + rng.int(1, 3);
             const answer = (((1 + iT / 100) ** T / (1 + iS / 100) ** S) ** (1 / (T - S)) - 1) * 100;
             return {
-                prompt: `Die Spot Rate für ${S} Jahre liegt bei ${pct(iS)}, für ${T} Jahre bei ${pct(iT)}. Wie hoch ist die **Forward Rate** für den Zeitraum von Jahr ${S} bis Jahr ${T}?`,
-                given: { [`Spot ${S}J`]: pct(iS), [`Spot ${T}J`]: pct(iT) },
+                prompt: `The spot rate for ${S} years is ${pct(iS)}, the spot rate for ${T} years is ${pct(iT)}. What is the **forward rate** for the period from year ${S} to year ${T}?`,
+                given: { [`Spot ${S}y`]: pct(iS), [`Spot ${T}y`]: pct(iT) },
                 answer,
                 explanation: `f = [(1+i_T)^T / (1+i_S)^S]^(1/(T−S)) − 1 = ${pct(answer)}`,
             };
@@ -366,7 +366,7 @@ export const financeQuestions: NumericQuestion[] = [
             const D1 = rng.int(1, 8);
             const answer = ((D1 + P1 - P0) / P0) * 100;
             return {
-                prompt: `Du kaufst eine Aktie für ${eur(P0)}. Nach einem Jahr steht sie bei ${eur(P1)} und hat ${eur(D1)} Dividende gezahlt. Wie hoch ist die **Gesamtrendite**?`,
+                prompt: `You buy a share for ${eur(P0)}. After one year it trades at ${eur(P1)} and has paid a dividend of ${eur(D1)}. What is the **total return**?`,
                 given: { "P₀": eur(P0), "P₁": eur(P1), "D₁": eur(D1) },
                 answer,
                 explanation: `r = (D₁ + P₁ − P₀)/P₀ = ${pct(answer)}`,
@@ -386,8 +386,8 @@ export const financeQuestions: NumericQuestion[] = [
             const rE = w + rng.int(3, 8);
             const answer = D1 / ((rE - w) / 100);
             return {
-                prompt: `Eine Aktie zahlt im nächsten Jahr ${eur(D1)} Dividende, die danach konstant mit ${pct(w)} p. a. wächst. Die Eigenkapitalkosten betragen ${pct(rE)}. Wie hoch ist der faire Aktienkurs (Gordon Growth)?`,
-                given: { "D₁": eur(D1), "Wachstum w": pct(w), "r_E": pct(rE) },
+                prompt: `A share pays a dividend of ${eur(D1)} next year, which then grows at a constant ${pct(w)} p.a. The cost of equity is ${pct(rE)}. What is the fair share price (Gordon growth model)?`,
+                given: { "D₁": eur(D1), "Growth w": pct(w), "r_E": pct(rE) },
                 answer,
                 explanation: `P₀ = D₁/(r_E − w) = ${eur(D1)}/(${n(rE / 100)} − ${n(w / 100)}) = ${eur(answer)}`,
             };
@@ -405,8 +405,8 @@ export const financeQuestions: NumericQuestion[] = [
             const EPS = rng.float(0.8, 12, 2);
             const answer = P0 / EPS;
             return {
-                prompt: `Eine Aktie notiert bei ${eur(P0)} und weist einen Gewinn je Aktie von ${eur(EPS)} aus. Wie hoch ist das **KGV (P/E)**?`,
-                given: { "Kurs P₀": eur(P0), "EPS": eur(EPS) },
+                prompt: `A share trades at ${eur(P0)} and reports earnings per share of ${eur(EPS)}. What is its **price/earnings ratio (P/E)**?`,
+                given: { "Price P₀": eur(P0), "EPS": eur(EPS) },
                 answer,
                 explanation: `P/E = P₀ / EPS = ${n2(answer)}`,
             };
@@ -435,10 +435,10 @@ export const financeQuestions: NumericQuestion[] = [
             const terminal = d / ((rE - wb) / 100);
             const answer = pv + terminal / (1 + rE / 100) ** N;
             return {
-                prompt: `Zwei-Phasen-DDM: Die Dividende beträgt im nächsten Jahr ${eur(D1)} und wächst ${N} Jahre lang mit ${pct(wa)}, danach ewig mit ${pct(wb)}. Eigenkapitalkosten ${pct(rE)}. Wie hoch ist der faire Aktienkurs?`,
-                given: { "D₁": eur(D1), "Phase 1 (N)": `${N} Jahre @ ${pct(wa)}`, "Phase 2": `ewig @ ${pct(wb)}`, "r_E": pct(rE) },
+                prompt: `Two-stage DDM: the dividend next year is ${eur(D1)} and grows at ${pct(wa)} for ${N} years, and at ${pct(wb)} in perpetuity thereafter. Cost of equity ${pct(rE)}. What is the fair share price?`,
+                given: { "D₁": eur(D1), "Phase 1 (N)": `${N} years @ ${pct(wa)}`, "Phase 2": `perpetual @ ${pct(wb)}`, "r_E": pct(rE) },
                 answer,
-                explanation: `PV Phase 1 = ${eur(pv)}; Terminal Value in t=${N}: ${eur(terminal)}; P₀ = ${eur(answer)}`,
+                explanation: `PV of phase 1 = ${eur(pv)}; terminal value at t=${N}: ${eur(terminal)}; P₀ = ${eur(answer)}`,
             };
         },
     },
@@ -456,10 +456,10 @@ export const financeQuestions: NumericQuestion[] = [
             const CL = rng.int(30, 200) * 1000;
             const answer = CA / CL;
             return {
-                prompt: `Das Umlaufvermögen beträgt ${eur(CA)}, die kurzfristigen Verbindlichkeiten ${eur(CL)}. Wie hoch ist die **Current Ratio**?`,
-                given: { "Umlaufvermögen": eur(CA), "kurzfr. Verbindlichkeiten": eur(CL) },
+                prompt: `Current assets amount to ${eur(CA)} and current liabilities to ${eur(CL)}. What is the **current ratio**?`,
+                given: { "Current assets": eur(CA), "Current liabilities": eur(CL) },
                 answer,
-                explanation: `Current Ratio = CA / CL = ${n2(answer)}`,
+                explanation: `Current ratio = CA / CL = ${n2(answer)}`,
             };
         },
     },
@@ -475,8 +475,8 @@ export const financeQuestions: NumericQuestion[] = [
             const E = rng.int(30, 250) * 1000;
             const answer = D / E;
             return {
-                prompt: `Ein Unternehmen hat ${eur(D)} Fremdkapital und ${eur(E)} Eigenkapital. Wie hoch ist der **Verschuldungsgrad (D/E)**?`,
-                given: { "Fremdkapital D": eur(D), "Eigenkapital E": eur(E) },
+                prompt: `A company has ${eur(D)} of debt and ${eur(E)} of equity. What is its **debt-to-equity ratio (D/E)**?`,
+                given: { "Debt D": eur(D), "Equity E": eur(E) },
                 answer,
                 explanation: `D/E = ${n2(answer)}`,
             };
@@ -494,8 +494,8 @@ export const financeQuestions: NumericQuestion[] = [
             const E = rng.int(100, 500) * 1000;
             const answer = (NI / E) * 100;
             return {
-                prompt: `Jahresüberschuss ${eur(NI)}, Eigenkapital ${eur(E)}. Wie hoch ist die **Eigenkapitalrendite (ROE)**?`,
-                given: { "Jahresüberschuss": eur(NI), "Eigenkapital": eur(E) },
+                prompt: `Net income ${eur(NI)}, equity ${eur(E)}. What is the **return on equity (ROE)**?`,
+                given: { "Net income": eur(NI), "Equity": eur(E) },
                 answer,
                 explanation: `ROE = NI / E = ${pct(answer)}`,
             };
@@ -514,7 +514,7 @@ export const financeQuestions: NumericQuestion[] = [
             const IC = rng.int(300, 900) * 1000;
             const answer = ((EBIT * (1 - tauC)) / IC) * 100;
             return {
-                prompt: `EBIT ${eur(EBIT)}, Steuersatz ${pct(tauC * 100)}, investiertes Kapital ${eur(IC)}. Wie hoch ist der **ROIC nach Steuern**?`,
+                prompt: `EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, invested capital ${eur(IC)}. What is the **after-tax ROIC**?`,
                 given: { EBIT: eur(EBIT), "τ_C": pct(tauC * 100), "Invested Capital": eur(IC) },
                 answer,
                 explanation: `ROIC = EBIT·(1−τ)/IC = ${pct(answer)}`,
@@ -533,10 +533,10 @@ export const financeQuestions: NumericQuestion[] = [
             const IE = rng.int(2, 25) * 1000;
             const answer = EBIT / IE;
             return {
-                prompt: `EBIT ${eur(EBIT)}, Zinsaufwand ${eur(IE)}. Wie hoch ist der **Zinsdeckungsgrad (Interest Coverage)**?`,
-                given: { EBIT: eur(EBIT), Zinsaufwand: eur(IE) },
+                prompt: `EBIT ${eur(EBIT)}, interest expense ${eur(IE)}. What is the **interest coverage ratio**?`,
+                given: { EBIT: eur(EBIT), "Interest expense": eur(IE) },
                 answer,
-                explanation: `ICR = EBIT / Zinsaufwand = ${n2(answer)}`,
+                explanation: `ICR = EBIT / interest expense = ${n2(answer)}`,
             };
         },
     },
@@ -557,8 +557,8 @@ export const financeQuestions: NumericQuestion[] = [
             const flows = [-I0, ...Array.from({ length: T }, () => cf)];
             const answer = npv(flows, r / 100);
             return {
-                prompt: `Eine Investition kostet heute ${eur(I0)} und erzeugt ${T} Jahre lang jeweils am Jahresende ${eur(cf)}. Der Kalkulationszins beträgt ${pct(r)}. Wie hoch ist der **Kapitalwert (NPV)**?`,
-                given: { "Investition I₀": eur(I0), "Cashflow p. a.": eur(cf), "Laufzeit": `${T} Jahre`, r: pct(r) },
+                prompt: `An investment costs ${eur(I0)} today and generates ${eur(cf)} at the end of each year for ${T} years. The discount rate is ${pct(r)}. What is the **net present value (NPV)**?`,
+                given: { "Investment I₀": eur(I0), "Cash flow p.a.": eur(cf), "Term": `${T} years`, r: pct(r) },
                 answer,
                 explanation: `NPV = −I₀ + Σ CF/(1+r)^t = ${eur(answer)}`,
             };
@@ -578,10 +578,10 @@ export const financeQuestions: NumericQuestion[] = [
             const flows = [-I0, ...Array.from({ length: T }, () => cf)];
             const answer = irr(flows) * 100;
             return {
-                prompt: `Eine Investition kostet ${eur(I0)} und bringt ${T} Jahre lang jeweils ${eur(cf)}. Wie hoch ist der **interne Zinsfuß (IRR)**?`,
-                given: { "I₀": eur(I0), "CF p. a.": eur(cf), Laufzeit: `${T} Jahre` },
+                prompt: `An investment costs ${eur(I0)} and returns ${eur(cf)} in each of the following ${T} years. What is the **internal rate of return (IRR)**?`,
+                given: { "I₀": eur(I0), "CF p.a.": eur(cf), Term: `${T} years` },
                 answer,
-                explanation: `IRR ist der Zins, bei dem NPV = 0 → ${pct(answer)}`,
+                explanation: `The IRR is the rate at which NPV = 0 → ${pct(answer)}`,
             };
         },
     },
@@ -597,10 +597,10 @@ export const financeQuestions: NumericQuestion[] = [
             const cf = Math.round(I0 / rng.float(2.2, 5.5, 2) / 100) * 100;
             const answer = I0 / cf;
             return {
-                prompt: `Eine Investition von ${eur(I0)} erzeugt jährlich konstante Rückflüsse von ${eur(cf)}. Wie lang ist die **statische Amortisationsdauer**?`,
-                given: { "I₀": eur(I0), "CF p. a.": eur(cf) },
+                prompt: `An investment of ${eur(I0)} generates constant annual cash inflows of ${eur(cf)}. What is the **static payback period**?`,
+                given: { "I₀": eur(I0), "CF p.a.": eur(cf) },
                 answer,
-                explanation: `Amortisationsdauer = I₀ / CF = ${n2(answer)} Jahre`,
+                explanation: `Payback period = I₀ / CF = ${n2(answer)} years`,
             };
         },
     },
@@ -618,7 +618,7 @@ export const financeQuestions: NumericQuestion[] = [
             const IC = rng.int(400, 1500) * 1000;
             const answer = EBIT * (1 - tauC) - (r / 100) * IC;
             return {
-                prompt: `EBIT ${eur(EBIT)}, Steuersatz ${pct(tauC * 100)}, Kapitalkosten ${pct(r)}, investiertes Kapital zu Periodenbeginn ${eur(IC)}. Wie hoch ist der **EVA**?`,
+                prompt: `EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, cost of capital ${pct(r)}, invested capital at the start of the period ${eur(IC)}. What is the **EVA**?`,
                 given: { EBIT: eur(EBIT), "τ_C": pct(tauC * 100), "r": pct(r), "IC": eur(IC) },
                 answer,
                 explanation: `EVA = NOPAT − r·IC = ${eur(EBIT * (1 - tauC))} − ${eur((r / 100) * IC)} = ${eur(answer)}`,
@@ -640,7 +640,7 @@ export const financeQuestions: NumericQuestion[] = [
             const beta = rng.float(0.4, 1.8, 2);
             const answer = rRF + beta * (rM - rRF);
             return {
-                prompt: `Risikoloser Zins ${pct(rRF)}, erwartete Marktrendite ${pct(rM)}, Beta ${n2(beta)}. Wie hoch ist die nach **CAPM** erwartete Rendite?`,
+                prompt: `Risk-free rate ${pct(rRF)}, expected market return ${pct(rM)}, beta ${n2(beta)}. What is the expected return under the **CAPM**?`,
                 given: { "r_f": pct(rRF), "r_M": pct(rM), "β": n2(beta) },
                 answer,
                 explanation: `r = r_f + β·(r_M − r_f) = ${pct(answer)}`,
@@ -662,7 +662,7 @@ export const financeQuestions: NumericQuestion[] = [
             const tauC = rng.pick([0.25, 0.3]);
             const answer = (E / (E + D)) * rE + (D / (E + D)) * rD * (1 - tauC);
             return {
-                prompt: `Eigenkapital ${eur(E)} (Kosten ${pct(rE)}), Fremdkapital ${eur(D)} (Kosten ${pct(rD)}), Steuersatz ${pct(tauC * 100)}. Wie hoch ist der **WACC**?`,
+                prompt: `Equity ${eur(E)} (cost ${pct(rE)}), debt ${eur(D)} (cost ${pct(rD)}), tax rate ${pct(tauC * 100)}. What is the **WACC**?`,
                 given: { E: eur(E), D: eur(D), "r_E": pct(rE), "r_D": pct(rD), "τ_C": pct(tauC * 100) },
                 answer,
                 explanation: `WACC = E/(E+D)·r_E + D/(E+D)·r_D·(1−τ) = ${pct(answer)}`,
@@ -683,7 +683,7 @@ export const financeQuestions: NumericQuestion[] = [
             const tauC = rng.pick([0.25, 0.3]);
             const answer = betaE / (1 + (D / E) * (1 - tauC));
             return {
-                prompt: `Das verschuldete Beta beträgt ${n2(betaE)} bei ${eur(D)} Fremdkapital und ${eur(E)} Eigenkapital (Steuersatz ${pct(tauC * 100)}). Wie hoch ist das **unverschuldete Beta** (Hamada)?`,
+                prompt: `The levered beta is ${n2(betaE)} with ${eur(D)} of debt and ${eur(E)} of equity (tax rate ${pct(tauC * 100)}). What is the **unlevered beta** (Hamada)?`,
                 given: { "β_E": n2(betaE), D: eur(D), E: eur(E), "τ_C": pct(tauC * 100) },
                 answer,
                 explanation: `β_U = β_E / (1 + D/E·(1−τ)) = ${n2(answer)}`,
@@ -704,7 +704,7 @@ export const financeQuestions: NumericQuestion[] = [
             const E = rng.int(50, 300) * 1000;
             const answer = rU + (D / E) * (rU - rD);
             return {
-                prompt: `Unverschuldete Kapitalkosten ${pct(rU)}, Fremdkapitalkosten ${pct(rD)}, Fremdkapital ${eur(D)}, Eigenkapital ${eur(E)} (MM ohne Steuern). Wie hoch sind die **Eigenkapitalkosten des verschuldeten Unternehmens**?`,
+                prompt: `Unlevered cost of capital ${pct(rU)}, cost of debt ${pct(rD)}, debt ${eur(D)}, equity ${eur(E)} (Modigliani-Miller without taxes). What is the **cost of equity of the levered firm**?`,
                 given: { "r_U": pct(rU), "r_D": pct(rD), D: eur(D), E: eur(E) },
                 answer,
                 explanation: `r_E = r_U + D/E·(r_U − r_D) = ${pct(answer)}`,
@@ -727,7 +727,7 @@ export const financeQuestions: NumericQuestion[] = [
             const rB = rng.int(2, 14);
             const answer = wA * rA + wB * rB;
             return {
-                prompt: `Ein Portfolio besteht zu ${pct(wA * 100)} aus Asset A (Rendite ${pct(rA)}) und zu ${pct(wB * 100)} aus Asset B (Rendite ${pct(rB)}). Wie hoch ist die **Portfoliorendite**?`,
+                prompt: `A portfolio consists of ${pct(wA * 100)} asset A (return ${pct(rA)}) and ${pct(wB * 100)} asset B (return ${pct(rB)}). What is the **portfolio return**?`,
                 given: { "w_A": pct(wA * 100), "w_B": pct(wB * 100), "r_A": pct(rA), "r_B": pct(rB) },
                 answer,
                 explanation: `r_P = w_A·r_A + w_B·r_B = ${pct(answer)}`,
@@ -750,7 +750,7 @@ export const financeQuestions: NumericQuestion[] = [
             const varP = (wA * sA) ** 2 + (wB * sB) ** 2 + 2 * wA * wB * sA * sB * rho;
             const answer = Math.sqrt(varP);
             return {
-                prompt: `Portfolio aus zwei Assets: w_A = ${pct(wA * 100)}, σ_A = ${pct(sA)}, σ_B = ${pct(sB)}, Korrelation ρ = ${n2(rho)}. Wie hoch ist die **Standardabweichung des Portfolios**?`,
+                prompt: `Portfolio of two assets: w_A = ${pct(wA * 100)}, σ_A = ${pct(sA)}, σ_B = ${pct(sB)}, correlation ρ = ${n2(rho)}. What is the **standard deviation of the portfolio**?`,
                 given: { "w_A": pct(wA * 100), "w_B": pct(wB * 100), "σ_A": pct(sA), "σ_B": pct(sB), "ρ_AB": n2(rho) },
                 answer,
                 explanation: `σ_P = √(w_A²σ_A² + w_B²σ_B² + 2w_Aw_Bσ_Aσ_Bρ) = ${pct(answer)}`,
@@ -770,7 +770,7 @@ export const financeQuestions: NumericQuestion[] = [
             const rho = rng.float(-0.7, 0.6, 2);
             const answer = ((sB ** 2 - sA * sB * rho) / (sA ** 2 + sB ** 2 - 2 * sA * sB * rho)) * 100;
             return {
-                prompt: `σ_A = ${pct(sA)}, σ_B = ${pct(sB)}, ρ = ${n2(rho)}. Welches Gewicht **w_A** hat Asset A im Minimum-Varianz-Portfolio?`,
+                prompt: `σ_A = ${pct(sA)}, σ_B = ${pct(sB)}, ρ = ${n2(rho)}. What weight **w_A** does asset A have in the minimum-variance portfolio?`,
                 given: { "σ_A": pct(sA), "σ_B": pct(sB), "ρ_AB": n2(rho) },
                 answer,
                 explanation: `w_A* = (σ_B² − σ_Aσ_Bρ)/(σ_A² + σ_B² − 2σ_Aσ_Bρ) = ${pct(answer)}`,
@@ -790,7 +790,7 @@ export const financeQuestions: NumericQuestion[] = [
             const sP = rng.int(6, 28);
             const answer = (rP - rF) / sP;
             return {
-                prompt: `Portfoliorendite ${pct(rP)}, risikoloser Zins ${pct(rF)}, Standardabweichung ${pct(sP)}. Wie hoch ist die **Sharpe Ratio**?`,
+                prompt: `Portfolio return ${pct(rP)}, risk-free rate ${pct(rF)}, standard deviation ${pct(sP)}. What is the **Sharpe ratio**?`,
                 given: { "r_P": pct(rP), "r_f": pct(rF), "σ_P": pct(sP) },
                 answer,
                 explanation: `SR = (r_P − r_f)/σ_P = ${n2(answer)}`,
@@ -812,7 +812,7 @@ export const financeQuestions: NumericQuestion[] = [
             const d = rng.float(0.6, 0.9, 2);
             const answer = (1 + rRF / 100 - d) / (u - d);
             return {
-                prompt: `Einperiodiges Binomialmodell: Up-Faktor u = ${n2(u)}, Down-Faktor d = ${n2(d)}, risikoloser Zins ${pct(rRF)}. Wie hoch ist die **risikoneutrale Wahrscheinlichkeit p** für den Up-Zustand?`,
+                prompt: `One-period binomial model: up factor u = ${n2(u)}, down factor d = ${n2(d)}, risk-free rate ${pct(rRF)}. What is the **risk-neutral probability p** of the up state?`,
                 given: { u: n2(u), d: n2(d), "r_f": pct(rRF) },
                 answer,
                 explanation: `p = (1 + r_f − d)/(u − d) = ${n2(answer)}`,
@@ -837,7 +837,7 @@ export const financeQuestions: NumericQuestion[] = [
             const Cd = Math.max(S * d - K, 0);
             const answer = (p * Cu + (1 - p) * Cd) / (1 + rRF / 100);
             return {
-                prompt: `Aktienkurs heute ${eur(S)}, in einem Jahr entweder ×${n2(u)} oder ×${n2(d)}. Strike ${eur(K)}, risikoloser Zins ${pct(rRF)}. Wie hoch ist der **Wert des europäischen Calls**?`,
+                prompt: `The share price today is ${eur(S)}; in one year it is either ×${n2(u)} or ×${n2(d)}. Strike ${eur(K)}, risk-free rate ${pct(rRF)}. What is the **value of the European call**?`,
                 given: { "S₀": eur(S), K: eur(K), u: n2(u), d: n2(d), "r_f": pct(rRF) },
                 answer,
                 explanation: `p = ${n2(p)}; C_u = ${eur(Cu)}, C_d = ${eur(Cd)}; C₀ = (p·C_u + (1−p)·C_d)/(1+r_f) = ${eur(answer)}`,
@@ -859,8 +859,8 @@ export const financeQuestions: NumericQuestion[] = [
             const C = rng.float(4, 20, 2);
             const answer = C + K / (1 + r / 100) ** N - S;
             return {
-                prompt: `Put-Call-Parität: Call ${eur(C)}, Aktienkurs ${eur(S)}, Strike ${eur(K)}, Laufzeit ${N} Jahre, Zins ${pct(r)}. Wie hoch ist der **Put**?`,
-                given: { C: eur(C), "S₀": eur(S), K: eur(K), N: `${N} Jahre`, r: pct(r) },
+                prompt: `Put-call parity: call ${eur(C)}, share price ${eur(S)}, strike ${eur(K)}, term ${N} years, interest rate ${pct(r)}. What is the value of the **put**?`,
+                given: { C: eur(C), "S₀": eur(S), K: eur(K), N: `${N} years`, r: pct(r) },
                 answer,
                 explanation: `P = C + K/(1+r)^N − S = ${eur(answer)}`,
             };
@@ -885,8 +885,8 @@ export const financeQuestions: NumericQuestion[] = [
             const d2 = d1 - s * Math.sqrt(T);
             const answer = S * normCdf(d1) - K * Math.exp(-rr * T) * normCdf(d2);
             return {
-                prompt: `Black-Scholes: S₀ = ${eur(S)}, Strike ${eur(K)}, Volatilität ${pct(sigma)}, risikoloser Zins ${pct(r)}, Laufzeit ${n(T)} Jahre. Wie hoch ist der **Wert des europäischen Calls**?`,
-                given: { "S₀": eur(S), K: eur(K), σ: pct(sigma), r: pct(r), T: `${n(T)} Jahre` },
+                prompt: `Black-Scholes: S₀ = ${eur(S)}, strike ${eur(K)}, volatility ${pct(sigma)}, risk-free rate ${pct(r)}, term ${n(T)} years. What is the **value of the European call**?`,
+                given: { "S₀": eur(S), K: eur(K), σ: pct(sigma), r: pct(r), T: `${n(T)} years` },
                 answer,
                 explanation: `d₁ = ${n2(d1)}, d₂ = ${n2(d2)}; N(d₁) = ${n2(normCdf(d1))}, N(d₂) = ${n2(normCdf(d2))}; C = S·N(d₁) − K·e^(−rT)·N(d₂) = ${eur(answer)}`,
             };
@@ -907,8 +907,8 @@ export const financeQuestions: NumericQuestion[] = [
             const IP = rng.int(30, Pcum - 5);
             const answer = (BV * Pcum + IP) / (BV + 1);
             return {
-                prompt: `Kapitalerhöhung gegen Einlagen im Bezugsverhältnis ${BV}:1. Kurs vor der Kapitalerhöhung ${eur(Pcum)}, Ausgabepreis der jungen Aktien ${eur(IP)}. Wie hoch ist der **Kurs nach der Kapitalerhöhung (P_ex)**?`,
-                given: { Bezugsverhältnis: `${BV}:1`, "P_cum": eur(Pcum), Ausgabepreis: eur(IP) },
+                prompt: `A rights issue against contributions (Kapitalerhöhung gegen Einlagen) is carried out at a subscription ratio of ${BV}:1. The price before the rights issue is ${eur(Pcum)}, the issue price of the new shares is ${eur(IP)}. What is the **price after the rights issue (P_ex)**?`,
+                given: { "Subscription ratio": `${BV}:1`, "P_cum": eur(Pcum), "Issue price": eur(IP) },
                 answer,
                 explanation: `P_ex = (BV·P_cum + IP)/(BV + 1) = ${eur(answer)}`,
             };
@@ -927,8 +927,8 @@ export const financeQuestions: NumericQuestion[] = [
             const IP = rng.int(30, Pcum - 5);
             const answer = (Pcum - IP) / (BV + 1);
             return {
-                prompt: `Bezugsverhältnis ${BV}:1, Kurs vor Kapitalerhöhung ${eur(Pcum)}, Ausgabepreis ${eur(IP)}. Wie hoch ist der rechnerische Wert des **Bezugsrechts**?`,
-                given: { Bezugsverhältnis: `${BV}:1`, "P_cum": eur(Pcum), Ausgabepreis: eur(IP) },
+                prompt: `Subscription ratio ${BV}:1, price before the rights issue ${eur(Pcum)}, issue price ${eur(IP)}. What is the theoretical value of the **subscription right**?`,
+                given: { "Subscription ratio": `${BV}:1`, "P_cum": eur(Pcum), "Issue price": eur(IP) },
                 answer,
                 explanation: `BR = (P_cum − IP)/(BV + 1) = ${eur(answer)}`,
             };

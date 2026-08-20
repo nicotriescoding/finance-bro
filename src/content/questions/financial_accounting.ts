@@ -1,19 +1,22 @@
 import type { Question } from "@/lib/questions/types";
-import { eur, n2, pct } from "./_helpers";
+import { eur, n, n2, pct } from "./_helpers";
+
+/** Fixed amount in a static prompt - still routed through the formatter. */
+const INVOICE = eur(5000);
 
 export const financialAccountingQuestions: Question[] = [
     {
         id: "fa-bs-equation",
         subject: "financial_accounting", topic: "balance_sheet", difficulty: "very_easy", kind: "choice",
-        prompt: "Welche Aussage zur Bilanz ist korrekt?",
+        prompt: "Which statement about the balance sheet is correct?",
         choices: [
-            "Die Aktivseite zeigt die Mittelverwendung, die Passivseite die Mittelherkunft.",
-            "Die Aktivseite zeigt die Mittelherkunft, die Passivseite die Mittelverwendung.",
-            "Rückstellungen stehen auf der Aktivseite.",
-            "Das Eigenkapital ist Teil des Anlagevermögens.",
+            "The asset side shows the use of funds, the equity and liabilities side shows the source of funds.",
+            "The asset side shows the source of funds, the equity and liabilities side shows the use of funds.",
+            "Provisions are reported on the asset side.",
+            "Equity is part of non-current assets.",
         ],
         correct: 0,
-        explanation: "Aktiva = Vermögen (wofür wurden Mittel eingesetzt), Passiva = Kapital (woher kommen die Mittel).",
+        explanation: "Assets = what the funds were invested in; equity and liabilities = where the funds came from.",
     },
     {
         id: "fa-bs-equity",
@@ -24,10 +27,10 @@ export const financialAccountingQuestions: Question[] = [
             const fk = rng.int(100, 700) * 1000;
             const answer = av + uv - fk;
             return {
-                prompt: `Anlagevermögen ${eur(av)}, Umlaufvermögen ${eur(uv)}, gesamtes Fremdkapital ${eur(fk)}. Wie hoch ist das **Eigenkapital**?`,
-                given: { Anlagevermögen: eur(av), Umlaufvermögen: eur(uv), Fremdkapital: eur(fk) },
+                prompt: `Non-current assets ${eur(av)}, current assets ${eur(uv)}, total liabilities ${eur(fk)}. What is **equity**?`,
+                given: { "Non-current assets": eur(av), "Current assets": eur(uv), "Total liabilities": eur(fk) },
                 answer,
-                explanation: `EK = Vermögen − Schulden = ${eur(av + uv)} − ${eur(fk)} = ${eur(answer)}`,
+                explanation: `Equity = assets − liabilities = ${eur(av + uv)} − ${eur(fk)} = ${eur(answer)}`,
             };
         },
     },
@@ -42,38 +45,38 @@ export const financialAccountingQuestions: Question[] = [
             const sonstige = rng.int(10, 100) * 1000;
             const answer = umsatz - material - personal - afa - sonstige;
             return {
-                prompt: `Umsatzerlöse ${eur(umsatz)}, Materialaufwand ${eur(material)}, Personalaufwand ${eur(personal)}, Abschreibungen ${eur(afa)}, sonstige betriebliche Aufwendungen ${eur(sonstige)}. Wie hoch ist das **EBIT**?`,
-                given: { Umsatz: eur(umsatz), Material: eur(material), Personal: eur(personal), Abschreibungen: eur(afa), "sonst. Aufwand": eur(sonstige) },
+                prompt: `Revenue ${eur(umsatz)}, cost of materials ${eur(material)}, personnel expenses ${eur(personal)}, depreciation ${eur(afa)}, other operating expenses ${eur(sonstige)}. What is **EBIT**?`,
+                given: { Revenue: eur(umsatz), Materials: eur(material), Personnel: eur(personal), Depreciation: eur(afa), "Other expenses": eur(sonstige) },
                 answer,
-                explanation: `EBIT = Umsatz − alle betrieblichen Aufwendungen = ${eur(answer)}`,
+                explanation: `EBIT = revenue − all operating expenses = ${eur(answer)}`,
             };
         },
     },
     {
         id: "fa-booking-bank",
         subject: "financial_accounting", topic: "bookings", difficulty: "easy", kind: "choice",
-        prompt: "Ein Kunde begleicht eine offene Rechnung über 5.000 € per Banküberweisung. Wie lautet der Buchungssatz?",
+        prompt: `A customer settles an outstanding invoice of ${INVOICE} by bank transfer. What is the journal entry?`,
         choices: [
-            "Bank an Forderungen aus LuL 5.000 €",
-            "Forderungen aus LuL an Bank 5.000 €",
-            "Bank an Umsatzerlöse 5.000 €",
-            "Umsatzerlöse an Forderungen aus LuL 5.000 €",
+            `Debit bank / credit trade receivables ${INVOICE}`,
+            `Debit trade receivables / credit bank ${INVOICE}`,
+            `Debit bank / credit revenue ${INVOICE}`,
+            `Debit revenue / credit trade receivables ${INVOICE}`,
         ],
         correct: 0,
-        explanation: "Aktivtausch: Der Bankbestand steigt (Soll), die Forderung geht unter (Haben). Der Erlös wurde bereits bei Rechnungsstellung gebucht.",
+        explanation: "Asset swap: the bank balance rises (debit) and the receivable is derecognized (credit). The revenue was already recorded when the invoice was issued.",
     },
     {
         id: "fa-booking-type",
         subject: "financial_accounting", topic: "bookings", difficulty: "medium", kind: "choice",
-        prompt: "Ein Unternehmen tilgt ein Bankdarlehen aus vorhandenen liquiden Mitteln. Um welchen Geschäftsvorfall handelt es sich?",
+        prompt: "A company repays a bank loan out of its existing cash. Which type of transaction is this?",
         choices: [
-            "Bilanzverkürzung (Aktiv-Passiv-Minderung)",
-            "Bilanzverlängerung (Aktiv-Passiv-Mehrung)",
-            "Aktivtausch",
-            "Passivtausch",
+            "Balance sheet contraction — assets and liabilities both decrease",
+            "Balance sheet extension — assets and liabilities both increase",
+            "Asset swap — one asset replaces another",
+            "Liability swap — one item within equity and liabilities replaces another",
         ],
         correct: 0,
-        explanation: "Bank (Aktiva) sinkt und Verbindlichkeit (Passiva) sinkt — die Bilanzsumme wird kürzer.",
+        explanation: "The bank balance (an asset) falls and the liability falls with it — the balance sheet total shrinks.",
     },
     {
         id: "fa-depreciation-linear",
@@ -84,10 +87,10 @@ export const financialAccountingQuestions: Question[] = [
             const nd = rng.int(3, 12);
             const answer = (ak - rest) / nd;
             return {
-                prompt: `Eine Maschine kostet ${eur(ak)}, hat eine Nutzungsdauer von ${nd} Jahren und einen Restwert von ${eur(rest)}. Wie hoch ist die **lineare jährliche Abschreibung**?`,
-                given: { Anschaffungskosten: eur(ak), Nutzungsdauer: `${nd} Jahre`, Restwert: eur(rest) },
+                prompt: `A machine costs ${eur(ak)}, has a useful life of ${nd} years and a residual value of ${eur(rest)}. What is the **annual straight-line depreciation**?`,
+                given: { "Acquisition cost": eur(ak), "Useful life": `${nd} years`, "Residual value": eur(rest) },
                 answer,
-                explanation: `AfA = (AK − Restwert)/ND = ${eur(answer)}`,
+                explanation: `Depreciation = (acquisition cost − residual value) / useful life = ${eur(answer)}`,
             };
         },
     },
@@ -101,51 +104,51 @@ export const financialAccountingQuestions: Question[] = [
             const bookValue = ak * (1 - rate / 100) ** (year - 1);
             const answer = bookValue * (rate / 100);
             return {
-                prompt: `Eine Anlage mit Anschaffungskosten von ${eur(ak)} wird **geometrisch-degressiv** mit ${pct(rate)} abgeschrieben. Wie hoch ist die Abschreibung im **Jahr ${year}**?`,
-                given: { Anschaffungskosten: eur(ak), Abschreibungssatz: pct(rate), Jahr: String(year) },
+                prompt: `An asset with an acquisition cost of ${eur(ak)} is depreciated on a **declining-balance** basis at ${pct(rate)}. What is the depreciation charge in **year ${year}**?`,
+                given: { "Acquisition cost": eur(ak), "Depreciation rate": pct(rate), Year: String(year) },
                 answer,
-                explanation: `Restbuchwert zu Beginn Jahr ${year} = ${eur(bookValue)}; AfA = ${pct(rate)} davon = ${eur(answer)}`,
+                explanation: `Carrying amount at the start of year ${year} = ${eur(bookValue)}; depreciation = ${pct(rate)} of that = ${eur(answer)}`,
             };
         },
     },
     {
         id: "fa-inventory-lifo",
         subject: "financial_accounting", topic: "inventory", difficulty: "hard", kind: "choice",
-        prompt: "Bei steigenden Einkaufspreisen führt das LIFO-Verfahren im Vergleich zu FIFO zu …",
+        prompt: "When purchase prices are rising, LIFO compared with FIFO leads to …",
         choices: [
-            "einem niedrigeren ausgewiesenen Gewinn und einem niedrigeren Vorratsbestand.",
-            "einem höheren Gewinn und einem höheren Vorratsbestand.",
-            "identischen Ergebnissen wie FIFO.",
-            "einem höheren Gewinn bei gleichem Vorratsbestand.",
+            "a lower reported profit and a lower inventory carrying amount.",
+            "a higher profit and a higher inventory carrying amount.",
+            "results identical to FIFO.",
+            "a higher profit with an unchanged inventory carrying amount.",
         ],
         correct: 0,
-        explanation: "LIFO verbraucht zuerst die teuren jüngsten Zugänge → höherer Materialaufwand → niedrigerer Gewinn; im Lager bleiben die alten, günstigen Bestände.",
+        explanation: "LIFO expenses the recent, expensive purchases first → higher cost of materials → lower profit; the old, cheaper units stay in inventory.",
     },
     {
         id: "fa-inventory-niederstwert",
         subject: "financial_accounting", topic: "inventory", difficulty: "medium", kind: "choice",
-        prompt: "Was verlangt das strenge Niederstwertprinzip für das Umlaufvermögen nach HGB?",
+        prompt: "What does the strict lower of cost or market principle require for current assets under HGB (German GAAP)?",
         choices: [
-            "Ansatz zum niedrigeren Wert aus Anschaffungskosten und beizulegendem Wert am Abschlussstichtag — zwingend.",
-            "Ansatz immer zu Anschaffungskosten.",
-            "Ansatz zum höheren der beiden Werte.",
-            "Ein Wahlrecht zwischen beiden Werten.",
+            "Measurement at the lower of acquisition cost and the attributable value (beizulegender Wert) at the reporting date — mandatory.",
+            "Measurement always at acquisition cost.",
+            "Measurement at the higher of the two values.",
+            "An accounting option between the two values.",
         ],
         correct: 0,
-        explanation: "§ 253 Abs. 4 HGB: Beim Umlaufvermögen ist die Abwertung zwingend (streng), beim Anlagevermögen nur bei dauerhafter Wertminderung (gemildert).",
+        explanation: "§ 253 Abs. 4 HGB: for current assets the write-down is mandatory (strict principle); for non-current assets it is required only if the impairment is expected to be permanent (moderate principle).",
     },
     {
         id: "fa-provisions",
         subject: "financial_accounting", topic: "provisions", difficulty: "medium", kind: "choice",
-        prompt: "Wann ist eine Rückstellung zu bilden?",
+        prompt: "When must a provision be recognized?",
         choices: [
-            "Bei einer Verpflichtung gegenüber Dritten, die dem Grunde nach wahrscheinlich, in Höhe oder Fälligkeit aber ungewiss ist.",
-            "Bei jeder Verbindlichkeit, deren Betrag feststeht.",
-            "Nur wenn ein Vertrag unterschrieben wurde.",
-            "Wenn ein zukünftiger Gewinn erwartet wird.",
+            "For an obligation towards a third party that is probable in principle but uncertain in amount or timing.",
+            "For every liability whose amount is certain.",
+            "Only once a contract has been signed.",
+            "When a future profit is expected.",
         ],
         correct: 0,
-        explanation: "Rückstellungen sind ungewisse Verbindlichkeiten. Steht der Betrag fest, handelt es sich um eine Verbindlichkeit.",
+        explanation: "Provisions are liabilities that are uncertain in amount or timing. If the amount is fixed, the item is an ordinary liability.",
     },
     {
         id: "fa-equity-change",
@@ -157,10 +160,10 @@ export const financialAccountingQuestions: Question[] = [
             const einlage = rng.int(0, 100) * 1000;
             const answer = ekStart + gewinn - dividende + einlage;
             return {
-                prompt: `Eigenkapital zu Jahresbeginn ${eur(ekStart)}, Jahresüberschuss ${eur(gewinn)}, Dividendenausschüttung ${eur(dividende)}, Kapitaleinlage ${eur(einlage)}. Wie hoch ist das **Eigenkapital zum Jahresende**?`,
-                given: { "EK Anfang": eur(ekStart), Jahresüberschuss: eur(gewinn), Dividende: eur(dividende), Einlage: eur(einlage) },
+                prompt: `Equity at the start of the year ${eur(ekStart)}, net income for the year ${eur(gewinn)}, dividend distribution ${eur(dividende)}, capital contribution ${eur(einlage)}. What is **equity at the end of the year**?`,
+                given: { "Opening equity": eur(ekStart), "Net income": eur(gewinn), Dividend: eur(dividende), Contribution: eur(einlage) },
                 answer,
-                explanation: `EK_Ende = EK_Anfang + JÜ − Ausschüttung + Einlagen = ${eur(answer)}`,
+                explanation: `Closing equity = opening equity + net income − distribution + contributions = ${eur(answer)}`,
             };
         },
     },
@@ -171,27 +174,27 @@ export const financialAccountingQuestions: Question[] = [
             const ju = rng.int(50, 400) * 1000;
             const afa = rng.int(20, 150) * 1000;
             const rueck = rng.int(-40, 60) * 1000;
-            const vorrat = rng.int(-60, 60) * 1000; // + = Aufbau
+            const vorrat = rng.int(-60, 60) * 1000; // + = build-up
             const answer = ju + afa + rueck - vorrat;
             return {
-                prompt: `Indirekte Ermittlung: Jahresüberschuss ${eur(ju)}, Abschreibungen ${eur(afa)}, Zunahme der Rückstellungen ${eur(rueck)}, Zunahme der Vorräte ${eur(vorrat)}. Wie hoch ist der **operative Cashflow**?`,
-                given: { Jahresüberschuss: eur(ju), Abschreibungen: eur(afa), "Δ Rückstellungen": eur(rueck), "Δ Vorräte": eur(vorrat) },
+                prompt: `Indirect method: net income for the year ${eur(ju)}, depreciation ${eur(afa)}, increase in provisions ${eur(rueck)}, increase in inventory ${eur(vorrat)}. What is the **operating cash flow**?`,
+                given: { "Net income": eur(ju), Depreciation: eur(afa), "Δ Provisions": eur(rueck), "Δ Inventory": eur(vorrat) },
                 answer,
-                explanation: `CF = JÜ + AfA + ΔRückstellungen − ΔVorräte = ${eur(answer)} (Vorratsaufbau bindet Liquidität)`,
+                explanation: `CF = net income + depreciation + Δprovisions − Δinventory = ${eur(answer)} (building up inventory ties up cash)`,
             };
         },
     },
     {
         id: "fa-hgb-ifrs",
         subject: "financial_accounting", topic: "hgb_ifrs", difficulty: "medium", kind: "choice",
-        prompt: "Welcher Grundsatz prägt das HGB stärker als die IFRS?",
+        prompt: "Which principle shapes HGB (German GAAP) more strongly than IFRS?",
         choices: [
-            "Das Vorsichtsprinzip zum Gläubigerschutz.",
-            "Die Fair-Value-Bewertung.",
-            "Die Ausrichtung auf Investoreninformation (decision usefulness).",
-            "Die Aktivierungspflicht für selbst geschaffene immaterielle Vermögenswerte.",
+            "The prudence principle, serving creditor protection.",
+            "Fair value measurement.",
+            "The orientation towards investor information (decision usefulness).",
+            "The obligation to capitalize internally generated intangible assets.",
         ],
         correct: 0,
-        explanation: "HGB ist gläubigerschutz- und ausschüttungsorientiert (Vorsichtsprinzip, Realisationsprinzip); IFRS sind investorenorientiert und erlauben mehr Fair-Value-Bewertung.",
+        explanation: "HGB is geared towards creditor protection and distributable profit (prudence principle, realization principle); IFRS is investor-oriented and permits far more fair value measurement.",
     },
 ];
