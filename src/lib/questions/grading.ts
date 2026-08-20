@@ -15,6 +15,10 @@ const TOLERANCE: Record<Unit, [number, number]> = {
     units: [0.005, 0.5],
 };
 
+/**
+ * Stays German: these render glued to a number inside a German question, e.g.
+ * "Korrekte Antwort: 3,50 Jahre" under a prompt that asked "Wie viele Jahre …".
+ */
 export const UNIT_SUFFIX: Record<Unit, string> = {
     EUR: "€",
     percent: "%",
@@ -75,20 +79,24 @@ export function formatAnswer(value: number, unit: Unit): string {
     return suffix ? `${n} ${suffix}` : n;
 }
 
-/** Human-readable hint about what the grader expects, shown in the input. */
+/**
+ * Human-readable hint about what the grader expects, shown in the input.
+ * English (UI chrome) but with German example numbers, because the input is
+ * parsed de-DE and the question above it is written in German.
+ */
 export function unitHint(unit: Unit): string {
     switch (unit) {
         case "EUR":
-            return "Antwort in € (z. B. 1234,56)";
+            return "Answer in € (e.g. 1234,56)";
         case "percent":
-            return "Antwort in % (z. B. 8,24 für 8,24 %)";
+            return "Answer in % (e.g. 8,24 for 8,24 %)";
         case "years":
-            return "Antwort in Jahren (z. B. 3,5)";
+            return "Answer in years (e.g. 3,5)";
         case "units":
-            return "Antwort in Stück";
+            return "Answer in units";
         case "ratio":
-            return "Antwort als Faktor (z. B. 1,45)";
+            return "Answer as a factor (e.g. 1,45)";
         default:
-            return "Deine Antwort";
+            return "Your answer";
     }
 }

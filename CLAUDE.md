@@ -3,8 +3,20 @@
 BWL-Klausurtrainer, live at finance-bro.de. Next.js 16 (App Router) · React 19 ·
 Tailwind 4 · TypeScript, deployed on Vercel from `main`.
 
-UI text and all question content is **German**. Code, comments, commit messages
-and anything you write to Nico are English.
+## Language split
+
+**English**: UI chrome (nav, buttons, labels, input hints, loading and feedback
+strings), code, comments, commit messages, docs, and anything you write to Nico.
+
+**German**: question prompts, `given` labels and explanations; subject and topic
+names in `src/content/subjects.ts`; everything SEO — `metadata` in
+`layout.tsx` and `quiz/page.tsx`, `opengraph-image.tsx`, `lang="de"`; the de-DE
+number formatting and the unit suffixes in `grading.ts` (`€`, `Jahre`, `Stück`),
+which render glued to a number inside a German question.
+
+The rule of thumb: if a student *reads it to answer the question*, or if Google
+reads it, it is German. If it is the app talking to the user, it is English.
+`npm run smoke` asserts both halves.
 
 ## Commands
 

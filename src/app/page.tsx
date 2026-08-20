@@ -7,14 +7,14 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 py-12">
             <section className="mb-12 text-center">
                 <p className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-800">
-                    {ALL_QUESTIONS.length} Aufgaben · komplett offline verfügbar
+                    {ALL_QUESTIONS.length} questions · works fully offline
                 </p>
                 <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
                     finance-bro 💸
                 </h1>
                 <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-                    Klausurtraining für BWL. Fach wählen, Themen abhaken, losrechnen — mit
-                    Sofort-Feedback, Rechenweg und BroDollars.
+                    Exam training for German business administration. Pick a subject, tick the
+                    topics, start solving — with instant feedback, a worked solution and BroDollars.
                 </p>
             </section>
 
@@ -37,10 +37,10 @@ export default function Home() {
                             </p>
                             <div className="mt-4 flex items-center justify-between text-sm">
                                 <span className="text-slate-500">
-                                    {subject.topics.length} Themen · {count} Aufgaben
+                                    {subject.topics.length} topics · {count} questions
                                 </span>
                                 <span className="font-semibold text-emerald-700 transition group-hover:translate-x-0.5">
-                                    Starten →
+                                    Start →
                                 </span>
                             </div>
                         </Link>

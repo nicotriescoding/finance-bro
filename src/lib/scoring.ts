@@ -1,15 +1,15 @@
 // src/lib/scoring.ts
 
-// Zeitlimits pro Schwierigkeit in Sekunden
+// Time limit per difficulty, in seconds
 export const difficultyTimes = {
-  very_easy: 60,     // 1 Min
-  easy: 120,         // 2 Min
-  medium: 210,       // 3.5 Min
-  hard: 300,         // 5 Min
-  very_hard: 420,    // 7 Min
+  very_easy: 60,     // 1 min
+  easy: 120,         // 2 min
+  medium: 210,       // 3.5 min
+  hard: 300,         // 5 min
+  very_hard: 420,    // 7 min
 } as const;
 
-// Basis-Punkte pro Schwierigkeit
+// Base points per difficulty
 const basePoints = {
   very_easy: 50,
   easy: 100,
@@ -21,12 +21,12 @@ const basePoints = {
 export type Difficulty = keyof typeof difficultyTimes;
 
 /**
- * Berechnet Punkte abhängig von Schwierigkeit und benötigter Zeit.
+ * Points for one question, scaled by difficulty and how long it took.
  *
- * @param difficulty Schwierigkeit der Aufgabe
- * @param timeSpent benötigte Zeit in Sekunden
- * @param timeLimit maximal erlaubte Zeit in Sekunden
- * @returns Punkte für diese Aufgabe
+ * @param difficulty difficulty of the question
+ * @param timeSpent seconds actually spent
+ * @param timeLimit seconds allowed
+ * @returns points awarded for this question
  */
 export function calculateScore(
     difficulty: Difficulty,
@@ -35,14 +35,14 @@ export function calculateScore(
 ): number {
   const maxPoints = basePoints[difficulty] ?? 100;
 
-  // falls mehr Zeit als timeLimit gebraucht → minimale Punkte (10% der Basis)
+  // over the limit -> floor at 10% of base
   if (timeSpent >= timeLimit) {
     return Math.floor(maxPoints * 0.1);
   }
 
-  // Linearer Abzug: je schneller, desto mehr Punkte
-  const ratio = 1 - timeSpent / timeLimit; // 1 = perfekt, 0 = knapp geschafft
-  const score = maxPoints * (0.3 + 0.7 * ratio); // mind. 30% der Punkte
+  // Linear decay: the faster, the more points
+  const ratio = 1 - timeSpent / timeLimit; // 1 = instant, 0 = just made it
+  const score = maxPoints * (0.3 + 0.7 * ratio); // never below 30% of base
 
   return Math.round(score);
 }

@@ -8,14 +8,13 @@ export default function LanguagePage() {
                 Language Settings 🎤
             </h1>
             <p className="text-lg text-gray-600 max-w-lg">
-                Bald kannst du hier deine bevorzugte Sprache auswählen 🌍.
+                Soon you will be able to pick your preferred language here 🌍.
                 <br />
-                (Englisch, Deutsch, Bro-Slang, oder <span className="italic">Consultantish</span>.)
+                (English, German, Bro-Slang, or <span className="italic">Consultantish</span>.)
             </p>
             <div className="mt-6 text-gray-400 italic">
-                (Multilingual Support wird gerade implementiert 🧠)
+                (Multilingual support is being implemented 🧠)
             </div>
         </div>
     );
 }
-

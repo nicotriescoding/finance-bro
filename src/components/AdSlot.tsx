@@ -13,14 +13,14 @@ export default function AdSlot({ title, imgUrl, linkUrl }: AdSlotProps) {
                 <a href={linkUrl} target="_blank" rel="noopener noreferrer">
                     <img
                         src={imgUrl}
-                        alt={title || "Anzeige"}
+                        alt={title || "Advertisement"}
                         className="max-h-[200px] object-contain mx-auto"
                     />
                 </a>
             ) : (
                 <>
-                    <p className="text-gray-500">🚀 Werbung</p>
-                    <p className="text-sm text-gray-400">Hier könnte deine Anzeige stehen</p>
+                    <p className="text-gray-500">🚀 Advertisement</p>
+                    <p className="text-sm text-gray-400">Your ad could be here</p>
                 </>
             )}
         </div>

@@ -94,7 +94,21 @@ try {
     }
     check(
         "/ renders server-side (no empty loading shell)",
-        homeHtml.includes("Aufgaben") && !/^\s*Loading\.\.\.\s*$/m.test(homeHtml)
+        homeHtml.includes("questions") && !/^\s*Loading\.\.\.\s*$/m.test(homeHtml)
+    );
+    // The UI chrome is English, the question content is German. Both halves must
+    // survive: an accidental full translation would take the German SEO copy with it.
+    check(
+        "/ ships English UI chrome",
+        homeHtml.includes("works fully offline") && homeHtml.includes("topics")
+    );
+    check(
+        "/ keeps the German subject taxonomy",
+        homeHtml.includes("Zinsen") || homeHtml.includes("Kapitalkosten")
+    );
+    check(
+        "/ keeps the German meta description",
+        /<meta name="description" content="Kostenloser Klausurtrainer/.test(homeHtml)
     );
 
     // --- dark-mode regression guard -------------------------------------

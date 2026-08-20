@@ -26,7 +26,7 @@ export default function Button({
         <button
             onClick={onClick}
             className={`${base} ${variants[variant]} ${className || ""}`}
-            //disabled={disabled} diese werden nicht benötigt
+            //disabled={disabled} not needed here
         >
             {children}
         </button>

@@ -14,7 +14,7 @@ export default function Scoreboard({score}: ScoreboardProps) {
     const {level, progress, nextRequired} = useLevel(score);
     const prevLevel = usePrevious(level);
 
-    // Detect Level-Up
+    // Detect level-up
     const leveledUp = prevLevel !== undefined && level > prevLevel;
 
     return (

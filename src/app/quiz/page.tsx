@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function QuizPage() {
     return (
-        <Suspense fallback={<div className="p-10 text-center text-slate-500">Lädt…</div>}>
+        <Suspense fallback={<div className="p-10 text-center text-slate-500">Loading…</div>}>
             <QuizClient />
         </Suspense>
     );

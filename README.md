@@ -1,65 +1,86 @@
 # finance-bro
 
-Klausurtrainer für BWL — [finance-bro.de](https://www.finance-bro.de)
+Exam trainer for German business-administration students — [finance-bro.de](https://www.finance-bro.de)
 
-Next.js 16 (App Router) · React 19 · Tailwind 4 · TypeScript. **Keine Datenbank, kein Backend.**
+Next.js 16 (App Router) · React 19 · Tailwind 4 · TypeScript. **No database, no backend.**
 
-## Warum keine Datenbank
+Working on this repo? Read [CLAUDE.md](./CLAUDE.md) for the hard rules and commands,
+and [BACKLOG.md](./BACKLOG.md) for what is open. This file explains the domain: how
+questions are written and how answers are graded.
 
-Die Aufgaben lagen früher in einer Supabase-Tabelle (`ivfall`) und wurden beim Seitenaufruf
-clientseitig nachgeladen. Sobald das Supabase-Projekt pausierte (Free Tier pausiert nach
-7 Tagen Inaktivität), lieferte die API 503 und die Seite blieb dauerhaft auf `Loading...`
-stehen. Der komplette Aufgabenpool liegt jetzt als typisiertes TypeScript im Bundle —
-die Seite kann nicht mehr wegen eines schlafenden Backends ausfallen.
+## Language split
 
-## Struktur
+| Layer | Language | Why |
+| --- | --- | --- |
+| UI chrome — nav, buttons, labels, input hints | English | |
+| Question prompts, `given` labels, explanations | German | The exams are German |
+| Subject and topic names (`src/content/subjects.ts`) | German | They are the course names |
+| Metadata, keywords, OG image, `lang="de"` | German | The audience searches in German |
+| Number formatting and unit suffixes (`€`, `Jahre`, `Stück`) | German | They sit inside German questions |
+| Code, comments, commit messages | English | |
+
+`npm run smoke` asserts both halves so a future full translation can't silently
+take the German SEO copy with it.
+
+## Why no database
+
+The questions used to live in a Supabase table (`ivfall`) and were fetched client-side
+on page load. As soon as the Supabase project paused — the free tier pauses after 7 days
+of inactivity — the API returned 503 and the page sat on `Loading...` forever. The whole
+question pool is now typed TypeScript in the bundle, so the site cannot be taken down by
+a sleeping backend.
+
+## Layout
 
 ```
 src/
   content/
-    subjects.ts              Fächer + Themen (die Filter im Quiz werden daraus generiert)
+    subjects.ts              Subjects + topics (the quiz filters are generated from this)
     questions/
-      index.ts               Registry + Filter-Helfer
+      index.ts               Registry + filter helpers
       finance.ts             Investment & Financial Management
-      econ1.ts econ2.ts      VWL
+      econ1.ts econ2.ts      Economics
       financial_accounting.ts
       cost_accounting.ts
       entrepreneurship.ts
       marketing.ts
-      _helpers.ts            Zahlformatierung (de-DE), Normalverteilung, NPV, IRR, Duration
+      _helpers.ts            de-DE number formatting, normal CDF, NPV, IRR, duration
   lib/questions/
-    types.ts                 Question-Typen (numeric | choice)
+    types.ts                 Question types (numeric | choice)
     rng.ts                   Seeded RNG (mulberry32)
-    engine.ts                Seed -> konkrete Aufgabe
-    grading.ts               Toleranzprüfung, Einheiten, deutsche Zahleneingabe
+    engine.ts                Seed -> concrete question
+    grading.ts               Tolerance check, units, German number input
   components/quiz/           TopicSelector, QuestionCard, QuizClient
+scripts/
+  verify-questions.ts        Builds every question against 200 seeds
+  smoke.mjs                  Boots the production build and asserts every route
 ```
 
-## Aufgaben hinzufügen
+## Adding questions
 
-Eine Aufgabe ist ein Objekt in der Datei des jeweiligen Fachs. `topic` muss eine Topic-ID
-aus `content/subjects.ts` sein.
+A question is an object in the bank for its subject. `topic` must be a topic id from
+`content/subjects.ts`. The full rules live in `.claude/rules/questions.md`.
 
-**Multiple Choice** (Klausurformat):
+**Multiple choice** (exam format):
 
 ```ts
 {
-    id: "fa-neue-frage",              // global eindeutig
+    id: "fa-neue-frage",                // globally unique
     subject: "financial_accounting",
     topic: "bookings",
     difficulty: "medium",
     kind: "choice",
-    source: "TUM Endterm WS24/25, A3",  // optional, wird als Badge angezeigt
+    source: "TUM Endterm WS24/25, A3",  // optional, rendered as a badge
     prompt: "Frage …",
     choices: ["richtig", "falsch A", "falsch B", "falsch C"],
-    correct: 0,                        // Index, oder [0, 2] für Mehrfachauswahl
+    correct: 0,                         // index, or [0, 2] for multi-select
     explanation: "Begründung …",
 }
 ```
 
-Die Optionen werden im Quiz gemischt — die richtige Antwort darf ruhig immer an Index 0 stehen.
+Choices are shuffled at runtime, so the correct answer may sit at index 0.
 
-**Rechenaufgabe** (Zahlen werden pro Durchlauf neu gewürfelt):
+**Calculation** (numbers are redrawn every run):
 
 ```ts
 {
@@ -68,7 +89,7 @@ Die Optionen werden im Quiz gemischt — die richtige Antwort darf ruhig immer a
     topic: "contribution_margin",
     difficulty: "easy",
     kind: "numeric",
-    unit: "EUR",                       // EUR | percent | ratio | years | number | units
+    unit: "EUR",                        // EUR | percent | ratio | years | number | units
     build: (rng) => {
         const fix = rng.int(20, 300) * 1000;
         const db  = rng.int(10, 90);
@@ -82,30 +103,30 @@ Die Optionen werden im Quiz gemischt — die richtige Antwort darf ruhig immer a
 }
 ```
 
-`prompt` und `answer` entstehen aus demselben Zug des seeded RNG — die angezeigten Zahlen
-und die bewertete Lösung können nicht auseinanderlaufen.
+`prompt` and `answer` come from the same draw of the seeded RNG, so the numbers on
+screen and the graded solution cannot drift apart.
 
-## Bewertung
+## Grading
 
-`unit` steuert die Toleranz. Gerundete Zwischenschritte werden akzeptiert:
+`unit` sets the tolerance. Rounded intermediate steps still count as correct:
 
-| Einheit | relativ | Mindesttoleranz |
+| Unit | Relative | Absolute floor |
 |---------|---------|-----------------|
-| EUR     | 0,5 %   | 0,02 €          |
-| percent | 1 %     | 0,05 pp         |
-| ratio   | 1 %     | 0,005           |
-| years   | 1 %     | 0,02            |
-| units   | 0,5 %   | 0,5 Stück       |
+| EUR     | 0.5 %   | 0.02 €          |
+| percent | 1 %     | 0.05 pp         |
+| ratio   | 1 %     | 0.005           |
+| years   | 1 %     | 0.02            |
+| units   | 0.5 %   | 0.5 units       |
 
-Eingaben werden deutsch geparst: `1.234,56`, `1234,56`, `1234.56`, `12,5 %`, `€1.200`.
+Input is parsed as German: `1.234,56`, `1234,56`, `1234.56`, `12,5 %`, `€1.200`.
 
-## Befehle
+## Commands
 
 ```bash
-npm run dev        # Entwicklung
-npm run build      # Produktionsbuild
-npm run typecheck  # tsc --noEmit
-npm run verify     # baut jede Aufgabe mit 200 Seeds, prüft auf NaN/Infinity/Platzhalter
+npm run dev        # dev server on :3000
+npm run check      # the gate: typecheck + verify + build + route smoke test
+npm run verify     # builds every question against 200 seeds
+npm run smoke      # boots the production build and asserts every route
 ```
 
-`npm run verify` vor jedem Commit an den Aufgaben laufen lassen.
+Run `npm run check` before every commit.

@@ -21,11 +21,11 @@ export default function LevelUpAnimation({ trigger, duration = 2000, onDone }: P
         if (trigger) {
             setActive(true);
 
-            // Erzeuge 8 zufällige Geldscheine
+            // Spawn 8 random banknotes
             const generated = Array.from({ length: 8 }).map((_, i) => ({
                 id: i,
-                left: `${Math.random() * 80 + 10}%`, // irgendwo zwischen 10% und 90%
-                delay: Math.random() * 0.5, // Verzögerung bis Start
+                left: `${Math.random() * 80 + 10}%`, // somewhere between 10% and 90%
+                delay: Math.random() * 0.5, // stagger the start
             }));
             setEmojis(generated);
 

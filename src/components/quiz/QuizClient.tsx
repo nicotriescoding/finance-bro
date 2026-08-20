@@ -112,7 +112,7 @@ export default function QuizClient() {
                 />
 
                 <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <h2 className="mb-3 text-lg font-semibold text-slate-900">Länge</h2>
+                    <h2 className="mb-3 text-lg font-semibold text-slate-900">Length</h2>
                     <div className="flex flex-wrap gap-2">
                         {LENGTHS.map((l) => (
                             <button
@@ -125,7 +125,7 @@ export default function QuizClient() {
                                         : "border-slate-300 text-slate-700 hover:bg-slate-50"
                                 }`}
                             >
-                                {l} Aufgaben
+                                {l} questions
                             </button>
                         ))}
                     </div>
@@ -134,8 +134,8 @@ export default function QuizClient() {
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
                     <p className="text-sm text-slate-600">
                         {pool.length > 0
-                            ? `${pool.length} Aufgaben im gewählten Pool`
-                            : "Wähle mindestens ein Thema aus."}
+                            ? `${pool.length} questions in the selected pool`
+                            : "Select at least one topic."}
                     </p>
                     <button
                         type="button"
@@ -143,7 +143,7 @@ export default function QuizClient() {
                         disabled={pool.length === 0}
                         className="rounded-xl bg-emerald-600 px-8 py-3 font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-slate-300"
                     >
-                        Los geht&apos;s
+                        Start
                     </button>
                 </div>
             </div>
@@ -157,9 +157,9 @@ export default function QuizClient() {
             <div className="mx-auto max-w-2xl px-4 py-16 text-center">
                 <p className="text-6xl">{pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚"}</p>
                 <h1 className="mt-4 text-3xl font-bold text-slate-900">
-                    {correctCount} von {session.length} richtig
+                    {correctCount} of {session.length} correct
                 </h1>
-                <p className="mt-2 text-lg text-slate-600">{pct} % Trefferquote</p>
+                <p className="mt-2 text-lg text-slate-600">{pct} % hit rate</p>
 
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                     <button
@@ -167,20 +167,20 @@ export default function QuizClient() {
                         onClick={startSession}
                         className="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-500"
                     >
-                        Nochmal
+                        Again
                     </button>
                     <button
                         type="button"
                         onClick={() => setSession(null)}
                         className="rounded-xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
                     >
-                        Themen ändern
+                        Change topics
                     </button>
                     <Link
                         href="/"
                         className="rounded-xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
                     >
-                        Fach wechseln
+                        Change subject
                     </Link>
                 </div>
             </div>
@@ -198,7 +198,7 @@ export default function QuizClient() {
                     <div className="mb-4">
                         <div className="mb-2 flex items-center justify-between text-sm text-slate-600">
                             <span>
-                                Aufgabe {index + 1} von {session.length}
+                                Question {index + 1} of {session.length}
                             </span>
                             <span>{Math.floor(elapsedMs / 1000)} s</span>
                         </div>
@@ -226,7 +226,7 @@ export default function QuizClient() {
                         }}
                         className="mt-4 text-sm text-slate-500 underline underline-offset-4 hover:text-slate-700"
                     >
-                        Session abbrechen
+                        End session
                     </button>
                 </div>
 
@@ -235,7 +235,7 @@ export default function QuizClient() {
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm shadow-sm">
                         <p className="font-semibold text-slate-900">{subject.emoji} {subject.short}</p>
                         <p className="mt-1 text-slate-600">
-                            {correctCount} richtig · {answeredCount - correctCount} falsch
+                            {correctCount} correct · {answeredCount - correctCount} wrong
                         </p>
                     </div>
                 </aside>

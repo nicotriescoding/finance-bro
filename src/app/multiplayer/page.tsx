@@ -8,13 +8,13 @@ export default function MultiplayerPage() {
                 Multiplayer 🥋
             </h1>
             <p className="text-lg text-gray-600 max-w-lg">
-                Du bist aktuell <span className="font-bold text-red-500">arbeitslos</span> 🫠.
+                You are currently <span className="font-bold text-red-500">unemployed</span> 🫠.
                 <br />
-                Erhöhe erst deinen <span className="font-semibold text-blue-600">Corporate Rank</span>,
-                bevor du von einem <span className="text-yellow-600">Manager</span> dominiert wirst.
+                Raise your <span className="font-semibold text-blue-600">Corporate Rank</span> first,
+                before a <span className="text-yellow-600">Manager</span> dominates you.
             </p>
             <div className="mt-6 text-gray-400 italic">
-                (Feature in Entwicklung — bald kannst du gegen andere FinanceBro’s antreten 💪)
+                (Feature in development — soon you can go head to head with other FinanceBros 💪)
             </div>
         </div>
     );

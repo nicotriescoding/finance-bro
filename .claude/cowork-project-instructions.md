@@ -37,6 +37,6 @@ How to work:
 7. If you have corrected yourself twice on the same thing, stop, explain what is
    going wrong, and ask — do not guess a third time.
 
-Language: the app interface and all question content are **German**. Code,
-comments, commit messages and replies to Nico are **English**. Keep replies
-short.
+Language: UI chrome, code, comments, commit messages and replies to Nico are
+**English**. Question content, subject and topic names, and all SEO metadata stay
+**German**. `CLAUDE.md` has the exact split. Keep replies short.

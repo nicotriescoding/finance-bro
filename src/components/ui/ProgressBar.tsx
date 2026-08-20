@@ -3,7 +3,7 @@ import { FC } from "react";
 type ProgressBarProps = {
     progress: number; // 0..1
     className?: string;
-    color?: string; // Tailwind-Farbe z. B. "bg-green-400"
+    color?: string; // Tailwind color, e.g. "bg-green-400"
 };
 
 const ProgressBar: FC<ProgressBarProps> = ({

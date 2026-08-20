@@ -20,13 +20,13 @@ export default function TopicSelector({ subject, counts, selected, onChange }: P
     return (
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-lg font-semibold text-slate-900">Themen auswählen</h2>
+                <h2 className="text-lg font-semibold text-slate-900">Select topics</h2>
                 <button
                     type="button"
                     onClick={() => onChange(allSelected ? [] : available.map((t) => t.id))}
                     className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                 >
-                    {allSelected ? "Alle abwählen" : "Alle auswählen"}
+                    {allSelected ? "Deselect all" : "Select all"}
                 </button>
             </div>
 
@@ -61,7 +61,7 @@ export default function TopicSelector({ subject, counts, selected, onChange }: P
 
             {empty.length > 0 && (
                 <p className="mt-4 text-xs text-slate-500">
-                    Noch ohne Aufgaben: {empty.map((t) => t.label).join(", ")}
+                    No questions yet: {empty.map((t) => t.label).join(", ")}
                 </p>
             )}
         </div>

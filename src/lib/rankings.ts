@@ -6,12 +6,12 @@ export type Rank = {
     emoji: string;
 };
 
-// Einfaches Mapping von Level → Rang
+// Level → rank
 export const ranks: Rank[] = [
-    { minLevel: 1, title: "Arbeitslos", emoji: "🛋️" },
-    { minLevel: 2, title: "Geringverdiener", emoji: "🥲" },
-    { minLevel: 3, title: "Mindestlohnknecht", emoji: "🛠️" },
-    { minLevel: 4, title: "Werkstudent", emoji: "📚" },
+    { minLevel: 1, title: "Unemployed", emoji: "🛋️" },
+    { minLevel: 2, title: "Low Earner", emoji: "🥲" },
+    { minLevel: 3, title: "Minimum Wage Grunt", emoji: "🛠️" },
+    { minLevel: 4, title: "Working Student", emoji: "📚" },
     { minLevel: 5, title: "Junior Consultant", emoji: "🧑‍💼" },
     { minLevel: 6, title: "Consultant", emoji: "💼" },
     { minLevel: 7, title: "Investmentbanker", emoji: "🏦" },
@@ -22,7 +22,7 @@ export const ranks: Rank[] = [
     { minLevel: 12, title: "FinanceBro", emoji: "💸💪" },
 ];
 
-// Helper: finde den aktuellen Rang für ein Level
+// Helper: find the current rank for a level
 export function getRank(level: number): Rank {
     let current = ranks[0];
     for (const r of ranks) {

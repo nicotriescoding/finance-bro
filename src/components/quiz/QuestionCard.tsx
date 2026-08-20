@@ -6,11 +6,11 @@ import { formatAnswer, isWithinTolerance, parseNumericInput, unitHint } from "@/
 import { topicLabel } from "@/content/subjects";
 
 const DIFFICULTY_LABEL: Record<string, string> = {
-    very_easy: "sehr leicht",
-    easy: "leicht",
-    medium: "mittel",
-    hard: "schwer",
-    very_hard: "sehr schwer",
+    very_easy: "very easy",
+    easy: "easy",
+    medium: "medium",
+    hard: "hard",
+    very_hard: "very hard",
 };
 
 type Props = {
@@ -116,13 +116,13 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                         className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 disabled:bg-slate-100 disabled:text-slate-500"
                     />
                     <p className="mt-1.5 text-xs text-slate-500">
-                        Komma oder Punkt als Dezimaltrennzeichen. Gerundete Zwischenschritte sind okay.
+                        Comma or dot as the decimal separator. Rounded intermediate steps are fine.
                     </p>
                 </div>
             ) : (
                 <div className="mt-5 space-y-2">
                     {multi && (
-                        <p className="text-xs font-medium text-slate-500">Mehrfachauswahl möglich.</p>
+                        <p className="text-xs font-medium text-slate-500">Multiple answers possible.</p>
                     )}
                     {instance.choices?.map((choice, i) => {
                         const isPicked = picked.includes(i);
@@ -159,9 +159,9 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                     }`}
                 >
                     <p className="font-semibold">
-                        {result ? "Richtig." : "Leider falsch."}
+                        {result ? "Correct." : "Not quite."}
                         {isNumeric && instance.answer !== undefined && (
-                            <> Korrekte Antwort: {formatAnswer(instance.answer, instance.unit ?? "number")}</>
+                            <> Correct answer: {formatAnswer(instance.answer, instance.unit ?? "number")}</>
                         )}
                     </p>
                     {instance.explanation && (
@@ -179,7 +179,7 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                         onClick={check}
                         className="rounded-xl bg-slate-900 px-6 py-2.5 font-semibold text-white transition hover:bg-slate-700"
                     >
-                        Prüfen
+                        Check
                     </button>
                 ) : (
                     <button
@@ -187,7 +187,7 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                         onClick={onNext}
                         className="rounded-xl bg-emerald-600 px-6 py-2.5 font-semibold text-white transition hover:bg-emerald-500"
                     >
-                        {isLast ? "Auswertung" : "Nächste Aufgabe"}
+                        {isLast ? "See results" : "Next question"}
                     </button>
                 )}
             </div>

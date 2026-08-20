@@ -4,33 +4,34 @@ import AdSlot from "@/components/AdSlot";
 export default function ProductsPage() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto">
-            {/* Linke Spalte: Produkte */}
+            {/* Left column: products */}
             <div className="md:col-span-2 flex flex-col gap-6">
-                <h1 className="text-2xl font-bold mb-4">📦 Produkte</h1>
+                <h1 className="text-2xl font-bold mb-4">📦 Products</h1>
 
-                {/* Beispiel Kategorie */}
+                {/* Example category */}
                 <section className="border-b pb-4">
-                    <h2 className="text-xl font-semibold mb-3">BWL-Justus Starterpaket</h2>
+                    <h2 className="text-xl font-semibold mb-3">BWL-Justus Starter Pack</h2>
 
-                    {/* Produktkarte */}
+                    {/* Product card */}
                     <div className="flex gap-4 items-center mb-4">
                         <img
                             src="https://via.placeholder.com/150"
-                            alt="Produkt"
+                            alt="Product"
                             className="w-32 h-32 object-cover rounded shadow"
                         />
                         <div>
-                            <p className="font-medium">Patagonia Veste</p>
+                            <p className="font-medium">Patagonia Vest</p>
                             <p className="text-gray-600 text-sm mb-2">
-                                Perfekt für die wahren Wirtschaftler, die nicht nur wirtschaft studieren, sondern den lifestyle sich zu eigen gemacht haben.
-                                Kommt meist in Verbindung mit Praktika von Daddy und superiority complexen.
+                                For the true business students who don&apos;t just study economics but
+                                have made the lifestyle their own. Usually comes with an internship
+                                arranged by Daddy and a superiority complex.
                             </p>
                             <a
                                 href="https://affiliate-link.de"
                                 target="_blank"
                                 className="text-blue-600 underline"
                             >
-                                Zum Angebot →
+                                See the offer →
                             </a>
                         </div>
                     </div>
@@ -38,36 +39,37 @@ export default function ProductsPage() {
                     <div className="flex gap-4 items-center">
                         <img
                             src="https://via.placeholder.com/150"
-                            alt="Produkt"
+                            alt="Product"
                             className="w-32 h-32 object-cover rounded shadow"
                         />
                         <div>
-                            <p className="font-medium">BWL'er Zigaretten</p>
+                            <p className="font-medium">BWL Cigarettes</p>
                             <p className="text-gray-600 text-sm mb-2">
-                                Dein leichter Einstieg ins Investieren, damit wird das edge off getaked und du kannst endlich seifen blassen.
+                                Your easy entry into investing — takes the edge off so you can finally
+                                blow bubbles.
                             </p>
                             <a
                                 href="https://affiliate-link.de"
                                 target="_blank"
                                 className="text-blue-600 underline"
                             >
-                                Zum Angebot →
+                                See the offer →
                             </a>
                         </div>
                     </div>
                 </section>
             </div>
 
-            {/* Rechte Spalte: Werbung */}
+            {/* Right column: ads */}
             <aside className="flex flex-col gap-4">
-                <h2 className="text-lg font-bold">💸 Irgendwie muss sich der Bumms ja finanzieren</h2>
+                <h2 className="text-lg font-bold">💸 This thing has to pay for itself somehow</h2>
                 <AdSlot
-                    title="Finanz-Newsletter"
+                    title="Finance Newsletter"
                     imgUrl="https://via.placeholder.com/200x100.png?text=Newsletter"
                     linkUrl="https://example.com"
                 />
                 <AdSlot
-                    title="Trading Plattform"
+                    title="Trading Platform"
                     imgUrl="https://via.placeholder.com/200x100.png?text=Trading"
                     linkUrl="https://example.com"
                 />

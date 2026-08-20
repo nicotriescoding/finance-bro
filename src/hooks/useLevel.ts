@@ -1,6 +1,6 @@
 export function useLevel(score: number) {
-    const base = 100; // Startwert erhöhen
-    const multiplier = 1.5; // steigert die Schwierigkeit pro Level
+    const base = 100; // points needed for level 2
+    const multiplier = 1.5; // each level costs 50% more than the last
     let required = base;
 
     let level = 1;
@@ -14,7 +14,7 @@ export function useLevel(score: number) {
 
     return {
         level,
-        progress: remaining / required, // 0..1 für Progressbar
+        progress: remaining / required, // 0..1, drives the progress bar
         nextRequired: required,
     };
 }
