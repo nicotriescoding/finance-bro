@@ -6,6 +6,23 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Legal + Library shipped (2026-08-21, evening).** The nav's Language slot is
+now Library 📚 — `/library` has SPIN Selling + The Lean Startup as placeholder
+cards ("AD · link coming soon" buttons, advertising-transparency card,
+deliberately **no AdSlot**; smoke asserts "Sponsored" never appears there).
+`/language` stays alive but unlinked (canon page). A new site-wide footer
+links `/impressum` (§ 5 DDG for a private operator; **no** EU-ODR link — the
+platform shut down 2025-07-20 and the old mandatory reference must stay gone,
+smoke-guarded), `/privacy` (GDPR/TDDDG, English like the site) and "Cookie
+settings". The cookie banner ("We'd like to steal your cookies 🍪") has
+equal-weight accept/decline buttons and a plain-language consent sentence.
+PostHog is fully wired but **inert**: `src/lib/analytics.ts` only imports
+posthog-js when `NEXT_PUBLIC_POSTHOG_KEY` exists AND the visitor accepted;
+EU endpoint (Frankfurt) is the default. `npm run check` green — 54 smoke
+checks (12 new). Verified via sandbox headless Chromium screenshots: banner
+above the phone tab bar, footer + privacy-page "Cookie settings" reopen the
+banner after a decline; emoji are tofu only in the sandbox's font stack.
+
 **Design 3a shipped (2026-08-21).** The whole site now wears the "Statement"
 private-bank shell from Nico's design handoff (`docs/design/3a/`): navy chrome
 with balance pill and credit float, Manrope + IBM Plex Mono, three-column quiz
@@ -37,6 +54,20 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
 
 ## Next up
 
+- **PostHog go-live** (whenever Nico wants analytics): create the project on
+  PostHog Cloud **EU** (eu.posthog.com — the privacy policy promises Frankfurt
+  hosting), set `NEXT_PUBLIC_POSTHOG_KEY` in Vercel per `.env.example`,
+  redeploy. Consent flow is already live; nothing else to build.
+- **Impressum email is temporary.** nicolas.dumpe@gmx.de is public on
+  `/impressum` + `/privacy`; swap to a finance-bro.de address once mail
+  exists (per Nico: "we will have to change that later").
+- **Pick the affiliate program** — Amazon PartnerNet is the hope, possibly
+  several, not decided. Then: real links on `/library` (Amazon requires its
+  associate-disclosure sentence), and the same program can fix the Bro Shop's
+  dead links (SPEC #16). Shelf queue after the two placeholders: Never Split
+  the Difference · Atomic Habits · How to Win Friends and Influence People ·
+  What Every BODY Is Saying (the English original of "Menschen lesen", Joe
+  Navarro) · The Psychology of Money.
 - **Ingest TUM MC past exams.** Nico has them and uploads them after the
   styling setup. Use the `add-exam-questions` skill (translates as it goes,
   KaTeX per the rules, every question gets `source`). This refills Econ 1,
@@ -48,10 +79,16 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   apply the Manrope webfont even though the woff2 files serve 200. First
   `npm run dev` in real Chrome: confirm Manrope/Plex Mono render, check
   `/quiz` + `/career` in dark-mode OS (page must stay light), and the balance
-  count-up + credit float on a correct answer.
+  count-up + credit float on a correct answer. Add to the tour: `/library`,
+  `/impressum`, `/privacy`, the cookie banner (accept once, decline once —
+  wiped via localStorage key `fb-cookie-consent`) and the footer.
 - **Cleanup on Nico's machine** (the sandbox cannot delete files):
-  `rm -rf .next_stale_sandbox` (a stale `.next` renamed aside so the build
-  could run), and the now-unused legacy components
+  `rm -rf .next_stale_sandbox .next_stale_sandbox2` (stale `.next` dirs
+  renamed aside so builds could run), then
+  `rm -f .git/index.lock .git/HEAD.lock .git/refs/heads/main.lock .git/objects/maintenance.lock && git reset`
+  (this session committed via an alternate index because the sandbox cannot
+  delete its own `index.lock`; the reset refreshes the stale on-disk index —
+  it does not touch the worktree), and the now-unused legacy components
   `src/components/Scoreboard/` (Scoreboard, RankBadge, LevelUpAnimation) and
   `src/components/ui/` (Button, Card, Input, ProgressBar, StatBadge) — nothing
   imports them since the redesign.
@@ -78,8 +115,9 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   render correctly in the new posting card. Still confirm once in real Chrome
   with the production fonts (see Next up).
 - `/multiplayer` and `/language` are placeholder joke pages from the original
-  build. `/products` still has `via.placeholder.com` images and dead affiliate
-  links (SPEC #16).
+  build; `/language` is no longer linked anywhere (Library took its nav slot)
+  but stays deployed as canon. `/products` still has `via.placeholder.com`
+  images and dead affiliate links (SPEC #16).
 - `AdSlot` now renders the 3a fixed-size striped placeholders (160×600,
   160×160, 970×60, 300×100, 468×76 sponsored-career) with SPONSORED/AD labels;
   still no ad network wired. Slots never move layout — keep it that way when

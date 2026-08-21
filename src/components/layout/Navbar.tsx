@@ -8,7 +8,7 @@ const LINKS = [
     { href: "/quiz", label: "Quiz 🧠", match: "/quiz" },
     { href: "/products", label: "Bro Shop 💸", match: "/products" },
     { href: "/multiplayer", label: "Multiplayer 🥋", match: "/multiplayer" },
-    { href: "/language", label: "Language 🎤", match: "/language" },
+    { href: "/library", label: "Library 📚", match: "/library" },
     { href: "/career", label: "Career 🪦", match: "/career" },
 ];
 

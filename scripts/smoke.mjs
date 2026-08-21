@@ -160,6 +160,50 @@ try {
     // the navy chrome links every page to the setup
     check("/ links the Career page", homeHtml.includes("Career 🪦"));
 
+    // --- library (took the Language slot in the nav, 2026-08-21) ---------
+    const library = await fetch(`${BASE}/library`);
+    const libraryHtml = await library.text();
+    check("/library returns 200", library.status === 200, `got ${library.status}`);
+    check(
+        "/library shelves the two placeholder books",
+        libraryHtml.includes("SPIN Selling") && libraryHtml.includes("The Lean Startup")
+    );
+    check(
+        "/library discloses the future affiliate links as advertising",
+        libraryHtml.includes("affiliate")
+    );
+    // Nico's rule: the Library is ad-free. "Sponsored" is AdSlot's label.
+    check("/library carries no ad slots", !libraryHtml.includes("Sponsored"));
+    check("/ links the Library", homeHtml.includes("Library 📚"));
+    check("/ no longer links the Language page", !homeHtml.includes("Language 🎤"));
+
+    // --- legal pages (added 2026-08-21) -----------------------------------
+    const impressum = await fetch(`${BASE}/impressum`);
+    const impressumHtml = await impressum.text();
+    check("/impressum returns 200", impressum.status === 200, `got ${impressum.status}`);
+    check(
+        "/impressum names the operator with a full address (§ 5 DDG)",
+        impressumHtml.includes("Nicolas Dumpe") && impressumHtml.includes("85579 Neubiberg")
+    );
+    // The EU ODR platform shut down 2025-07-20; the once-mandatory link must
+    // never come back.
+    check(
+        "/impressum has no dead EU-ODR link",
+        !impressumHtml.includes("ec.europa.eu/odr")
+    );
+
+    const privacy = await fetch(`${BASE}/privacy`);
+    const privacyHtml = await privacy.text();
+    check("/privacy returns 200", privacy.status === 200, `got ${privacy.status}`);
+    check(
+        "/privacy covers consent-gated analytics",
+        privacyHtml.includes("PostHog") && privacyHtml.includes("consent")
+    );
+    check(
+        "/ footer links the legal pages from every page",
+        homeHtml.includes("Impressum") && homeHtml.includes("Cookie settings")
+    );
+
     // --- legacy route ----------------------------------------------------
     const tasks = await fetch(`${BASE}/tasks`, { redirect: "manual" });
     check(

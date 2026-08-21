@@ -62,6 +62,9 @@ its own work:
 | 14 | German edition as a second locale (`/de/…` + hreflang) | planned |
 | 15 | Highscores/multiplayer backend — optional extra, never on the read path | icebox |
 | 16 | `/products` page: replace placeholder images and dead affiliate links or drop the page | icebox |
+| 17 | Library (`/library`): favourite-books shelf with affiliate placeholders; took the Language nav slot; ad-free by rule | done — placeholders (SPIN Selling, The Lean Startup) |
+| 18 | Legal pages: `/impressum` (§ 5 DDG, private operator) + `/privacy` (GDPR/TDDDG), site-wide footer | done |
+| 19 | Cookie consent banner + consent-gated PostHog (EU cloud) | prepared — inert until `NEXT_PUBLIC_POSTHOG_KEY` set in Vercel |
 
 ## Non-goals (deliberate)
 

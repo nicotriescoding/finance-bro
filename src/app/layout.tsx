@@ -4,6 +4,8 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import TabBar from "@/components/layout/TabBar";
+import Footer from "@/components/layout/Footer";
+import CookieBanner from "@/components/consent/CookieBanner";
 
 const manrope = Manrope({
     subsets: ["latin"],
@@ -89,9 +91,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 className={`${manrope.variable} ${plexMono.variable} bg-field font-sans text-ink antialiased`}
             >
                 <Navbar />
-                {/* bottom padding keeps content clear of the phone tab bar */}
-                <main className="pb-[86px] md:pb-8">{children}</main>
+                <main>{children}</main>
+                {/* the footer's bottom padding keeps everything clear of the phone tab bar */}
+                <Footer />
                 <TabBar />
+                <CookieBanner />
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

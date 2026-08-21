@@ -7,7 +7,7 @@ const TABS = [
     { href: "/quiz", emoji: "🧠", label: "Quiz", match: "/quiz" },
     { href: "/products", emoji: "💸", label: "Shop", match: "/products" },
     { href: "/multiplayer", emoji: "🥋", label: "Duel", match: "/multiplayer" },
-    { href: "/language", emoji: "🎤", label: "Language", match: "/language" },
+    { href: "/library", emoji: "📚", label: "Library", match: "/library" },
     { href: "/career", emoji: "🪦", label: "Career", match: "/career" },
 ];
 
