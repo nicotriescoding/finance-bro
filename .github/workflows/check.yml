@@ -1,0 +1,34 @@
+# Runs the same gate as `npm run check` locally: typecheck, question
+# verification against 200 seeds, production build, and the route smoke test.
+# Vercel deploys `main` on push, so this is what stands between a red commit
+# and production.
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A new push supersedes an in-flight run on the same branch.
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # typecheck -> verify -> build -> smoke, exactly as documented in CLAUDE.md
+      - run: npm run check

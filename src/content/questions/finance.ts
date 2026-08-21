@@ -934,4 +934,1422 @@ export const financeQuestions: NumericQuestion[] = [
             };
         },
     },
+
+    {
+        id: "fin-ann-fv-due",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(1, 12) * 100;
+            const r = rng.int(2, 8);
+            const N = rng.int(4, 15);
+            const i = r / 100;
+            const q = 1 + i;
+            const af = (q ** N - 1) / i;
+            const answer = C * q * af;
+            return {
+                prompt: `For ${N} years you pay ${eur(C)} into an account earning ${pct(r)} p.a., **at the beginning of each year** (annuity due). What is the balance at the end of year ${N}, one year after the last payment?`,
+                given: {
+                    "Payment C": eur(C),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `FV_due = C · q · (q^N − 1)/(q − 1) = ${eur(C)} · ${n(q)} · (${n(q)}^${N} − 1)/${n(r / 100)} = ${eur(answer)} (the annuity factor is ${n2(af)})`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-pv-immediate",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(2, 15) * 100;
+            const r = rng.int(2, 8);
+            const N = rng.int(4, 14);
+            const i = r / 100;
+            const q = 1 + i;
+            const pf = (q ** N - 1) / (q ** N * i);
+            const answer = C * pf;
+            return {
+                prompt: `An annuity of ${eur(C)} is paid for ${N} years, **at the end of each year** (ordinary annuity). The discount rate is ${pct(r)}. What is the present value?`,
+                given: {
+                    "Payment C": eur(C),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity-immediate (in arrears)",
+                },
+                answer,
+                explanation: `PV = C · (q^N − 1)/(q^N·(q − 1)) = ${eur(C)} · (${n(q)}^${N} − 1)/(${n(q)}^${N}·${n(r / 100)}) = ${eur(answer)} (the annuity factor is ${n2(pf)})`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-arith-fv-immediate",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const d = rng.int(1, 6) * 50;
+            const r = rng.int(2, 8);
+            const N = rng.int(4, 12);
+            const i = r / 100;
+            const q = 1 + i;
+            const af = (q ** N - 1) / i;
+            const gap = d / i;
+            const answer = (C + gap) * af - N * gap;
+            return {
+                prompt: `You pay into an account **at the end of each year** (ordinary annuity) for ${N} years. The first payment is ${eur(C)} and every following payment is ${eur(d)} higher than the one before, so the last payment is ${eur(C + (N - 1) * d)}. The account earns ${pct(r)} p.a. What is the balance at the end of year ${N}?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Annual increase d": eur(d),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity-immediate (in arrears)",
+                },
+                answer,
+                explanation: `FV = (C + d/(q − 1))·(q^N − 1)/(q − 1) − N·d/(q − 1) with q = ${n(q)} and d/(q − 1) = ${eur(gap)} → (${eur(C)} + ${eur(gap)})·(${n(q)}^${N} − 1)/${n(r / 100)} − ${eur(N * gap)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-arith-fv-due",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const d = rng.int(1, 6) * 50;
+            const r = rng.int(2, 8);
+            const N = rng.int(4, 12);
+            const i = r / 100;
+            const q = 1 + i;
+            const af = (q ** N - 1) / i;
+            const gap = d / i;
+            const fvImmediate = (C + gap) * af - N * gap;
+            const answer = fvImmediate * q;
+            return {
+                prompt: `You pay into an account **at the beginning of each year** (annuity due) for ${N} years. The first payment, today, is ${eur(C)} and every following payment is ${eur(d)} higher than the one before, so the last payment, at the beginning of year ${N}, is ${eur(C + (N - 1) * d)}. The account earns ${pct(r)} p.a. What is the balance at the end of year ${N}?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Annual increase d": eur(d),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `FV_due = (C + d/(q − 1))·q·(q^N − 1)/(q − 1) − N·d·q/(q − 1) = q · FV_immediate; with q = ${n(q)}: FV_immediate = ${eur(fvImmediate)} → ${n(q)} · ${eur(fvImmediate)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-arith-pv-immediate",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const d = rng.int(1, 6) * 50;
+            const r = rng.int(2, 8);
+            const N = rng.int(4, 12);
+            const i = r / 100;
+            const q = 1 + i;
+            const af = (q ** N - 1) / i;
+            const gap = d / i;
+            const answer = ((C + gap) * af - N * gap) / q ** N;
+            return {
+                prompt: `A payment stream runs for ${N} years, **at the end of each year** (ordinary annuity). The first payment is ${eur(C)} and every following payment is ${eur(d)} higher than the one before, so the last payment is ${eur(C + (N - 1) * d)}. The discount rate is ${pct(r)}. What is the present value?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Annual increase d": eur(d),
+                    "Discount rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity-immediate (in arrears)",
+                },
+                answer,
+                explanation: `PV = (C + d/(q − 1))·(q^N − 1)/(q^N·(q − 1)) − N·d/(q^N·(q − 1)) with q = ${n(q)} and d/(q − 1) = ${eur(gap)} → [(${eur(C)} + ${eur(gap)})·(${n(q)}^${N} − 1)/${n(r / 100)} − ${eur(N * gap)}] / ${n(q)}^${N} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-arith-pv-due",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const d = rng.int(1, 6) * 50;
+            const r = rng.int(2, 8);
+            const N = rng.int(4, 12);
+            const i = r / 100;
+            const q = 1 + i;
+            const af = (q ** N - 1) / i;
+            const gap = d / i;
+            const pvImmediate = ((C + gap) * af - N * gap) / q ** N;
+            const answer = pvImmediate * q;
+            return {
+                prompt: `A payment stream runs for ${N} years, **at the beginning of each year** (annuity due). The first payment, today, is ${eur(C)} and every following payment is ${eur(d)} higher than the one before, so the last payment, at the beginning of year ${N}, is ${eur(C + (N - 1) * d)}. The discount rate is ${pct(r)}. What is the present value?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Annual increase d": eur(d),
+                    "Discount rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `PV_due = (C + d/(q − 1))·(q^N − 1)/(q^(N−1)·(q − 1)) − N·d/(q^(N−1)·(q − 1)) = q · PV_immediate; with q = ${n(q)}: PV_immediate = ${eur(pvImmediate)} → ${n(q)} · ${eur(pvImmediate)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-fv-immediate-eq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const r = rng.int(2, 8);
+            const w = r; // g = q by construction - the special case this question tests
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const answer = C * N * q ** (N - 1);
+            return {
+                prompt: `You pay into an account **at the end of each year** (ordinary annuity) for ${N} years. The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a., so the growth factor equals the interest factor (g = q) and the general geometric formula would divide by zero. What is the balance at the end of year ${N}?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity-immediate (in arrears)",
+                },
+                answer,
+                explanation: `g = q = ${n(q)}, so every payment compounds to the same amount C·q^(N−1). FV = C · N · q^(N−1) = ${eur(C)} · ${N} · ${n(q)}^${N - 1} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-fv-immediate-neq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const w = rng.int(1, 5);
+            const r = w + rng.int(1, 5); // r > w always, so g ≠ q
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const g = 1 + w / 100;
+            const factor = (g ** N - q ** N) / (g - q);
+            const answer = C * factor;
+            return {
+                prompt: `You pay into an account **at the end of each year** (ordinary annuity) for ${N} years. The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a. What is the balance at the end of year ${N}?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity-immediate (in arrears)",
+                },
+                answer,
+                explanation: `FV = C · (g^N − q^N)/(g − q) = ${eur(C)} · (${n(g)}^${N} − ${n(q)}^${N})/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-fv-due-eq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const r = rng.int(2, 8);
+            const w = r; // g = q by construction
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const answer = C * N * q ** N;
+            return {
+                prompt: `You pay into an account **at the beginning of each year** (annuity due) for ${N} years. The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a., so the growth factor equals the interest factor (g = q). What is the balance at the end of year ${N}?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `g = q = ${n(q)}, so FV_due = C · N · q^N = ${eur(C)} · ${N} · ${n(q)}^${N} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-fv-due-neq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const w = rng.int(1, 5);
+            const r = w + rng.int(1, 5); // r > w always, so g ≠ q
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const g = 1 + w / 100;
+            const factor = (g ** N - q ** N) / (g - q);
+            const answer = C * q * factor;
+            return {
+                prompt: `You pay into an account **at the beginning of each year** (annuity due) for ${N} years. The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a. What is the balance at the end of year ${N}?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Interest rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `FV_due = C · q · (g^N − q^N)/(g − q) = ${eur(C)} · ${n(q)} · (${n(g)}^${N} − ${n(q)}^${N})/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-pv-immediate-eq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const r = rng.int(2, 8);
+            const w = r; // g = q by construction
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const answer = (C * N) / q;
+            return {
+                prompt: `A payment stream runs for ${N} years, **at the end of each year** (ordinary annuity). The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}, so the growth factor equals the interest factor (g = q). What is the present value?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Discount rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity-immediate (in arrears)",
+                },
+                answer,
+                explanation: `g = q = ${n(q)}: payment k is C·q^(k−1) and is discounted by q^k, so each payment is worth C/q today. PV = C · N/q = ${eur(C)} · ${N}/${n(q)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-pv-immediate-neq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const w = rng.int(1, 5);
+            const r = w + rng.int(1, 5); // r > w always, so g ≠ q
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const g = 1 + w / 100;
+            const factor = ((g / q) ** N - 1) / (g - q);
+            const answer = C * factor;
+            return {
+                prompt: `A payment stream runs for ${N} years, **at the end of each year** (ordinary annuity). The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}. What is the present value?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Discount rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity-immediate (in arrears)",
+                },
+                answer,
+                explanation: `PV = C · ((g/q)^N − 1)/(g − q) = ${eur(C)} · ((${n(g)}/${n(q)})^${N} − 1)/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-pv-due-eq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const r = rng.int(2, 8);
+            const w = r; // g = q by construction
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const answer = C * N;
+            return {
+                prompt: `A payment stream runs for ${N} years, **at the beginning of each year** (annuity due). The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}, so the growth factor equals the interest factor (g = q). What is the present value?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Discount rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `g = q = ${n(q)}: payment k is C·q^(k−1) and is discounted by q^(k−1), so every payment is worth ${eur(C)} today. PV_due = C · N = ${eur(C)} · ${N} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-geom-pv-due-neq",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(4, 20) * 100;
+            const w = rng.int(1, 5);
+            const r = w + rng.int(1, 5); // r > w always, so g ≠ q
+            const N = rng.int(4, 12);
+            const q = 1 + r / 100;
+            const g = 1 + w / 100;
+            const factor = ((g / q) ** N - 1) / (g - q);
+            const answer = C * q * factor;
+            return {
+                prompt: `A payment stream runs for ${N} years, **at the beginning of each year** (annuity due). The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}. What is the present value?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Discount rate r": pct(r),
+                    "Number of payments N": String(N),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `PV_due = C · q · ((g/q)^N − 1)/(g − q) = ${eur(C)} · ${n(q)} · ((${n(g)}/${n(q)})^${N} − 1)/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-perpetuity-due",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(2, 20) * 100;
+            const r = rng.int(3, 9);
+            const q = 1 + r / 100;
+            const immediate = C / (r / 100);
+            const answer = q * immediate;
+            return {
+                prompt: `A **perpetuity** pays ${eur(C)} per year forever, **at the beginning of each year** — the first payment is due today. The discount rate is ${pct(r)}. What is the present value?`,
+                given: {
+                    "Payment C": eur(C),
+                    "Discount rate r": pct(r),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `PV_due = q · C/r = ${n(q)} · ${eur(C)}/${n(r / 100)} = ${eur(answer)} — the perpetuity in arrears is worth ${eur(immediate)}, plus the extra payment received today.`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-growing-perpetuity-due",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(2, 20) * 100;
+            const w = rng.int(1, 4);
+            const r = w + rng.int(2, 6); // r > w always, so q − g > 0
+            const q = 1 + r / 100;
+            const g = 1 + w / 100;
+            const answer = (q * C) / ((r - w) / 100);
+            return {
+                prompt: `A perpetuity pays ${eur(C)} **at the beginning of each year**, starting today, and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}. What is the present value?`,
+                given: {
+                    "First payment C": eur(C),
+                    "Growth rate w": pct(w),
+                    "Discount rate r": pct(r),
+                    "Payment timing": "annuity due (in advance)",
+                },
+                answer,
+                explanation: `PV_due = q · C/(q − g) with q = ${n(q)}, g = ${n(g)}, so q − g = r − w = ${n((r - w) / 100)} → ${n(q)} · ${eur(C)}/${n((r - w) / 100)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-replacement-immediate",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(1, 10) * 50;
+            const m = rng.pick([2, 4, 12]);
+            const r = rng.int(2, 9);
+            const label = m === 2 ? "semi-annually" : m === 4 ? "quarterly" : "monthly";
+            const answer = C * (m + ((r / 100) * (m - 1)) / 2);
+            return {
+                prompt: `${eur(C)} is paid ${label} (m = ${m} payments per year), **at the end of each sub-period**. The nominal annual rate is ${pct(r)} and interest **within** the year is simple (linear). What single equivalent payment at the end of the year replaces the ${m} payments (replacement annuity)?`,
+                given: {
+                    "Sub-period payment C": eur(C),
+                    "Payments per year m": String(m),
+                    "Nominal rate r": pct(r),
+                    "Payment timing": "in arrears (annuity-immediate)",
+                },
+                answer,
+                explanation: `C_replacement = C · (m + r·(m − 1)/2) = ${eur(C)} · (${m} + ${n(r / 100)}·${m - 1}/2) = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ann-replacement-due",
+        subject: "finance",
+        topic: "annuities",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const C = rng.int(1, 10) * 50;
+            const m = rng.pick([2, 4, 12]);
+            const r = rng.int(2, 9);
+            const label = m === 2 ? "semi-annually" : m === 4 ? "quarterly" : "monthly";
+            const answer = C * (m + ((r / 100) * (m + 1)) / 2);
+            return {
+                prompt: `${eur(C)} is paid ${label} (m = ${m} payments per year), **at the beginning of each sub-period**. The nominal annual rate is ${pct(r)} and interest **within** the year is simple (linear). What single equivalent payment at the end of the year replaces the ${m} payments (replacement annuity)?`,
+                given: {
+                    "Sub-period payment C": eur(C),
+                    "Payments per year m": String(m),
+                    "Nominal rate r": pct(r),
+                    "Payment timing": "in advance (annuity due)",
+                },
+                answer,
+                explanation: `C_replacement = C · (m + r·(m + 1)/2) = ${eur(C)} · (${m} + ${n(r / 100)}·${m + 1}/2) = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-int-periods",
+        subject: "finance",
+        topic: "interest",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "number",
+        build: (rng) => {
+            const m = rng.pick([2, 4, 6, 12]);
+            const years = rng.int(2, 15);
+            const label =
+                m === 2 ? "semi-annually" : m === 4 ? "quarterly" : m === 6 ? "every two months" : "monthly";
+            const answer = m * years;
+            return {
+                prompt: `Interest is credited ${label} (m = ${m} times per year) over a term of ${years} years. How many interest periods N does the compound-interest formula run over?`,
+                given: { "Payments per year m": String(m), "Term n": `${years} years` },
+                answer,
+                explanation: `N = m · n = ${m} · ${years} = ${n(answer)} interest periods`,
+            };
+        },
+    },
+
+    {
+        id: "fin-ratio-invested-capital",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const E = rng.int(200, 900) * 1000;
+            const NFO = rng.int(50, 600) * 1000;
+            const answer = E + NFO;
+            return {
+                prompt: `A company reports a book value of equity of ${eur(E)} and net financial obligations (net debt, i.e. interest-bearing debt minus financial assets) of ${eur(NFO)}. What is its **invested capital**?`,
+                given: { "Book value of equity E": eur(E), "Net financial obligations NFO": eur(NFO) },
+                answer,
+                explanation: `IC = E + NFO = ${eur(E)} + ${eur(NFO)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-net-debt",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            // D is drawn above the largest possible FA, so net debt stays positive.
+            const D = rng.int(200, 900) * 1000;
+            const FA = rng.int(20, 180) * 1000;
+            const answer = D - FA;
+            return {
+                prompt: `A company carries ${eur(D)} of interest-bearing debt and holds ${eur(FA)} of financial assets (cash and securities). What are its **net financial obligations (net debt)**?`,
+                given: { "Debt D": eur(D), "Financial assets FA": eur(FA) },
+                answer,
+                explanation: `NFO = D − FA = ${eur(D)} − ${eur(FA)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-debt-to-capital",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const D = rng.int(50, 500) * 1000;
+            const E = rng.int(80, 700) * 1000;
+            const answer = D / (E + D);
+            return {
+                prompt: `A company is financed with ${eur(D)} of debt and ${eur(E)} of equity. What is its **debt-to-capital ratio** — the share of total capital (debt plus equity) that is debt? Give it as a factor.`,
+                given: { "Debt D": eur(D), "Equity E": eur(E) },
+                answer,
+                explanation: `D/(D+E) = ${eur(D)} / (${eur(D)} + ${eur(E)}) = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-nfl",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const NFO = rng.int(50, 500) * 1000;
+            const E = rng.int(200, 800) * 1000;
+            const answer = NFO / E;
+            return {
+                prompt: `Net financial obligations (debt minus financial assets) are ${eur(NFO)}, the book value of equity is ${eur(E)}. What is the **net financial leverage (NFL)**?`,
+                given: { "Net financial obligations NFO": eur(NFO), "Equity E": eur(E) },
+                answer,
+                explanation: `NFL = NFO / E = ${eur(NFO)} / ${eur(E)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-debt-to-ev",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const NFO = rng.int(40, 500) * 1000;
+            const MVE = rng.int(200, 1500) * 1000;
+            const answer = NFO / (MVE + NFO);
+            return {
+                prompt: `A listed company has net financial obligations of ${eur(NFO)} and a market value of equity of ${eur(MVE)}. Its enterprise value is the market value of equity plus net financial obligations. What is the **debt-to-enterprise-value ratio**? Give it as a factor.`,
+                given: { "Net financial obligations NFO": eur(NFO), "Market value of equity MV_E": eur(MVE) },
+                answer,
+                explanation: `NFO/EV = NFO/(MV_E + NFO) = ${eur(NFO)} / ${eur(MVE + NFO)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-quick",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const cash = rng.int(10, 120) * 1000;
+            const sti = rng.int(5, 80) * 1000;
+            const ar = rng.int(20, 200) * 1000;
+            // Current liabilities are scaled off the quick assets, so the ratio
+            // always lands in a plausible band and can never be zero.
+            const CL = Math.round((cash + sti + ar) / rng.float(0.6, 2.2, 2) / 1000) * 1000;
+            const answer = (cash + sti + ar) / CL;
+            return {
+                prompt: `Cash ${eur(cash)}, short-term investments ${eur(sti)}, accounts receivable ${eur(ar)}, current liabilities ${eur(CL)}. What is the **quick ratio** (inventories are deliberately excluded)?`,
+                given: {
+                    Cash: eur(cash),
+                    "Short-term investments": eur(sti),
+                    "Accounts receivable": eur(ar),
+                    "Current liabilities": eur(CL),
+                },
+                answer,
+                explanation: `Quick ratio = (cash + short-term investments + receivables)/CL = ${eur(cash + sti + ar)} / ${eur(CL)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-nfe",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "percent",
+        build: (rng) => {
+            const NFO = rng.int(200, 900) * 1000;
+            const FE = Math.round(NFO * rng.float(0.02, 0.09, 4));
+            const answer = (FE / NFO) * 100;
+            return {
+                prompt: `A company pays financial expenses of ${eur(FE)} on net financial obligations of ${eur(NFO)}. What is its **net financial expense (NFE)**, i.e. the financial expenses expressed as a percentage of net financial obligations?`,
+                given: { "Financial expenses FE": eur(FE), "Net financial obligations NFO": eur(NFO) },
+                answer,
+                explanation: `NFE = FE / NFO = ${eur(FE)} / ${eur(NFO)} = ${pct(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-ebit-margin",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "percent",
+        build: (rng) => {
+            const sales = rng.int(500, 5000) * 1000;
+            const EBIT = Math.round(sales * rng.float(0.04, 0.22, 4));
+            const answer = (EBIT / sales) * 100;
+            return {
+                prompt: `Sales ${eur(sales)}, EBIT ${eur(EBIT)}. What is the **EBIT margin**?`,
+                given: { Sales: eur(sales), EBIT: eur(EBIT) },
+                answer,
+                explanation: `EBIT margin = EBIT / sales = ${eur(EBIT)} / ${eur(sales)} = ${pct(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-net-margin",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "percent",
+        build: (rng) => {
+            const sales = rng.int(500, 5000) * 1000;
+            const NI = Math.round(sales * rng.float(0.02, 0.14, 4));
+            const answer = (NI / sales) * 100;
+            return {
+                prompt: `Sales ${eur(sales)}, net income ${eur(NI)}. What is the **net profit margin**?`,
+                given: { Sales: eur(sales), "Net income": eur(NI) },
+                answer,
+                explanation: `Net profit margin = net income / sales = ${eur(NI)} / ${eur(sales)} = ${pct(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-eps",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const shares = rng.int(100, 900) * 1000;
+            const NI = Math.round(shares * rng.float(0.8, 6.5, 2));
+            const answer = NI / shares;
+            return {
+                prompt: `A company earns a net income of ${eur(NI)} and has ${n(shares)} shares outstanding. What are its **earnings per share (EPS)**?`,
+                given: { "Net income": eur(NI), "Shares outstanding": n(shares) },
+                answer,
+                explanation: `EPS = net income / shares = ${eur(NI)} / ${n(shares)} = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-diluted-eps-simple",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const shares = rng.int(100, 900) * 1000;
+            const NI = Math.round(shares * rng.float(1, 6, 2));
+            const df = rng.float(1.02, 1.35, 2);
+            const answer = NI / (shares * df);
+            return {
+                prompt: `Net income is ${eur(NI)} and ${n(shares)} shares are outstanding. Options and convertibles together give a **dilution factor** of ${n2(df)} — the factor by which the share count effectively grows. What are the **diluted earnings per share**?`,
+                given: { "Net income": eur(NI), "Shares outstanding a": n(shares), "Dilution factor df": n2(df) },
+                answer,
+                explanation: `Diluted EPS = NI / (a · df) = ${eur(NI)} / (${n(shares)} · ${n2(df)}) = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-pe-from-mc",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const NI = rng.int(2, 40) * 100000;
+            const MC = Math.round(NI * rng.float(8, 30, 2));
+            const answer = MC / NI;
+            return {
+                prompt: `A company's market capitalization is ${eur(MC)} and its net income is ${eur(NI)}. What is its **price/earnings ratio (P/E)**?`,
+                given: { "Market capitalization": eur(MC), "Net income": eur(NI) },
+                answer,
+                explanation: `P/E = market capitalization / net income = ${eur(MC)} / ${eur(NI)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-ebitda-multiple",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const EBITDA = rng.int(5, 80) * 100000;
+            const EV = Math.round(EBITDA * rng.float(4, 14, 2));
+            const answer = EV / EBITDA;
+            return {
+                prompt: `A company has an enterprise value of ${eur(EV)} and EBITDA of ${eur(EBITDA)}. What is its **EBITDA multiple (EV/EBITDA)**?`,
+                given: { "Enterprise value EV": eur(EV), EBITDA: eur(EBITDA) },
+                answer,
+                explanation: `EV/EBITDA = ${eur(EV)} / ${eur(EBITDA)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-market-to-book",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const P0 = rng.int(15, 120);
+            const shares = rng.int(100, 900) * 1000;
+            // Book value is derived from the market value, so it is always positive.
+            const VE = Math.round((P0 * shares) / rng.float(1.1, 4, 2) / 1000) * 1000;
+            const answer = (P0 * shares) / VE;
+            return {
+                prompt: `A share trades at ${eur(P0)}, there are ${n(shares)} shares outstanding, and the book value of equity is ${eur(VE)}. What is the **market-to-book ratio**?`,
+                given: { "Share price P₀": eur(P0), "Shares outstanding a": n(shares), "Book value of equity": eur(VE) },
+                answer,
+                explanation: `M/B = P₀·a / book equity = ${eur(P0 * shares)} / ${eur(VE)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-dil-df1",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            // The issue price X is drawn strictly below the stock price S, so the
+            // options are always in the money and DF₁ is genuinely above 1.
+            const S = rng.int(60, 160);
+            const X = rng.int(20, S - 20);
+            const shares = rng.int(200, 900) * 1000;
+            const opts = rng.int(20, 150) * 1000;
+            const answer = Math.max(1, 1 + (opts / shares) * (1 - X / S));
+            return {
+                prompt: `A company has ${n(shares)} shares outstanding at a stock price of ${eur(S)}. It has issued ${n(opts)} options, each entitling the holder to one new share at an issue price of ${eur(X)}. What is the **dilution factor DF₁** from these options?`,
+                given: {
+                    "Options issued n": n(opts),
+                    "Shares outstanding a": n(shares),
+                    "Issue price X": eur(X),
+                    "Stock price S": eur(S),
+                },
+                answer,
+                explanation: `DF₁ = max(1, 1 + n/a · (1 − X/S)) = max(1, 1 + ${n(opts)}/${n(shares)} · (1 − ${eur(X)}/${eur(S)})); the options add ${pct((opts / shares) * 100)} to the share count and only ${pct((X / S) * 100)} of each new share is paid for → DF₁ = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-dil-df2",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const shares = rng.int(200, 900) * 1000;
+            const conv = rng.int(20, 120) * 1000;
+            const NI = rng.int(20, 90) * 100000;
+            const NV = rng.int(10, 60) * 100000;
+            const c = rng.int(2, 7);
+            const tauC = rng.pick([0.25, 0.3]);
+            const saved = NV * (1 - tauC) * (c / 100);
+            // NI is always strictly positive, so the denominator can never vanish.
+            const relief = saved / NI;
+            const answer = Math.max(1, 1 + conv / shares / (1 + relief));
+            return {
+                prompt: `A company has ${n(shares)} shares outstanding and a net income of ${eur(NI)} at a tax rate of ${pct(tauC * 100)}. Its convertible bonds have a total nominal value of ${eur(NV)} and pay a coupon of ${pct(c)} p.a.; on conversion they would create ${n(conv)} new shares and the coupon would no longer be paid. What is the **dilution factor DF₂** from the convertibles?`,
+                given: {
+                    "New shares on conversion n": n(conv),
+                    "Shares outstanding a": n(shares),
+                    "Nominal value NV": eur(NV),
+                    "Coupon c": pct(c),
+                    "Net income NI": eur(NI),
+                    "τ_C": pct(tauC * 100),
+                },
+                answer,
+                explanation: `DF₂ = max(1, 1 + (n/a) / (1 + NV·(1−τ)·c/NI)); the coupon saved after tax is ${eur(saved)}, i.e. ${pct(relief * 100)} of net income, and the conversion adds ${pct((conv / shares) * 100)} to the share count → DF₂ = max(1, 1 + ${n(conv)}/${n(shares)} / ${n2(1 + relief)}) = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-dil-eps",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const EPS = rng.float(1.2, 8, 2);
+            const df1 = rng.float(1.02, 1.3, 2);
+            const df2 = rng.float(1.01, 1.2, 2);
+            const answer = EPS / (df1 * df2);
+            return {
+                prompt: `Basic earnings per share are ${eur(EPS)}. The options outstanding give a dilution factor DF₁ = ${n2(df1)} and the convertibles a dilution factor DF₂ = ${n2(df2)}. What are the **diluted earnings per share**?`,
+                given: { EPS: eur(EPS), "DF₁": n2(df1), "DF₂": n2(df2) },
+                answer,
+                explanation: `Diluted EPS = EPS / (DF₁ · DF₂) = ${eur(EPS)} / (${n2(df1)} · ${n2(df2)}) = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-dupont",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "percent",
+        build: (rng) => {
+            const margin = rng.float(2, 12, 2);
+            const turnover = rng.float(0.4, 2.5, 2);
+            const multiplier = rng.float(1.2, 3.5, 2);
+            const answer = margin * turnover * multiplier;
+            return {
+                prompt: `Break down the return on equity with the **DuPont identity**: the net profit margin is ${pct(margin)}, the asset turnover (sales ÷ total assets) is ${n2(turnover)} and the equity multiplier (total assets ÷ equity) is ${n2(multiplier)}. What is the **ROE**?`,
+                given: {
+                    "Net profit margin": pct(margin),
+                    "Asset turnover": n2(turnover),
+                    "Equity multiplier": n2(multiplier),
+                },
+                answer,
+                explanation: `ROE = net profit margin · asset turnover · equity multiplier = ${pct(margin)} · ${n2(turnover)} · ${n2(multiplier)} = ${pct(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-book-leverage",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "percent",
+        build: (rng) => {
+            const roic = rng.float(6, 18, 2);
+            const nfl = rng.float(0.2, 1.8, 2);
+            const nfe = rng.float(2.5, 8, 2);
+            const tauC = rng.pick([0.25, 0.3, 0.32]);
+            const answer = roic + nfl * (roic - nfe * (1 - tauC));
+            return {
+                prompt: `Compute the **ROE with the book-leverage equation**: the after-tax ROIC is ${pct(roic)}, net financial leverage (net financial obligations ÷ equity) is ${n2(nfl)}, the net financial expense (financial expenses as a percentage of net financial obligations, before tax) is ${pct(nfe)} and the tax rate is ${pct(tauC * 100)}.`,
+                given: {
+                    "ROIC after tax": pct(roic),
+                    "Net financial leverage NFL": n2(nfl),
+                    "Net financial expense NFE": pct(nfe),
+                    "τ_C": pct(tauC * 100),
+                },
+                answer,
+                explanation: `ROE = ROIC_aT + NFL·(ROIC_aT − NFE·(1−τ)); NFE after tax = ${pct(nfe * (1 - tauC))}, so the spread is ${pct(roic - nfe * (1 - tauC))} and ROE = ${pct(roic)} + ${n2(nfl)}·${pct(roic - nfe * (1 - tauC))} = ${pct(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-fcf",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            // Ranges are chosen so the sum stays comfortably positive.
+            const EBIT = rng.int(250, 700) * 1000;
+            const tauC = rng.pick([0.25, 0.3]);
+            const depr = rng.int(40, 120) * 1000;
+            const ncExp = rng.int(5, 30) * 1000;
+            const ncEarn = rng.int(2, 20) * 1000;
+            const dNwc = -(rng.int(5, 45) * 1000);
+            const cfi = -(rng.int(40, 120) * 1000);
+            const nopat = EBIT * (1 - tauC);
+            const answer = nopat + depr + ncExp - ncEarn + dNwc + cfi;
+            return {
+                prompt: `Compute the **free cash flow to the firm (FCF)** from: EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, depreciation ${eur(depr)}, other non-cash expenses ${eur(ncExp)}, other non-cash earnings ${eur(ncEarn)}, change in net working capital ${eur(dNwc)} and cash flow from investments ${eur(cfi)}. The last two are already stated as **signed cash-flow effects**, so a negative figure reduces the cash flow.`,
+                given: {
+                    EBIT: eur(EBIT),
+                    "τ_C": pct(tauC * 100),
+                    Depreciation: eur(depr),
+                    "Other non-cash expenses": eur(ncExp),
+                    "Other non-cash earnings": eur(ncEarn),
+                    "Change in NWC": eur(dNwc),
+                    "Cash flow from investments": eur(cfi),
+                },
+                answer,
+                explanation: `FCF = EBIT·(1−τ) + depreciation + non-cash expenses − non-cash earnings + ΔNWC + CFI = ${eur(nopat)} + ${eur(depr)} + ${eur(ncExp)} − ${eur(ncEarn)} + (${eur(dNwc)}) + (${eur(cfi)}) = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ratio-fcfe",
+        subject: "finance",
+        topic: "ratios",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            // Ranges are chosen so the sum stays comfortably positive.
+            const NI = rng.int(250, 700) * 1000;
+            const depr = rng.int(40, 120) * 1000;
+            const ncExp = rng.int(5, 30) * 1000;
+            const ncEarn = rng.int(2, 20) * 1000;
+            const dNwc = -(rng.int(5, 45) * 1000);
+            const cfi = -(rng.int(40, 120) * 1000);
+            const cff = rng.int(1, 12) * 5000 * rng.pick([1, -1]);
+            const answer = NI + depr + ncExp - ncEarn + dNwc + cfi + cff;
+            return {
+                prompt: `Compute the **free cash flow to equity (FCFE)** from: net income ${eur(NI)}, depreciation ${eur(depr)}, other non-cash expenses ${eur(ncExp)}, other non-cash earnings ${eur(ncEarn)}, change in net working capital ${eur(dNwc)}, cash flow from investments ${eur(cfi)} and cash flow from financing ${eur(cff)}. The last three are already stated as **signed cash-flow effects**, so a negative figure reduces the cash flow.`,
+                given: {
+                    "Net income": eur(NI),
+                    Depreciation: eur(depr),
+                    "Other non-cash expenses": eur(ncExp),
+                    "Other non-cash earnings": eur(ncEarn),
+                    "Change in NWC": eur(dNwc),
+                    "Cash flow from investments": eur(cfi),
+                    "Cash flow from financing": eur(cff),
+                },
+                answer,
+                explanation: `FCFE = NI + depreciation + non-cash expenses − non-cash earnings + ΔNWC + CFI + CFF = ${eur(NI)} + ${eur(depr)} + ${eur(ncExp)} − ${eur(ncEarn)} + (${eur(dNwc)}) + (${eur(cfi)}) + (${eur(cff)}) = ${eur(answer)}`,
+            };
+        },
+    },
+
+    {
+            id: "fin-coc-unlevered-no-taxes",
+            subject: "finance",
+            topic: "cost_of_capital",
+            difficulty: "medium",
+            kind: "numeric",
+            unit: "percent",
+            build: (rng) => {
+                const E = rng.int(200, 900) * 1000;
+                const D = rng.int(100, 700) * 1000;
+                const rE = rng.int(9, 16);
+                const rD = rng.int(2, 7);
+                const wE = E / (E + D);
+                const wD = D / (E + D);
+                const answer = wE * rE + wD * rD;
+                return {
+                    prompt: `A firm is financed with ${eur(E)} of equity (cost of equity ${pct(rE)}) and ${eur(D)} of debt (cost of debt ${pct(rD)}). Assume a world **without taxes** (Modigliani-Miller). What is the **cost of capital of the unlevered firm r_U**, i.e. the weighted average return the assets have to earn?`,
+                    given: {
+                        "Equity E": eur(E),
+                        "Debt D": eur(D),
+                        "Cost of equity r_E": pct(rE),
+                        "Cost of debt r_D": pct(rD),
+                        Taxes: "none",
+                    },
+                    answer,
+                    explanation: `Without taxes r_U is the plain value-weighted average of the two required returns: r_U = E/(E+D)·r_E + D/(E+D)·r_D = ${n2(wE)}·${pct(rE)} + ${n2(wD)}·${pct(rD)} = ${pct(answer)}`,
+                };
+            },
+        },
+        {
+            id: "fin-coc-asset-beta",
+            subject: "finance",
+            topic: "cost_of_capital",
+            difficulty: "medium",
+            kind: "numeric",
+            unit: "ratio",
+            build: (rng) => {
+                const E = rng.int(200, 900) * 1000;
+                const D = rng.int(100, 700) * 1000;
+                const betaD = rng.float(0.05, 0.35, 2);
+                // Draw the spread, never the level, so the debt beta always stays
+                // below the equity beta.
+                const betaE = betaD + rng.float(0.5, 1.6, 2);
+                const wE = E / (E + D);
+                const wD = D / (E + D);
+                const answer = wE * betaE + wD * betaD;
+                return {
+                    prompt: `A firm has ${eur(E)} of equity with an equity beta of ${n2(betaE)} and ${eur(D)} of debt with a debt beta of ${n2(betaD)}. Assume **no taxes**, so the whole firm is simply the portfolio of its equity and its debt. What is the **unlevered (asset) beta β_U**?`,
+                    given: {
+                        "Equity E": eur(E),
+                        "Debt D": eur(D),
+                        "β_E": n2(betaE),
+                        "β_D": n2(betaD),
+                        Taxes: "none",
+                    },
+                    answer,
+                    explanation: `β_U = E/(E+D)·β_E + D/(E+D)·β_D = ${n2(wE)}·${n2(betaE)} + ${n2(wD)}·${n2(betaD)} = ${n2(answer)}`,
+                };
+            },
+        },
+        {
+            id: "fin-coc-equity-beta",
+            subject: "finance",
+            topic: "cost_of_capital",
+            difficulty: "medium",
+            kind: "numeric",
+            unit: "ratio",
+            build: (rng) => {
+                const betaD = rng.float(0.05, 0.35, 2);
+                // Same trick as above: the spread is drawn, so β_U > β_D always holds
+                // and leverage can only push the equity beta up.
+                const betaU = betaD + rng.float(0.4, 1.2, 2);
+                const E = rng.int(200, 900) * 1000;
+                const D = rng.int(100, 700) * 1000;
+                const answer = betaU + (D / E) * (betaU - betaD);
+                return {
+                    prompt: `A firm's unlevered (asset) beta is ${n2(betaU)} and its debt beta is ${n2(betaD)}. It carries ${eur(D)} of debt against ${eur(E)} of equity. Assume **no taxes**. What is the **equity beta β_E** of the levered firm?`,
+                    given: {
+                        "β_U": n2(betaU),
+                        "β_D": n2(betaD),
+                        "Debt D": eur(D),
+                        "Equity E": eur(E),
+                        Taxes: "none",
+                    },
+                    answer,
+                    explanation: `β_E = β_U + D/E·(β_U − β_D) = ${n2(betaU)} + ${n2(D / E)}·(${n2(betaU)} − ${n2(betaD)}) = ${n2(answer)}`,
+                };
+            },
+        },
+        {
+            id: "fin-coc-wacc-target-leverage",
+            subject: "finance",
+            topic: "cost_of_capital",
+            difficulty: "hard",
+            kind: "numeric",
+            unit: "percent",
+            build: (rng) => {
+                const E = rng.int(200, 900) * 1000;
+                const D = rng.int(100, 700) * 1000;
+                const rU = rng.int(8, 14);
+                const rD = rng.int(2, 7);
+                const tauC = rng.pick([0.25, 0.3]);
+                const wD = D / (E + D);
+                const answer = rU - wD * tauC * rD;
+                return {
+                    prompt: `A firm holds a **constant target leverage ratio**: ${eur(D)} of debt against ${eur(E)} of equity, rebalanced every period. Its unlevered cost of capital is ${pct(rU)}, its cost of debt ${pct(rD)}, and the **corporate tax rate is τ_C = ${pct(tauC * 100)}**. What is the **WACC**?`,
+                    given: {
+                        "r_U": pct(rU),
+                        "r_D": pct(rD),
+                        "Debt D": eur(D),
+                        "Equity E": eur(E),
+                        "τ_C": pct(tauC * 100),
+                    },
+                    answer,
+                    explanation: `At a fixed target leverage the WACC is the unlevered cost less the tax shield per unit of firm value: r_WACC = r_U − D/(E+D)·τ_C·r_D = ${pct(rU)} − ${n2(wD)}·${n(tauC)}·${pct(rD)} = ${pct(answer)}`,
+                };
+            },
+        },
+        {
+            id: "fin-coc-levered-firm-value",
+            subject: "finance",
+            topic: "cost_of_capital",
+            difficulty: "hard",
+            kind: "numeric",
+            unit: "EUR",
+            build: (rng) => {
+                const VU = rng.int(500, 2000) * 1000;
+                const D = rng.int(100, 800) * 1000;
+                const rD = rng.int(3, 7);
+                const tauC = rng.pick([0.25, 0.3, 0.32]);
+                const its = tauC * D;
+                const answer = VU + its;
+                return {
+                    prompt: `An all-equity firm is worth ${eur(VU)}. It now takes on **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} — only interest is paid, the principal is rolled over forever, so the interest tax shield is a perpetuity discounted at ${pct(rD)}. The **corporate tax rate is τ_C = ${pct(tauC * 100)}**. What is the value of the **levered firm V_L**?`,
+                    given: {
+                        "Unlevered firm value V_U": eur(VU),
+                        "Permanent debt D": eur(D),
+                        "Cost of debt r_D": pct(rD),
+                        "τ_C": pct(tauC * 100),
+                    },
+                    answer,
+                    explanation: `The perpetual tax shield is PV(ITS) = τ_C·r_D·D / r_D = τ_C·D — the cost of debt cancels — so PV(ITS) = ${n(tauC)}·${eur(D)} = ${eur(its)}. Then V_L = V_U + PV(ITS) = ${eur(VU)} + ${eur(its)} = ${eur(answer)}`,
+                };
+            },
+        },
+        {
+            id: "fin-val-equity-method",
+            subject: "finance",
+            topic: "equity_valuation",
+            difficulty: "hard",
+            kind: "numeric",
+            unit: "EUR",
+            build: (rng) => {
+                // Growth first, discount rate strictly above it, so r_E − g ≥ 4 pp.
+                const g = rng.int(1, 4);
+                const rE = g + rng.int(4, 9);
+                const fcfe = rng.int(200, 900) * 1000;
+                const answer = fcfe / ((rE - g) / 100);
+                return {
+                    prompt: `Value a firm with the **equity method**: the free cash flow to equity is ${eur(fcfe)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCFE is already stated **after corporate taxes and after interest and debt payments**, so it is discounted at the cost of equity of ${pct(rE)}. What is the **market value of equity**?`,
+                    given: {
+                        "FCFE₁": eur(fcfe),
+                        "Growth g (perpetual)": pct(g),
+                        "Cost of equity r_E": pct(rE),
+                        "Cash flow basis": "after corporate tax, after interest and debt payments",
+                    },
+                    answer,
+                    explanation: `V_E = Σ FCFE_t/(1+r_E)^t, and with constant growth the infinite sum collapses to the growing perpetuity V_E = FCFE₁/(r_E − g) = ${eur(fcfe)}/(${n(rE / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
+                };
+            },
+        },
+        {
+            id: "fin-val-entity-method",
+            subject: "finance",
+            topic: "equity_valuation",
+            difficulty: "hard",
+            kind: "numeric",
+            unit: "EUR",
+            build: (rng) => {
+                // Growth first, WACC strictly above it, so r_WACC − g ≥ 4 pp.
+                const g = rng.int(1, 4);
+                const wacc = g + rng.int(4, 9);
+                const fcf = rng.int(300, 1200) * 1000;
+                const answer = fcf / ((wacc - g) / 100);
+                return {
+                    prompt: `Value a firm with the **entity method**: the free cash flow to the firm is ${eur(fcf)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCF is the **unlevered after-tax cash flow** — taxed as if the firm were all-equity financed, so the tax advantage of debt sits in the WACC, not in the cash flow. The WACC is ${pct(wacc)}. What is the **total firm value**?`,
+                    given: {
+                        "FCF₁": eur(fcf),
+                        "Growth g (perpetual)": pct(g),
+                        WACC: pct(wacc),
+                        "Cash flow basis": "unlevered, after corporate tax",
+                    },
+                    answer,
+                    explanation: `V = Σ FCF_t/(1+r_WACC)^t, and with constant growth the infinite sum collapses to the growing perpetuity V = FCF₁/(r_WACC − g) = ${eur(fcf)}/(${n(wacc / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
+                };
+            },
+        },
+        {
+            id: "fin-val-apv-method",
+            subject: "finance",
+            topic: "equity_valuation",
+            difficulty: "hard",
+            kind: "numeric",
+            unit: "EUR",
+            build: (rng) => {
+                // Growth first, unlevered cost strictly above it, so r_U − g ≥ 5 pp.
+                const g = rng.int(1, 4);
+                const rU = g + rng.int(5, 10);
+                const fcf = rng.int(300, 1000) * 1000;
+                const D = rng.int(100, 800) * 1000;
+                const rD = rng.int(3, 7);
+                const tauC = rng.pick([0.25, 0.3]);
+                const vU = fcf / ((rU - g) / 100);
+                const its = tauC * D;
+                const answer = vU + its;
+                return {
+                    prompt: `Value a firm with the **APV method**. Its unlevered free cash flow is ${eur(fcf)} next year and grows at a constant ${pct(g)} p.a. **in perpetuity**; it is taxed as if the firm were all-equity financed and is discounted at the unlevered cost of capital of ${pct(rU)}. The firm also carries **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} (interest only, principal rolled over forever), and the **corporate tax rate is τ_C = ${pct(tauC * 100)}**. What is the **value of the levered firm (APV)**?`,
+                    given: {
+                        "FCF₁ (unlevered, after tax)": eur(fcf),
+                        "Growth g (perpetual)": pct(g),
+                        "r_U": pct(rU),
+                        "Permanent debt D": eur(D),
+                        "r_D": pct(rD),
+                        "τ_C": pct(tauC * 100),
+                    },
+                    answer,
+                    explanation: `APV values the two pieces separately. Unlevered: V_U = Σ FCF_t/(1+r_U)^t = FCF₁/(r_U − g) = ${eur(fcf)}/(${n(rU / 100)} − ${n(g / 100)}) = ${eur(vU)}. Tax shield: PV(ITS) = τ_C·Σ D·r_D/(1+r_D)^t = τ_C·D·r_D/r_D = τ_C·D = ${eur(its)}. APV = V_U + PV(ITS) = ${eur(vU)} + ${eur(its)} = ${eur(answer)}`,
+                };
+            },
+        },
+
+    {
+        id: "fin-ci-right-div",
+        subject: "finance",
+        topic: "capital_increase",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const BV = rng.int(2, 6);
+            const Pcum = rng.int(70, 160);
+            // Keep the subscription price well below the cum-rights price: the gap
+            // (>= 25 EUR) always exceeds the largest possible dividend disadvantage
+            // (<= 3 EUR), so the subscription right can never turn negative.
+            const IP = rng.int(30, Pcum - 25);
+            const divNew = rng.float(0, 2, 2);
+            const divOld = divNew + rng.float(0.5, 3, 2); // old share never pays less
+            const rE = rng.int(4, 10);
+            const months = rng.pick([3, 6, 9, 12]);
+            const q = 1 + rE / 100;
+            const t = months / 12;
+            const disadv = (divOld - divNew) / q ** t;
+            const answer = (Pcum - IP - disadv) / (BV + 1);
+            return {
+                prompt: `A rights issue **against cash contributions** (Kapitalerhöhung gegen Einlagen) is carried out at a subscription ratio of ${BV}:1. The price cum rights is ${eur(Pcum)}, the subscription price of the new shares is ${eur(IP)}. The new shares carry a **dividend disadvantage**: for the current year the old shares receive ${eur(divOld)}, the new shares only ${eur(divNew)}. That dividend falls due in ${months} months and is discounted at ${pct(rE)}. What is the theoretical value of the **subscription right**?`,
+                given: {
+                    "Subscription ratio": `${BV}:1`,
+                    "P_cum": eur(Pcum),
+                    "Subscription price IP": eur(IP),
+                    "Dividend old share": eur(divOld),
+                    "Dividend new share": eur(divNew),
+                    "Time to dividend t": `${months} months`,
+                    "Discount rate": pct(rE),
+                },
+                answer,
+                explanation: `Dividend disadvantage = (Div_old − Div_new)·q^(−t) = (${eur(divOld)} − ${eur(divNew)})·${n2(q)}^(−${n(t)}) = ${eur(disadv)}. SR = (P_cum − IP − (Div_old − Div_new)·q^(−t))/(BV + 1) = (${eur(Pcum)} − ${eur(IP)} − ${eur(disadv)})/(${BV} + 1) = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-ci-funds-pex",
+        subject: "finance",
+        topic: "capital_increase",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const BV = rng.int(2, 8);
+            const Pcum = rng.int(60, 220);
+            const answer = Pcum / (1 + 1 / BV);
+            return {
+                prompt: `A capital increase **from company funds** (Kapitalerhöhung aus Gesellschaftsmitteln) converts reserves into share capital. Shareholders receive the new shares free of charge, so **no subscription price is paid in** — the market value of the company is unchanged and only spread over more shares. The subscription ratio is ${BV}:1 (${BV} old shares carry one new share) and the price cum rights is ${eur(Pcum)}. What is the **price after the capital increase (P_ex)**?`,
+                given: {
+                    "Capital increase": "from company funds (nothing paid in)",
+                    "Subscription ratio": `${BV}:1`,
+                    "P_cum": eur(Pcum),
+                },
+                answer,
+                explanation: `P_ex = P_cum/(1 + 1/BV) = ${eur(Pcum)}/(1 + 1/${BV}) = ${eur(answer)} — the value of ${BV} old shares at ${eur(Pcum)} is spread over ${BV + 1} shares. Note there is no issue price term here, unlike a rights issue against cash contributions.`,
+            };
+        },
+    },
+    {
+        id: "fin-opt-binomial-put",
+        subject: "finance",
+        topic: "options",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "EUR",
+        build: (rng) => {
+            const S = rng.int(85, 130);
+            // Strike stays above S·d (d <= 0.90 and K >= S − 5 with S >= 85), so the
+            // put always has value in the down state.
+            const K = S + rng.int(-5, 25);
+            const rRF = rng.int(1, 6);
+            // d <= 0.90 < 1 + r_f <= 1.06 <= 1.15 <= u, so 0 < p < 1 for every seed.
+            const u = rng.float(1.15, 1.45, 2);
+            const d = rng.float(0.65, 0.9, 2);
+            const p = (1 + rRF / 100 - d) / (u - d);
+            const Pu = Math.max(K - S * u, 0);
+            const Pd = Math.max(K - S * d, 0);
+            const answer = (p * Pu + (1 - p) * Pd) / (1 + rRF / 100);
+            return {
+                prompt: `One-period binomial model: the share trades at ${eur(S)} today and in one year is worth either ×${n2(u)} or ×${n2(d)} of that. The risk-free rate is ${pct(rRF)}. What is the **value of the European put** with a strike of ${eur(K)}?`,
+                given: { "S₀": eur(S), K: eur(K), u: n2(u), d: n2(d), "r_f": pct(rRF) },
+                answer,
+                explanation: `p = (1 + r_f − d)/(u − d) = ${n2(p)}; P_u = max(K − S·u, 0) = ${eur(Pu)}, P_d = max(K − S·d, 0) = ${eur(Pd)}; P₀ = (p·P_u + (1−p)·P_d)/(1 + r_f) = ${eur(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-eq-pb",
+        subject: "finance",
+        topic: "equity_valuation",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const bookPerShare = rng.float(4, 60, 2);
+            const multiple = rng.float(0.6, 3.6, 2);
+            // Round the price to cents so the number on screen is the number graded.
+            const P0 = Math.round(bookPerShare * multiple * 100) / 100;
+            const answer = P0 / bookPerShare;
+            return {
+                prompt: `A share trades at ${eur(P0)}. The company's book value of equity is ${eur(bookPerShare)} per share. What is its **price-to-book ratio (P/B)**?`,
+                given: { "Price P₀": eur(P0), "Book value of equity per share": eur(bookPerShare) },
+                answer,
+                explanation: `P/B = P₀ / book value of equity per share = ${eur(P0)} / ${eur(bookPerShare)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-inv-pi",
+        subject: "finance",
+        topic: "investment",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "ratio",
+        build: (rng) => {
+            const I0 = rng.int(20, 120) * 1000;
+            const T = rng.int(3, 5);
+            // Lower bound 1.4 keeps the NPV - and with it the index - positive even
+            // in the worst corner of the ranges (T = 5 at r = 10 %).
+            const cf = Math.round((I0 / T) * rng.float(1.4, 1.95, 3));
+            const r = rng.int(4, 10);
+            const flows = [-I0, ...Array.from({ length: T }, () => cf)];
+            const value = npv(flows, r / 100);
+            const answer = value / I0;
+            return {
+                prompt: `Capital is rationed, so projects are ranked by their **profitability index** — the NPV per euro of the scarce resource they consume. A project ties up ${eur(I0)} of capital today and returns ${eur(cf)} at the end of each of the next ${T} years; the discount rate is ${pct(r)}. What is its **profitability index**?`,
+                given: {
+                    "Capital consumed I₀": eur(I0),
+                    "Cash flow p.a.": eur(cf),
+                    Term: `${T} years`,
+                    r: pct(r),
+                },
+                answer,
+                explanation: `First the NPV: NPV = −I₀ + Σ CF/(1+r)^t = ${eur(value)}. Then PI = NPV / resources consumed = ${eur(value)} / ${eur(I0)} = ${n2(answer)}`,
+            };
+        },
+    },
+    {
+        id: "fin-bond-dmod",
+        subject: "finance",
+        topic: "bonds",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "years",
+        build: (rng) => {
+            const BN = 1000;
+            const couponRate = rng.int(2, 8);
+            const C = BN * (couponRate / 100);
+            const r = rng.int(2, 9);
+            const N = rng.int(3, 12);
+            const { duration } = macaulayDuration(C, BN, r / 100, N);
+            const answer = duration / (1 + r / 100);
+            return {
+                prompt: `A bond (face value ${eur(BN)}, coupon ${pct(couponRate)}, remaining term ${N} years) trades at a yield to maturity of ${pct(r)} and has a **Macaulay duration** of ${n2(duration)} years. What is its **modified duration**?`,
+                given: {
+                    "Macaulay duration D": `${n2(duration)} years`,
+                    "Yield to maturity r": pct(r),
+                    Coupon: pct(couponRate),
+                    N: `${N} years`,
+                },
+                answer,
+                explanation: `D_mod = D/(1 + r) = ${n2(duration)}/(1 + ${n(r / 100)}) = ${n2(answer)} years`,
+            };
+        },
+    },
 ];

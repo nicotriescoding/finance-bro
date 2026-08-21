@@ -15,7 +15,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    // WICHTIG: JSX richtig setzen für React 17+ / Next.js 13+
+    // IMPORTANT: keep JSX set correctly for React 17+ / Next.js 13+
     "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
@@ -28,7 +28,7 @@
         "./src/*"
       ]
     },
-    // stellt sicher, dass react/reac-dom types verwendet werden
+    // makes sure the react / react-dom types are the ones used
     "types": [
       "react",
       "react-dom"
