@@ -6,6 +6,7 @@ export const contentType = "image/png";
 
 // satori (used by ImageResponse) requires an explicit display value on every
 // element that has more than one child - keep each node single-child or flex.
+// Palette matches design 3a: navy chrome, one banking green, mint accents.
 export default function OpengraphImage() {
     return new ImageResponse(
         (
@@ -17,13 +18,21 @@ export default function OpengraphImage() {
                     flexDirection: "column",
                     justifyContent: "center",
                     padding: "80px",
-                    background: "linear-gradient(135deg, #0f172a 0%, #065f46 100%)",
+                    background: "#0f2137",
                     color: "white",
                     fontFamily: "sans-serif",
                 }}
             >
-                <div style={{ display: "flex", fontSize: 30, opacity: 0.75, marginBottom: 20 }}>
-                    finance-bro.de
+                <div
+                    style={{
+                        display: "flex",
+                        fontSize: 26,
+                        color: "#8ba3bd",
+                        marginBottom: 24,
+                        letterSpacing: 4,
+                    }}
+                >
+                    FINANCE-BRO.DE · PRIVATE CLIENT
                 </div>
                 <div style={{ display: "flex", fontSize: 88, fontWeight: 700 }}>Exam training</div>
                 <div style={{ display: "flex", fontSize: 88, fontWeight: 700 }}>for business 💸</div>
@@ -31,13 +40,28 @@ export default function OpengraphImage() {
                     style={{
                         display: "flex",
                         fontSize: 30,
-                        opacity: 0.85,
+                        color: "#c3d3e3",
                         marginTop: 32,
                         maxWidth: 950,
                         lineHeight: 1.4,
                     }}
                 >
                     {"Finance · Econ 1 & 2 · Financial Accounting · Cost Accounting · Entrepreneurship · Marketing"}
+                </div>
+                <div
+                    style={{
+                        display: "flex",
+                        marginTop: 40,
+                        background: "#1c6b45",
+                        color: "white",
+                        fontSize: 28,
+                        fontWeight: 700,
+                        padding: "16px 32px",
+                        borderRadius: 999,
+                        alignSelf: "flex-start",
+                    }}
+                >
+                    Start earning 💸
                 </div>
             </div>
         ),

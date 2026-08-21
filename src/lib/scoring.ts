@@ -20,6 +20,11 @@ const basePoints = {
 
 export type Difficulty = keyof typeof difficultyTimes;
 
+/** Max points a question can pay - the "WORTH UP TO" chip on the posting card. */
+export function maxPoints(difficulty: Difficulty): number {
+  return basePoints[difficulty] ?? 100;
+}
+
 /**
  * Points for one question, scaled by difficulty and how long it took.
  *

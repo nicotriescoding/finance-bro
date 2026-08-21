@@ -1,66 +1,120 @@
 @import "tailwindcss";
 
 /*
- * The app is deliberately light-themed: every component uses explicit
- * slate/white utilities. The create-next-app default put an unlayered
- * `body { background: ... }` rule here plus a prefers-color-scheme override,
- * and unlayered CSS beats Tailwind's layered utilities - which rendered dark
- * navy headings on a black background for anyone whose OS is in dark mode.
- * Colours and font now come from the utilities on <body> in layout.tsx.
+ * The app is deliberately light-themed ("The Statement", design direction 3a):
+ * every component uses explicit token utilities. Do NOT add an unlayered
+ * `body { background }` rule or a prefers-color-scheme override here - both
+ * beat Tailwind's layered utilities and once rendered dark navy headings on a
+ * black background for anyone whose OS is in dark mode. `npm run smoke`
+ * guards this.
  */
 :root {
   color-scheme: light;
 }
 
+/*
+ * Design tokens for direction 3a - "private bank" palette.
+ * Names follow the design handoff (docs/design/3a/README.md).
+ */
+@theme {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
 
-@keyframes float {
+  /* surfaces */
+  --color-field: #eef1f5; /* page background */
+  --color-surface: #ffffff; /* cards */
+  --color-hairline: #dde4ec; /* card borders */
+  --color-hairline-soft: #eef2f7; /* dividers inside cards */
+  --color-hairline-table: #e4eaf1; /* table borders */
+  --color-given-head: #f6f9fc; /* given-values caption bar */
+  --color-chip: #f2f6fa; /* grey chips */
+
+  /* ink (text + navy chrome) */
+  --color-ink: #0f2137;
+  --color-ink-raised: #16304b; /* chips/pills sitting on navy */
+  --color-ink-line: #2b4967; /* dividers on navy */
+  --color-ink-track: #22405f; /* empty progress track on navy */
+  --color-muted: #5d7793;
+  --color-muted-light: #8ba3bd;
+  --color-link-navy: #c3d3e3; /* inactive nav links */
+  --color-ledger: #33506e; /* ledger body text */
+  --color-ledger-mute: #9aa8b6;
+  --color-slot-text: #7d90a5; /* mono copy inside ad slots */
+
+  /* the single accent */
+  --color-brand: #1c6b45; /* correct + primary action */
+  --color-brand-tint: #f4fbf7;
+  --color-brand-border: #cfe4d8;
+  --color-brand-chip: #e6f3ec;
+  --color-brand-input: #f7fdf9;
+  --color-mint: #7fd6a3; /* green's on-navy sibling */
+
+  /* warn - wrong answers + streak fire, max ~2 uses per screen */
+  --color-warn: #c2410c;
+  --color-warn-bright: #ff7a3d;
+  --color-warn-soft: #ff9d6e;
+  --color-warn-mild: #ffb27a;
+  --color-warn-tint: #fdf4ee;
+  --color-warn-border: #f0d3bf;
+}
+
+/* Bank-like motion. Nothing bounces, overshoots or confettis. */
+@keyframes bdpop {
   0% {
-    transform: translateY(0) scale(1);
+    transform: translateY(6px) scale(0.9);
+    opacity: 0;
+  }
+  40% {
+    transform: translateY(-2px) scale(1.06);
     opacity: 1;
   }
   100% {
-    transform: translateY(-50px) scale(1.3);
+    transform: translateY(-14px) scale(1);
     opacity: 0;
   }
 }
 
-.animate-float {
-  animation: float 1.5s ease-out forwards;
-}
-
-@keyframes rainbow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animate-rainbow {
-  background: linear-gradient(
-          270deg,
-          #ff0000,
-          #ff7f00,
-          #ffff00,
-          #00ff00,
-          #0000ff,
-          #4b0082,
-          #8b00ff
-  );
-  background-size: 400% 400%;
-  animation: rainbow 2s ease infinite;
-}
-
-@keyframes money-fall {
-  0% {
-    transform: translateY(0) scale(1) rotate(0deg);
+@keyframes tick {
+  0%,
+  100% {
     opacity: 1;
   }
-  100% {
-    transform: translateY(-200px) scale(0.8) rotate(360deg);
-    opacity: 0;
+  50% {
+    opacity: 0.25;
   }
 }
 
-.animate-money-fall {
-  animation: money-fall 1.5s ease-out forwards;
+@keyframes fly {
+  0% {
+    transform: translate(0, 0) rotate(-8deg);
+  }
+  50% {
+    transform: translate(3px, -7px) rotate(10deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(-8deg);
+  }
 }
 
+@layer utilities {
+  .animate-bdpop {
+    animation: bdpop 1.8s ease-out forwards;
+  }
+  .animate-tick {
+    animation: tick 1.4s ease-in-out infinite;
+  }
+  .animate-fly {
+    animation: fly 2.6s ease-in-out infinite;
+  }
+  /* ad placeholders - diagonal stripes, per the ad rules in the handoff */
+  .bg-ad-stripes {
+    background: repeating-linear-gradient(135deg, #eaeff5 0 8px, #f3f6fa 8px 16px);
+  }
+  /* ALL-CAPS mono label, the 3a signature */
+  .caps-label {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+}

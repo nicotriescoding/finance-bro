@@ -1,27 +1,37 @@
-
+import type { Metadata } from "next";
 import AdSlot from "@/components/AdSlot";
 
+export const metadata: Metadata = {
+    title: "Bro Shop",
+    description: "The Finance Bro starter pack - curated lifestyle essentials.",
+};
+
+/**
+ * The Bro Shop keeps its own two-column catalogue layout (deliberately not
+ * the quiz's three-column statement view) - only the visual language is 3a.
+ * The product copy is original finance-bro canon: do not touch it.
+ */
 export default function ProductsPage() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-5 px-4 py-8 md:grid-cols-3">
             {/* Left column: products */}
-            <div className="md:col-span-2 flex flex-col gap-6">
-                <h1 className="text-2xl font-bold mb-4">📦 Products</h1>
+            <div className="flex flex-col gap-5 md:col-span-2">
+                <h1 className="text-2xl font-extrabold tracking-[-0.02em]">📦 Products</h1>
 
                 {/* Example category */}
-                <section className="border-b pb-4">
-                    <h2 className="text-xl font-semibold mb-3">Finance Bro Starter Pack</h2>
+                <section className="flex flex-col gap-4 rounded-[14px] border border-hairline bg-surface p-5 shadow-[0_1px_2px_rgba(15,33,55,.05)]">
+                    <h2 className="border-b border-hairline-soft pb-3 text-xl font-extrabold tracking-[-0.02em]">
+                        Finance Bro Starter Pack
+                    </h2>
 
                     {/* Product card */}
-                    <div className="flex gap-4 items-center mb-4">
-                        <img
-                            src="https://via.placeholder.com/150"
-                            alt="Product"
-                            className="w-32 h-32 object-cover rounded shadow"
-                        />
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-28 w-28 flex-none items-center justify-center rounded-xl bg-chip text-5xl">
+                            🦺
+                        </div>
                         <div>
-                            <p className="font-medium">Patagonia Vest</p>
-                            <p className="text-gray-600 text-sm mb-2">
+                            <p className="font-extrabold">Patagonia Vest</p>
+                            <p className="mb-2 mt-0.5 text-sm leading-relaxed text-muted">
                                 For the true business students who don&apos;t just study economics but
                                 have made the lifestyle their own. Usually comes with an internship
                                 arranged by Daddy and a superiority complex.
@@ -29,29 +39,27 @@ export default function ProductsPage() {
                             <a
                                 href="https://affiliate-link.de"
                                 target="_blank"
-                                className="text-blue-600 underline"
+                                className="text-sm font-extrabold text-brand underline underline-offset-4 transition hover:text-[#175a3a]"
                             >
                                 See the offer →
                             </a>
                         </div>
                     </div>
 
-                    <div className="flex gap-4 items-center">
-                        <img
-                            src="https://via.placeholder.com/150"
-                            alt="Product"
-                            className="w-32 h-32 object-cover rounded shadow"
-                        />
+                    <div className="flex items-center gap-4 border-t border-hairline-soft pt-4">
+                        <div className="flex h-28 w-28 flex-none items-center justify-center rounded-xl bg-chip text-5xl">
+                            🚬
+                        </div>
                         <div>
-                            <p className="font-medium">Business School Cigarettes</p>
-                            <p className="text-gray-600 text-sm mb-2">
+                            <p className="font-extrabold">Business School Cigarettes</p>
+                            <p className="mb-2 mt-0.5 text-sm leading-relaxed text-muted">
                                 Your easy entry into investing — takes the edge off so you can finally
                                 blow bubbles.
                             </p>
                             <a
                                 href="https://affiliate-link.de"
                                 target="_blank"
-                                className="text-blue-600 underline"
+                                className="text-sm font-extrabold text-brand underline underline-offset-4 transition hover:text-[#175a3a]"
                             >
                                 See the offer →
                             </a>
@@ -61,18 +69,12 @@ export default function ProductsPage() {
             </div>
 
             {/* Right column: ads */}
-            <aside className="flex flex-col gap-4">
-                <h2 className="text-lg font-bold">💸 This thing has to pay for itself somehow</h2>
-                <AdSlot
-                    title="Finance Newsletter"
-                    imgUrl="https://via.placeholder.com/200x100.png?text=Newsletter"
-                    linkUrl="https://example.com"
-                />
-                <AdSlot
-                    title="Trading Platform"
-                    imgUrl="https://via.placeholder.com/200x100.png?text=Trading"
-                    linkUrl="https://example.com"
-                />
+            <aside className="flex flex-col gap-3">
+                <h2 className="text-lg font-extrabold tracking-[-0.02em]">
+                    💸 This thing has to pay for itself somehow
+                </h2>
+                <AdSlot variant="feed" note="Finance Newsletter" />
+                <AdSlot variant="feed" note="Trading Platform" />
             </aside>
         </div>
     );

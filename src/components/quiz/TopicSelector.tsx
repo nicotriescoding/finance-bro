@@ -9,6 +9,10 @@ type Props = {
     onChange: (topics: string[]) => void;
 };
 
+/**
+ * Topic tickboxes, design 3a: 17px rounded-square boxes, ticked rows on the
+ * green tint. Multi-select - this is the filter for what the run quizzes.
+ */
 export default function TopicSelector({ subject, counts, selected, onChange }: Props) {
     const available = subject.topics.filter((t) => (counts[t.id] ?? 0) > 0);
     const empty = subject.topics.filter((t) => (counts[t.id] ?? 0) === 0);
@@ -18,49 +22,54 @@ export default function TopicSelector({ subject, counts, selected, onChange }: P
         onChange(selected.includes(id) ? selected.filter((t) => t !== id) : [...selected, id]);
 
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-lg font-semibold text-slate-900">Select topics</h2>
+        <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between pt-0.5">
+                <span className="caps-label text-[10px] text-muted">Topics in this mode</span>
                 <button
                     type="button"
                     onClick={() => onChange(allSelected ? [] : available.map((t) => t.id))}
-                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    className="text-xs font-bold text-muted transition hover:text-ink"
                 >
                     {allSelected ? "Deselect all" : "Select all"}
                 </button>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
                 {available.map((topic) => {
                     const active = selected.includes(topic.id);
                     return (
-                        <label
+                        <button
+                            type="button"
                             key={topic.id}
-                            className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border px-4 py-3 transition ${
+                            onClick={() => toggle(topic.id)}
+                            className={`flex items-center gap-2.5 rounded-[9px] border px-2.5 py-2 text-left transition ${
                                 active
-                                    ? "border-emerald-400 bg-emerald-50"
-                                    : "border-slate-200 bg-white hover:border-slate-300"
+                                    ? "border-brand-border bg-brand-tint"
+                                    : "border-hairline bg-surface hover:border-[#c8d3de]"
                             }`}
                         >
-                            <span className="flex items-center gap-3">
-                                <input
-                                    type="checkbox"
-                                    checked={active}
-                                    onChange={() => toggle(topic.id)}
-                                    className="h-4 w-4 accent-emerald-600"
-                                />
-                                <span className="text-sm font-medium text-slate-800">{topic.label}</span>
+                            <span
+                                className={`flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-[5px] text-[11px] font-extrabold ${
+                                    active
+                                        ? "bg-brand text-white"
+                                        : "border-[1.5px] border-[#c8d3de] text-transparent"
+                                }`}
+                            >
+                                ✓
                             </span>
-                            <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">
-                                {counts[topic.id]}
+                            <span
+                                className={`flex-1 text-[13px] ${active ? "font-bold" : "font-medium"}`}
+                            >
+                                {topic.label}
                             </span>
-                        </label>
+                            <span className="text-xs tabular-nums text-muted">{counts[topic.id]}</span>
+                        </button>
                     );
                 })}
             </div>
 
             {empty.length > 0 && (
-                <p className="mt-4 text-xs text-slate-500">
+                <p className="pt-1 text-xs text-muted">
                     No questions yet: {empty.map((t) => t.label).join(", ")}
                 </p>
             )}

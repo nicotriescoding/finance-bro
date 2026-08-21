@@ -1,10 +1,21 @@
 import "./globals.css";
 import "katex/dist/katex.min.css";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Manrope, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
+import TabBar from "@/components/layout/TabBar";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700", "800"],
+    variable: "--font-manrope",
+});
+
+const plexMono = IBM_Plex_Mono({
+    subsets: ["latin"],
+    weight: ["400", "700"],
+    variable: "--font-plex-mono",
+});
 
 const SITE_URL = "https://www.finance-bro.de";
 const TITLE = "finance-bro";
@@ -54,7 +65,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-    themeColor: "#0f172a",
+    themeColor: "#0f2137",
     width: "device-width",
     initialScale: 1,
 };
@@ -74,9 +85,13 @@ const jsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={`${inter.className} bg-slate-50 text-slate-900 antialiased`}>
+            <body
+                className={`${manrope.variable} ${plexMono.variable} bg-field font-sans text-ink antialiased`}
+            >
                 <Navbar />
-                <main>{children}</main>
+                {/* bottom padding keeps content clear of the phone tab bar */}
+                <main className="pb-[86px] md:pb-8">{children}</main>
+                <TabBar />
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -56,7 +56,9 @@ its own work:
 | 10 | English end to end; German only for glossed statutory terms | done |
 | 11 | Ingest TUM MC past exams for Econ 1, Econ 2, Financial Accounting, Cost Accounting, Entrepreneurship, Marketing | **next — Nico supplies the exams** |
 | 12 | Finance: add `source` links for questions matching actual exam tasks | planned |
-| 13 | Redesign (see `DESIGN-BRIEF.md`) — ad + question + score on one screen, mobile-safe | planned |
+| 13 | Redesign — direction 3a "The Statement" (`docs/design/3a/`): private-bank shell, ad + question + account on one screen, phone tab bar | done |
+| 13a | Career setup page (`/career`): subject grid + topic ticks + single Semester-Marathon mode; `/quiz` resumes the stored run | done |
+| 13b | Unlimited session: whole selected pool dealt once, write-offs re-queue with fresh numbers until every posting settles | done |
 | 14 | German edition as a second locale (`/de/…` + hreflang) | planned |
 | 15 | Highscores/multiplayer backend — optional extra, never on the read path | icebox |
 | 16 | `/products` page: replace placeholder images and dead affiliate links or drop the page | icebox |

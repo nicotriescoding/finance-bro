@@ -81,6 +81,14 @@ export function isWithinTolerance(
     return Math.abs(user - expected) <= allowed;
 }
 
+/** "±0.5 %" - the effective relative tolerance, for the posting meta row. */
+export function toleranceLabel(unit: Unit, override?: number): string {
+    const [rel] = TOLERANCE[unit] ?? TOLERANCE.number;
+    const pct = (override ?? rel) * 100;
+    const shown = pct >= 1 ? pct.toFixed(0) : pct.toFixed(1);
+    return `±${shown} %`;
+}
+
 const NUM = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

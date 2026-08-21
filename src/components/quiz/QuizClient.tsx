@@ -1,301 +1,395 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-import { SUBJECTS, getSubject } from "@/content/subjects";
-import { countsByTopic, questionsFor } from "@/content/questions";
-import { buildSession } from "@/lib/questions/engine";
-import type { QuestionInstance, SubjectId } from "@/lib/questions/types";
-import { usePersistentState } from "@/hooks/usePersistentState";
+import { getSubject } from "@/content/subjects";
+import type { QuestionInstance } from "@/lib/questions/types";
+import {
+    applyAnswer,
+    buildUnlimitedSession,
+    clearSession,
+    currentInstance,
+    loadSession,
+    saveSession,
+    segmentStates,
+    sessionTotals,
+    type StoredSession,
+} from "@/lib/session";
 import { useScore } from "@/hooks/useScore";
+import { useLevel } from "@/hooks/useLevel";
 import { useStopwatch } from "@/hooks/useStopwatch";
 import { difficultyTimes } from "@/lib/scoring";
+import { getNextRank, getRank } from "@/lib/rankings";
+import { formatMoney, MONEY } from "@/lib/money";
 
-import TopicSelector from "./TopicSelector";
 import QuestionCard from "./QuestionCard";
-import Scoreboard from "@/components/Scoreboard/Scoreboard";
+import ProgressSegments from "./ProgressSegments";
+import AdSlot from "@/components/AdSlot";
+import BalanceCard from "@/components/account/BalanceCard";
+import ActivityLedger from "@/components/account/ActivityLedger";
+import CareerTrack from "@/components/account/CareerTrack";
 
-const LENGTHS = [5, 10, 20, 30];
+type View = { instance: QuestionInstance; posting: number };
 
+/**
+ * The account view: the running Semester Marathon. Quiz in the nav resumes
+ * the stored run; if there is none, the Career page opens one.
+ */
 export default function QuizClient() {
+    const router = useRouter();
     const params = useSearchParams();
-    const subjectId = (params.get("subject") ?? "finance") as SubjectId;
-    const subject = getSubject(subjectId) ?? SUBJECTS[0];
+    const subjectParam = params.get("subject");
 
-    const counts = useMemo(() => countsByTopic(subject.id), [subject.id]);
-    const availableTopics = useMemo(
-        () => subject.topics.filter((t) => (counts[t.id] ?? 0) > 0).map((t) => t.id),
-        [subject.topics, counts]
-    );
-
-    const [selected, setSelected] = usePersistentState<string[]>(
-        `fb_topics_${subject.id}_v1`,
-        availableTopics
-    );
-    const [length, setLength] = usePersistentState<number>("fb_length_v1", 10);
-
-    const [session, setSession] = useState<QuestionInstance[] | null>(null);
-    const [index, setIndex] = useState(0);
-    const [correctCount, setCorrectCount] = useState(0);
-    const [answeredCount, setAnsweredCount] = useState(0);
+    const [ready, setReady] = useState(false);
+    const [session, setSession] = useState<StoredSession | null>(null);
+    const [view, setView] = useState<View | null>(null);
+    const [award, setAward] = useState<number | null>(null);
 
     const { score, addScore } = useScore();
     const { elapsedMs, start, stop, reset } = useStopwatch();
 
-    // drop topic ids that no longer exist for this subject
+    // resume the stored run (client-only state)
     useEffect(() => {
-        setSelected((prev) => {
-            const cleaned = prev.filter((t) => availableTopics.includes(t));
-            return cleaned.length === prev.length ? prev : cleaned;
-        });
+        const s = loadSession();
+        setSession(s);
+        if (s && s.queue.length > 0) {
+            const instance = currentInstance(s);
+            if (instance) setView({ instance, posting: s.log.length + 1 });
+        }
+        setReady(true);
+        reset();
+        start();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [subject.id]);
+    }, []);
 
-    const pool = useMemo(
-        () => questionsFor(subject.id, selected),
-        [subject.id, selected]
+    // no run to resume -> the Career page is where a run starts
+    useEffect(() => {
+        if (ready && session === null) {
+            router.replace(subjectParam ? `/career?subject=${subjectParam}` : "/career");
+        }
+    }, [ready, session, router, subjectParam]);
+
+    const handleAnswered = useCallback(
+        (correct: boolean) => {
+            if (!session || !view) return;
+            stop();
+            let points = 0;
+            if (correct) {
+                const difficulty = view.instance.question.difficulty;
+                const limit = difficultyTimes[difficulty] ?? 120;
+                points = addScore(difficulty, Math.round(elapsedMs / 1000), limit);
+            }
+            const next = applyAnswer(session, correct, points);
+            saveSession(next);
+            setSession(next);
+            setAward(correct ? points : 0);
+        },
+        [session, view, stop, addScore, elapsedMs]
     );
 
-    const startSession = () => {
-        const built = buildSession(pool, Math.min(length, Math.max(length, pool.length ? length : 0)));
-        if (built.length === 0) return;
-        setSession(built);
-        setIndex(0);
-        setCorrectCount(0);
-        setAnsweredCount(0);
-        reset();
-        start();
-    };
-
-    const handleAnswered = (correct: boolean) => {
+    const handleNext = useCallback(() => {
         if (!session) return;
-        setAnsweredCount((c) => c + 1);
-        if (!correct) return;
-        setCorrectCount((c) => c + 1);
-        const difficulty = session[index].question.difficulty;
-        const limit = difficultyTimes[difficulty] ?? 120;
-        addScore(difficulty, Math.round(elapsedMs / 1000), limit);
-    };
-
-    const handleNext = () => {
-        if (!session) return;
-        if (index + 1 >= session.length) {
-            stop();
-            setIndex(session.length); // -> summary
+        if (session.queue.length === 0) {
+            setView(null); // -> statement
             return;
         }
-        setIndex((i) => i + 1);
+        const instance = currentInstance(session);
+        if (!instance) return;
+        setView({ instance, posting: session.log.length + 1 });
+        setAward(null);
         reset();
         start();
-    };
+    }, [session, reset, start]);
 
-    // ------------------------------------------------------------------ setup
-    if (!session) {
-        // A bank with no questions at all gets a build-in-progress state instead
-        // of an empty topic list. This is the normal state for every subject
-        // whose TUM past exams have not been ingested yet.
-        const bankIsEmpty = availableTopics.length === 0;
-        if (bankIsEmpty) {
-            return (
-                <div className="mx-auto max-w-3xl px-4 py-10">
-                    <SubjectSwitcher current={subject.id} />
-
-                    <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-slate-900">
-                            {subject.emoji} {subject.label}
-                        </h1>
-                        <p className="mt-2 text-slate-600">{subject.description}</p>
-                    </div>
-
-                    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
-                        <p className="text-4xl">🏗️</p>
-                        <h2 className="mt-3 text-lg font-semibold text-slate-900">
-                            No questions yet
-                        </h2>
-                        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-600">
-                            This bank is being rebuilt from real TUM exams — questions
-                            land here as soon as the past exams are ingested.
-                        </p>
-                        <Link
-                            href="/quiz?subject=finance"
-                            className="mt-6 inline-block rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-500"
-                        >
-                            Practice Finance instead
-                        </Link>
-                    </div>
-                </div>
-            );
-        }
-
+    if (!ready || session === null) {
         return (
-            <div className="mx-auto max-w-3xl px-4 py-10">
-                <SubjectSwitcher current={subject.id} />
-
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-slate-900">
-                        {subject.emoji} {subject.label}
-                    </h1>
-                    <p className="mt-2 text-slate-600">{subject.description}</p>
-                </div>
-
-                <TopicSelector
-                    subject={subject}
-                    counts={counts}
-                    selected={selected}
-                    onChange={setSelected}
-                />
-
-                <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <h2 className="mb-3 text-lg font-semibold text-slate-900">Length</h2>
-                    <div className="flex flex-wrap gap-2">
-                        {LENGTHS.map((l) => (
-                            <button
-                                key={l}
-                                type="button"
-                                onClick={() => setLength(l)}
-                                className={`rounded-xl border px-4 py-2 text-sm font-medium transition ${
-                                    length === l
-                                        ? "border-slate-900 bg-slate-900 text-white"
-                                        : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                                }`}
-                            >
-                                {l} questions
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-                    <p className="text-sm text-slate-600">
-                        {pool.length > 0
-                            ? `${pool.length} questions in the selected pool`
-                            : "Select at least one topic."}
-                    </p>
-                    <button
-                        type="button"
-                        onClick={startSession}
-                        disabled={pool.length === 0}
-                        className="rounded-xl bg-emerald-600 px-8 py-3 font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                        Start
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
-    // ---------------------------------------------------------------- summary
-    if (index >= session.length) {
-        const pct = Math.round((correctCount / session.length) * 100);
-        return (
-            <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-                <p className="text-6xl">{pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚"}</p>
-                <h1 className="mt-4 text-3xl font-bold text-slate-900">
-                    {correctCount} of {session.length} correct
-                </h1>
-                <p className="mt-2 text-lg text-slate-600">{pct} % hit rate</p>
-
-                <div className="mt-8 flex flex-wrap justify-center gap-3">
-                    <button
-                        type="button"
-                        onClick={startSession}
-                        className="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-500"
-                    >
-                        Again
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setSession(null)}
-                        className="rounded-xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
-                    >
-                        Change topics
-                    </button>
-                    <Link
-                        href="/"
-                        className="rounded-xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
-                    >
-                        Change subject
+            <div className="mx-auto max-w-md px-4 py-16 text-center">
+                <p className="caps-label text-[10px] text-muted">Opening the account view</p>
+                <p className="mt-3 text-sm text-muted">
+                    No run in progress —{" "}
+                    <Link href="/career" className="font-bold text-brand underline underline-offset-4">
+                        open one on the Career page
                     </Link>
-                </div>
+                    .
+                </p>
             </div>
         );
     }
 
-    // ------------------------------------------------------------------- quiz
-    const current = session[index];
-    const progress = ((index) / session.length) * 100;
+    const subject = getSubject(session.subjectId);
+    const totals = sessionTotals(session);
+
+    // ---------------------------------------------------------- statement
+    // The card for the just-answered final posting stays on screen until
+    // "Close the statement"; a completed run resumed from storage (no open
+    // card, award === null) goes straight to the statement.
+    if (view === null || (totals.complete && award === null)) {
+        return (
+            <Statement
+                session={session}
+                onRestart={() => {
+                    const fresh = buildUnlimitedSession(session.subjectId, session.topicIds);
+                    if (!fresh) return;
+                    saveSession(fresh);
+                    setSession(fresh);
+                    const instance = currentInstance(fresh);
+                    if (instance) setView({ instance, posting: 1 });
+                    setAward(null);
+                    reset();
+                    start();
+                }}
+                onChangeSetup={() => {
+                    clearSession();
+                    router.push(`/career?subject=${session.subjectId}`);
+                }}
+            />
+        );
+    }
+
+    if (view === null) return null; // unreachable, keeps TS happy
+
+    const states = segmentStates(session);
+    const streak = session.streak;
 
     return (
-        <div className="mx-auto max-w-5xl px-4 py-8">
-            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-                <div>
-                    <div className="mb-4">
-                        <div className="mb-2 flex items-center justify-between text-sm text-slate-600">
-                            <span>
-                                Question {index + 1} of {session.length}
+        <div>
+            {/* phone: the full progress stack lives in the navy header */}
+            <PhoneProgressStack
+                courseName={subject?.short ?? session.subjectId}
+                session={session}
+                score={score}
+                posting={view.posting}
+            />
+
+            <div className="mx-auto max-w-[1440px] px-4 pt-4 lg:px-[22px] lg:pt-[18px]">
+                <div className="flex gap-[18px]">
+                    {/* left rail - ads only, kept away from the maths */}
+                    <aside className="hidden w-[200px] flex-none flex-col gap-3 xl:flex">
+                        <span className="caps-label text-[9px] tracking-[.18em] text-muted-light">
+                            Ad rail · kept away from the maths
+                        </span>
+                        <AdSlot variant="skyscraper" />
+                        <AdSlot variant="square" />
+                    </aside>
+
+                    {/* centre - the work */}
+                    <div className="flex min-w-0 flex-1 flex-col gap-3">
+                        <div className="hidden items-center gap-3 rounded-xl border border-hairline bg-surface px-4 py-2.5 lg:flex">
+                            <span className="text-sm font-extrabold">
+                                {subject?.label ?? session.subjectId}
                             </span>
-                            <span>{Math.floor(elapsedMs / 1000)} s</span>
+                            <ProgressSegments states={states} variant="light" />
+                            <span className="text-[13px] font-extrabold tabular-nums">
+                                {totals.settledCount} / {totals.total}
+                            </span>
+                            {streak >= 2 && (
+                                <span className="text-[13px] font-bold text-warn">
+                                    🔥 {streak} streak
+                                </span>
+                            )}
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
-                            <div
-                                className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-                                style={{ width: `${progress}%` }}
-                            />
+
+                        <QuestionCard
+                            key={view.instance.key}
+                            instance={view.instance}
+                            postingNo={view.posting}
+                            award={award}
+                            settledCorrect={totals.settledCount}
+                            postings={totals.postings}
+                            writeoffs={totals.writeoffs}
+                            lastWriteoffPosting={totals.lastWriteoffPosting}
+                            onAnswered={handleAnswered}
+                            onNext={handleNext}
+                            isLast={totals.left === 0}
+                        />
+
+                        <div className="hidden md:block">
+                            <AdSlot variant="leaderboard" />
                         </div>
+                        <div className="md:hidden">
+                            <AdSlot variant="feed" />
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                clearSession();
+                                router.push(`/career?subject=${session.subjectId}`);
+                            }}
+                            className="self-start text-sm text-muted underline underline-offset-4 transition hover:text-ink"
+                        >
+                            End session
+                        </button>
                     </div>
 
-                    <QuestionCard
-                        key={current.key}
-                        instance={current}
-                        onAnswered={handleAnswered}
-                        onNext={handleNext}
-                        isLast={index + 1 >= session.length}
-                    />
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            stop();
-                            setSession(null);
-                        }}
-                        className="mt-4 text-sm text-slate-500 underline underline-offset-4 hover:text-slate-700"
-                    >
-                        End session
-                    </button>
+                    {/* right rail - the account */}
+                    <aside className="hidden w-[300px] flex-none flex-col gap-3 lg:flex">
+                        <BalanceCard score={score} recentCredit={award ?? undefined} />
+                        <ActivityLedger log={session.log} />
+                        <CareerTrack score={score} />
+                    </aside>
                 </div>
 
-                <aside>
-                    <Scoreboard score={score} />
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm shadow-sm">
-                        <p className="font-semibold text-slate-900">{subject.emoji} {subject.short}</p>
-                        <p className="mt-1 text-slate-600">
-                            {correctCount} correct · {answeredCount - correctCount} wrong
-                        </p>
-                    </div>
-                </aside>
+                {/* phone: the account folds in below the feed */}
+                <div className="mt-3 flex flex-col gap-3 lg:hidden">
+                    <ActivityLedger log={session.log} />
+                    <CareerTrack score={score} />
+                </div>
             </div>
         </div>
     );
 }
 
-function SubjectSwitcher({ current }: { current: SubjectId }) {
+/* ------------------------------------------------------------------ phone */
+
+function PhoneProgressStack({
+    courseName,
+    session,
+    score,
+    posting,
+}: {
+    courseName: string;
+    session: StoredSession;
+    score: number;
+    posting: number;
+}) {
+    const totals = sessionTotals(session);
+    const states = segmentStates(session);
+    const { level, progress, nextRequired } = useLevel(score);
+    const rank = getRank(level);
+    const next = getNextRank(level);
+    const remaining = Math.max(0, nextRequired - Math.floor(progress * nextRequired));
+    const pct = Math.round(progress * 100);
+
     return (
-        <div className="mb-6 flex flex-wrap gap-2">
-            {SUBJECTS.map((s) => (
-                <Link
-                    key={s.id}
-                    href={`/quiz?subject=${s.id}`}
-                    className={`rounded-full border px-3 py-1.5 text-sm font-medium transition ${
-                        s.id === current
-                            ? "border-slate-900 bg-slate-900 text-white"
-                            : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                    }`}
-                >
-                    {s.emoji} {s.short}
-                </Link>
-            ))}
+        <div className="bg-ink px-4 pb-3.5 pt-0.5 lg:hidden">
+            <div className="flex flex-col gap-2.5 rounded-xl bg-ink-raised p-3 text-[#e8eef5]">
+                <div className="flex items-center gap-2">
+                    <span className="text-xs font-extrabold">{courseName}</span>
+                    <div className="flex-1" />
+                    <span className="text-[11px] font-extrabold text-mint">
+                        {totals.settledCount} ✓
+                    </span>
+                    <span className="text-[11px] font-extrabold text-warn-soft">
+                        {totals.writeoffs} ✗
+                    </span>
+                    <span className="text-[11px] font-bold text-muted-light">
+                        {totals.left} left
+                    </span>
+                </div>
+                <ProgressSegments states={states} variant="navy" />
+                <div className="flex items-center gap-2">
+                    {session.streak >= 2 && (
+                        <span className="text-[11px] font-extrabold text-warn-mild">
+                            🔥 {session.streak} streak
+                        </span>
+                    )}
+                    <div className="flex-1" />
+                    <span className="caps-label text-[10px] text-muted-light">
+                        Posting {String(posting).padStart(2, "0")} · {totals.left} left
+                    </span>
+                </div>
+                <span className="h-px bg-ink-track" />
+                <div className="flex flex-col gap-1.5">
+                    <div className="flex justify-between text-[10px] text-[#b7c8d9]">
+                        <span>
+                            TIER {level} · {rank.title.toUpperCase()} {rank.emoji}
+                        </span>
+                        <span>
+                            {next
+                                ? `${formatMoney(remaining)} ${MONEY} to ${next.emoji}`
+                                : "top tier"}
+                        </span>
+                    </div>
+                    <span className="block h-[5px] overflow-hidden rounded-[3px] bg-ink-track">
+                        <span
+                            className="block h-full bg-mint transition-[width] duration-500 ease-out"
+                            style={{ width: `${pct}%` }}
+                        />
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+/* -------------------------------------------------------------- statement */
+
+function Statement({
+    session,
+    onRestart,
+    onChangeSetup,
+}: {
+    session: StoredSession;
+    onRestart: () => void;
+    onChangeSetup: () => void;
+}) {
+    const subject = getSubject(session.subjectId);
+    const totals = sessionTotals(session);
+    const joke =
+        totals.writeoffs === 0
+            ? "A clean statement. The auditors are suspicious."
+            : "Every write-off recovered eventually. The bank thanks you for the volume.";
+
+    return (
+        <div className="mx-auto max-w-xl px-4 py-10 lg:py-16">
+            <div className="flex flex-col gap-4 rounded-[14px] border border-hairline bg-surface p-6 shadow-[0_1px_2px_rgba(15,33,55,.05)] sm:p-8">
+                <span className="caps-label text-[10px] text-muted">
+                    Session statement · {subject?.short ?? session.subjectId}
+                </span>
+                <h1 className="text-3xl font-extrabold tracking-[-0.02em]">
+                    {totals.settledCount} / {totals.total} postings settled
+                </h1>
+                <div className="overflow-hidden rounded-[10px] border border-hairline-table">
+                    <Row label="Postings answered" value={String(totals.postings)} />
+                    <Row label="Write-offs" value={String(totals.writeoffs)} warn={totals.writeoffs > 0} />
+                    <Row label="Credited this run" value={`+${formatMoney(totals.earned)} ${MONEY}`} credit />
+                </div>
+                <p className="text-sm text-muted">{joke}</p>
+                <div className="flex flex-wrap gap-3 pt-1">
+                    <button
+                        type="button"
+                        onClick={onRestart}
+                        className="rounded-[10px] bg-brand px-6 py-3 font-extrabold text-white transition hover:bg-[#175a3a]"
+                    >
+                        Run it back
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onChangeSetup}
+                        className="rounded-[10px] border border-hairline bg-surface px-6 py-3 font-extrabold text-ink transition hover:border-[#c8d3de]"
+                    >
+                        Change setup
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function Row({
+    label,
+    value,
+    credit,
+    warn,
+}: {
+    label: string;
+    value: string;
+    credit?: boolean;
+    warn?: boolean;
+}) {
+    return (
+        <div className="flex justify-between border-b border-hairline-soft px-3.5 py-2.5 text-sm last:border-b-0">
+            <span className="text-muted">{label}</span>
+            <span
+                className={`font-extrabold tabular-nums ${
+                    credit ? "text-brand" : warn ? "text-warn" : "text-ink"
+                }`}
+            >
+                {value}
+            </span>
         </div>
     );
 }

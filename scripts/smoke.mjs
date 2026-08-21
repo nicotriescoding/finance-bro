@@ -145,6 +145,21 @@ try {
         check(`/quiz?subject=${subject} returns 200`, r.status === 200, `got ${r.status}`);
     }
 
+    // --- career (session setup, design 3a) -------------------------------
+    const career = await fetch(`${BASE}/career`);
+    const careerHtml = await career.text();
+    check("/career returns 200", career.status === 200, `got ${career.status}`);
+    check(
+        "/career is the dead-end career setup",
+        careerHtml.includes("dead-end career")
+    );
+    check(
+        "/career has the start button",
+        careerHtml.includes("Start earning")
+    );
+    // the navy chrome links every page to the setup
+    check("/ links the Career page", homeHtml.includes("Career 🪦"));
+
     // --- legacy route ----------------------------------------------------
     const tasks = await fetch(`${BASE}/tasks`, { redirect: "manual" });
     check(

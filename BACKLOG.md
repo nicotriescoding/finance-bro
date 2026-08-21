@@ -6,6 +6,20 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Design 3a shipped (2026-08-21).** The whole site now wears the "Statement"
+private-bank shell from Nico's design handoff (`docs/design/3a/`): navy chrome
+with balance pill and credit float, Manrope + IBM Plex Mono, three-column quiz
+(ad rail | posting card | account rail with ledger + career track), phone
+bottom tab bar with the full progress stack, `/career` as the setup page
+(subject cards as "dead-end careers", topic tickboxes, one Semester-Marathon
+mode), sessions persisted in localStorage so Quiz resumes and Career restarts.
+Write-offs re-queue with fresh numbers until every posting settles. Nico's
+original jokes (rank ladder incl. "Jeff Bezzo's", Multiplayer/Language/Bro-Shop
+copy, BroDollar) are verbatim; the design's German gags were translated by
+meaning per the English-only rule. The Bro Shop keeps its own catalogue layout,
+restyled only. `npm run check` green (42 smoke checks, incl. new `/career`
+assertions).
+
 97 questions, all Finance, all built from Nico's TUM course material (IVF
 formula catalogue + the original app's data). The six non-Finance banks are
 **intentionally empty** since 2026-08-21: their syllabus-invented seed questions
@@ -28,10 +42,19 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   KaTeX per the rules, every question gets `source`). This refills Econ 1,
   Econ 2, Financial Accounting, Cost Accounting, Entrepreneurship, Marketing —
   and can add `source` tags to Finance questions that match real exam tasks.
-- **Redesign.** `DESIGN-BRIEF.md` holds a ready-to-paste prompt for five design
-  directions. Binding constraint: ad + question + score on one screen; the
-  phone view must place the ad without interfering with answering. Nothing has
-  been designed yet — the brief is the whole state.
+- **Visual check on Nico's machine.** Sandbox screenshots verified layout,
+  palette, KaTeX and all states (write-off, resume banner, empty bank, phone),
+  but with a fallback text font — the sandbox's headless Chromium would not
+  apply the Manrope webfont even though the woff2 files serve 200. First
+  `npm run dev` in real Chrome: confirm Manrope/Plex Mono render, check
+  `/quiz` + `/career` in dark-mode OS (page must stay light), and the balance
+  count-up + credit float on a correct answer.
+- **Cleanup on Nico's machine** (the sandbox cannot delete files):
+  `rm -rf .next_stale_sandbox` (a stale `.next` renamed aside so the build
+  could run), and the now-unused legacy components
+  `src/components/Scoreboard/` (Scoreboard, RankBadge, LevelUpAnimation) and
+  `src/components/ui/` (Button, Card, Input, ProgressBar, StatBadge) — nothing
+  imports them since the redesign.
 - **Update the Cowork project instructions.** Nico's Claude project settings
   still carry the old German paste; the current English text lives in
   `.claude/cowork-project-instructions.md` and should replace it.
@@ -50,14 +73,17 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
 
 ## Known gaps
 
-- KaTeX rendering has not been **seen** yet — the sandbox cannot screenshot.
-  First `npm run dev` on Nico's machine: check a Finance explanation and the
-  given-table symbols on `/quiz?subject=finance`, in dark mode.
+- KaTeX rendering **has now been seen** (sandbox headless-Chromium
+  screenshots, 2026-08-21): prompts, given-table symbols and worked solutions
+  render correctly in the new posting card. Still confirm once in real Chrome
+  with the production fonts (see Next up).
 - `/multiplayer` and `/language` are placeholder joke pages from the original
   build. `/products` still has `via.placeholder.com` images and dead affiliate
   links (SPEC #16).
-- `AdSlot` renders a grey box; no ad integration. The redesign decides what
-  goes in it before wiring a network.
+- `AdSlot` now renders the 3a fixed-size striped placeholders (160×600,
+  160×160, 970×60, 300×100, 468×76 sponsored-career) with SPONSORED/AD labels;
+  still no ad network wired. Slots never move layout — keep it that way when
+  one is.
 - `fin-bond-modified-duration` asks for a signed percentage price change, so a
   student typing `7.19` instead of `-7.19` fails. Either reword to "by how much
   does it fall" or say "state the sign".
