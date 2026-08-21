@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { QuestionInstance } from "@/lib/questions/types";
 import { formatAnswer, isWithinTolerance, parseNumericInput, unitHint } from "@/lib/questions/grading";
 import { topicLabel } from "@/content/subjects";
+import RichText from "./RichText";
 
 const DIFFICULTY_LABEL: Record<string, string> = {
     very_easy: "very easy",
@@ -85,14 +86,20 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                 )}
             </div>
 
-            <p className="text-base leading-relaxed text-slate-800">{renderPrompt(instance.prompt)}</p>
+            <p className="text-base leading-relaxed text-slate-800">
+                <RichText text={instance.prompt} />
+            </p>
 
             {instance.given && Object.keys(instance.given).length > 0 && (
                 <dl className="mt-4 grid gap-x-6 gap-y-1 rounded-xl bg-slate-50 p-4 text-sm sm:grid-cols-2">
                     {Object.entries(instance.given).map(([k, v]) => (
                         <div key={k} className="flex justify-between gap-4">
-                            <dt className="text-slate-500">{k}</dt>
-                            <dd className="font-medium text-slate-900">{v}</dd>
+                            <dt className="text-slate-500">
+                                <RichText text={k} />
+                            </dt>
+                            <dd className="font-medium text-slate-900">
+                                <RichText text={v} />
+                            </dd>
                         </div>
                     ))}
                 </dl>
@@ -143,7 +150,9 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[11px] font-bold text-slate-600">
                                     {String.fromCharCode(65 + i)}
                                 </span>
-                                <span className="text-slate-800">{choice}</span>
+                                <span className="text-slate-800">
+                                    <RichText text={choice} />
+                                </span>
                             </button>
                         );
                     })}
@@ -166,7 +175,7 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                     </p>
                     {instance.explanation && (
                         <p className="mt-2 leading-relaxed text-slate-700">
-                            {renderPrompt(instance.explanation)}
+                            <RichText text={instance.explanation} />
                         </p>
                     )}
                 </div>
@@ -192,19 +201,6 @@ export default function QuestionCard({ instance, onAnswered, onNext, isLast }: P
                 )}
             </div>
         </div>
-    );
-}
-
-/** Renders **bold** segments without pulling in a markdown dependency. */
-function renderPrompt(text: string) {
-    return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-        part.startsWith("**") && part.endsWith("**") ? (
-            <strong key={i} className="font-semibold text-slate-900">
-                {part.slice(2, -2)}
-            </strong>
-        ) : (
-            <span key={i}>{part}</span>
-        )
     );
 }
 

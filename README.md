@@ -1,12 +1,17 @@
 # finance-bro
 
-Exam trainer for German business-administration students — [finance-bro.de](https://www.finance-bro.de)
+Exam trainer for TUM business-administration students — [finance-bro.de](https://www.finance-bro.de)
 
-Next.js 16 (App Router) · React 19 · Tailwind 4 · TypeScript. **No database, no backend.**
+Next.js 16 (App Router) · React 19 · Tailwind 4 · TypeScript · KaTeX. **No database, no backend.**
 
 Working on this repo? Read [CLAUDE.md](./CLAUDE.md) for the hard rules and commands,
-and [BACKLOG.md](./BACKLOG.md) for what is open. This file explains the domain: how
+[SPEC.md](./SPEC.md) for the feature list and the working loop, and
+[BACKLOG.md](./BACKLOG.md) for what is open. This file explains the domain: how
 questions are written and how answers are graded.
+
+**Content policy:** every question is based on real TUM course material — past
+exams (carrying a `source` field) or the course's own formula catalogue. Nothing
+is invented from a syllabus.
 
 ## Language
 
@@ -45,13 +50,13 @@ src/
       cost_accounting.ts
       entrepreneurship.ts
       marketing.ts
-      _helpers.ts            de-DE number formatting, normal CDF, NPV, IRR, duration
+      _helpers.ts            en-US number formatting, normal CDF, NPV, IRR, duration
   lib/questions/
     types.ts                 Question types (numeric | choice)
     rng.ts                   Seeded RNG (mulberry32)
     engine.ts                Seed -> concrete question
     grading.ts               Tolerance check, units, locale-agnostic number input
-  components/quiz/           TopicSelector, QuestionCard, QuizClient
+  components/quiz/           TopicSelector, QuestionCard, QuizClient, RichText (KaTeX + bold)
 scripts/
   verify-questions.ts        Builds every question against 200 seeds
   smoke.mjs                  Boots the production build and asserts every route
@@ -60,18 +65,19 @@ scripts/
 ## Adding questions
 
 A question is an object in the bank for its subject. `topic` must be a topic id from
-`content/subjects.ts`. The full rules live in `.claude/rules/questions.md`.
+`content/subjects.ts`. The full rules live in `.claude/rules/questions.md`; past
+exams are ingested with the `add-exam-questions` skill.
 
-**Multiple choice** (exam format):
+**Multiple choice** (the TUM exam format):
 
 ```ts
 {
-    id: "fa-neue-frage",                // globally unique
+    id: "fa-provision-recognition",     // globally unique
     subject: "financial_accounting",
-    topic: "bookings",
+    topic: "provisions",
     difficulty: "medium",
     kind: "choice",
-    source: "TUM Endterm WS24/25, A3",  // optional, rendered as a badge
+    source: "TUM Endterm WS24/25, A3",  // rendered as a badge
     prompt: "Question …",
     choices: ["correct", "wrong A", "wrong B", "wrong C"],
     correct: 0,                         // index, or [0, 2] for multi-select
@@ -85,20 +91,23 @@ Choices are shuffled at runtime, so the correct answer may sit at index 0.
 
 ```ts
 {
-    id: "ca-neue-aufgabe",
-    subject: "cost_accounting",
-    topic: "contribution_margin",
+    id: "fin-annuity-pv",
+    subject: "finance",
+    topic: "annuities",
     difficulty: "easy",
     kind: "numeric",
     unit: "EUR",                        // EUR | percent | ratio | years | number | units
     build: (rng) => {
-        const fix = rng.int(20, 300) * 1000;
-        const db  = rng.int(10, 90);
+        const C = rng.int(2, 15) * 100;
+        const r = rng.int(2, 8);
+        const N = rng.int(4, 14);
+        const q = 1 + r / 100;
+        const pf = (q ** N - 1) / (q ** N * (q - 1));
         return {
-            prompt: `Fixkosten ${eur(fix)}, Stückdeckungsbeitrag ${eur(db)}. …`,
-            given: { Fixkosten: eur(fix), db: eur(db) },
-            answer: fix / db,
-            explanation: `x = K_fix/db = ${n2(fix / db)}`,
+            prompt: `An annuity of ${eur(C)} is paid for ${N} years at ${pct(r)} …`,
+            given: { "Payment C": eur(C), "Interest rate r": pct(r) },
+            answer: C * pf,
+            explanation: String.raw`$PV = C \cdot \frac{q^N - 1}{q^N (q - 1)}$ with $q = ${n(q)}$: the factor is ${n2(pf)}, so PV = ${eur(C)} · ${n2(pf)} = ${eur(C * pf)}`,
         };
     },
 }
@@ -106,6 +115,11 @@ Choices are shuffled at runtime, so the correct answer may sit at index 0.
 
 `prompt` and `answer` come from the same draw of the seeded RNG, so the numbers on
 screen and the graded solution cannot drift apart.
+
+**Formulas** are inline KaTeX: `$…$` segments in prompts, given labels, choices
+and explanations render as real math in the lecture's notation. Template
+literals containing backslashes must use `String.raw`; `npm run verify` compiles
+every segment and fails the build on invalid TeX.
 
 ## Grading
 

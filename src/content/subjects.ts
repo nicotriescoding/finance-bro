@@ -35,14 +35,9 @@ export const SUBJECTS: Subject[] = [
         emoji: "📉",
         description: "Supply & demand, elasticities, consumer and production theory, market structures.",
         accent: "from-sky-500 to-blue-600",
-        topics: [
-            { id: "supply_demand", label: "Supply & Demand" },
-            { id: "elasticity", label: "Elasticities" },
-            { id: "consumer", label: "Consumer Theory" },
-            { id: "production_costs", label: "Production & Costs" },
-            { id: "market_forms", label: "Market Structures" },
-            { id: "welfare", label: "Welfare & Government Intervention" },
-        ],
+        // Topics are added together with the questions when the TUM exams for
+        // this course are ingested (add-exam-questions skill).
+        topics: [],
     },
     {
         id: "econ2",
@@ -51,15 +46,7 @@ export const SUBJECTS: Subject[] = [
         emoji: "🏛️",
         description: "National accounts, inflation, labor market, monetary and fiscal policy, open economy.",
         accent: "from-indigo-500 to-violet-600",
-        topics: [
-            { id: "national_accounts", label: "National Accounts & GDP" },
-            { id: "inflation", label: "Inflation & Price Indices" },
-            { id: "labor", label: "Labor Market" },
-            { id: "monetary", label: "Monetary Policy" },
-            { id: "fiscal", label: "Fiscal Policy & Multiplier" },
-            { id: "open_economy", label: "Open Economy" },
-            { id: "growth", label: "Growth" },
-        ],
+        topics: [],
     },
     {
         id: "financial_accounting",
@@ -68,17 +55,7 @@ export const SUBJECTS: Subject[] = [
         emoji: "📒",
         description: "Balance sheet, income statement, journal entries, depreciation, provisions, cash flow.",
         accent: "from-amber-500 to-orange-600",
-        topics: [
-            { id: "balance_sheet", label: "Balance Sheet Structure" },
-            { id: "income_statement", label: "Income Statement" },
-            { id: "bookings", label: "Journal Entries" },
-            { id: "depreciation", label: "Fixed Assets & Depreciation" },
-            { id: "inventory", label: "Inventory & Current Assets" },
-            { id: "provisions", label: "Provisions & Liabilities" },
-            { id: "equity", label: "Equity" },
-            { id: "cash_flow", label: "Cash Flow Statement" },
-            { id: "hgb_ifrs", label: "HGB vs. IFRS" },
-        ],
+        topics: [],
     },
     {
         id: "cost_accounting",
@@ -87,15 +64,7 @@ export const SUBJECTS: Subject[] = [
         emoji: "🧮",
         description: "Cost types, cost centers, overhead allocation, contribution margin, break-even, variances.",
         accent: "from-rose-500 to-pink-600",
-        topics: [
-            { id: "cost_types", label: "Cost Type Accounting" },
-            { id: "cost_centers", label: "Cost Center Accounting & Overhead Sheet" },
-            { id: "cost_objects", label: "Cost Object Accounting" },
-            { id: "full_vs_direct", label: "Absorption vs. Direct Costing" },
-            { id: "contribution_margin", label: "Contribution Margin & Break-Even" },
-            { id: "variance", label: "Standard Costing & Variances" },
-            { id: "abc", label: "Activity-Based Costing" },
-        ],
+        topics: [],
     },
     {
         id: "entrepreneurship",
@@ -104,16 +73,7 @@ export const SUBJECTS: Subject[] = [
         emoji: "🚀",
         description: "Business models, lean startup, market sizing, funding, cap table, valuation.",
         accent: "from-fuchsia-500 to-purple-600",
-        topics: [
-            { id: "opportunity", label: "Opportunity & Ideation" },
-            { id: "business_model", label: "Business Model Canvas" },
-            { id: "lean_startup", label: "Lean Startup & MVP" },
-            { id: "market_sizing", label: "Market Sizing (TAM/SAM/SOM)" },
-            { id: "funding", label: "Funding Rounds" },
-            { id: "cap_table", label: "Cap Table & Dilution" },
-            { id: "startup_valuation", label: "Startup Valuation" },
-            { id: "legal_team", label: "Legal Form & Team" },
-        ],
+        topics: [],
     },
     {
         id: "marketing",
@@ -122,16 +82,7 @@ export const SUBJECTS: Subject[] = [
         emoji: "📣",
         description: "STP, market research, the 4 Ps, pricing strategy, customer value and digital metrics.",
         accent: "from-cyan-500 to-sky-600",
-        topics: [
-            { id: "basics_stp", label: "Fundamentals & STP" },
-            { id: "research", label: "Market Research" },
-            { id: "product", label: "Product Policy" },
-            { id: "pricing", label: "Pricing Policy" },
-            { id: "distribution", label: "Distribution Policy" },
-            { id: "communication", label: "Communication Policy" },
-            { id: "clv", label: "Customer Value & CLV" },
-            { id: "digital", label: "Digital Marketing Metrics" },
-        ],
+        topics: [],
     },
 ];
 

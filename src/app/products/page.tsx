@@ -10,7 +10,7 @@ export default function ProductsPage() {
 
                 {/* Example category */}
                 <section className="border-b pb-4">
-                    <h2 className="text-xl font-semibold mb-3">BWL-Justus Starter Pack</h2>
+                    <h2 className="text-xl font-semibold mb-3">Finance Bro Starter Pack</h2>
 
                     {/* Product card */}
                     <div className="flex gap-4 items-center mb-4">
@@ -43,7 +43,7 @@ export default function ProductsPage() {
                             className="w-32 h-32 object-cover rounded shadow"
                         />
                         <div>
-                            <p className="font-medium">BWL Cigarettes</p>
+                            <p className="font-medium">Business School Cigarettes</p>
                             <p className="text-gray-600 text-sm mb-2">
                                 Your easy entry into investing — takes the edge off so you can finally
                                 blow bubbles.

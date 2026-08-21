@@ -5,6 +5,7 @@
  * Builds every question against many seeds and fails on NaN / Infinity,
  * unfilled placeholders, unknown topics, or broken choice definitions.
  */
+import katex from "katex";
 import { ALL_QUESTIONS } from "../src/content/questions";
 import { buildInstance } from "../src/lib/questions/engine";
 import { SUBJECT_MAP } from "../src/content/subjects";
@@ -14,6 +15,40 @@ const SEEDS = 200;
 const errors: string[] = [];
 const warnings: string[] = [];
 const seenIds = new Set<string>();
+
+/** Remove `$...$` math segments, so text-level checks don't trip over TeX. */
+const stripMath = (text: string) => text.replace(/\$[^$]+\$/g, " ");
+
+/**
+ * Compile every `$...$` segment with KaTeX. Invalid TeX or an odd number of
+ * `$` delimiters is a build error — RichText would render it broken.
+ */
+function checkMath(id: string, where: string, text: string | undefined) {
+    if (!text) return;
+    const dollars = (text.match(/\$/g) ?? []).length;
+    if (dollars % 2 !== 0) {
+        errors.push(`${id}: unbalanced $ in ${where}: "${text.slice(0, 80)}"`);
+        return;
+    }
+    for (const seg of text.match(/\$[^$]+\$/g) ?? []) {
+        try {
+            katex.renderToString(seg.slice(1, -1), { throwOnError: true, strict: false });
+        } catch (e) {
+            errors.push(`${id}: invalid TeX in ${where}: ${seg} — ${(e as Error).message}`);
+        }
+    }
+}
+
+/** Run the math check over every text field of a built instance. */
+function checkInstanceMath(id: string, inst: ReturnType<typeof buildInstance>) {
+    checkMath(id, "prompt", inst.prompt);
+    checkMath(id, "explanation", inst.explanation);
+    for (const c of inst.choices ?? []) checkMath(id, "choice", c);
+    for (const [k, v] of Object.entries(inst.given ?? {})) {
+        checkMath(id, `given key "${k}"`, k);
+        checkMath(id, `given value of "${k}"`, v);
+    }
+}
 
 for (const q of ALL_QUESTIONS) {
     if (seenIds.has(q.id)) errors.push(`${q.id}: duplicate question id`);
@@ -41,6 +76,7 @@ for (const q of ALL_QUESTIONS) {
         if ((inst.correctIndices?.length ?? 0) !== idx.length) {
             errors.push(`${q.id}: shuffling lost a correct option`);
         }
+        checkInstanceMath(q.id, inst);
         continue;
     }
 
@@ -60,7 +96,8 @@ for (const q of ALL_QUESTIONS) {
         if (Math.abs(a) > 1e12) {
             warnings.push(`${q.id} (seed ${seed}): implausibly large answer ${a}`);
         }
-        if (/\{[A-Za-z_]\w*\}/.test(inst.prompt)) {
+        // TeX braces like q^{10} are legitimate — strip math before this check.
+        if (/\{[A-Za-z_]\w*\}/.test(stripMath(inst.prompt))) {
             errors.push(`${q.id} (seed ${seed}): unfilled placeholder in prompt`);
             break;
         }
@@ -68,6 +105,8 @@ for (const q of ALL_QUESTIONS) {
             errors.push(`${q.id} (seed ${seed}): NaN/Infinity/undefined leaked into text`);
             break;
         }
+        // The TeX skeleton is identical across seeds - compiling a few is enough.
+        if (seed <= 3) checkInstanceMath(q.id, inst);
     }
 }
 

@@ -13,6 +13,7 @@
     "check": "npm run typecheck && npm run verify && npm run build && npm run smoke"
   },
   "dependencies": {
+    "katex": "^0.18.4",
     "next": "^16.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"

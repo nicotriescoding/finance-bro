@@ -37,6 +37,9 @@ it and list it as skipped.
 Prefer `kind: "numeric"` with a `build` function when the task is a calculation —
 that turns one exam question into unlimited practice. Keep it `kind: "choice"`
 when the exam question tests a concept or when the distractors are the point.
+Either way, write every formula as a `$…$` KaTeX segment in lecture notation
+(`String.raw` for backslashes) — the conventions are in
+`.claude/rules/questions.md`.
 
 ## 4. Verify
 
@@ -57,4 +60,5 @@ Give Nico:
 - anything skipped, and why
 - the `npm run check` output
 
+Update the feature table in `SPEC.md` (ingest progress) and `BACKLOG.md`.
 Commit with a message naming the exam. Nico pushes.

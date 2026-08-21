@@ -37,10 +37,12 @@ export default function Home() {
                             </p>
                             <div className="mt-4 flex items-center justify-between text-sm">
                                 <span className="text-slate-500">
-                                    {subject.topics.length} topics · {count} questions
+                                    {count > 0
+                                        ? `${subject.topics.length} topics · ${count} questions`
+                                        : "Exam questions coming soon"}
                                 </span>
                                 <span className="font-semibold text-emerald-700 transition group-hover:translate-x-0.5">
-                                    Start →
+                                    {count > 0 ? "Start →" : "Preview →"}
                                 </span>
                             </div>
                         </Link>

@@ -35,7 +35,7 @@ type BaseQuestion = {
     /** topic id, must exist in the subject's topic list */
     topic: string;
     difficulty: Difficulty;
-    /** e.g. "TUM Endterm WS23/24, Aufgabe 4" */
+    /** e.g. "TUM Endterm WS23/24, A4" */
     source?: string;
     explanation?: string;
 };

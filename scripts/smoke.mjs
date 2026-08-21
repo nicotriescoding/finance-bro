@@ -96,6 +96,12 @@ try {
         "/ renders server-side (no empty loading shell)",
         homeHtml.includes("questions") && !/^\s*Loading\.\.\.\s*$/m.test(homeHtml)
     );
+    // The six non-Finance banks are empty until their TUM past exams are
+    // ingested; their cards must say so instead of advertising "0 questions".
+    check(
+        "/ shows the exam-ingest empty state for rebuilt banks",
+        homeHtml.includes("Exam questions coming soon")
+    );
     // The site is English end to end. A German edition is planned as a separate
     // locale later - until then, stray German is a regression, not a feature.
     check(

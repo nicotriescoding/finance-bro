@@ -93,6 +93,42 @@ export default function QuizClient() {
 
     // ------------------------------------------------------------------ setup
     if (!session) {
+        // A bank with no questions at all gets a build-in-progress state instead
+        // of an empty topic list. This is the normal state for every subject
+        // whose TUM past exams have not been ingested yet.
+        const bankIsEmpty = availableTopics.length === 0;
+        if (bankIsEmpty) {
+            return (
+                <div className="mx-auto max-w-3xl px-4 py-10">
+                    <SubjectSwitcher current={subject.id} />
+
+                    <div className="mb-6">
+                        <h1 className="text-3xl font-bold text-slate-900">
+                            {subject.emoji} {subject.label}
+                        </h1>
+                        <p className="mt-2 text-slate-600">{subject.description}</p>
+                    </div>
+
+                    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
+                        <p className="text-4xl">🏗️</p>
+                        <h2 className="mt-3 text-lg font-semibold text-slate-900">
+                            No questions yet
+                        </h2>
+                        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-600">
+                            This bank is being rebuilt from real TUM exams — questions
+                            land here as soon as the past exams are ingested.
+                        </p>
+                        <Link
+                            href="/quiz?subject=finance"
+                            className="mt-6 inline-block rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-500"
+                        >
+                            Practice Finance instead
+                        </Link>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className="mx-auto max-w-3xl px-4 py-10">
                 <SubjectSwitcher current={subject.id} />

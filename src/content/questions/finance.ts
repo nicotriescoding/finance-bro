@@ -22,9 +22,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = C0 * (1 + N * (r / 100));
             return {
                 prompt: `You invest ${eur(C0)} for ${N} years at ${pct(r)} p.a. The interest is **not** itself reinvested (simple interest). What amount do you receive at the end?`,
-                given: { "Initial capital C₀": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
+                given: { "Initial capital $C_0$": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
-                explanation: `C_N = C₀ · (1 + N · r) = ${eur(C0)} · (1 + ${N} · ${n(r / 100)}) = ${eur(answer)}`,
+                explanation: String.raw`$C_N = C_0 \cdot (1 + N \cdot i)$ — simple interest earns $N \cdot i$ on the initial capital: ${eur(C0)} · (1 + ${N} · ${n(r / 100)}) = ${eur(answer)}`,
             };
         },
     },
@@ -42,9 +42,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = C0 * (1 + r / 100) ** N;
             return {
                 prompt: `${eur(C0)} earns ${pct(r)} p.a. for ${N} years, with the interest **reinvested each year (compound interest)**. What is the final capital?`,
-                given: { "Initial capital C₀": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
+                given: { "Initial capital $C_0$": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
-                explanation: `C_N = C₀ · q^N with q = 1 + r = ${n(1 + r / 100)} → ${eur(C0)} · ${n(1 + r / 100)}^${N} = ${eur(answer)}`,
+                explanation: String.raw`$C_N = C_0 \cdot q^N$ with $q = 1 + i = ${n(1 + r / 100)}$ and $q^{${N}} = ${n2((1 + r / 100) ** N)}$: ${eur(C0)} · ${n2((1 + r / 100) ** N)} = ${eur(answer)}`,
             };
         },
     },
@@ -62,9 +62,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = C0 * Math.exp((r / 100) * N);
             return {
                 prompt: `${eur(C0)} is compounded **continuously** at ${pct(r)} p.a. for ${N} years. What is the final capital?`,
-                given: { "C₀": eur(C0), "r (continuous)": pct(r), "N": `${N} years` },
+                given: { "$C_0$": eur(C0), "r (continuous)": pct(r), "N": `${N} years` },
                 answer,
-                explanation: `C_N = C₀ · e^(r·N) = ${eur(C0)} · e^(${n(r / 100)}·${N}) = ${eur(answer)}`,
+                explanation: String.raw`$C_N = C_0 \cdot e^{i \cdot N}$ with $e^{${n(r / 100)} \cdot ${N}} = ${n2(Math.exp((r / 100) * N))}$: ${eur(C0)} · ${n2(Math.exp((r / 100) * N))} = ${eur(answer)}`,
             };
         },
     },
@@ -84,7 +84,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A nominal rate of ${pct(r)} p.a. is compounded ${label} (m = ${m}). What is the **effective** annual rate?`,
                 given: { "Nominal rate r": pct(r), "Periods m": String(m) },
                 answer,
-                explanation: `r_eff = (1 + r/m)^m − 1 = (1 + ${n(r / 100)}/${m})^${m} − 1 = ${pct(answer)}`,
+                explanation: String.raw`$i_{eff} = \left(1 + \frac{i_{nom}}{m}\right)^{m} - 1 = \left(1 + \frac{${n(r / 100)}}{${m}}\right)^{${m}} - 1$ = ${pct(answer)}`,
             };
         },
     },
@@ -107,7 +107,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `For ${N} years you pay ${eur(C)} into an account earning ${pct(r)} p.a., **at the end of each year**. What is the future value?`,
                 given: { "Payment C": eur(C), "Interest rate r": pct(r), "Number of payments N": String(N) },
                 answer,
-                explanation: `FV = C · (q^N − 1)/(q − 1) = ${eur(C)} · (${n(q)}^${N} − 1)/${n(q - 1)} = ${eur(answer)}`,
+                explanation: String.raw`$FV = C \cdot \frac{q^N - 1}{q - 1}$ (future-value annuity factor) with $q = ${n(q)}$: the factor is ${n2((q ** N - 1) / (q - 1))}, so FV = ${eur(C)} · ${n2((q ** N - 1) / (q - 1))} = ${eur(answer)}`,
             };
         },
     },
@@ -128,7 +128,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `An annuity of ${eur(C)} is paid for ${N} years, **at the beginning of each year** (annuity due). The discount rate is ${pct(r)}. What is the present value?`,
                 given: { "Payment C": eur(C), "r": pct(r), "N": String(N), "Payment timing": "annuity due (in advance)" },
                 answer,
-                explanation: `PV_due = C · (q^N − 1)/(q^N·(q − 1)) · q = ${eur(answer)}`,
+                explanation: String.raw`$PV_{due} = C \cdot \frac{q^N - 1}{q^N (q - 1)} \cdot q$ — the ordinary-annuity PV factor times $q$, because every payment arrives one year earlier. With $q = ${n(q)}$ the factor is ${n2(((q ** N - 1) / (q ** N * (q - 1))) * q)}, so PV = ${eur(C)} · ${n2(((q ** N - 1) / (q ** N * (q - 1))) * q)} = ${eur(answer)}`,
             };
         },
     },
@@ -147,7 +147,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A **perpetuity** pays ${eur(C)} per year in arrears. The discount rate is ${pct(r)}. What is the present value?`,
                 given: { "Payment C": eur(C), "r": pct(r) },
                 answer,
-                explanation: `PV = C / r = ${eur(C)} / ${n(r / 100)} = ${eur(answer)}`,
+                explanation: String.raw`$PV = \frac{C}{i}$ = ${eur(C)} / ${n(r / 100)} = ${eur(answer)}`,
             };
         },
     },
@@ -165,9 +165,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = C / ((r - g) / 100);
             return {
                 prompt: `A perpetuity starts next year at ${eur(C)} and grows at ${pct(g)} p.a. thereafter. The discount rate is ${pct(r)}. What is the present value?`,
-                given: { "C₁": eur(C), "Growth g": pct(g), "r": pct(r) },
+                given: { "$C_1$": eur(C), "Growth rate w": pct(g), "r": pct(r) },
                 answer,
-                explanation: `PV = C₁ / (r − g) = ${eur(C)} / (${n(r / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
+                explanation: String.raw`Growing perpetuity: $PV = \frac{C_1}{i - w}$ = ${eur(C)} / (${n(r / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
             };
         },
     },
@@ -188,9 +188,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = D0 * ((q ** N * (q - 1)) / (q ** N - 1));
             return {
                 prompt: `An annuity loan of ${eur(D0)} runs for ${N} years at ${pct(r)} p.a. What is the **annual annuity payment**?`,
-                given: { "Loan D₀": eur(D0), "Interest rate r": pct(r), "Term N": `${N} years` },
+                given: { "Loan $D_0$": eur(D0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
-                explanation: `A = D₀ · q^N·(q − 1)/(q^N − 1) = ${eur(answer)}`,
+                explanation: String.raw`$A = D_0 \cdot \frac{q^N (q - 1)}{q^N - 1}$ (capital-recovery factor) with $q = ${n(q)}$: the factor is ${n2((q ** N * (q - 1)) / (q ** N - 1))}, so A = ${eur(D0)} · ${n2((q ** N * (q - 1)) / (q ** N - 1))} = ${eur(answer)}`,
             };
         },
     },
@@ -210,9 +210,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = D0 * ((q ** N - q ** k) / (q ** N - 1));
             return {
                 prompt: `An annuity loan of ${eur(D0)} (${pct(r)}, ${N} years) has been running for ${k} years. What is the **outstanding balance after ${k} years**?`,
-                given: { "D₀": eur(D0), "r": pct(r), "N": `${N} years`, "k": `${k} years` },
+                given: { "$D_0$": eur(D0), "r": pct(r), "N": `${N} years`, "k": `${k} years` },
                 answer,
-                explanation: `D_k = D₀ · (q^N − q^k)/(q^N − 1) = ${eur(answer)}`,
+                explanation: String.raw`$D_k = D_0 \cdot \frac{q^N - q^k}{q^N - 1}$ with $q = ${n(q)}$: the remaining-balance factor is ${n2((q ** N - q ** k) / (q ** N - 1))}, so $D_{${k}}$ = ${eur(D0)} · ${n2((q ** N - q ** k) / (q ** N - 1))} = ${eur(answer)}`,
             };
         },
     },
@@ -228,14 +228,14 @@ export const financeQuestions: NumericQuestion[] = [
             const r = rng.int(2, 8);
             const N = rng.int(5, 20);
             const k = rng.int(1, N);
-            const tilgung = D0 / N;
-            const zins = (D0 - tilgung * (k - 1)) * (r / 100);
-            const answer = tilgung + zins;
+            const repay = D0 / N;
+            const interest = (D0 - repay * (k - 1)) * (r / 100);
+            const answer = repay + interest;
             return {
                 prompt: `An **installment loan** of ${eur(D0)} is repaid in ${N} equal principal repayments at an interest rate of ${pct(r)}. What is the total payment (principal repayment + interest) in year ${k}?`,
-                given: { "D₀": eur(D0), "r": pct(r), "N": String(N), "Year k": String(k) },
+                given: { "$D_0$": eur(D0), "r": pct(r), "N": String(N), "Year k": String(k) },
                 answer,
-                explanation: `Principal repayment = D₀/N = ${eur(tilgung)}; interest = outstanding balance · r = ${eur(zins)}; total = ${eur(answer)}`,
+                explanation: String.raw`Constant principal repayment: $\frac{D_0}{N}$ = ${eur(repay)}. Interest in year ${k} on the opening balance: $D_{k-1} \cdot i = \left(D_0 - (k - 1) \cdot \frac{D_0}{N}\right) \cdot i$ = ${eur(interest)}. Total payment = ${eur(repay)} + ${eur(interest)} = ${eur(answer)}`,
             };
         },
     },
@@ -257,7 +257,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A zero-coupon bond with a face value of ${eur(BN)} is redeemed in ${N} years. The market rate is ${pct(r)}. What is its price today?`,
                 given: { "Face value": eur(BN), "Market rate r": pct(r), "Remaining term N": `${N} years` },
                 answer,
-                explanation: `B₀ = BN / (1 + r)^N = ${eur(answer)}`,
+                explanation: String.raw`$B_0 = \frac{B_N}{(1 + i)^N}$ with $(1 + i)^{${N}} = ${n2((1 + r / 100) ** N)}$: ${eur(BN)} / ${n2((1 + r / 100) ** N)} = ${eur(answer)}`,
             };
         },
     },
@@ -279,7 +279,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A bond (face value ${eur(BN)}, coupon ${pct(couponRate)}, remaining term ${N} years) is discounted in the market at ${pct(r)}. What is its fair price?`,
                 given: { "Face value": eur(BN), "Coupon p.a.": eur(C), "Market rate r": pct(r), "N": `${N} years` },
                 answer: price,
-                explanation: `B₀ = Σ C/(1+r)^t + BN/(1+r)^N = ${eur(price)}`,
+                explanation: String.raw`$B_0 = \sum_{t=1}^{N} \frac{C}{(1+i)^t} + \frac{B_N}{(1+i)^N}$ — each coupon of ${eur(C)} and the redemption of ${eur(BN)} discounted at ${pct(r)}: $B_0$ = ${eur(price)}`,
             };
         },
     },
@@ -301,7 +301,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Compute the **Macaulay duration** of a bond: face value ${eur(BN)}, coupon ${pct(couponRate)}, remaining term ${N} years, market rate ${pct(r)}.`,
                 given: { "Face value": eur(BN), "Coupon": eur(C), "r": pct(r), "N": `${N} years` },
                 answer: duration,
-                explanation: `D = Σ t·CF_t/(1+r)^t ÷ Σ CF_t/(1+r)^t = ${n2(duration)} years`,
+                explanation: String.raw`$D = \frac{\sum_t t \cdot \frac{CF_t}{(1+i)^t}}{\sum_t \frac{CF_t}{(1+i)^t}}$ — the present-value-weighted average time until the cash flows arrive: D = ${n2(duration)} years`,
             };
         },
     },
@@ -324,9 +324,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = -dMod * (dr / 10000) * 100;
             return {
                 prompt: `A bond (coupon ${pct(couponRate)}, ${N} years remaining term, market rate ${pct(r)}) has a Macaulay duration of ${n2(duration)} years. By approximately what **percentage** does its price change if the market rate **rises** by ${dr} basis points?`,
-                given: { "Duration D": `${n2(duration)} years`, "r": pct(r), "Δr": `+${dr} bp` },
+                given: { "Duration D": `${n2(duration)} years`, "r": pct(r), "$Δi$": `+${dr} bp` },
                 answer,
-                explanation: `D_mod = D/(1+r) = ${n2(dMod)}; ΔB/B ≈ −D_mod · Δr = ${pct(answer)}`,
+                explanation: String.raw`$D_{mod} = \frac{D}{1 + i}$ = ${n2(dMod)}; price reaction: $\frac{\Delta B}{B} \approx -D_{mod} \cdot \Delta i$ = −${n2(dMod)} · ${pct(dr / 100)} = ${pct(answer)}`,
             };
         },
     },
@@ -347,7 +347,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `The spot rate for ${S} years is ${pct(iS)}, the spot rate for ${T} years is ${pct(iT)}. What is the **forward rate** for the period from year ${S} to year ${T}?`,
                 given: { [`Spot ${S}y`]: pct(iS), [`Spot ${T}y`]: pct(iT) },
                 answer,
-                explanation: `f = [(1+i_T)^T / (1+i_S)^S]^(1/(T−S)) − 1 = ${pct(answer)}`,
+                explanation: String.raw`No-arbitrage: $(1+i_T)^T = (1+i_S)^S \cdot (1+f_{S,T})^{T-S}$, so $f_{S,T} = \left[\frac{(1+i_T)^T}{(1+i_S)^S}\right]^{\frac{1}{T-S}} - 1$ = ${pct(answer)}`,
             };
         },
     },
@@ -367,9 +367,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = ((D1 + P1 - P0) / P0) * 100;
             return {
                 prompt: `You buy a share for ${eur(P0)}. After one year it trades at ${eur(P1)} and has paid a dividend of ${eur(D1)}. What is the **total return**?`,
-                given: { "P₀": eur(P0), "P₁": eur(P1), "D₁": eur(D1) },
+                given: { "$P_0$": eur(P0), "$P_1$": eur(P1), "$D_1$": eur(D1) },
                 answer,
-                explanation: `r = (D₁ + P₁ − P₀)/P₀ = ${pct(answer)}`,
+                explanation: String.raw`$r = \frac{D_1 + P_1 - P_0}{P_0}$ = (${eur(D1)} + ${eur(P1)} − ${eur(P0)}) / ${eur(P0)} = ${pct(answer)}`,
             };
         },
     },
@@ -387,9 +387,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = D1 / ((rE - w) / 100);
             return {
                 prompt: `A share pays a dividend of ${eur(D1)} next year, which then grows at a constant ${pct(w)} p.a. The cost of equity is ${pct(rE)}. What is the fair share price (Gordon growth model)?`,
-                given: { "D₁": eur(D1), "Growth w": pct(w), "r_E": pct(rE) },
+                given: { "$D_1$": eur(D1), "Growth w": pct(w), "$r_E$": pct(rE) },
                 answer,
-                explanation: `P₀ = D₁/(r_E − w) = ${eur(D1)}/(${n(rE / 100)} − ${n(w / 100)}) = ${eur(answer)}`,
+                explanation: String.raw`Gordon growth model: $P_0 = \frac{D_1}{r_E - w}$ = ${eur(D1)} / (${n(rE / 100)} − ${n(w / 100)}) = ${eur(answer)}`,
             };
         },
     },
@@ -406,9 +406,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = P0 / EPS;
             return {
                 prompt: `A share trades at ${eur(P0)} and reports earnings per share of ${eur(EPS)}. What is its **price/earnings ratio (P/E)**?`,
-                given: { "Price P₀": eur(P0), "EPS": eur(EPS) },
+                given: { "Price $P_0$": eur(P0), "EPS": eur(EPS) },
                 answer,
-                explanation: `P/E = P₀ / EPS = ${n2(answer)}`,
+                explanation: String.raw`$P/E = \frac{P_0}{EPS}$ = ${eur(P0)} / ${eur(EPS)} = ${n2(answer)}`,
             };
         },
     },
@@ -436,9 +436,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = pv + terminal / (1 + rE / 100) ** N;
             return {
                 prompt: `Two-stage DDM: the dividend next year is ${eur(D1)} and grows at ${pct(wa)} for ${N} years, and at ${pct(wb)} in perpetuity thereafter. Cost of equity ${pct(rE)}. What is the fair share price?`,
-                given: { "D₁": eur(D1), "Phase 1 (N)": `${N} years @ ${pct(wa)}`, "Phase 2": `perpetual @ ${pct(wb)}`, "r_E": pct(rE) },
+                given: { "$D_1$": eur(D1), "Phase 1 (N)": `${N} years @ ${pct(wa)}`, "Phase 2": `perpetual @ ${pct(wb)}`, "$r_E$": pct(rE) },
                 answer,
-                explanation: `PV of phase 1 = ${eur(pv)}; terminal value at t=${N}: ${eur(terminal)}; P₀ = ${eur(answer)}`,
+                explanation: String.raw`Phase 1: $\sum_{t=1}^{${N}} \frac{D_t}{(1+r_E)^t}$ = ${eur(pv)}. Terminal value at $t = ${N}$ (Gordon): $TV = \frac{D_{${N + 1}}}{r_E - w_2}$ = ${eur(terminal)}, discounted to today: ${eur(terminal / (1 + rE / 100) ** N)}. $P_0$ = ${eur(answer)}`,
             };
         },
     },
@@ -459,7 +459,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Current assets amount to ${eur(CA)} and current liabilities to ${eur(CL)}. What is the **current ratio**?`,
                 given: { "Current assets": eur(CA), "Current liabilities": eur(CL) },
                 answer,
-                explanation: `Current ratio = CA / CL = ${n2(answer)}`,
+                explanation: String.raw`Current ratio $= \frac{CA}{CL}$ = ${eur(CA)} / ${eur(CL)} = ${n2(answer)}`,
             };
         },
     },
@@ -478,7 +478,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company has ${eur(D)} of debt and ${eur(E)} of equity. What is its **debt-to-equity ratio (D/E)**?`,
                 given: { "Debt D": eur(D), "Equity E": eur(E) },
                 answer,
-                explanation: `D/E = ${n2(answer)}`,
+                explanation: String.raw`$D/E = \frac{D}{E}$ = ${eur(D)} / ${eur(E)} = ${n2(answer)}`,
             };
         },
     },
@@ -497,7 +497,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Net income ${eur(NI)}, equity ${eur(E)}. What is the **return on equity (ROE)**?`,
                 given: { "Net income": eur(NI), "Equity": eur(E) },
                 answer,
-                explanation: `ROE = NI / E = ${pct(answer)}`,
+                explanation: String.raw`$ROE = \frac{\text{net income}}{\text{equity}}$ = ${eur(NI)} / ${eur(E)} = ${pct(answer)}`,
             };
         },
     },
@@ -515,9 +515,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = ((EBIT * (1 - tauC)) / IC) * 100;
             return {
                 prompt: `EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, invested capital ${eur(IC)}. What is the **after-tax ROIC**?`,
-                given: { EBIT: eur(EBIT), "τ_C": pct(tauC * 100), "Invested Capital": eur(IC) },
+                given: { EBIT: eur(EBIT), "$τ_C$": pct(tauC * 100), "Invested Capital": eur(IC) },
                 answer,
-                explanation: `ROIC = EBIT·(1−τ)/IC = ${pct(answer)}`,
+                explanation: String.raw`$ROIC = \frac{EBIT \cdot (1 - \tau_C)}{IC}$ — NOPAT = ${eur(EBIT * (1 - tauC))}, so ROIC = ${eur(EBIT * (1 - tauC))} / ${eur(IC)} = ${pct(answer)}`,
             };
         },
     },
@@ -536,7 +536,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `EBIT ${eur(EBIT)}, interest expense ${eur(IE)}. What is the **interest coverage ratio**?`,
                 given: { EBIT: eur(EBIT), "Interest expense": eur(IE) },
                 answer,
-                explanation: `ICR = EBIT / interest expense = ${n2(answer)}`,
+                explanation: String.raw`$ICR = \frac{EBIT}{\text{interest expense}}$ = ${eur(EBIT)} / ${eur(IE)} = ${n2(answer)}`,
             };
         },
     },
@@ -558,9 +558,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = npv(flows, r / 100);
             return {
                 prompt: `An investment costs ${eur(I0)} today and generates ${eur(cf)} at the end of each year for ${T} years. The discount rate is ${pct(r)}. What is the **net present value (NPV)**?`,
-                given: { "Investment I₀": eur(I0), "Cash flow p.a.": eur(cf), "Term": `${T} years`, r: pct(r) },
+                given: { "Investment $I_0$": eur(I0), "Cash flow p.a.": eur(cf), "Term": `${T} years`, r: pct(r) },
                 answer,
-                explanation: `NPV = −I₀ + Σ CF/(1+r)^t = ${eur(answer)}`,
+                explanation: String.raw`$NPV = -I_0 + \sum_{t=1}^{T} \frac{CF_t}{(1+i)^t}$ — the discounted inflows are worth ${eur(answer + I0)}, so NPV = ${eur(answer + I0)} − ${eur(I0)} = ${eur(answer)}`,
             };
         },
     },
@@ -579,9 +579,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = irr(flows) * 100;
             return {
                 prompt: `An investment costs ${eur(I0)} and returns ${eur(cf)} in each of the following ${T} years. What is the **internal rate of return (IRR)**?`,
-                given: { "I₀": eur(I0), "CF p.a.": eur(cf), Term: `${T} years` },
+                given: { "$I_0$": eur(I0), "CF p.a.": eur(cf), Term: `${T} years` },
                 answer,
-                explanation: `The IRR is the rate at which NPV = 0 → ${pct(answer)}`,
+                explanation: String.raw`The IRR is the rate that sets the NPV to zero: $-I_0 + \sum_{t=1}^{T} \frac{CF_t}{(1+IRR)^t} = 0$ → IRR = ${pct(answer)}`,
             };
         },
     },
@@ -598,9 +598,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = I0 / cf;
             return {
                 prompt: `An investment of ${eur(I0)} generates constant annual cash inflows of ${eur(cf)}. What is the **static payback period**?`,
-                given: { "I₀": eur(I0), "CF p.a.": eur(cf) },
+                given: { "$I_0$": eur(I0), "CF p.a.": eur(cf) },
                 answer,
-                explanation: `Payback period = I₀ / CF = ${n2(answer)} years`,
+                explanation: String.raw`$\text{payback period} = \frac{I_0}{CF}$ = ${eur(I0)} / ${eur(cf)} = ${n2(answer)} years`,
             };
         },
     },
@@ -619,9 +619,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = EBIT * (1 - tauC) - (r / 100) * IC;
             return {
                 prompt: `EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, cost of capital ${pct(r)}, invested capital at the start of the period ${eur(IC)}. What is the **EVA**?`,
-                given: { EBIT: eur(EBIT), "τ_C": pct(tauC * 100), "r": pct(r), "IC": eur(IC) },
+                given: { EBIT: eur(EBIT), "$τ_C$": pct(tauC * 100), "r": pct(r), "IC": eur(IC) },
                 answer,
-                explanation: `EVA = NOPAT − r·IC = ${eur(EBIT * (1 - tauC))} − ${eur((r / 100) * IC)} = ${eur(answer)}`,
+                explanation: String.raw`$EVA = NOPAT - i \cdot IC = EBIT \cdot (1 - \tau_C) - i \cdot IC$ = ${eur(EBIT * (1 - tauC))} − ${eur((r / 100) * IC)} = ${eur(answer)}`,
             };
         },
     },
@@ -641,9 +641,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = rRF + beta * (rM - rRF);
             return {
                 prompt: `Risk-free rate ${pct(rRF)}, expected market return ${pct(rM)}, beta ${n2(beta)}. What is the expected return under the **CAPM**?`,
-                given: { "r_f": pct(rRF), "r_M": pct(rM), "β": n2(beta) },
+                given: { "$r_f$": pct(rRF), "$r_M$": pct(rM), "$β$": n2(beta) },
                 answer,
-                explanation: `r = r_f + β·(r_M − r_f) = ${pct(answer)}`,
+                explanation: String.raw`CAPM: $r = r_f + \beta \cdot (r_M - r_f)$ = ${pct(rRF)} + ${n2(beta)} · ${pct(rM - rRF)} = ${pct(answer)}`,
             };
         },
     },
@@ -663,9 +663,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = (E / (E + D)) * rE + (D / (E + D)) * rD * (1 - tauC);
             return {
                 prompt: `Equity ${eur(E)} (cost ${pct(rE)}), debt ${eur(D)} (cost ${pct(rD)}), tax rate ${pct(tauC * 100)}. What is the **WACC**?`,
-                given: { E: eur(E), D: eur(D), "r_E": pct(rE), "r_D": pct(rD), "τ_C": pct(tauC * 100) },
+                given: { E: eur(E), D: eur(D), "$r_E$": pct(rE), "$r_D$": pct(rD), "$τ_C$": pct(tauC * 100) },
                 answer,
-                explanation: `WACC = E/(E+D)·r_E + D/(E+D)·r_D·(1−τ) = ${pct(answer)}`,
+                explanation: String.raw`$WACC = \frac{E}{E+D} \cdot r_E + \frac{D}{E+D} \cdot r_D \cdot (1 - \tau_C)$ = ${n2(E / (E + D))} · ${pct(rE)} + ${n2(D / (E + D))} · ${pct(rD)} · ${n2(1 - tauC)} = ${pct(answer)}`,
             };
         },
     },
@@ -684,9 +684,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = betaE / (1 + (D / E) * (1 - tauC));
             return {
                 prompt: `The levered beta is ${n2(betaE)} with ${eur(D)} of debt and ${eur(E)} of equity (tax rate ${pct(tauC * 100)}). What is the **unlevered beta** (Hamada)?`,
-                given: { "β_E": n2(betaE), D: eur(D), E: eur(E), "τ_C": pct(tauC * 100) },
+                given: { "$β_E$": n2(betaE), D: eur(D), E: eur(E), "$τ_C$": pct(tauC * 100) },
                 answer,
-                explanation: `β_U = β_E / (1 + D/E·(1−τ)) = ${n2(answer)}`,
+                explanation: String.raw`Hamada: $\beta_U = \frac{\beta_E}{1 + \frac{D}{E} \cdot (1 - \tau_C)}$ = ${n2(betaE)} / ${n2(1 + (D / E) * (1 - tauC))} = ${n2(answer)}`,
             };
         },
     },
@@ -705,9 +705,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = rU + (D / E) * (rU - rD);
             return {
                 prompt: `Unlevered cost of capital ${pct(rU)}, cost of debt ${pct(rD)}, debt ${eur(D)}, equity ${eur(E)} (Modigliani-Miller without taxes). What is the **cost of equity of the levered firm**?`,
-                given: { "r_U": pct(rU), "r_D": pct(rD), D: eur(D), E: eur(E) },
+                given: { "$r_U$": pct(rU), "$r_D$": pct(rD), D: eur(D), E: eur(E) },
                 answer,
-                explanation: `r_E = r_U + D/E·(r_U − r_D) = ${pct(answer)}`,
+                explanation: String.raw`Modigliani-Miller II: $r_E = r_U + \frac{D}{E} \cdot (r_U - r_D)$ = ${pct(rU)} + ${n2(D / E)} · ${pct(rU - rD)} = ${pct(answer)}`,
             };
         },
     },
@@ -728,9 +728,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = wA * rA + wB * rB;
             return {
                 prompt: `A portfolio consists of ${pct(wA * 100)} asset A (return ${pct(rA)}) and ${pct(wB * 100)} asset B (return ${pct(rB)}). What is the **portfolio return**?`,
-                given: { "w_A": pct(wA * 100), "w_B": pct(wB * 100), "r_A": pct(rA), "r_B": pct(rB) },
+                given: { "$w_A$": pct(wA * 100), "$w_B$": pct(wB * 100), "$r_A$": pct(rA), "$r_B$": pct(rB) },
                 answer,
-                explanation: `r_P = w_A·r_A + w_B·r_B = ${pct(answer)}`,
+                explanation: String.raw`$r_P = w_A \cdot r_A + w_B \cdot r_B$ = ${n2(wA)} · ${pct(rA)} + ${n2(wB)} · ${pct(rB)} = ${pct(answer)}`,
             };
         },
     },
@@ -750,10 +750,10 @@ export const financeQuestions: NumericQuestion[] = [
             const varP = (wA * sA) ** 2 + (wB * sB) ** 2 + 2 * wA * wB * sA * sB * rho;
             const answer = Math.sqrt(varP);
             return {
-                prompt: `Portfolio of two assets: w_A = ${pct(wA * 100)}, σ_A = ${pct(sA)}, σ_B = ${pct(sB)}, correlation ρ = ${n2(rho)}. What is the **standard deviation of the portfolio**?`,
-                given: { "w_A": pct(wA * 100), "w_B": pct(wB * 100), "σ_A": pct(sA), "σ_B": pct(sB), "ρ_AB": n2(rho) },
+                prompt: String.raw`Portfolio of two assets: $w_A$ = ${pct(wA * 100)}, $\sigma_A$ = ${pct(sA)}, $\sigma_B$ = ${pct(sB)}, correlation $\rho_{AB}$ = ${n2(rho)}. What is the **standard deviation of the portfolio**?`,
+                given: { "$w_A$": pct(wA * 100), "$w_B$": pct(wB * 100), "$\\sigma_A$": pct(sA), "$\\sigma_B$": pct(sB), "$\\rho_{AB}$": n2(rho) },
                 answer,
-                explanation: `σ_P = √(w_A²σ_A² + w_B²σ_B² + 2w_Aw_Bσ_Aσ_Bρ) = ${pct(answer)}`,
+                explanation: String.raw`$\sigma_P = \sqrt{w_A^2 \sigma_A^2 + w_B^2 \sigma_B^2 + 2 w_A w_B \sigma_A \sigma_B \rho_{AB}}$ — the portfolio variance is ${n2(varP)}, so $\sigma_P = \sqrt{${n2(varP)}}$ = ${pct(answer)}`,
             };
         },
     },
@@ -770,10 +770,10 @@ export const financeQuestions: NumericQuestion[] = [
             const rho = rng.float(-0.7, 0.6, 2);
             const answer = ((sB ** 2 - sA * sB * rho) / (sA ** 2 + sB ** 2 - 2 * sA * sB * rho)) * 100;
             return {
-                prompt: `σ_A = ${pct(sA)}, σ_B = ${pct(sB)}, ρ = ${n2(rho)}. What weight **w_A** does asset A have in the minimum-variance portfolio?`,
-                given: { "σ_A": pct(sA), "σ_B": pct(sB), "ρ_AB": n2(rho) },
+                prompt: String.raw`$\sigma_A$ = ${pct(sA)}, $\sigma_B$ = ${pct(sB)}, $\rho_{AB}$ = ${n2(rho)}. What weight $w_A$ does asset A have in the **minimum-variance portfolio**?`,
+                given: { "$\\sigma_A$": pct(sA), "$\\sigma_B$": pct(sB), "$\\rho_{AB}$": n2(rho) },
                 answer,
-                explanation: `w_A* = (σ_B² − σ_Aσ_Bρ)/(σ_A² + σ_B² − 2σ_Aσ_Bρ) = ${pct(answer)}`,
+                explanation: String.raw`$w_A^{MVP} = \frac{\sigma_B^2 - \sigma_A \sigma_B \rho_{AB}}{\sigma_A^2 + \sigma_B^2 - 2 \sigma_A \sigma_B \rho_{AB}}$ = ${pct(answer)}`,
             };
         },
     },
@@ -791,9 +791,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = (rP - rF) / sP;
             return {
                 prompt: `Portfolio return ${pct(rP)}, risk-free rate ${pct(rF)}, standard deviation ${pct(sP)}. What is the **Sharpe ratio**?`,
-                given: { "r_P": pct(rP), "r_f": pct(rF), "σ_P": pct(sP) },
+                given: { "$r_P$": pct(rP), "$r_f$": pct(rF), "$σ_P$": pct(sP) },
                 answer,
-                explanation: `SR = (r_P − r_f)/σ_P = ${n2(answer)}`,
+                explanation: String.raw`$SR = \frac{r_P - r_f}{\sigma_P}$ = (${pct(rP)} − ${pct(rF)}) / ${pct(sP)} = ${n2(answer)}`,
             };
         },
     },
@@ -813,9 +813,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = (1 + rRF / 100 - d) / (u - d);
             return {
                 prompt: `One-period binomial model: up factor u = ${n2(u)}, down factor d = ${n2(d)}, risk-free rate ${pct(rRF)}. What is the **risk-neutral probability p** of the up state?`,
-                given: { u: n2(u), d: n2(d), "r_f": pct(rRF) },
+                given: { u: n2(u), d: n2(d), "$r_f$": pct(rRF) },
                 answer,
-                explanation: `p = (1 + r_f − d)/(u − d) = ${n2(answer)}`,
+                explanation: String.raw`$p = \frac{(1 + r_f) - d}{u - d}$ = (${n2(1 + rRF / 100)} − ${n2(d)}) / (${n2(u)} − ${n2(d)}) = ${n2(answer)}`,
             };
         },
     },
@@ -838,9 +838,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = (p * Cu + (1 - p) * Cd) / (1 + rRF / 100);
             return {
                 prompt: `The share price today is ${eur(S)}; in one year it is either ×${n2(u)} or ×${n2(d)}. Strike ${eur(K)}, risk-free rate ${pct(rRF)}. What is the **value of the European call**?`,
-                given: { "S₀": eur(S), K: eur(K), u: n2(u), d: n2(d), "r_f": pct(rRF) },
+                given: { "$S_0$": eur(S), K: eur(K), u: n2(u), d: n2(d), "$r_f$": pct(rRF) },
                 answer,
-                explanation: `p = ${n2(p)}; C_u = ${eur(Cu)}, C_d = ${eur(Cd)}; C₀ = (p·C_u + (1−p)·C_d)/(1+r_f) = ${eur(answer)}`,
+                explanation: String.raw`$p = \frac{(1 + r_f) - d}{u - d} = ${n2(p)}$; payoffs $C_u$ = ${eur(Cu)}, $C_d$ = ${eur(Cd)}; $C_0 = \frac{p \cdot C_u + (1 - p) \cdot C_d}{1 + r_f}$ = ${eur(answer)}`,
             };
         },
     },
@@ -860,9 +860,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = C + K / (1 + r / 100) ** N - S;
             return {
                 prompt: `Put-call parity: call ${eur(C)}, share price ${eur(S)}, strike ${eur(K)}, term ${N} years, interest rate ${pct(r)}. What is the value of the **put**?`,
-                given: { C: eur(C), "S₀": eur(S), K: eur(K), N: `${N} years`, r: pct(r) },
+                given: { C: eur(C), "$S_0$": eur(S), K: eur(K), N: `${N} years`, r: pct(r) },
                 answer,
-                explanation: `P = C + K/(1+r)^N − S = ${eur(answer)}`,
+                explanation: String.raw`Put-call parity: $P = C + \frac{K}{(1+i)^N} - S_0$ = ${eur(C)} + ${eur(K / (1 + r / 100) ** N)} − ${eur(S)} = ${eur(answer)}`,
             };
         },
     },
@@ -885,10 +885,10 @@ export const financeQuestions: NumericQuestion[] = [
             const d2 = d1 - s * Math.sqrt(T);
             const answer = S * normCdf(d1) - K * Math.exp(-rr * T) * normCdf(d2);
             return {
-                prompt: `Black-Scholes: S₀ = ${eur(S)}, strike ${eur(K)}, volatility ${pct(sigma)}, risk-free rate ${pct(r)}, term ${n(T)} years. What is the **value of the European call**?`,
-                given: { "S₀": eur(S), K: eur(K), σ: pct(sigma), r: pct(r), T: `${n(T)} years` },
+                prompt: `Black-Scholes: $S_0$ = ${eur(S)}, strike ${eur(K)}, volatility ${pct(sigma)}, risk-free rate ${pct(r)}, term ${n(T)} years. What is the **value of the European call**?`,
+                given: { "$S_0$": eur(S), K: eur(K), "$σ$": pct(sigma), r: pct(r), T: `${n(T)} years` },
                 answer,
-                explanation: `d₁ = ${n2(d1)}, d₂ = ${n2(d2)}; N(d₁) = ${n2(normCdf(d1))}, N(d₂) = ${n2(normCdf(d2))}; C = S·N(d₁) − K·e^(−rT)·N(d₂) = ${eur(answer)}`,
+                explanation: String.raw`$d_1 = \frac{\ln(S_0/K) + (i + \frac{\sigma^2}{2}) T}{\sigma \sqrt{T}} = ${n2(d1)}$, $d_2 = d_1 - \sigma \sqrt{T} = ${n2(d2)}$; $N(d_1) = ${n2(normCdf(d1))}$, $N(d_2) = ${n2(normCdf(d2))}$; $C_0 = S_0 \cdot N(d_1) - K \cdot e^{-iT} \cdot N(d_2)$ = ${eur(answer)}`,
             };
         },
     },
@@ -907,10 +907,10 @@ export const financeQuestions: NumericQuestion[] = [
             const IP = rng.int(30, Pcum - 5);
             const answer = (BV * Pcum + IP) / (BV + 1);
             return {
-                prompt: `A rights issue against contributions (Kapitalerhöhung gegen Einlagen) is carried out at a subscription ratio of ${BV}:1. The price before the rights issue is ${eur(Pcum)}, the issue price of the new shares is ${eur(IP)}. What is the **price after the rights issue (P_ex)**?`,
-                given: { "Subscription ratio": `${BV}:1`, "P_cum": eur(Pcum), "Issue price": eur(IP) },
+                prompt: `A rights issue against contributions (Kapitalerhöhung gegen Einlagen) is carried out at a subscription ratio of ${BV}:1. The price before the rights issue is ${eur(Pcum)}, the issue price of the new shares is ${eur(IP)}. What is the **price after the rights issue ($P_{ex}$)**?`,
+                given: { "Subscription ratio": `${BV}:1`, "$P_{cum}$": eur(Pcum), "Issue price": eur(IP) },
                 answer,
-                explanation: `P_ex = (BV·P_cum + IP)/(BV + 1) = ${eur(answer)}`,
+                explanation: String.raw`$P_{ex} = \frac{BV \cdot P_{cum} + IP}{BV + 1}$ = (${BV} · ${eur(Pcum)} + ${eur(IP)}) / ${BV + 1} = ${eur(answer)}`,
             };
         },
     },
@@ -928,9 +928,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = (Pcum - IP) / (BV + 1);
             return {
                 prompt: `Subscription ratio ${BV}:1, price before the rights issue ${eur(Pcum)}, issue price ${eur(IP)}. What is the theoretical value of the **subscription right**?`,
-                given: { "Subscription ratio": `${BV}:1`, "P_cum": eur(Pcum), "Issue price": eur(IP) },
+                given: { "Subscription ratio": `${BV}:1`, "$P_{cum}$": eur(Pcum), "Issue price": eur(IP) },
                 answer,
-                explanation: `BR = (P_cum − IP)/(BV + 1) = ${eur(answer)}`,
+                explanation: String.raw`$SR = \frac{P_{cum} - IP}{BV + 1}$ = (${eur(Pcum)} − ${eur(IP)}) / ${BV + 1} = ${eur(answer)}`,
             };
         },
     },
@@ -959,7 +959,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `FV_due = C · q · (q^N − 1)/(q − 1) = ${eur(C)} · ${n(q)} · (${n(q)}^${N} − 1)/${n(r / 100)} = ${eur(answer)} (the annuity factor is ${n2(af)})`,
+                explanation: String.raw`$FV_{due} = C \cdot q \cdot \frac{q^N - 1}{q - 1}$ — the ordinary annuity factor $\frac{q^N - 1}{q - 1} = ${n2(af)}$ times one extra year of interest: ${eur(C)} · ${n(q)} · ${n2(af)} = ${eur(answer)}`,
             };
         },
     },
@@ -987,7 +987,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity-immediate (in arrears)",
                 },
                 answer,
-                explanation: `PV = C · (q^N − 1)/(q^N·(q − 1)) = ${eur(C)} · (${n(q)}^${N} − 1)/(${n(q)}^${N}·${n(r / 100)}) = ${eur(answer)} (the annuity factor is ${n2(pf)})`,
+                explanation: String.raw`$PV = C \cdot \frac{q^N - 1}{q^N (q - 1)}$ (present-value annuity factor) with $q = ${n(q)}$: the factor is ${n2(pf)}, so PV = ${eur(C)} · ${n2(pf)} = ${eur(answer)}`,
             };
         },
     },
@@ -1018,7 +1018,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity-immediate (in arrears)",
                 },
                 answer,
-                explanation: `FV = (C + d/(q − 1))·(q^N − 1)/(q − 1) − N·d/(q − 1) with q = ${n(q)} and d/(q − 1) = ${eur(gap)} → (${eur(C)} + ${eur(gap)})·(${n(q)}^${N} − 1)/${n(r / 100)} − ${eur(N * gap)} = ${eur(answer)}`,
+                explanation: String.raw`Arithmetically growing annuity: $FV = \left(C + \frac{d}{q - 1}\right) \cdot \frac{q^N - 1}{q - 1} - \frac{N \cdot d}{q - 1}$ with $q = ${n(q)}$, $\frac{d}{q-1}$ = ${eur(gap)} and annuity factor ${n2(af)}: (${eur(C)} + ${eur(gap)}) · ${n2(af)} − ${eur(N * gap)} = ${eur(answer)}`,
             };
         },
     },
@@ -1050,7 +1050,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `FV_due = (C + d/(q − 1))·q·(q^N − 1)/(q − 1) − N·d·q/(q − 1) = q · FV_immediate; with q = ${n(q)}: FV_immediate = ${eur(fvImmediate)} → ${n(q)} · ${eur(fvImmediate)} = ${eur(answer)}`,
+                explanation: String.raw`$FV_{due} = q \cdot FV_{immediate}$ — every payment earns one extra year of interest. The ordinary-annuity value is ${eur(fvImmediate)}, so FV = ${n(q)} · ${eur(fvImmediate)} = ${eur(answer)}`,
             };
         },
     },
@@ -1081,7 +1081,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity-immediate (in arrears)",
                 },
                 answer,
-                explanation: `PV = (C + d/(q − 1))·(q^N − 1)/(q^N·(q − 1)) − N·d/(q^N·(q − 1)) with q = ${n(q)} and d/(q − 1) = ${eur(gap)} → [(${eur(C)} + ${eur(gap)})·(${n(q)}^${N} − 1)/${n(r / 100)} − ${eur(N * gap)}] / ${n(q)}^${N} = ${eur(answer)}`,
+                explanation: String.raw`Take the future value of the arithmetically growing annuity and discount it: $FV = \left(C + \frac{d}{q - 1}\right) \cdot \frac{q^N - 1}{q - 1} - \frac{N \cdot d}{q - 1}$ = ${eur((C + gap) * af - N * gap)}, then $PV = \frac{FV}{q^N}$ with $q^{${N}} = ${n2(q ** N)}$ → ${eur(answer)}`,
             };
         },
     },
@@ -1113,7 +1113,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `PV_due = (C + d/(q − 1))·(q^N − 1)/(q^(N−1)·(q − 1)) − N·d/(q^(N−1)·(q − 1)) = q · PV_immediate; with q = ${n(q)}: PV_immediate = ${eur(pvImmediate)} → ${n(q)} · ${eur(pvImmediate)} = ${eur(answer)}`,
+                explanation: String.raw`$PV_{due} = q \cdot PV_{immediate}$ — the whole stream shifts one year closer. The ordinary-annuity value is ${eur(pvImmediate)}, so PV = ${n(q)} · ${eur(pvImmediate)} = ${eur(answer)}`,
             };
         },
     },
@@ -1141,7 +1141,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity-immediate (in arrears)",
                 },
                 answer,
-                explanation: `g = q = ${n(q)}, so every payment compounds to the same amount C·q^(N−1). FV = C · N · q^(N−1) = ${eur(C)} · ${N} · ${n(q)}^${N - 1} = ${eur(answer)}`,
+                explanation: String.raw`With $g = q = ${n(q)}$ every payment compounds to the same end value $C \cdot q^{N-1}$, so $FV = C \cdot N \cdot q^{N-1}$ = ${eur(C)} · ${N} · ${n2(q ** (N - 1))} = ${eur(answer)}`,
             };
         },
     },
@@ -1171,7 +1171,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity-immediate (in arrears)",
                 },
                 answer,
-                explanation: `FV = C · (g^N − q^N)/(g − q) = ${eur(C)} · (${n(g)}^${N} − ${n(q)}^${N})/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+                explanation: String.raw`Geometrically growing annuity: $FV = C \cdot \frac{g^N - q^N}{g - q}$ with $g = ${n(g)}$ and $q = ${n(q)}$: the growth-annuity factor is ${n2(factor)}, so FV = ${eur(C)} · ${n2(factor)} = ${eur(answer)}`,
             };
         },
     },
@@ -1199,7 +1199,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `g = q = ${n(q)}, so FV_due = C · N · q^N = ${eur(C)} · ${N} · ${n(q)}^${N} = ${eur(answer)}`,
+                explanation: String.raw`With $g = q = ${n(q)}$: $FV_{due} = C \cdot N \cdot q^N$ = ${eur(C)} · ${N} · ${n2(q ** N)} = ${eur(answer)} — one factor $q$ more than in arrears, because every payment earns one extra year.`,
             };
         },
     },
@@ -1229,7 +1229,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `FV_due = C · q · (g^N − q^N)/(g − q) = ${eur(C)} · ${n(q)} · (${n(g)}^${N} − ${n(q)}^${N})/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+                explanation: String.raw`$FV_{due} = C \cdot q \cdot \frac{g^N - q^N}{g - q}$ with $g = ${n(g)}$ and $q = ${n(q)}$: the growth-annuity factor is ${n2(factor)}, so FV = ${eur(C)} · ${n(q)} · ${n2(factor)} = ${eur(answer)}`,
             };
         },
     },
@@ -1257,7 +1257,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity-immediate (in arrears)",
                 },
                 answer,
-                explanation: `g = q = ${n(q)}: payment k is C·q^(k−1) and is discounted by q^k, so each payment is worth C/q today. PV = C · N/q = ${eur(C)} · ${N}/${n(q)} = ${eur(answer)}`,
+                explanation: String.raw`With $g = q = ${n(q)}$ payment $k$ is $C \cdot q^{k-1}$ and is discounted by $q^k$, so each payment is worth $\frac{C}{q}$ today: $PV = \frac{C \cdot N}{q}$ = ${eur(C)} · ${N} / ${n(q)} = ${eur(answer)}`,
             };
         },
     },
@@ -1287,7 +1287,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity-immediate (in arrears)",
                 },
                 answer,
-                explanation: `PV = C · ((g/q)^N − 1)/(g − q) = ${eur(C)} · ((${n(g)}/${n(q)})^${N} − 1)/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+                explanation: String.raw`Geometrically growing annuity: $PV = C \cdot \frac{1 - \left(\frac{g}{q}\right)^{N}}{q - g}$ with $g = ${n(g)}$ and $q = ${n(q)}$: the growth-annuity factor is ${n2(factor)}, so PV = ${eur(C)} · ${n2(factor)} = ${eur(answer)}`,
             };
         },
     },
@@ -1315,7 +1315,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `g = q = ${n(q)}: payment k is C·q^(k−1) and is discounted by q^(k−1), so every payment is worth ${eur(C)} today. PV_due = C · N = ${eur(C)} · ${N} = ${eur(answer)}`,
+                explanation: String.raw`With $g = q = ${n(q)}$ payment $k$ is $C \cdot q^{k-1}$ and is discounted by $q^{k-1}$ — every payment is worth ${eur(C)} today: $PV_{due} = C \cdot N$ = ${eur(C)} · ${N} = ${eur(answer)}`,
             };
         },
     },
@@ -1345,7 +1345,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `PV_due = C · q · ((g/q)^N − 1)/(g − q) = ${eur(C)} · ${n(q)} · ((${n(g)}/${n(q)})^${N} − 1)/(${n(g)} − ${n(q)}) = ${eur(answer)} (the growth-annuity factor is ${n2(factor)})`,
+                explanation: String.raw`$PV_{due} = C \cdot q \cdot \frac{1 - \left(\frac{g}{q}\right)^{N}}{q - g}$ with $g = ${n(g)}$ and $q = ${n(q)}$: the growth-annuity factor is ${n2(factor)}, so PV = ${eur(C)} · ${n(q)} · ${n2(factor)} = ${eur(answer)}`,
             };
         },
     },
@@ -1370,7 +1370,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `PV_due = q · C/r = ${n(q)} · ${eur(C)}/${n(r / 100)} = ${eur(answer)} — the perpetuity in arrears is worth ${eur(immediate)}, plus the extra payment received today.`,
+                explanation: String.raw`$PV_{due} = q \cdot \frac{C}{i}$ = ${n(q)} · ${eur(immediate)} = ${eur(answer)} — the perpetuity in arrears (${eur(immediate)}) shifted one year closer.`,
             };
         },
     },
@@ -1397,7 +1397,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "annuity due (in advance)",
                 },
                 answer,
-                explanation: `PV_due = q · C/(q − g) with q = ${n(q)}, g = ${n(g)}, so q − g = r − w = ${n((r - w) / 100)} → ${n(q)} · ${eur(C)}/${n((r - w) / 100)} = ${eur(answer)}`,
+                explanation: String.raw`$PV_{due} = q \cdot \frac{C}{q - g}$ with $q - g = i - w = ${n((r - w) / 100)}$: ${n(q)} · ${eur(C)} / ${n((r - w) / 100)} = ${eur(answer)}`,
             };
         },
     },
@@ -1423,7 +1423,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "in arrears (annuity-immediate)",
                 },
                 answer,
-                explanation: `C_replacement = C · (m + r·(m − 1)/2) = ${eur(C)} · (${m} + ${n(r / 100)}·${m - 1}/2) = ${eur(answer)}`,
+                explanation: String.raw`$C_{repl} = C \cdot \left(m + i \cdot \frac{m - 1}{2}\right)$ = ${eur(C)} · (${m} + ${n(r / 100)} · ${n((m - 1) / 2)}) = ${eur(answer)}`,
             };
         },
     },
@@ -1449,7 +1449,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Payment timing": "in advance (annuity due)",
                 },
                 answer,
-                explanation: `C_replacement = C · (m + r·(m + 1)/2) = ${eur(C)} · (${m} + ${n(r / 100)}·${m + 1}/2) = ${eur(answer)}`,
+                explanation: String.raw`$C_{repl} = C \cdot \left(m + i \cdot \frac{m + 1}{2}\right)$ = ${eur(C)} · (${m} + ${n(r / 100)} · ${n((m + 1) / 2)}) = ${eur(answer)}`,
             };
         },
     },
@@ -1470,7 +1470,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Interest is credited ${label} (m = ${m} times per year) over a term of ${years} years. How many interest periods N does the compound-interest formula run over?`,
                 given: { "Payments per year m": String(m), "Term n": `${years} years` },
                 answer,
-                explanation: `N = m · n = ${m} · ${years} = ${n(answer)} interest periods`,
+                explanation: String.raw`$N = m \cdot n$ = ${m} · ${years} = ${n(answer)} interest periods`,
             };
         },
     },
@@ -1490,7 +1490,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company reports a book value of equity of ${eur(E)} and net financial obligations (net debt, i.e. interest-bearing debt minus financial assets) of ${eur(NFO)}. What is its **invested capital**?`,
                 given: { "Book value of equity E": eur(E), "Net financial obligations NFO": eur(NFO) },
                 answer,
-                explanation: `IC = E + NFO = ${eur(E)} + ${eur(NFO)} = ${eur(answer)}`,
+                explanation: String.raw`$IC = E + NFO$ = ${eur(E)} + ${eur(NFO)} = ${eur(answer)}`,
             };
         },
     },
@@ -1510,7 +1510,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company carries ${eur(D)} of interest-bearing debt and holds ${eur(FA)} of financial assets (cash and securities). What are its **net financial obligations (net debt)**?`,
                 given: { "Debt D": eur(D), "Financial assets FA": eur(FA) },
                 answer,
-                explanation: `NFO = D − FA = ${eur(D)} − ${eur(FA)} = ${eur(answer)}`,
+                explanation: String.raw`$NFO = D - FA$ = ${eur(D)} − ${eur(FA)} = ${eur(answer)}`,
             };
         },
     },
@@ -1529,7 +1529,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company is financed with ${eur(D)} of debt and ${eur(E)} of equity. What is its **debt-to-capital ratio** — the share of total capital (debt plus equity) that is debt? Give it as a factor.`,
                 given: { "Debt D": eur(D), "Equity E": eur(E) },
                 answer,
-                explanation: `D/(D+E) = ${eur(D)} / (${eur(D)} + ${eur(E)}) = ${n2(answer)}`,
+                explanation: String.raw`$\frac{D}{D + E}$ = ${eur(D)} / ${eur(D + E)} = ${n2(answer)}`,
             };
         },
     },
@@ -1548,7 +1548,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Net financial obligations (debt minus financial assets) are ${eur(NFO)}, the book value of equity is ${eur(E)}. What is the **net financial leverage (NFL)**?`,
                 given: { "Net financial obligations NFO": eur(NFO), "Equity E": eur(E) },
                 answer,
-                explanation: `NFL = NFO / E = ${eur(NFO)} / ${eur(E)} = ${n2(answer)}`,
+                explanation: String.raw`$NFL = \frac{NFO}{E}$ = ${eur(NFO)} / ${eur(E)} = ${n2(answer)}`,
             };
         },
     },
@@ -1567,7 +1567,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A listed company has net financial obligations of ${eur(NFO)} and a market value of equity of ${eur(MVE)}. Its enterprise value is the market value of equity plus net financial obligations. What is the **debt-to-enterprise-value ratio**? Give it as a factor.`,
                 given: { "Net financial obligations NFO": eur(NFO), "Market value of equity MV_E": eur(MVE) },
                 answer,
-                explanation: `NFO/EV = NFO/(MV_E + NFO) = ${eur(NFO)} / ${eur(MVE + NFO)} = ${n2(answer)}`,
+                explanation: String.raw`$\frac{NFO}{EV} = \frac{NFO}{MV_E + NFO}$ = ${eur(NFO)} / ${eur(MVE + NFO)} = ${n2(answer)}`,
             };
         },
     },
@@ -1595,7 +1595,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Current liabilities": eur(CL),
                 },
                 answer,
-                explanation: `Quick ratio = (cash + short-term investments + receivables)/CL = ${eur(cash + sti + ar)} / ${eur(CL)} = ${n2(answer)}`,
+                explanation: String.raw`$\text{quick ratio} = \frac{\text{cash} + \text{short-term investments} + \text{receivables}}{CL}$ = ${eur(cash + sti + ar)} / ${eur(CL)} = ${n2(answer)}`,
             };
         },
     },
@@ -1614,7 +1614,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company pays financial expenses of ${eur(FE)} on net financial obligations of ${eur(NFO)}. What is its **net financial expense (NFE)**, i.e. the financial expenses expressed as a percentage of net financial obligations?`,
                 given: { "Financial expenses FE": eur(FE), "Net financial obligations NFO": eur(NFO) },
                 answer,
-                explanation: `NFE = FE / NFO = ${eur(FE)} / ${eur(NFO)} = ${pct(answer)}`,
+                explanation: String.raw`$NFE = \frac{FE}{NFO}$ = ${eur(FE)} / ${eur(NFO)} = ${pct(answer)}`,
             };
         },
     },
@@ -1633,7 +1633,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Sales ${eur(sales)}, EBIT ${eur(EBIT)}. What is the **EBIT margin**?`,
                 given: { Sales: eur(sales), EBIT: eur(EBIT) },
                 answer,
-                explanation: `EBIT margin = EBIT / sales = ${eur(EBIT)} / ${eur(sales)} = ${pct(answer)}`,
+                explanation: String.raw`$\text{EBIT margin} = \frac{EBIT}{\text{sales}}$ = ${eur(EBIT)} / ${eur(sales)} = ${pct(answer)}`,
             };
         },
     },
@@ -1652,7 +1652,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Sales ${eur(sales)}, net income ${eur(NI)}. What is the **net profit margin**?`,
                 given: { Sales: eur(sales), "Net income": eur(NI) },
                 answer,
-                explanation: `Net profit margin = net income / sales = ${eur(NI)} / ${eur(sales)} = ${pct(answer)}`,
+                explanation: String.raw`$\text{net margin} = \frac{\text{net income}}{\text{sales}}$ = ${eur(NI)} / ${eur(sales)} = ${pct(answer)}`,
             };
         },
     },
@@ -1671,7 +1671,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company earns a net income of ${eur(NI)} and has ${n(shares)} shares outstanding. What are its **earnings per share (EPS)**?`,
                 given: { "Net income": eur(NI), "Shares outstanding": n(shares) },
                 answer,
-                explanation: `EPS = net income / shares = ${eur(NI)} / ${n(shares)} = ${eur(answer)}`,
+                explanation: String.raw`$EPS = \frac{\text{net income}}{\text{shares outstanding}}$ = ${eur(NI)} / ${n(shares)} = ${eur(answer)}`,
             };
         },
     },
@@ -1691,7 +1691,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Net income is ${eur(NI)} and ${n(shares)} shares are outstanding. Options and convertibles together give a **dilution factor** of ${n2(df)} — the factor by which the share count effectively grows. What are the **diluted earnings per share**?`,
                 given: { "Net income": eur(NI), "Shares outstanding a": n(shares), "Dilution factor df": n2(df) },
                 answer,
-                explanation: `Diluted EPS = NI / (a · df) = ${eur(NI)} / (${n(shares)} · ${n2(df)}) = ${eur(answer)}`,
+                explanation: String.raw`$EPS_{dil} = \frac{NI}{a \cdot df}$ = ${eur(NI)} / (${n(shares)} · ${n2(df)}) = ${eur(answer)}`,
             };
         },
     },
@@ -1710,7 +1710,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company's market capitalization is ${eur(MC)} and its net income is ${eur(NI)}. What is its **price/earnings ratio (P/E)**?`,
                 given: { "Market capitalization": eur(MC), "Net income": eur(NI) },
                 answer,
-                explanation: `P/E = market capitalization / net income = ${eur(MC)} / ${eur(NI)} = ${n2(answer)}`,
+                explanation: String.raw`$P/E = \frac{\text{market capitalization}}{\text{net income}}$ = ${eur(MC)} / ${eur(NI)} = ${n2(answer)}`,
             };
         },
     },
@@ -1729,7 +1729,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A company has an enterprise value of ${eur(EV)} and EBITDA of ${eur(EBITDA)}. What is its **EBITDA multiple (EV/EBITDA)**?`,
                 given: { "Enterprise value EV": eur(EV), EBITDA: eur(EBITDA) },
                 answer,
-                explanation: `EV/EBITDA = ${eur(EV)} / ${eur(EBITDA)} = ${n2(answer)}`,
+                explanation: String.raw`$\frac{EV}{EBITDA}$ = ${eur(EV)} / ${eur(EBITDA)} = ${n2(answer)}`,
             };
         },
     },
@@ -1748,9 +1748,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = (P0 * shares) / VE;
             return {
                 prompt: `A share trades at ${eur(P0)}, there are ${n(shares)} shares outstanding, and the book value of equity is ${eur(VE)}. What is the **market-to-book ratio**?`,
-                given: { "Share price P₀": eur(P0), "Shares outstanding a": n(shares), "Book value of equity": eur(VE) },
+                given: { "Share price $P_0$": eur(P0), "Shares outstanding a": n(shares), "Book value of equity": eur(VE) },
                 answer,
-                explanation: `M/B = P₀·a / book equity = ${eur(P0 * shares)} / ${eur(VE)} = ${n2(answer)}`,
+                explanation: String.raw`$M/B = \frac{P_0 \cdot a}{\text{book equity}}$ = ${eur(P0 * shares)} / ${eur(VE)} = ${n2(answer)}`,
             };
         },
     },
@@ -1763,14 +1763,14 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "ratio",
         build: (rng) => {
             // The issue price X is drawn strictly below the stock price S, so the
-            // options are always in the money and DF₁ is genuinely above 1.
+            // options are always in the money and $DF_1$ is genuinely above 1.
             const S = rng.int(60, 160);
             const X = rng.int(20, S - 20);
             const shares = rng.int(200, 900) * 1000;
             const opts = rng.int(20, 150) * 1000;
             const answer = Math.max(1, 1 + (opts / shares) * (1 - X / S));
             return {
-                prompt: `A company has ${n(shares)} shares outstanding at a stock price of ${eur(S)}. It has issued ${n(opts)} options, each entitling the holder to one new share at an issue price of ${eur(X)}. What is the **dilution factor DF₁** from these options?`,
+                prompt: `A company has ${n(shares)} shares outstanding at a stock price of ${eur(S)}. It has issued ${n(opts)} options, each entitling the holder to one new share at an issue price of ${eur(X)}. What is the **dilution factor $DF_1$** from these options?`,
                 given: {
                     "Options issued n": n(opts),
                     "Shares outstanding a": n(shares),
@@ -1778,7 +1778,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Stock price S": eur(S),
                 },
                 answer,
-                explanation: `DF₁ = max(1, 1 + n/a · (1 − X/S)) = max(1, 1 + ${n(opts)}/${n(shares)} · (1 − ${eur(X)}/${eur(S)})); the options add ${pct((opts / shares) * 100)} to the share count and only ${pct((X / S) * 100)} of each new share is paid for → DF₁ = ${n2(answer)}`,
+                explanation: String.raw`$DF_1 = \max\left(1,\ 1 + \frac{n}{a} \cdot \left(1 - \frac{X}{S}\right)\right)$ — the options add ${pct((opts / shares) * 100)} to the share count and only $\frac{X}{S}$ = ${pct((X / S) * 100)} of each new share is paid in → $DF_1$ = ${n2(answer)}`,
             };
         },
     },
@@ -1801,17 +1801,17 @@ export const financeQuestions: NumericQuestion[] = [
             const relief = saved / NI;
             const answer = Math.max(1, 1 + conv / shares / (1 + relief));
             return {
-                prompt: `A company has ${n(shares)} shares outstanding and a net income of ${eur(NI)} at a tax rate of ${pct(tauC * 100)}. Its convertible bonds have a total nominal value of ${eur(NV)} and pay a coupon of ${pct(c)} p.a.; on conversion they would create ${n(conv)} new shares and the coupon would no longer be paid. What is the **dilution factor DF₂** from the convertibles?`,
+                prompt: `A company has ${n(shares)} shares outstanding and a net income of ${eur(NI)} at a tax rate of ${pct(tauC * 100)}. Its convertible bonds have a total nominal value of ${eur(NV)} and pay a coupon of ${pct(c)} p.a.; on conversion they would create ${n(conv)} new shares and the coupon would no longer be paid. What is the **dilution factor $DF_2$** from the convertibles?`,
                 given: {
                     "New shares on conversion n": n(conv),
                     "Shares outstanding a": n(shares),
                     "Nominal value NV": eur(NV),
                     "Coupon c": pct(c),
                     "Net income NI": eur(NI),
-                    "τ_C": pct(tauC * 100),
+                    "$τ_C$": pct(tauC * 100),
                 },
                 answer,
-                explanation: `DF₂ = max(1, 1 + (n/a) / (1 + NV·(1−τ)·c/NI)); the coupon saved after tax is ${eur(saved)}, i.e. ${pct(relief * 100)} of net income, and the conversion adds ${pct((conv / shares) * 100)} to the share count → DF₂ = max(1, 1 + ${n(conv)}/${n(shares)} / ${n2(1 + relief)}) = ${n2(answer)}`,
+                explanation: String.raw`$DF_2 = \max\left(1,\ 1 + \frac{n/a}{1 + \frac{NV \cdot (1 - \tau_C) \cdot c}{NI}}\right)$ — the coupon saved after tax is ${eur(saved)} (${pct(relief * 100)} of net income) and conversion adds ${pct((conv / shares) * 100)} to the share count → $DF_2$ = ${n2(answer)}`,
             };
         },
     },
@@ -1828,10 +1828,10 @@ export const financeQuestions: NumericQuestion[] = [
             const df2 = rng.float(1.01, 1.2, 2);
             const answer = EPS / (df1 * df2);
             return {
-                prompt: `Basic earnings per share are ${eur(EPS)}. The options outstanding give a dilution factor DF₁ = ${n2(df1)} and the convertibles a dilution factor DF₂ = ${n2(df2)}. What are the **diluted earnings per share**?`,
-                given: { EPS: eur(EPS), "DF₁": n2(df1), "DF₂": n2(df2) },
+                prompt: `Basic earnings per share are ${eur(EPS)}. The options outstanding give a dilution factor $DF_1$ = ${n2(df1)} and the convertibles a dilution factor $DF_2$ = ${n2(df2)}. What are the **diluted earnings per share**?`,
+                given: { EPS: eur(EPS), "$DF_1$": n2(df1), "$DF_2$": n2(df2) },
                 answer,
-                explanation: `Diluted EPS = EPS / (DF₁ · DF₂) = ${eur(EPS)} / (${n2(df1)} · ${n2(df2)}) = ${eur(answer)}`,
+                explanation: String.raw`$EPS_{dil} = \frac{EPS}{DF_1 \cdot DF_2}$ = ${eur(EPS)} / (${n2(df1)} · ${n2(df2)}) = ${eur(answer)}`,
             };
         },
     },
@@ -1855,7 +1855,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Equity multiplier": n2(multiplier),
                 },
                 answer,
-                explanation: `ROE = net profit margin · asset turnover · equity multiplier = ${pct(margin)} · ${n2(turnover)} · ${n2(multiplier)} = ${pct(answer)}`,
+                explanation: String.raw`DuPont: $ROE = \text{net margin} \cdot \text{asset turnover} \cdot \text{equity multiplier}$ = ${pct(margin)} · ${n2(turnover)} · ${n2(multiplier)} = ${pct(answer)}`,
             };
         },
     },
@@ -1878,10 +1878,10 @@ export const financeQuestions: NumericQuestion[] = [
                     "ROIC after tax": pct(roic),
                     "Net financial leverage NFL": n2(nfl),
                     "Net financial expense NFE": pct(nfe),
-                    "τ_C": pct(tauC * 100),
+                    "$τ_C$": pct(tauC * 100),
                 },
                 answer,
-                explanation: `ROE = ROIC_aT + NFL·(ROIC_aT − NFE·(1−τ)); NFE after tax = ${pct(nfe * (1 - tauC))}, so the spread is ${pct(roic - nfe * (1 - tauC))} and ROE = ${pct(roic)} + ${n2(nfl)}·${pct(roic - nfe * (1 - tauC))} = ${pct(answer)}`,
+                explanation: String.raw`$ROE = ROIC + NFL \cdot \left(ROIC - NFE \cdot (1 - \tau_C)\right)$ — the after-tax NFE is ${pct(nfe * (1 - tauC))}, so the leverage spread is ${pct(roic - nfe * (1 - tauC))}: ${pct(roic)} + ${n2(nfl)} · ${pct(roic - nfe * (1 - tauC))} = ${pct(answer)}`,
             };
         },
     },
@@ -1907,7 +1907,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `Compute the **free cash flow to the firm (FCF)** from: EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, depreciation ${eur(depr)}, other non-cash expenses ${eur(ncExp)}, other non-cash earnings ${eur(ncEarn)}, change in net working capital ${eur(dNwc)} and cash flow from investments ${eur(cfi)}. The last two are already stated as **signed cash-flow effects**, so a negative figure reduces the cash flow.`,
                 given: {
                     EBIT: eur(EBIT),
-                    "τ_C": pct(tauC * 100),
+                    "$τ_C$": pct(tauC * 100),
                     Depreciation: eur(depr),
                     "Other non-cash expenses": eur(ncExp),
                     "Other non-cash earnings": eur(ncEarn),
@@ -1915,7 +1915,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Cash flow from investments": eur(cfi),
                 },
                 answer,
-                explanation: `FCF = EBIT·(1−τ) + depreciation + non-cash expenses − non-cash earnings + ΔNWC + CFI = ${eur(nopat)} + ${eur(depr)} + ${eur(ncExp)} − ${eur(ncEarn)} + (${eur(dNwc)}) + (${eur(cfi)}) = ${eur(answer)}`,
+                explanation: String.raw`$FCF = EBIT \cdot (1 - \tau_C) + \text{depr.} + \text{non-cash exp.} - \text{non-cash earn.} + \Delta NWC + CFI$ = ${eur(nopat)} + ${eur(depr)} + ${eur(ncExp)} − ${eur(ncEarn)} + (${eur(dNwc)}) + (${eur(cfi)}) = ${eur(answer)}`,
             };
         },
     },
@@ -1948,7 +1948,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Cash flow from financing": eur(cff),
                 },
                 answer,
-                explanation: `FCFE = NI + depreciation + non-cash expenses − non-cash earnings + ΔNWC + CFI + CFF = ${eur(NI)} + ${eur(depr)} + ${eur(ncExp)} − ${eur(ncEarn)} + (${eur(dNwc)}) + (${eur(cfi)}) + (${eur(cff)}) = ${eur(answer)}`,
+                explanation: String.raw`$FCFE = NI + \text{depr.} + \text{non-cash exp.} - \text{non-cash earn.} + \Delta NWC + CFI + CFF$ = ${eur(NI)} + ${eur(depr)} + ${eur(ncExp)} − ${eur(ncEarn)} + (${eur(dNwc)}) + (${eur(cfi)}) + (${eur(cff)}) = ${eur(answer)}`,
             };
         },
     },
@@ -1978,7 +1978,7 @@ export const financeQuestions: NumericQuestion[] = [
                         Taxes: "none",
                     },
                     answer,
-                    explanation: `Without taxes r_U is the plain value-weighted average of the two required returns: r_U = E/(E+D)·r_E + D/(E+D)·r_D = ${n2(wE)}·${pct(rE)} + ${n2(wD)}·${pct(rD)} = ${pct(answer)}`,
+                    explanation: String.raw`Without taxes $r_U$ is the value-weighted average return the assets must earn: $r_U = \frac{E}{E+D} \cdot r_E + \frac{D}{E+D} \cdot r_D$ = ${n2(wE)} · ${pct(rE)} + ${n2(wD)} · ${pct(rD)} = ${pct(answer)}`,
                 };
             },
         },
@@ -2000,16 +2000,16 @@ export const financeQuestions: NumericQuestion[] = [
                 const wD = D / (E + D);
                 const answer = wE * betaE + wD * betaD;
                 return {
-                    prompt: `A firm has ${eur(E)} of equity with an equity beta of ${n2(betaE)} and ${eur(D)} of debt with a debt beta of ${n2(betaD)}. Assume **no taxes**, so the whole firm is simply the portfolio of its equity and its debt. What is the **unlevered (asset) beta β_U**?`,
+                    prompt: `A firm has ${eur(E)} of equity with an equity beta of ${n2(betaE)} and ${eur(D)} of debt with a debt beta of ${n2(betaD)}. Assume **no taxes**, so the whole firm is simply the portfolio of its equity and its debt. What is the **unlevered (asset) beta $β_U$**?`,
                     given: {
                         "Equity E": eur(E),
                         "Debt D": eur(D),
-                        "β_E": n2(betaE),
-                        "β_D": n2(betaD),
+                        "$β_E$": n2(betaE),
+                        "$β_D$": n2(betaD),
                         Taxes: "none",
                     },
                     answer,
-                    explanation: `β_U = E/(E+D)·β_E + D/(E+D)·β_D = ${n2(wE)}·${n2(betaE)} + ${n2(wD)}·${n2(betaD)} = ${n2(answer)}`,
+                    explanation: String.raw`$\beta_U = \frac{E}{E+D} \cdot \beta_E + \frac{D}{E+D} \cdot \beta_D$ = ${n2(wE)} · ${n2(betaE)} + ${n2(wD)} · ${n2(betaD)} = ${n2(answer)}`,
                 };
             },
         },
@@ -2029,16 +2029,16 @@ export const financeQuestions: NumericQuestion[] = [
                 const D = rng.int(100, 700) * 1000;
                 const answer = betaU + (D / E) * (betaU - betaD);
                 return {
-                    prompt: `A firm's unlevered (asset) beta is ${n2(betaU)} and its debt beta is ${n2(betaD)}. It carries ${eur(D)} of debt against ${eur(E)} of equity. Assume **no taxes**. What is the **equity beta β_E** of the levered firm?`,
+                    prompt: `A firm's unlevered (asset) beta is ${n2(betaU)} and its debt beta is ${n2(betaD)}. It carries ${eur(D)} of debt against ${eur(E)} of equity. Assume **no taxes**. What is the **equity beta $β_E$** of the levered firm?`,
                     given: {
-                        "β_U": n2(betaU),
-                        "β_D": n2(betaD),
+                        "$β_U$": n2(betaU),
+                        "$β_D$": n2(betaD),
                         "Debt D": eur(D),
                         "Equity E": eur(E),
                         Taxes: "none",
                     },
                     answer,
-                    explanation: `β_E = β_U + D/E·(β_U − β_D) = ${n2(betaU)} + ${n2(D / E)}·(${n2(betaU)} − ${n2(betaD)}) = ${n2(answer)}`,
+                    explanation: String.raw`$\beta_E = \beta_U + \frac{D}{E} \cdot (\beta_U - \beta_D)$ = ${n2(betaU)} + ${n2(D / E)} · (${n2(betaU)} − ${n2(betaD)}) = ${n2(answer)}`,
                 };
             },
         },
@@ -2058,16 +2058,16 @@ export const financeQuestions: NumericQuestion[] = [
                 const wD = D / (E + D);
                 const answer = rU - wD * tauC * rD;
                 return {
-                    prompt: `A firm holds a **constant target leverage ratio**: ${eur(D)} of debt against ${eur(E)} of equity, rebalanced every period. Its unlevered cost of capital is ${pct(rU)}, its cost of debt ${pct(rD)}, and the **corporate tax rate is τ_C = ${pct(tauC * 100)}**. What is the **WACC**?`,
+                    prompt: `A firm holds a **constant target leverage ratio**: ${eur(D)} of debt against ${eur(E)} of equity, rebalanced every period. Its unlevered cost of capital is ${pct(rU)}, its cost of debt ${pct(rD)}, and the **corporate tax rate is $τ_C$ = ${pct(tauC * 100)}**. What is the **WACC**?`,
                     given: {
-                        "r_U": pct(rU),
-                        "r_D": pct(rD),
+                        "$r_U$": pct(rU),
+                        "$r_D$": pct(rD),
                         "Debt D": eur(D),
                         "Equity E": eur(E),
-                        "τ_C": pct(tauC * 100),
+                        "$τ_C$": pct(tauC * 100),
                     },
                     answer,
-                    explanation: `At a fixed target leverage the WACC is the unlevered cost less the tax shield per unit of firm value: r_WACC = r_U − D/(E+D)·τ_C·r_D = ${pct(rU)} − ${n2(wD)}·${n(tauC)}·${pct(rD)} = ${pct(answer)}`,
+                    explanation: String.raw`At a fixed target leverage the WACC is the unlevered cost less the tax shield per unit of firm value: $r_{WACC} = r_U - \frac{D}{E+D} \cdot \tau_C \cdot r_D$ = ${pct(rU)} − ${n2(wD)} · ${n(tauC)} · ${pct(rD)} = ${pct(answer)}`,
                 };
             },
         },
@@ -2086,15 +2086,15 @@ export const financeQuestions: NumericQuestion[] = [
                 const its = tauC * D;
                 const answer = VU + its;
                 return {
-                    prompt: `An all-equity firm is worth ${eur(VU)}. It now takes on **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} — only interest is paid, the principal is rolled over forever, so the interest tax shield is a perpetuity discounted at ${pct(rD)}. The **corporate tax rate is τ_C = ${pct(tauC * 100)}**. What is the value of the **levered firm V_L**?`,
+                    prompt: `An all-equity firm is worth ${eur(VU)}. It now takes on **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} — only interest is paid, the principal is rolled over forever, so the interest tax shield is a perpetuity discounted at ${pct(rD)}. The **corporate tax rate is $τ_C$ = ${pct(tauC * 100)}**. What is the value of the **levered firm V_L**?`,
                     given: {
                         "Unlevered firm value V_U": eur(VU),
                         "Permanent debt D": eur(D),
                         "Cost of debt r_D": pct(rD),
-                        "τ_C": pct(tauC * 100),
+                        "$τ_C$": pct(tauC * 100),
                     },
                     answer,
-                    explanation: `The perpetual tax shield is PV(ITS) = τ_C·r_D·D / r_D = τ_C·D — the cost of debt cancels — so PV(ITS) = ${n(tauC)}·${eur(D)} = ${eur(its)}. Then V_L = V_U + PV(ITS) = ${eur(VU)} + ${eur(its)} = ${eur(answer)}`,
+                    explanation: String.raw`The perpetual tax shield is $PV(ITS) = \frac{\tau_C \cdot r_D \cdot D}{r_D} = \tau_C \cdot D$ — the cost of debt cancels: ${n(tauC)} · ${eur(D)} = ${eur(its)}. Then $V_L = V_U + PV(ITS)$ = ${eur(VU)} + ${eur(its)} = ${eur(answer)}`,
                 };
             },
         },
@@ -2114,13 +2114,13 @@ export const financeQuestions: NumericQuestion[] = [
                 return {
                     prompt: `Value a firm with the **equity method**: the free cash flow to equity is ${eur(fcfe)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCFE is already stated **after corporate taxes and after interest and debt payments**, so it is discounted at the cost of equity of ${pct(rE)}. What is the **market value of equity**?`,
                     given: {
-                        "FCFE₁": eur(fcfe),
+                        "$FCFE_1$": eur(fcfe),
                         "Growth g (perpetual)": pct(g),
                         "Cost of equity r_E": pct(rE),
                         "Cash flow basis": "after corporate tax, after interest and debt payments",
                     },
                     answer,
-                    explanation: `V_E = Σ FCFE_t/(1+r_E)^t, and with constant growth the infinite sum collapses to the growing perpetuity V_E = FCFE₁/(r_E − g) = ${eur(fcfe)}/(${n(rE / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
+                    explanation: String.raw`$V_E = \sum_t \frac{FCFE_t}{(1+r_E)^t}$, and with constant growth the infinite sum collapses to the growing perpetuity $V_E = \frac{FCFE_1}{r_E - g}$ = ${eur(fcfe)} / (${n(rE / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
                 };
             },
         },
@@ -2140,13 +2140,13 @@ export const financeQuestions: NumericQuestion[] = [
                 return {
                     prompt: `Value a firm with the **entity method**: the free cash flow to the firm is ${eur(fcf)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCF is the **unlevered after-tax cash flow** — taxed as if the firm were all-equity financed, so the tax advantage of debt sits in the WACC, not in the cash flow. The WACC is ${pct(wacc)}. What is the **total firm value**?`,
                     given: {
-                        "FCF₁": eur(fcf),
+                        "$FCF_1$": eur(fcf),
                         "Growth g (perpetual)": pct(g),
                         WACC: pct(wacc),
                         "Cash flow basis": "unlevered, after corporate tax",
                     },
                     answer,
-                    explanation: `V = Σ FCF_t/(1+r_WACC)^t, and with constant growth the infinite sum collapses to the growing perpetuity V = FCF₁/(r_WACC − g) = ${eur(fcf)}/(${n(wacc / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
+                    explanation: String.raw`$V = \sum_t \frac{FCF_t}{(1+r_{WACC})^t}$, and with constant growth the infinite sum collapses to the growing perpetuity $V = \frac{FCF_1}{r_{WACC} - g}$ = ${eur(fcf)} / (${n(wacc / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
                 };
             },
         },
@@ -2169,17 +2169,17 @@ export const financeQuestions: NumericQuestion[] = [
                 const its = tauC * D;
                 const answer = vU + its;
                 return {
-                    prompt: `Value a firm with the **APV method**. Its unlevered free cash flow is ${eur(fcf)} next year and grows at a constant ${pct(g)} p.a. **in perpetuity**; it is taxed as if the firm were all-equity financed and is discounted at the unlevered cost of capital of ${pct(rU)}. The firm also carries **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} (interest only, principal rolled over forever), and the **corporate tax rate is τ_C = ${pct(tauC * 100)}**. What is the **value of the levered firm (APV)**?`,
+                    prompt: `Value a firm with the **APV method**. Its unlevered free cash flow is ${eur(fcf)} next year and grows at a constant ${pct(g)} p.a. **in perpetuity**; it is taxed as if the firm were all-equity financed and is discounted at the unlevered cost of capital of ${pct(rU)}. The firm also carries **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} (interest only, principal rolled over forever), and the **corporate tax rate is $τ_C$ = ${pct(tauC * 100)}**. What is the **value of the levered firm (APV)**?`,
                     given: {
-                        "FCF₁ (unlevered, after tax)": eur(fcf),
+                        "$FCF_1$ (unlevered, after tax)": eur(fcf),
                         "Growth g (perpetual)": pct(g),
-                        "r_U": pct(rU),
+                        "$r_U$": pct(rU),
                         "Permanent debt D": eur(D),
-                        "r_D": pct(rD),
-                        "τ_C": pct(tauC * 100),
+                        "$r_D$": pct(rD),
+                        "$τ_C$": pct(tauC * 100),
                     },
                     answer,
-                    explanation: `APV values the two pieces separately. Unlevered: V_U = Σ FCF_t/(1+r_U)^t = FCF₁/(r_U − g) = ${eur(fcf)}/(${n(rU / 100)} − ${n(g / 100)}) = ${eur(vU)}. Tax shield: PV(ITS) = τ_C·Σ D·r_D/(1+r_D)^t = τ_C·D·r_D/r_D = τ_C·D = ${eur(its)}. APV = V_U + PV(ITS) = ${eur(vU)} + ${eur(its)} = ${eur(answer)}`,
+                    explanation: String.raw`APV values the two pieces separately. Unlevered: $V_U = \frac{FCF_1}{r_U - g}$ = ${eur(fcf)} / (${n(rU / 100)} − ${n(g / 100)}) = ${eur(vU)}. Tax shield of permanent debt: $PV(ITS) = \frac{\tau_C \cdot D \cdot r_D}{r_D} = \tau_C \cdot D$ = ${eur(its)}. $APV = V_U + PV(ITS)$ = ${eur(vU)} + ${eur(its)} = ${eur(answer)}`,
                 };
             },
         },
@@ -2210,7 +2210,7 @@ export const financeQuestions: NumericQuestion[] = [
                 prompt: `A rights issue **against cash contributions** (Kapitalerhöhung gegen Einlagen) is carried out at a subscription ratio of ${BV}:1. The price cum rights is ${eur(Pcum)}, the subscription price of the new shares is ${eur(IP)}. The new shares carry a **dividend disadvantage**: for the current year the old shares receive ${eur(divOld)}, the new shares only ${eur(divNew)}. That dividend falls due in ${months} months and is discounted at ${pct(rE)}. What is the theoretical value of the **subscription right**?`,
                 given: {
                     "Subscription ratio": `${BV}:1`,
-                    "P_cum": eur(Pcum),
+                    "$P_{cum}$": eur(Pcum),
                     "Subscription price IP": eur(IP),
                     "Dividend old share": eur(divOld),
                     "Dividend new share": eur(divNew),
@@ -2218,7 +2218,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Discount rate": pct(rE),
                 },
                 answer,
-                explanation: `Dividend disadvantage = (Div_old − Div_new)·q^(−t) = (${eur(divOld)} − ${eur(divNew)})·${n2(q)}^(−${n(t)}) = ${eur(disadv)}. SR = (P_cum − IP − (Div_old − Div_new)·q^(−t))/(BV + 1) = (${eur(Pcum)} − ${eur(IP)} − ${eur(disadv)})/(${BV} + 1) = ${eur(answer)}`,
+                explanation: String.raw`Dividend disadvantage: $(Div_{old} - Div_{new}) \cdot q^{-t}$ = ${eur(divOld - divNew)} discounted over ${months} months = ${eur(disadv)}. $SR = \frac{P_{cum} - IP - (Div_{old} - Div_{new}) \cdot q^{-t}}{BV + 1}$ = (${eur(Pcum)} − ${eur(IP)} − ${eur(disadv)}) / ${BV + 1} = ${eur(answer)}`,
             };
         },
     },
@@ -2234,14 +2234,14 @@ export const financeQuestions: NumericQuestion[] = [
             const Pcum = rng.int(60, 220);
             const answer = Pcum / (1 + 1 / BV);
             return {
-                prompt: `A capital increase **from company funds** (Kapitalerhöhung aus Gesellschaftsmitteln) converts reserves into share capital. Shareholders receive the new shares free of charge, so **no subscription price is paid in** — the market value of the company is unchanged and only spread over more shares. The subscription ratio is ${BV}:1 (${BV} old shares carry one new share) and the price cum rights is ${eur(Pcum)}. What is the **price after the capital increase (P_ex)**?`,
+                prompt: `A capital increase **from company funds** (Kapitalerhöhung aus Gesellschaftsmitteln) converts reserves into share capital. Shareholders receive the new shares free of charge, so **no subscription price is paid in** — the market value of the company is unchanged and only spread over more shares. The subscription ratio is ${BV}:1 (${BV} old shares carry one new share) and the price cum rights is ${eur(Pcum)}. What is the **price after the capital increase ($P_{ex}$)**?`,
                 given: {
                     "Capital increase": "from company funds (nothing paid in)",
                     "Subscription ratio": `${BV}:1`,
-                    "P_cum": eur(Pcum),
+                    "$P_{cum}$": eur(Pcum),
                 },
                 answer,
-                explanation: `P_ex = P_cum/(1 + 1/BV) = ${eur(Pcum)}/(1 + 1/${BV}) = ${eur(answer)} — the value of ${BV} old shares at ${eur(Pcum)} is spread over ${BV + 1} shares. Note there is no issue price term here, unlike a rights issue against cash contributions.`,
+                explanation: String.raw`$P_{ex} = \frac{P_{cum}}{1 + \frac{1}{BV}}$ = ${eur(Pcum)} / ${n2(1 + 1 / BV)} = ${eur(answer)} — the value of ${BV} old shares at ${eur(Pcum)} is spread over ${BV + 1} shares. There is no issue-price term, unlike a rights issue against cash contributions.`,
             };
         },
     },
@@ -2267,9 +2267,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = (p * Pu + (1 - p) * Pd) / (1 + rRF / 100);
             return {
                 prompt: `One-period binomial model: the share trades at ${eur(S)} today and in one year is worth either ×${n2(u)} or ×${n2(d)} of that. The risk-free rate is ${pct(rRF)}. What is the **value of the European put** with a strike of ${eur(K)}?`,
-                given: { "S₀": eur(S), K: eur(K), u: n2(u), d: n2(d), "r_f": pct(rRF) },
+                given: { "$S_0$": eur(S), K: eur(K), u: n2(u), d: n2(d), "$r_f$": pct(rRF) },
                 answer,
-                explanation: `p = (1 + r_f − d)/(u − d) = ${n2(p)}; P_u = max(K − S·u, 0) = ${eur(Pu)}, P_d = max(K − S·d, 0) = ${eur(Pd)}; P₀ = (p·P_u + (1−p)·P_d)/(1 + r_f) = ${eur(answer)}`,
+                explanation: String.raw`$p = \frac{(1 + r_f) - d}{u - d} = ${n2(p)}$; payoffs $P_u = \max(K - S_0 \cdot u,\ 0)$ = ${eur(Pu)}, $P_d = \max(K - S_0 \cdot d,\ 0)$ = ${eur(Pd)}; $P_0 = \frac{p \cdot P_u + (1 - p) \cdot P_d}{1 + r_f}$ = ${eur(answer)}`,
             };
         },
     },
@@ -2288,9 +2288,9 @@ export const financeQuestions: NumericQuestion[] = [
             const answer = P0 / bookPerShare;
             return {
                 prompt: `A share trades at ${eur(P0)}. The company's book value of equity is ${eur(bookPerShare)} per share. What is its **price-to-book ratio (P/B)**?`,
-                given: { "Price P₀": eur(P0), "Book value of equity per share": eur(bookPerShare) },
+                given: { "Price $P_0$": eur(P0), "Book value of equity per share": eur(bookPerShare) },
                 answer,
-                explanation: `P/B = P₀ / book value of equity per share = ${eur(P0)} / ${eur(bookPerShare)} = ${n2(answer)}`,
+                explanation: String.raw`$P/B = \frac{P_0}{\text{book value per share}}$ = ${eur(P0)} / ${eur(bookPerShare)} = ${n2(answer)}`,
             };
         },
     },
@@ -2314,13 +2314,13 @@ export const financeQuestions: NumericQuestion[] = [
             return {
                 prompt: `Capital is rationed, so projects are ranked by their **profitability index** — the NPV per euro of the scarce resource they consume. A project ties up ${eur(I0)} of capital today and returns ${eur(cf)} at the end of each of the next ${T} years; the discount rate is ${pct(r)}. What is its **profitability index**?`,
                 given: {
-                    "Capital consumed I₀": eur(I0),
+                    "Capital consumed $I_0$": eur(I0),
                     "Cash flow p.a.": eur(cf),
                     Term: `${T} years`,
                     r: pct(r),
                 },
                 answer,
-                explanation: `First the NPV: NPV = −I₀ + Σ CF/(1+r)^t = ${eur(value)}. Then PI = NPV / resources consumed = ${eur(value)} / ${eur(I0)} = ${n2(answer)}`,
+                explanation: String.raw`First the NPV: $NPV = -I_0 + \sum_{t=1}^{T} \frac{CF_t}{(1+i)^t}$ = ${eur(value)}. Then $PI = \frac{NPV}{I_0}$ = ${eur(value)} / ${eur(I0)} = ${n2(answer)}`,
             };
         },
     },
@@ -2348,7 +2348,7 @@ export const financeQuestions: NumericQuestion[] = [
                     N: `${N} years`,
                 },
                 answer,
-                explanation: `D_mod = D/(1 + r) = ${n2(duration)}/(1 + ${n(r / 100)}) = ${n2(answer)} years`,
+                explanation: String.raw`$D_{mod} = \frac{D}{1 + i}$ = ${n2(duration)} / ${n(1 + r / 100)} = ${n2(answer)} years`,
             };
         },
     },
