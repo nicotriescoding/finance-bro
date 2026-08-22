@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 /**
  * Legal notice for a privately run site without a legal entity. Required
  * because the site carries ad slots and (planned) affiliate links, which makes
- * it "geschäftsmäßig" under § 5 DDG — the purely-private exemption does not
+ * it "geschäftsmäßig" under § 5 DDG - the purely-private exemption does not
  * apply. English on purpose: the whole site is English and the DDG does not
  * prescribe a language.
  *
  * Deliberately absent: the EU ODR platform link (ec.europa.eu/odr). The
  * platform was shut down on 2025-07-20 and the old mandatory reference must
- * no longer be used — the smoke test asserts it stays gone.
+ * no longer be used - the smoke test asserts it stays gone.
  *
  * Contact email is temporary (BACKLOG: swap to a finance-bro.de address).
  */
@@ -75,7 +75,7 @@ export default function ImpressumPage() {
                 <h2 className="mt-5 font-extrabold">Liability for content and links</h2>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted">
                     The content of this site is created with care but comes without any
-                    guarantee of accuracy, completeness or timeliness — it is study
+                    guarantee of accuracy, completeness or timeliness - it is study
                     material, not professional (and certainly not financial) advice.
                     External links lead to third-party sites whose content is beyond our
                     control; at the time of linking no legal violations were apparent.

@@ -63,8 +63,12 @@ its own work:
 | 15 | Highscores/multiplayer backend — optional extra, never on the read path | icebox |
 | 16 | `/products` page: replace placeholder images and dead affiliate links or drop the page | icebox |
 | 17 | Library (`/library`): favourite-books shelf with affiliate placeholders; took the Language nav slot; ad-free by rule | done — placeholders (SPIN Selling, The Lean Startup) |
-| 18 | Legal pages: `/impressum` (§ 5 DDG, private operator) + `/privacy` (GDPR/TDDDG), site-wide footer | done |
+| 18 | Legal pages: `/impressum` (§ 5 DDG, private operator) + `/privacy` (GDPR/TDDDG), site-wide footer (legal links only — Library lives in the nav) | done |
 | 19 | Cookie consent banner + consent-gated PostHog (EU cloud) | prepared — inert until `NEXT_PUBLIC_POSTHOG_KEY` set in Vercel |
+| 20 | Landing page v2: joke hero + "Start your career" CTA, coming-soon teasers (Munich Matcha Alert, duels, leaderboard), compact subject strip for SEO | done |
+| 21 | Career setup v2: stepped flow (Step 1/2), topics start **unselected**, "Select all" tick row, phone auto-scroll + tap-again-to-start | done |
+| 22 | Ads: all slots on IAB-standard sizes (160×600, 200×200, 728×90, 320×100, 468×60) + fixed 320×50 mobile anchor on every page except `/library`, consent-banner-aware | done — placeholders, no network wired |
+| 23 | Copy rule: no em dashes in shipped text (`-` instead), smoke-guarded on `/` and `/career` | done |
 
 ## Non-goals (deliberate)
 

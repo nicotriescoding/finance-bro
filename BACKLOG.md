@@ -6,6 +6,28 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Landing v2 + career v2 + ad standardization shipped (2026-08-22).** The
+homepage is now a joke landing that points at `/career` ("Start your career
+🪦" CTA, coming-soon teasers incl. the **Munich Matcha Alert**, compact
+subject strip kept for SEO/smoke). `/career` is a stepped setup: Step 1 pick
+a career, Step 2 topics + session; topics start **unselected** with a
+"Select all" tick row (replacing the text toggle); on stacked layouts
+(< lg) picking a career auto-scrolls to Step 2 and tapping the selected
+career again starts the run immediately (ticked topics, else all - the card
+says "TAP AGAIN TO START"). Ad slots moved to IAB-standard sizes (200×200,
+728×90, 320×100, 468×60; 160×600 stays) so a network drops in later, and a
+new phone-only **320×50 anchor ad** (`AnchorAd`) sits fixed above the tab
+bar on every page except the ad-free `/library` - it renders only after a
+cookie-consent decision and hides while the banner is open, with an in-flow
+spacer so it never covers content. The footer lost its Library link (nav +
+tab bar keep it). All em dashes in `src/` + `scripts/` were replaced with
+`-` per Nico's rule (question files: punctuation-only diff, `verify`
+round-trips green); smoke now guards `/` and `/career` against em dashes.
+`npm run check` green - 59 smoke checks (5 new). Verified via sandbox
+headless-Chromium screenshots (phone + desktop, incl. the tap-again flow
+clicking through to `/quiz`); emoji tofu + fallback font remain
+sandbox-only artifacts.
+
 **Legal + Library shipped (2026-08-21, evening).** The nav's Language slot is
 now Library 📚 — `/library` has SPIN Selling + The Lean Startup as placeholder
 cards ("AD · link coming soon" buttons, advertising-transparency card,
@@ -81,10 +103,14 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   `/quiz` + `/career` in dark-mode OS (page must stay light), and the balance
   count-up + credit float on a correct answer. Add to the tour: `/library`,
   `/impressum`, `/privacy`, the cookie banner (accept once, decline once —
-  wiped via localStorage key `fb-cookie-consent`) and the footer.
+  wiped via localStorage key `fb-cookie-consent`) and the footer. New since
+  2026-08-22: the landing page (phone + desktop), the stepped `/career` on a
+  real phone (auto-scroll + tap-again-to-start with the ticked-topics
+  variants), and the anchor ad (appears only after a cookie choice, gone on
+  `/library`, never overlaps the tab bar or cookie banner).
 - **Cleanup on Nico's machine** (the sandbox cannot delete files):
-  `rm -rf .next_stale_sandbox .next_stale_sandbox2` (stale `.next` dirs
-  renamed aside so builds could run), then
+  `rm -rf .next_stale_sandbox .next_stale_sandbox2 .next_stale_sandbox3`
+  (stale `.next` dirs renamed aside so builds could run), then
   `rm -f .git/index.lock .git/HEAD.lock .git/refs/heads/main.lock .git/objects/maintenance.lock && git reset`
   (this session committed via an alternate index because the sandbox cannot
   delete its own `index.lock`; the reset refreshes the stale on-disk index —
@@ -118,10 +144,14 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   build; `/language` is no longer linked anywhere (Library took its nav slot)
   but stays deployed as canon. `/products` still has `via.placeholder.com`
   images and dead affiliate links (SPEC #16).
-- `AdSlot` now renders the 3a fixed-size striped placeholders (160×600,
-  160×160, 970×60, 300×100, 468×76 sponsored-career) with SPONSORED/AD labels;
-  still no ad network wired. Slots never move layout — keep it that way when
-  one is.
+- `AdSlot` renders striped placeholders on IAB-standard sizes since
+  2026-08-22 (160×600 wide skyscraper, 200×200 small square, 728×90
+  leaderboard, 320×100 large mobile banner, 468×60 sponsored-career) plus
+  the fixed 320×50 mobile anchor in `AnchorAd`; still no ad network wired.
+  The standard sizes mean AdSense/etc. can drop in without moving layout —
+  keep it that way. Revenue optimization (which slots, which pages, ad
+  density) is deliberately deferred per Nico: ads must never interfere with
+  functionality.
 - `fin-bond-modified-duration` asks for a signed percentage price change, so a
   student typing `7.19` instead of `-7.19` fails. Either reword to "by how much
   does it fall" or say "state the sign".

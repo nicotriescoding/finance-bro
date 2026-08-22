@@ -17,7 +17,7 @@ export default function MultiplayerPage() {
                     before a <span className="font-bold text-warn-bright">Manager</span> dominates you.
                 </p>
                 <div className="text-sm italic text-muted-light">
-                    (Feature in development — soon you can go head to head with other FinanceBros 💪)
+                    (Feature in development - soon you can go head to head with other FinanceBros 💪)
                 </div>
             </div>
         </div>

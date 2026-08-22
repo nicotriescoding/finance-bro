@@ -53,7 +53,7 @@ export default function ProductsPage() {
                         <div>
                             <p className="font-extrabold">Business School Cigarettes</p>
                             <p className="mb-2 mt-0.5 text-sm leading-relaxed text-muted">
-                                Your easy entry into investing — takes the edge off so you can finally
+                                Your easy entry into investing - takes the edge off so you can finally
                                 blow bubbles.
                             </p>
                             <a

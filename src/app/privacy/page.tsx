@@ -4,7 +4,7 @@ import CookieSettingsLink from "@/components/consent/CookieSettingsLink";
 export const metadata: Metadata = {
     title: "Privacy Policy",
     description:
-        "Privacy policy (Datenschutzerklärung) for finance-bro.de — what data the site touches, and the analytics that only ever run with your consent.",
+        "Privacy policy (Datenschutzerklärung) for finance-bro.de - what data the site touches, and the analytics that only ever run with your consent.",
 };
 
 /**
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
                 <p>
                     No account, no newsletter, no forms. Your quiz scores stay in your
                     browser. Analytics only runs if you explicitly say yes to the cookie
-                    banner — decline it and nothing is tracked. No ad network is
+                    banner - decline it and nothing is tracked. No ad network is
                     currently connected.
                 </p>
             </Section>
@@ -65,8 +65,8 @@ export default function PrivacyPage() {
             <Section title="2. Hosting and server logs">
                 <p>
                     The site is hosted by Vercel Inc. (USA). When you visit, Vercel
-                    technically necessarily processes connection data — IP address,
-                    date and time, requested URL, browser and operating system — in
+                    technically necessarily processes connection data - IP address,
+                    date and time, requested URL, browser and operating system - in
                     server logs, which are deleted after a short period. Legal basis:
                     our legitimate interest in delivering and securing the site
                     (Art. 6 (1) (f) GDPR). A data processing agreement per Art. 28 GDPR
@@ -79,16 +79,16 @@ export default function PrivacyPage() {
                 <p>
                     Your scores, rank, current quiz run and your cookie-banner choice
                     are stored in your browser&apos;s localStorage. This data never
-                    leaves your device and we cannot read it — it exists so the site
+                    leaves your device and we cannot read it - it exists so the site
                     works (progress survives a reload). Storing it is strictly
                     necessary and requires no consent (§ 25 (2) TDDDG). Clearing your
                     browser data removes it.
                 </p>
             </Section>
 
-            <Section title="4. Analytics (PostHog) — only with your consent">
+            <Section title="4. Analytics (PostHog) - only with your consent">
                 <p>
-                    We use PostHog to understand which pages and questions get used —
+                    We use PostHog to understand which pages and questions get used -
                     but <strong>only if you accept the cookie banner</strong>. Until
                     you do, no analytics script loads, no cookie is set and no data is
                     collected. If you decline, the site works exactly the same.
@@ -104,14 +104,14 @@ export default function PrivacyPage() {
                 <p>
                     Legal basis: your consent (Art. 6 (1) (a) GDPR, § 25 (1) TDDDG). You
                     can withdraw it at any time with effect for the future via{" "}
-                    <CookieSettingsLink /> — withdrawal stops all capturing and resets
+                    <CookieSettingsLink /> - withdrawal stops all capturing and resets
                     the stored identifiers.
                 </p>
             </Section>
 
             <Section title="5. Advertising and affiliate links">
                 <p>
-                    Ad placements on this site are currently decorative placeholders —
+                    Ad placements on this site are currently decorative placeholders -
                     no ad network is connected and no ad-related data is processed. If
                     that changes, this policy and the consent banner will be updated
                     first.
@@ -143,7 +143,7 @@ export default function PrivacyPage() {
                 </p>
                 <p>
                     You also have the right to lodge a complaint with a supervisory
-                    authority (Art. 77 GDPR) — for this site that is the Bavarian Data
+                    authority (Art. 77 GDPR) - for this site that is the Bavarian Data
                     Protection Authority (BayLDA, Ansbach), though any EU supervisory
                     authority will forward your complaint.
                 </p>

@@ -108,7 +108,7 @@ export default function QuizClient() {
             <div className="mx-auto max-w-md px-4 py-16 text-center">
                 <p className="caps-label text-[10px] text-muted">Opening the account view</p>
                 <p className="mt-3 text-sm text-muted">
-                    No run in progress —{" "}
+                    No run in progress -{" "}
                     <Link href="/career" className="font-bold text-brand underline underline-offset-4">
                         open one on the Career page
                     </Link>

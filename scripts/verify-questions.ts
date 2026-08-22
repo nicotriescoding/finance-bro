@@ -21,7 +21,7 @@ const stripMath = (text: string) => text.replace(/\$[^$]+\$/g, " ");
 
 /**
  * Compile every `$...$` segment with KaTeX. Invalid TeX or an odd number of
- * `$` delimiters is a build error — RichText would render it broken.
+ * `$` delimiters is a build error - RichText would render it broken.
  */
 function checkMath(id: string, where: string, text: string | undefined) {
     if (!text) return;
@@ -34,7 +34,7 @@ function checkMath(id: string, where: string, text: string | undefined) {
         try {
             katex.renderToString(seg.slice(1, -1), { throwOnError: true, strict: false });
         } catch (e) {
-            errors.push(`${id}: invalid TeX in ${where}: ${seg} — ${(e as Error).message}`);
+            errors.push(`${id}: invalid TeX in ${where}: ${seg} - ${(e as Error).message}`);
         }
     }
 }
@@ -96,7 +96,7 @@ for (const q of ALL_QUESTIONS) {
         if (Math.abs(a) > 1e12) {
             warnings.push(`${q.id} (seed ${seed}): implausibly large answer ${a}`);
         }
-        // TeX braces like q^{10} are legitimate — strip math before this check.
+        // TeX braces like q^{10} are legitimate - strip math before this check.
         if (/\{[A-Za-z_]\w*\}/.test(stripMath(inst.prompt))) {
             errors.push(`${q.id} (seed ${seed}): unfilled placeholder in prompt`);
             break;

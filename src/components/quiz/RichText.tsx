@@ -4,9 +4,9 @@ import katex from "katex";
 /**
  * Renders question text with two kinds of inline markup:
  *
- *   `$...$`   — a KaTeX math segment, written in LaTeX exactly as the lecture
+ *   `$...$`   - a KaTeX math segment, written in LaTeX exactly as the lecture
  *               would put it on a slide (`$FV = C \cdot \frac{q^N - 1}{q - 1}$`).
- *   `**...**` — bold.
+ *   `**...**` - bold.
  *
  * Everything else is plain text. This is deliberately not a markdown parser:
  * two delimiters cover the whole bank, and anything richer would invite

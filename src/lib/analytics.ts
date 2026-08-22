@@ -1,5 +1,5 @@
 /**
- * Consent-gated PostHog bootstrap — prepared before the key even exists.
+ * Consent-gated PostHog bootstrap - prepared before the key even exists.
  *
  * Analytics loads only when BOTH hold:
  *   1. `NEXT_PUBLIC_POSTHOG_KEY` is set (Vercel env var; absent until Nico
@@ -8,7 +8,7 @@
  *
  * That order is the legally load-bearing part: § 25 (1) TDDDG and
  * Art. 6 (1) (a) GDPR require consent BEFORE any tracking, so posthog-js is
- * only dynamically imported after an accept — no capture, no cookie, no
+ * only dynamically imported after an accept - no capture, no cookie, no
  * network call happens for visitors who declined or never chose.
  *
  * The EU endpoint (Frankfurt) is the default host on purpose; the privacy
@@ -18,7 +18,7 @@
 export type CookieConsent = {
     /** the visitor's choice for analytics cookies (PostHog) */
     analytics: boolean;
-    /** epoch ms of the decision — lets us re-ask after a policy change */
+    /** epoch ms of the decision - lets us re-ask after a policy change */
     decidedAt: number;
 };
 
@@ -26,6 +26,13 @@ const CONSENT_KEY = "fb-cookie-consent";
 
 /** Window event that re-opens the banner ("Cookie settings" in the footer). */
 export const CONSENT_EVENT = "fb:cookie-settings";
+
+/**
+ * Fired after a consent decision is stored (accept or decline). Listeners
+ * that share the bottom edge with the banner (the mobile anchor ad) use it to
+ * know the banner is gone.
+ */
+export const CONSENT_DECIDED_EVENT = "fb:cookie-consent-decided";
 
 let posthogRef: import("posthog-js").PostHog | null = null;
 
@@ -49,8 +56,9 @@ function storeConsent(analytics: boolean) {
             JSON.stringify({ analytics, decidedAt: Date.now() } satisfies CookieConsent)
         );
     } catch {
-        /* storage unavailable (private mode) — the banner simply re-appears */
+        /* storage unavailable (private mode) - the banner simply re-appears */
     }
+    window.dispatchEvent(new Event(CONSENT_DECIDED_EVENT));
 }
 
 /** Boot PostHog if (and only if) the key exists and consent was given. */

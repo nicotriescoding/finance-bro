@@ -14,10 +14,10 @@ import {
  * Cookie consent banner (§ 25 TDDDG / Art. 6 (1) (a) GDPR).
  *
  * The gag is the headline; the paragraph under it is the legally load-bearing
- * part — it states in plain words what is stored (PostHog analytics), links
+ * part - it states in plain words what is stored (PostHog analytics), links
  * the privacy policy, and says how to change the choice later. Both buttons
  * have identical size and prominence: declining may not be harder than
- * accepting. Nothing tracks before a choice — posthog-js is only imported
+ * accepting. Nothing tracks before a choice - posthog-js is only imported
  * inside the consent-gated helpers in `lib/analytics`.
  */
 export default function CookieBanner() {
@@ -52,7 +52,7 @@ export default function CookieBanner() {
             <p className="mt-1.5 text-sm leading-relaxed text-muted">
                 Translation for the lawyers: with your OK we use PostHog analytics
                 (cookies / local storage) to see which pages get used and which
-                questions make people rage-quit. Decline and nothing is tracked —
+                questions make people rage-quit. Decline and nothing is tracked -
                 the site works exactly the same. Change your mind anytime via
                 &quot;Cookie settings&quot; in the footer. Details in the{" "}
                 <Link

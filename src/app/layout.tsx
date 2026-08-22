@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import TabBar from "@/components/layout/TabBar";
 import Footer from "@/components/layout/Footer";
 import CookieBanner from "@/components/consent/CookieBanner";
+import AnchorAd from "@/components/AnchorAd";
 
 const manrope = Manrope({
     subsets: ["latin"],
@@ -22,7 +23,7 @@ const plexMono = IBM_Plex_Mono({
 const SITE_URL = "https://www.finance-bro.de";
 const TITLE = "finance-bro";
 const DESCRIPTION =
-    "Free exam trainer for business administration: practice questions on Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing — with instant feedback.";
+    "Free exam trainer for business administration: practice questions on Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing - with instant feedback.";
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
@@ -50,12 +51,12 @@ export const metadata: Metadata = {
         locale: "en_US",
         url: SITE_URL,
         siteName: TITLE,
-        title: "finance-bro — exam training for business administration",
+        title: "finance-bro - exam training for business administration",
         description: DESCRIPTION,
     },
     twitter: {
         card: "summary_large_image",
-        title: "finance-bro — exam training for business administration",
+        title: "finance-bro - exam training for business administration",
         description: DESCRIPTION,
     },
     robots: {
@@ -94,6 +95,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <main>{children}</main>
                 {/* the footer's bottom padding keeps everything clear of the phone tab bar */}
                 <Footer />
+                {/* phone-only 320×50 anchor ad, fixed above the tab bar (not on /library) */}
+                <AnchorAd />
                 <TabBar />
                 <CookieBanner />
                 <script

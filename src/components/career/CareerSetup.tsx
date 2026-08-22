@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -24,7 +24,18 @@ import AdSlot from "@/components/AdSlot";
  * "Choose your dead-end career" - the setup page (design 3a). Pick a course,
  * tick topics, one session mode, start earning. A running session is resumed
  * from the Quiz nav link instead.
+ *
+ * Phone flow: the two columns stack, so picking a career auto-scrolls to the
+ * setup step, and tapping the already-selected career again starts the run
+ * immediately (with the ticked topics, or all of them if none are ticked).
+ * Topics start unselected on purpose - "Select all" in the topic list is the
+ * fast path.
  */
+
+/** below lg the columns stack - that is where scroll + tap-again apply */
+const isStackedLayout = () =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches;
+
 export default function CareerSetup() {
     const router = useRouter();
     const params = useSearchParams();
@@ -37,12 +48,14 @@ export default function CareerSetup() {
         [subject.topics, counts]
     );
 
+    // nothing preselected - ticking topics (or "Select all") is step 2
     const [selected, setSelected] = usePersistentState<string[]>(
         `fb_topics_${subject.id}_v1`,
-        availableTopics
+        []
     );
     const [modeOpen, setModeOpen] = useState(false);
     const [running, setRunning] = useState<StoredSession | null>(null);
+    const setupRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const s = loadSession();
@@ -66,11 +79,28 @@ export default function CareerSetup() {
     const bankIsEmpty = availableTopics.length === 0;
     const estMinutes = Math.max(1, Math.round(pool.length * 1.2));
 
-    const startSession = () => {
-        const session = buildUnlimitedSession(subject.id, selected);
+    const startSession = (topics: string[] = selected) => {
+        const session = buildUnlimitedSession(subject.id, topics);
         if (!session) return;
         saveSession(session);
         router.push("/quiz");
+    };
+
+    const pickCareer = (id: SubjectId, locked: boolean) => {
+        if (id === subject.id) {
+            // tap-again on the stacked (phone) layout starts the run: with the
+            // ticked topics, or the whole bank if nothing is ticked yet
+            if (isStackedLayout() && !locked) {
+                startSession(selected.length > 0 ? selected : availableTopics);
+            }
+            return;
+        }
+        router.replace(`/career?subject=${id}`, { scroll: false });
+        if (isStackedLayout()) {
+            requestAnimationFrame(() =>
+                setupRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+            );
+        }
     };
 
     return (
@@ -101,6 +131,9 @@ export default function CareerSetup() {
                             you, and how sad the loading screens are. You can quit any time,
                             unlike in real life.
                         </p>
+                        <span className="caps-label mt-3 block text-[10px] text-muted">
+                            Step 1 · Pick a career
+                        </span>
                     </div>
 
                     <div className="grid gap-2.5 sm:grid-cols-2">
@@ -112,9 +145,7 @@ export default function CareerSetup() {
                                 <button
                                     type="button"
                                     key={s.id}
-                                    onClick={() =>
-                                        router.replace(`/career?subject=${s.id}`, { scroll: false })
-                                    }
+                                    onClick={() => pickCareer(s.id, locked)}
                                     className={`flex items-start gap-2.5 rounded-xl bg-surface p-3 text-left transition ${
                                         active
                                             ? "border-2 border-brand"
@@ -128,12 +159,23 @@ export default function CareerSetup() {
                                             {s.description}
                                         </span>
                                         {active ? (
-                                            <span className="text-[11px] font-extrabold text-brand">
-                                                SELECTED ·{" "}
-                                                {locked
-                                                    ? "BEING REBUILT FROM REAL TUM EXAMS"
-                                                    : `${count} POSTINGS`}
-                                            </span>
+                                            <>
+                                                <span className="text-[11px] font-extrabold text-brand lg:hidden">
+                                                    {locked
+                                                        ? "SELECTED · BEING REBUILT FROM REAL TUM EXAMS"
+                                                        : `SELECTED · TAP AGAIN TO START ${
+                                                              selected.length > 0
+                                                                  ? `(${pool.length} QUESTIONS)`
+                                                                  : "(ALL TOPICS)"
+                                                          } ▸`}
+                                                </span>
+                                                <span className="hidden text-[11px] font-extrabold text-brand lg:inline">
+                                                    SELECTED ·{" "}
+                                                    {locked
+                                                        ? "BEING REBUILT FROM REAL TUM EXAMS"
+                                                        : `${count} POSTINGS`}
+                                                </span>
+                                            </>
                                         ) : (
                                             <span className="text-[11px] font-extrabold text-muted">
                                                 {locked
@@ -152,7 +194,13 @@ export default function CareerSetup() {
                 </div>
 
                 {/* session setup */}
-                <div className="w-full flex-none lg:w-[330px]">
+                <div
+                    ref={setupRef}
+                    className="flex w-full flex-none scroll-mt-20 flex-col gap-2 lg:w-[330px]"
+                >
+                    <span className="caps-label text-[10px] text-muted">
+                        Step 2 · Topics & session
+                    </span>
                     <div className="flex flex-col gap-2.5 rounded-[14px] border border-hairline bg-surface p-3.5">
                         <span className="caps-label text-[10px] text-muted">Session mode</span>
 
@@ -190,7 +238,7 @@ export default function CareerSetup() {
 
                         <p className="text-xs leading-[1.5] text-muted">
                             Every selected question, dealt once, in random order. A write-off
-                            re-enters the queue with fresh numbers — the run ends when every
+                            re-enters the queue with fresh numbers - the run ends when every
                             posting is settled correctly.
                         </p>
 
@@ -199,7 +247,7 @@ export default function CareerSetup() {
                                 <p className="text-3xl">🏗️</p>
                                 <p className="text-sm font-extrabold">No postings yet</p>
                                 <p className="text-xs leading-relaxed text-muted">
-                                    This bank is being rebuilt from real TUM exams — questions
+                                    This bank is being rebuilt from real TUM exams - questions
                                     land here as soon as the past exams are ingested.
                                 </p>
                                 <Link
@@ -227,13 +275,16 @@ export default function CareerSetup() {
                                             <span>· est. {estMinutes} min</span>
                                         </>
                                     ) : (
-                                        <span>Select at least one topic.</span>
+                                        <span>
+                                            Nothing ticked yet - use Select all or tick topics
+                                            above.
+                                        </span>
                                     )}
                                 </div>
 
                                 <button
                                     type="button"
-                                    onClick={startSession}
+                                    onClick={() => startSession()}
                                     disabled={pool.length === 0}
                                     className="flex h-[52px] items-center justify-center gap-2 rounded-[11px] bg-brand text-[17px] font-extrabold text-white transition hover:bg-[#175a3a] disabled:cursor-not-allowed disabled:bg-hairline disabled:text-muted"
                                 >

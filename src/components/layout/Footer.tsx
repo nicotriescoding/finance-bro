@@ -29,13 +29,9 @@ export default function Footer() {
                 >
                     Cookie settings
                 </button>
-                <span aria-hidden className="text-muted-light">·</span>
-                <Link href="/library" className="transition hover:text-ink">
-                    Library
-                </Link>
             </div>
             <p className="text-[11px] text-muted-light">
-                © 2026 finance-bro · a private project — study material, not financial advice
+                © 2026 finance-bro · a private project · study material, not financial advice
             </p>
         </footer>
     );

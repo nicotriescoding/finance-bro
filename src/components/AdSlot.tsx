@@ -4,6 +4,13 @@
  * never sit above the answer field, never overlap chrome, never shift layout.
  * Until a network is wired they render as diagonal-striped placeholders whose
  * mono copy states the exact pixel size and why the slot exists.
+ *
+ * Every size is an IAB standard so a network (AdSense etc.) can be dropped in
+ * later without moving layout: 160 × 600 wide skyscraper, 200 × 200 small
+ * square, 728 × 90 leaderboard, 320 × 100 large mobile banner, 468 × 60
+ * banner - plus the 320 × 50 mobile anchor in `AnchorAd`. 300 × 250 / 728 × 90
+ * / 320 × 100 are the top-earning display formats; the heights here reserve
+ * exactly what those units need.
  */
 
 type Variant = "skyscraper" | "square" | "leaderboard" | "feed" | "sponsored-career";
@@ -14,24 +21,24 @@ const SPEC: Record<
 > = {
     skyscraper: {
         height: 600,
-        lines: ["160 × 600", "skyscraper", "", "named after the", "building your", "ad money bought"],
+        lines: ["160 × 600", "wide skyscraper", "", "named after the", "building your", "ad money bought"],
     },
     square: {
-        height: 160,
-        lines: ["160 × 160", "square", "below the fold,", "seen by nobody"],
+        height: 200,
+        lines: ["200 × 200", "small square", "below the fold,", "seen by nobody"],
     },
     leaderboard: {
-        height: 60,
-        lines: ["970 × 60 · leaderboard, fixed height, never above the answer field"],
+        height: 90,
+        lines: ["728 × 90 · leaderboard, fixed height, never above the answer field"],
     },
     feed: {
         height: 100,
-        lines: ["300 × 100 · next card in the feed"],
+        lines: ["320 × 100 · large mobile banner, next card in the feed"],
     },
     "sponsored-career": {
-        height: 76,
+        height: 60,
         lines: [
-            "SPONSORED CAREER · AD · 468 × 76",
+            "SPONSORED CAREER · AD · 468 × 60",
             "a real employer can buy a card here and it will look exactly like the jokes",
         ],
     },

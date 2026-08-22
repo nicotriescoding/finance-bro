@@ -2,7 +2,7 @@
  * Route smoke test. Boots the production build and asserts every route still
  * serves what it is supposed to serve.
  *
- * Run: npm run smoke   (requires `npm run build` first — `npm run check` chains both)
+ * Run: npm run smoke   (requires `npm run build` first - `npm run check` chains both)
  *
  * Each check below exists because something actually broke once. Add a case
  * whenever you fix a bug that a build alone would not have caught.
@@ -19,7 +19,7 @@ const passes = [];
 
 function check(name, condition, detail = "") {
     if (condition) passes.push(name);
-    else failures.push(`${name}${detail ? ` — ${detail}` : ""}`);
+    else failures.push(`${name}${detail ? ` - ${detail}` : ""}`);
 }
 
 // Run the local binary rather than `npx` so there is no wrapper process between
@@ -116,6 +116,14 @@ try {
     for (const german of ["Zinsen", "Aufgaben", "Klausur", "Themen", "Kapitalkosten"]) {
         check(`/ has no leftover German ("${german}")`, !homeHtml.includes(german));
     }
+    // The landing page's one job (2026-08-22) is pointing at /career; the
+    // course names stay below in the subject strip for SEO.
+    check("/ has the Start your career CTA", homeHtml.includes("Start your career"));
+    check("/ teases the Munich Matcha Alert", homeHtml.includes("Munich Matcha Alert"));
+    // Nico's rule (2026-08-22): no em dashes in shipped copy, ever. (Escaped
+    // so this file itself stays em-dash-free.)
+    const EM_DASH = "\u2014";
+    check("/ ships no em dashes", !homeHtml.includes(EM_DASH));
 
     // --- dark-mode regression guard -------------------------------------
     // An unlayered `body { background }` rule behind a prefers-color-scheme
@@ -157,6 +165,13 @@ try {
         "/career has the start button",
         careerHtml.includes("Start earning")
     );
+    // stepped setup (2026-08-22): explicit steps, nothing preselected, a
+    // "Select all" tick row instead of a text toggle
+    check(
+        "/career shows the stepped setup with Select all",
+        careerHtml.includes("Step 1") && careerHtml.includes("Select all")
+    );
+    check("/career ships no em dashes", !careerHtml.includes(EM_DASH));
     // the navy chrome links every page to the setup
     check("/ links the Career page", homeHtml.includes("Career 🪦"));
 
