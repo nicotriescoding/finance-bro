@@ -6,6 +6,33 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Landing polish + rank economy shipped (2026-08-26).** Nico's punch list:
+(1) hero de-emphasized - h1 down to text-2xl/3xl, tagline to 14px, the
+account view leads the page; (2) the statement is wider on desktop
+(`md:max-w-3xl`, phone unchanged); (3) the fake € expenses now scale with
+rank - six tiers, two ranks each, from instant noodles / "Netflix, with ads"
+(Unemployed) through Rimowa + minibar (Consultant), vibes-based angel checks
+(VC Guy), divorce-lawyer retainers (MD/Founder) up to rocket fuel, a
+−44,000,000,000 € social-media impulse buy and the 0DTE SPY calls closing
+every tier at ever-sillier size (the top one dies at the int limit);
+(4) `/career` CTA is on the first screen everywhere - desktop: Step 2 column
+is sticky and "Start earning 💸" moved above the topic list; phone/tablet:
+a fixed CTA bar rides above the anchor ad (it mirrors AnchorAd's consent
+logic to stack at 120px/62px) and above the tab bar; nothing ticked now
+starts the whole bank instead of a disabled button ("Nothing ticked = the
+whole bank"); (5) rank economy: `LEVEL_COSTS` in `rankings.ts` replaces the
+old base-100 ×1.5 curve - hand-tuned steps 100 → 3,100 (~12,300 total to
+FinanceBro, ~1.3-1.4× per step, +3,500/level past the top), and every rank
+carries a small flat `bonus` (0 → 150 💸) added to each settled posting -
+completion pay, not scaled by time or the hint (hint still halves the base).
+The "UP TO" chip includes the bonus so it never understates the payout.
+`npm run check` green - 66 smoke checks. Verified via sandbox
+headless-Chromium screenshots (landing desktop/phone at rank 1 and at a
+seeded 20,000 💸 FinanceBro statement, career desktop + phone first screen
+with the CTA above ad + tab bar); build again ran from an rsync copy
+(`/sessions/…/fb`) because of the FUSE EPERM-on-delete mount issue - the
+committed tree is what was checked.
+
 **Landing v3 "banking app" + quiz hint/skip shipped (2026-08-25).** Per Nico's
 punch list: the landing now IS the account view - navy card with the real 💸
 balance, current position + its last payroll (`salary` added per rank, 0 € for

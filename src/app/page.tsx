@@ -38,10 +38,10 @@ export default function Home() {
         <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14">
             {/* hero + the account view */}
             <section className="text-center">
-                <h1 className="text-4xl font-extrabold tracking-[-0.02em] sm:text-5xl">
+                <h1 className="text-2xl font-extrabold tracking-[-0.02em] sm:text-3xl">
                     FinanceBro 💸
                 </h1>
-                <p className="mx-auto mt-4 max-w-2xl text-[17px] text-muted [text-wrap:pretty]">
+                <p className="mx-auto mt-2 max-w-xl text-[14px] text-muted [text-wrap:pretty]">
                     Solve real exam-style questions against inflation, earn BroDollars (a
                     proud currency with an exchange rate of exactly nothing), and climb the
                     ladder from Unemployed to FinanceBro.

@@ -22,7 +22,7 @@ import { useScore } from "@/hooks/useScore";
 import { useLevel } from "@/hooks/useLevel";
 import { useStopwatch } from "@/hooks/useStopwatch";
 import { difficultyTimes } from "@/lib/scoring";
-import { getNextRank, getRank } from "@/lib/rankings";
+import { bonusForScore, getNextRank, getRank } from "@/lib/rankings";
 import { formatMoney, MONEY } from "@/lib/money";
 
 import QuestionCard from "./QuestionCard";
@@ -222,6 +222,7 @@ export default function QuizClient() {
                             postings={totals.postings}
                             writeoffs={totals.writeoffs}
                             lastWriteoffPosting={totals.lastWriteoffPosting}
+                            rankBonus={bonusForScore(score)}
                             onAnswered={handleAnswered}
                             onSkip={handleSkip}
                             onNext={handleNext}

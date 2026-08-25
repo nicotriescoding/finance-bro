@@ -34,6 +34,8 @@ type Props = {
     postings: number;
     writeoffs: number;
     lastWriteoffPosting: number | null;
+    /** flat seniority bonus of the current rank, added to every settled posting */
+    rankBonus: number;
     /** `usedHint` halves the payout upstream */
     onAnswered: (correct: boolean, usedHint: boolean) => void;
     /** forward the posting to the tax advisor - out of the run, 0 BroDollars */
@@ -53,6 +55,7 @@ export default function QuestionCard({
     postings,
     writeoffs,
     lastWriteoffPosting,
+    rankBonus,
     onAnswered,
     onSkip,
     onNext,
@@ -193,8 +196,8 @@ export default function QuestionCard({
                 )}
                 <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-bold text-muted">
                     {hintUsed
-                        ? `UP TO ${formatMoney(maxPoints(instance.question.difficulty) * 0.5)} ${MONEY} · HINT`
-                        : `UP TO ${formatMoney(maxPoints(instance.question.difficulty))} ${MONEY}`}
+                        ? `UP TO ${formatMoney(maxPoints(instance.question.difficulty) * 0.5 + rankBonus)} ${MONEY} · HINT`
+                        : `UP TO ${formatMoney(maxPoints(instance.question.difficulty) + rankBonus)} ${MONEY}`}
                 </span>
                 {instance.question.source && (
                     <span className="caps-label rounded-full bg-chip px-2.5 py-1 text-[10px] text-muted">

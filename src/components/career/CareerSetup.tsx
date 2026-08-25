@@ -16,6 +16,11 @@ import {
     type StoredSession,
 } from "@/lib/session";
 import { formatMoney, MONEY } from "@/lib/money";
+import {
+    CONSENT_DECIDED_EVENT,
+    CONSENT_EVENT,
+    getStoredConsent,
+} from "@/lib/analytics";
 
 import TopicSelector from "@/components/quiz/TopicSelector";
 import AdSlot from "@/components/AdSlot";
@@ -57,6 +62,21 @@ export default function CareerSetup() {
     const [running, setRunning] = useState<StoredSession | null>(null);
     const setupRef = useRef<HTMLDivElement | null>(null);
 
+    // mirror AnchorAd's visibility so the fixed CTA stacks above the anchor
+    // ad instead of fighting it for bottom-[62px] on phones
+    const [adShown, setAdShown] = useState(false);
+    useEffect(() => {
+        setAdShown(getStoredConsent() !== null);
+        const onSettings = () => setAdShown(false);
+        const onDecided = () => setAdShown(true);
+        window.addEventListener(CONSENT_EVENT, onSettings);
+        window.addEventListener(CONSENT_DECIDED_EVENT, onDecided);
+        return () => {
+            window.removeEventListener(CONSENT_EVENT, onSettings);
+            window.removeEventListener(CONSENT_DECIDED_EVENT, onDecided);
+        };
+    }, []);
+
     useEffect(() => {
         const s = loadSession();
         setRunning(s && s.queue.length > 0 ? s : null);
@@ -86,6 +106,10 @@ export default function CareerSetup() {
         router.push("/quiz");
     };
 
+    // the primary CTA never dead-ends: nothing ticked starts the whole bank
+    const startWithFallback = () =>
+        startSession(selected.length > 0 ? selected : availableTopics);
+
     const pickCareer = (id: SubjectId, locked: boolean) => {
         if (id === subject.id) {
             // tap-again on the stacked (phone) layout starts the run: with the
@@ -104,7 +128,7 @@ export default function CareerSetup() {
     };
 
     return (
-        <div className="mx-auto max-w-[1100px] px-4 pt-5 md:px-5 md:pt-6">
+        <div className="mx-auto max-w-[1100px] px-4 pb-32 pt-5 md:px-5 md:pt-6 lg:pb-8">
             {running && (
                 <Link
                     href="/quiz"
@@ -196,7 +220,7 @@ export default function CareerSetup() {
                 {/* session setup */}
                 <div
                     ref={setupRef}
-                    className="flex w-full flex-none scroll-mt-20 flex-col gap-2 lg:w-[330px]"
+                    className="flex w-full flex-none scroll-mt-20 flex-col gap-2 lg:sticky lg:top-4 lg:w-[330px] lg:self-start"
                 >
                     <span className="caps-label text-[10px] text-muted">
                         Step 2 · Topics & session
@@ -259,12 +283,15 @@ export default function CareerSetup() {
                             </div>
                         ) : (
                             <>
-                                <TopicSelector
-                                    subject={subject}
-                                    counts={counts}
-                                    selected={selected}
-                                    onChange={setSelected}
-                                />
+                                {/* the CTA sits above the topic list so it is on
+                                    the first screen - ticking topics is optional */}
+                                <button
+                                    type="button"
+                                    onClick={startWithFallback}
+                                    className="flex h-[52px] items-center justify-center gap-2 rounded-[11px] bg-brand text-[17px] font-extrabold text-white transition hover:bg-[#175a3a]"
+                                >
+                                    Start earning {MONEY}
+                                </button>
 
                                 <div className="flex items-baseline gap-2 pt-0.5 text-xs text-muted">
                                     {pool.length > 0 ? (
@@ -276,20 +303,19 @@ export default function CareerSetup() {
                                         </>
                                     ) : (
                                         <span>
-                                            Nothing ticked yet - use Select all or tick topics
-                                            above.
+                                            Nothing ticked = the whole bank (
+                                            {formatMoney(countForSubject(subject.id))} questions).
+                                            Tick topics below to narrow it down.
                                         </span>
                                     )}
                                 </div>
 
-                                <button
-                                    type="button"
-                                    onClick={() => startSession()}
-                                    disabled={pool.length === 0}
-                                    className="flex h-[52px] items-center justify-center gap-2 rounded-[11px] bg-brand text-[17px] font-extrabold text-white transition hover:bg-[#175a3a] disabled:cursor-not-allowed disabled:bg-hairline disabled:text-muted"
-                                >
-                                    Start earning {MONEY}
-                                </button>
+                                <TopicSelector
+                                    subject={subject}
+                                    counts={counts}
+                                    selected={selected}
+                                    onChange={setSelected}
+                                />
 
                                 <span className="text-center text-[11px] leading-[1.5] text-muted-light">
                                     No email, no account, no upsell. Your balance lives in this
@@ -300,6 +326,33 @@ export default function CareerSetup() {
                     </div>
                 </div>
             </div>
+
+            {/* stacked layout: Step 2 lives below the fold, so the CTA rides
+                fixed above the tab bar (phone) / screen edge (tablet) - the
+                first screen always has a clickable Start */}
+            {!bankIsEmpty && (
+                <div
+                    className={`fixed inset-x-0 z-40 border-t border-hairline bg-surface/95 px-4 py-2.5 backdrop-blur md:bottom-0 lg:hidden ${
+                        adShown ? "bottom-[120px]" : "bottom-[62px]"
+                    }`}
+                    style={{ paddingBottom: "max(10px, env(safe-area-inset-bottom))" }}
+                >
+                    <div className="mx-auto flex max-w-[640px] items-center gap-3">
+                        <span className="min-w-0 flex-1 truncate text-xs text-muted">
+                            {pool.length > 0
+                                ? `${formatMoney(pool.length)} questions · est. ${estMinutes} min`
+                                : `All topics · ${formatMoney(countForSubject(subject.id))} questions`}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={startWithFallback}
+                            className="flex h-[44px] shrink-0 items-center justify-center gap-2 rounded-[11px] bg-brand px-6 text-[15px] font-extrabold text-white transition hover:bg-[#175a3a]"
+                        >
+                            Start earning {MONEY}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
