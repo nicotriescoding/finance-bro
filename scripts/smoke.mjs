@@ -65,9 +65,9 @@ try {
     const homeHtml = await home.text();
     check("/ returns 200", home.status === 200, `got ${home.status}`);
     check(
-        "/ is branded finance-bro",
-        /<title>finance-bro<\/title>/.test(homeHtml),
-        "title tag is not exactly 'finance-bro'"
+        "/ is branded FinanceBro (caps F and B, per Nico 2026-08-25)",
+        /<title>FinanceBro<\/title>/.test(homeHtml),
+        "title tag is not exactly 'FinanceBro'"
     );
     check(
         "/ no longer says FinanzTrainer",
@@ -106,7 +106,7 @@ try {
     // locale later - until then, stray German is a regression, not a feature.
     check(
         "/ ships English copy",
-        homeHtml.includes("works fully offline") && homeHtml.includes("topics")
+        homeHtml.includes("against inflation") && homeHtml.includes("topics")
     );
     check("/ declares lang=en", /<html[^>]+lang="en"/.test(homeHtml));
     check(
@@ -117,8 +117,35 @@ try {
         check(`/ has no leftover German ("${german}")`, !homeHtml.includes(german));
     }
     // The landing page's one job (2026-08-22) is pointing at /career; the
-    // course names stay below in the subject strip for SEO.
-    check("/ has the Start your career CTA", homeHtml.includes("Start your career"));
+    // course names stay below in the subject strip for SEO. Since 2026-08-25
+    // it does so dressed as a banking app.
+    check("/ has the Make some money CTA", homeHtml.includes("Make some money 🤑"));
+    check(
+        "/ wears the bank statement",
+        homeHtml.includes("Available balance") && homeHtml.includes("Recent transactions")
+    );
+    // (SSR puts a comment node between "Salary · " and the rank name, so the
+    // pieces are asserted separately.)
+    check(
+        "/ shows the current position's payroll (0 € for Unemployed)",
+        homeHtml.includes("Salary ·") &&
+            homeHtml.includes("Unemployed") &&
+            homeHtml.includes("Last payroll")
+    );
+    check(
+        "/ balance pill names the rank, not the tier",
+        homeHtml.includes("UNEMPLOYED") && !homeHtml.includes("TIER 1")
+    );
+    // Removed 2026-08-25 per Nico - these lines must stay gone.
+    check(
+        "/ dropped the tuition chip",
+        !homeHtml.includes("works fully offline") && !homeHtml.includes("tuition: 0")
+    );
+    check(
+        "/ dropped the TUM tagline sentence",
+        !homeHtml.includes("exam trainer for business administration at TUM")
+    );
+    check("/ races inflation, not the clock", !homeHtml.includes("against the clock"));
     check("/ teases the Munich Matcha Alert", homeHtml.includes("Munich Matcha Alert"));
     // Nico's rule (2026-08-22): no em dashes in shipped copy, ever. (Escaped
     // so this file itself stays em-dash-free.)
@@ -172,6 +199,11 @@ try {
         careerHtml.includes("Step 1") && careerHtml.includes("Select all")
     );
     check("/career ships no em dashes", !careerHtml.includes(EM_DASH));
+    // "Ad rail · kept away from the maths" was meta-commentary, not UI copy;
+    // removed 2026-08-25 (the ad slots themselves stay).
+    const quiz = await fetch(`${BASE}/quiz?subject=finance`);
+    const quizHtml = await quiz.text();
+    check("/quiz has no ad-rail meta label", !quizHtml.includes("kept away from the maths"));
     // the navy chrome links every page to the setup
     check("/ links the Career page", homeHtml.includes("Career 🪦"));
 

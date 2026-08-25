@@ -8,6 +8,7 @@ import { getSubject } from "@/content/subjects";
 import type { QuestionInstance } from "@/lib/questions/types";
 import {
     applyAnswer,
+    applySkip,
     buildUnlimitedSession,
     clearSession,
     currentInstance,
@@ -72,14 +73,20 @@ export default function QuizClient() {
     }, [ready, session, router, subjectParam]);
 
     const handleAnswered = useCallback(
-        (correct: boolean) => {
+        (correct: boolean, usedHint: boolean) => {
             if (!session || !view) return;
             stop();
             let points = 0;
             if (correct) {
                 const difficulty = view.instance.question.difficulty;
                 const limit = difficultyTimes[difficulty] ?? 120;
-                points = addScore(difficulty, Math.round(elapsedMs / 1000), limit);
+                // the hint halves the payout - advice was never free
+                points = addScore(
+                    difficulty,
+                    Math.round(elapsedMs / 1000),
+                    limit,
+                    usedHint ? 0.5 : 1
+                );
             }
             const next = applyAnswer(session, correct, points);
             saveSession(next);
@@ -88,6 +95,24 @@ export default function QuizClient() {
         },
         [session, view, stop, addScore, elapsedMs]
     );
+
+    // skip: the posting leaves the run entirely and the next one comes up
+    const handleSkip = useCallback(() => {
+        if (!session || !view) return;
+        stop();
+        const next = applySkip(session);
+        saveSession(next);
+        setSession(next);
+        setAward(null);
+        if (next.queue.length === 0) {
+            setView(null); // -> statement
+            return;
+        }
+        const instance = currentInstance(next);
+        if (instance) setView({ instance, posting: next.log.length + 1 });
+        reset();
+        start();
+    }, [session, view, stop, reset, start]);
 
     const handleNext = useCallback(() => {
         if (!session) return;
@@ -167,9 +192,6 @@ export default function QuizClient() {
                 <div className="flex gap-[18px]">
                     {/* left rail - ads only, kept away from the maths */}
                     <aside className="hidden w-[200px] flex-none flex-col gap-3 xl:flex">
-                        <span className="caps-label text-[9px] tracking-[.18em] text-muted-light">
-                            Ad rail · kept away from the maths
-                        </span>
                         <AdSlot variant="skyscraper" />
                         <AdSlot variant="square" />
                     </aside>
@@ -201,6 +223,7 @@ export default function QuizClient() {
                             writeoffs={totals.writeoffs}
                             lastWriteoffPosting={totals.lastWriteoffPosting}
                             onAnswered={handleAnswered}
+                            onSkip={handleSkip}
                             onNext={handleNext}
                             isLast={totals.left === 0}
                         />
@@ -329,9 +352,11 @@ function Statement({
     const subject = getSubject(session.subjectId);
     const totals = sessionTotals(session);
     const joke =
-        totals.writeoffs === 0
-            ? "A clean statement. The auditors are suspicious."
-            : "Every write-off recovered eventually. The bank thanks you for the volume.";
+        totals.skipped > 0
+            ? "Some postings were forwarded to your tax advisor. He has questions."
+            : totals.writeoffs === 0
+              ? "A clean statement. The auditors are suspicious."
+              : "Every write-off recovered eventually. The bank thanks you for the volume.";
 
     return (
         <div className="mx-auto max-w-xl px-4 py-10 lg:py-16">
@@ -345,6 +370,9 @@ function Statement({
                 <div className="overflow-hidden rounded-[10px] border border-hairline-table">
                     <Row label="Postings answered" value={String(totals.postings)} />
                     <Row label="Write-offs" value={String(totals.writeoffs)} warn={totals.writeoffs > 0} />
+                    {totals.skipped > 0 && (
+                        <Row label="Forwarded to the tax advisor" value={String(totals.skipped)} />
+                    )}
                     <Row label="Credited this run" value={`+${formatMoney(totals.earned)} ${MONEY}`} credit />
                 </div>
                 <p className="text-sm text-muted">{joke}</p>

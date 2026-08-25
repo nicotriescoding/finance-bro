@@ -6,6 +6,36 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Landing v3 "banking app" + quiz hint/skip shipped (2026-08-25).** Per Nico's
+punch list: the landing now IS the account view - navy card with the real 💸
+balance, current position + its last payroll (`salary` added per rank, 0 € for
+Unemployed, 1 € for the Unicorn Founder), an IBAN gag, the CTA renamed
+**"Make some money 🤑"**, and a fake € statement underneath (oat-milk flat
+whites, the Patagonia vest, a DECLINED Rolex financing rate, P1 bottle
+service, "Powder, white · 'for the protein shakes'" UNDER REVIEW, 0DTE SPY
+calls) with a 💸/€ exchange-rate footnote so the two currencies never mix.
+Removed per Nico: the "97 questions · works fully offline · tuition: 0 €"
+chip, the "The exam trainer … at TUM" sentence, and the on-page
+"Ad rail · kept away from the maths" label (slots stay); "against the clock"
+is now "against inflation"; the brand is recased **FinanceBro** everywhere
+(h1, navbar, footer, metadata/OG - domain unchanged); the balance pill says
+UNEMPLOYED 🛋️ instead of TIER 1. In the quiz, every open posting has
+**💡 Hint · −50%** (numeric: the symbolic lecture formula = first `$…$`
+segment of the explanation, `verify` fails the build if it would leak the
+answer and warns if missing; MC: half the wrong options get written off) and
+**Skip ⏭ · 0 💸** (posting leaves the run - no re-queue, streak untouched,
+"SKIPPED" in the ledger, "Forwarded to the tax advisor" row + own joke line
+on the session statement, grey segment in the progress strip; session gets an
+optional `skipped` array, old stored sessions default it). `npm run check`
+green - 66 smoke checks (10 new/changed, incl. brand title, statement
+markers, removed-copy guards). Verified via sandbox headless-Chromium
+screenshots (landing desktop+phone in dark-mode OS, quiz open/hint/after-skip
+desktop + phone); emoji tofu remains a sandbox-font artifact. NOTE: the
+sandbox now cannot build under the mount at all (FUSE EPERM on every
+delete, even of files the build itself just wrote) - this session ran
+`npm run check` from an rsync copy at `/tmp/fb` and re-synced edited files;
+the committed tree is identical to what was checked.
+
 **Landing v2 + career v2 + ad standardization shipped (2026-08-22).** The
 homepage is now a joke landing that points at `/career` ("Start your career
 🪦" CTA, coming-soon teasers incl. the **Munich Matcha Alert**, compact
@@ -95,7 +125,13 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   KaTeX per the rules, every question gets `source`). This refills Econ 1,
   Econ 2, Financial Accounting, Cost Accounting, Entrepreneurship, Marketing —
   and can add `source` tags to Finance questions that match real exam tasks.
-- **Visual check on Nico's machine.** Sandbox screenshots verified layout,
+- **Visual check on Nico's machine.** New since 2026-08-25: the banking-app
+  landing (desktop + phone, dark-mode OS - page must stay light; the fake
+  statement rows, DECLINED/UNDER REVIEW chips, "Make some money 🤑"), the
+  quiz's Hint (formula renders as KaTeX, payout chip halves) and Skip
+  (ledger "SKIPPED" row, grey progress segment, statement row) and the
+  UNEMPLOYED-style rank pill in the chrome. Older items below still open.
+  Sandbox screenshots verified layout,
   palette, KaTeX and all states (write-off, resume banner, empty bank, phone),
   but with a fallback text font — the sandbox's headless Chromium would not
   apply the Manrope webfont even though the woff2 files serve 200. First
@@ -109,9 +145,14 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   variants), and the anchor ad (appears only after a cookie choice, gone on
   `/library`, never overlaps the tab bar or cookie banner).
 - **Cleanup on Nico's machine** (the sandbox cannot delete files):
-  `rm -rf .next_stale_sandbox .next_stale_sandbox2 .next_stale_sandbox3`
+  `rm -rf .next_stale_sandbox .next_stale_sandbox2 .next_stale_sandbox3
+  .next_stale_sandbox4` (sandbox4 is from 2026-08-25 and contains a dangling
+  `.next → /tmp/fb-next` symlink from a failed workaround - after removal a
+  fresh `npm run dev`/`build` recreates `.next` normally)
   (stale `.next` dirs renamed aside so builds could run), then
-  `rm -f .git/index.lock .git/HEAD.lock .git/refs/heads/main.lock .git/objects/maintenance.lock && git reset`
+  `rm -f .git/index.lock .git/HEAD.lock .git/refs/heads/main.lock .git/objects/maintenance.lock .git/*.lock.stale-* .git/objects/*.lock.stale-* && git reset`
+  (the `.stale-*` files are locks the 2026-08-25 session could only rename,
+  not delete)
   (this session committed via an alternate index because the sandbox cannot
   delete its own `index.lock`; the reset refreshes the stale on-disk index —
   it does not touch the worktree), and the now-unused legacy components
@@ -152,6 +193,12 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   keep it that way. Revenue optimization (which slots, which pages, ad
   density) is deliberately deferred per Nico: ads must never interfere with
   functionality.
+- **Hint quality varies.** The hint is always the FIRST `$…$` segment of the
+  explanation. For most questions that is the pure lecture formula; for a
+  handful (the "$g = q = …$" special-case annuities) the first segment is a
+  given, not the formula. Never wrong, never leaking (verify guards that),
+  just occasionally weak. If it bothers anyone: add an optional explicit
+  `hint` field to the question schema and prefer it in `src/lib/hints.ts`.
 - `fin-bond-modified-duration` asks for a signed percentage price change, so a
   student typing `7.19` instead of `-7.19` fails. Either reword to "by how much
   does it fall" or say "state the sign".

@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { SUBJECTS } from "@/content/subjects";
-import { ALL_QUESTIONS, countForSubject } from "@/content/questions";
+import { countForSubject } from "@/content/questions";
+import AccountStatement from "@/components/landing/AccountStatement";
 
 /**
- * The landing page. One job: explain the joke and point at /career, where a
- * run actually starts. The compact subject strip below keeps the seven course
- * names on the page for search engines (and the smoke test).
+ * The landing page, dressed as the banking app it always wanted to be: a
+ * short hero, then the account view (real balance, current position and its
+ * last payroll, a statement of very relatable spending) with the
+ * "Make some money 🤑" CTA pointing at /career. The compact subject strip
+ * below keeps the seven course names on the page for search engines (and the
+ * smoke test).
  */
 
 const TEASERS = [
@@ -32,38 +36,24 @@ const TEASERS = [
 export default function Home() {
     return (
         <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14">
-            {/* hero */}
+            {/* hero + the account view */}
             <section className="text-center">
-                <p className="caps-label mb-4 inline-block rounded-full bg-brand-chip px-3.5 py-1.5 text-[10px] text-brand">
-                    {ALL_QUESTIONS.length} questions · works fully offline · tuition: 0 €
-                </p>
                 <h1 className="text-4xl font-extrabold tracking-[-0.02em] sm:text-5xl">
-                    finance-bro 💸
+                    FinanceBro 💸
                 </h1>
-                <p className="mx-auto mt-4 max-w-2xl text-lg text-muted [text-wrap:pretty]">
-                    The exam trainer for business administration at TUM. Solve real exam-style
-                    questions against the clock, earn BroDollars (a proud currency with an
-                    exchange rate of exactly nothing), and climb the ladder from Unemployed to
-                    FinanceBro.
+                <p className="mx-auto mt-4 max-w-2xl text-[17px] text-muted [text-wrap:pretty]">
+                    Solve real exam-style questions against inflation, earn BroDollars (a
+                    proud currency with an exchange rate of exactly nothing), and climb the
+                    ladder from Unemployed to FinanceBro.
                 </p>
-                <p className="mx-auto mt-3 max-w-2xl text-[15px] text-muted [text-wrap:pretty]">
+
+                <AccountStatement />
+
+                <p className="mx-auto mt-4 max-w-2xl text-[13px] text-muted-light [text-wrap:pretty]">
                     Built for people who say &quot;let&apos;s circle back&quot; at family
                     dinners. No account, no paywall, no LinkedIn post required - just you, a
                     timer, and the quiet fear of the second attempt.
                 </p>
-
-                <div className="mt-8 flex flex-col items-center gap-3">
-                    <Link
-                        href="/career"
-                        className="rounded-[12px] bg-brand px-9 py-4 text-lg font-extrabold text-white shadow-[0_2px_8px_rgba(15,33,55,.18)] transition hover:bg-[#175a3a]"
-                    >
-                        Start your career 🪦
-                    </Link>
-                    <p className="text-[13px] text-muted-light">
-                        Pick a career, tick your topics, start earning. Quitting is allowed,
-                        unlike at your future employer.
-                    </p>
-                </div>
             </section>
 
             {/* coming soon(ish) */}

@@ -12,6 +12,7 @@ import {
 } from "@/lib/questions/grading";
 import { maxPoints } from "@/lib/scoring";
 import { formatMoney, MONEY } from "@/lib/money";
+import { hintFor } from "@/lib/hints";
 import RichText from "./RichText";
 
 const DIFFICULTY_LABEL: Record<string, string> = {
@@ -33,7 +34,10 @@ type Props = {
     postings: number;
     writeoffs: number;
     lastWriteoffPosting: number | null;
-    onAnswered: (correct: boolean) => void;
+    /** `usedHint` halves the payout upstream */
+    onAnswered: (correct: boolean, usedHint: boolean) => void;
+    /** forward the posting to the tax advisor - out of the run, 0 BroDollars */
+    onSkip: () => void;
     onNext: () => void;
     isLast: boolean;
 };
@@ -50,12 +54,15 @@ export default function QuestionCard({
     writeoffs,
     lastWriteoffPosting,
     onAnswered,
+    onSkip,
     onNext,
     isLast,
 }: Props) {
     const [value, setValue] = useState("");
     const [picked, setPicked] = useState<number[]>([]);
     const [result, setResult] = useState<null | boolean>(null);
+    const [hintUsed, setHintUsed] = useState(false);
+    const [eliminated, setEliminated] = useState<number[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
 
     // reset whenever a new question comes in
@@ -63,11 +70,35 @@ export default function QuestionCard({
         setValue("");
         setPicked([]);
         setResult(null);
+        setHintUsed(false);
+        setEliminated([]);
         inputRef.current?.focus();
     }, [instance.key]);
 
     const isNumeric = instance.question.kind === "numeric";
     const multi = (instance.correctIndices?.length ?? 0) > 1;
+
+    // 💡 the hint: numeric postings reveal the lecture formula, choice
+    // postings write off half of the wrong options. Either way the payout
+    // drops to 50% - advice was never free.
+    const formulaHint = isNumeric ? hintFor(instance) : null;
+    const wrongIndices = isNumeric
+        ? []
+        : (instance.choices ?? [])
+              .map((_, i) => i)
+              .filter((i) => !(instance.correctIndices ?? []).includes(i));
+    const hintAvailable = isNumeric ? formulaHint !== null : wrongIndices.length >= 2;
+
+    const useHint = () => {
+        if (result !== null || hintUsed || !hintAvailable) return;
+        setHintUsed(true);
+        if (!isNumeric) {
+            const cut = wrongIndices.slice(0, Math.floor(wrongIndices.length / 2));
+            setEliminated(cut);
+            setPicked((prev) => prev.filter((i) => !cut.includes(i)));
+        }
+        inputRef.current?.focus();
+    };
 
     const check = () => {
         if (result !== null) return;
@@ -87,7 +118,7 @@ export default function QuestionCard({
         }
 
         setResult(correct);
-        onAnswered(correct);
+        onAnswered(correct, hintUsed);
     };
 
     // Enter advances once the posting is settled - the input is disabled by
@@ -161,7 +192,9 @@ export default function QuestionCard({
                     </span>
                 )}
                 <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-bold text-muted">
-                    UP TO {formatMoney(maxPoints(instance.question.difficulty))} {MONEY}
+                    {hintUsed
+                        ? `UP TO ${formatMoney(maxPoints(instance.question.difficulty) * 0.5)} ${MONEY} · HINT`
+                        : `UP TO ${formatMoney(maxPoints(instance.question.difficulty))} ${MONEY}`}
                 </span>
                 {instance.question.source && (
                     <span className="caps-label rounded-full bg-chip px-2.5 py-1 text-[10px] text-muted">
@@ -195,6 +228,23 @@ export default function QuestionCard({
                             </div>
                         ))}
                     </div>
+                </div>
+            )}
+
+            {hintUsed && (
+                <div className="flex flex-col gap-1.5 rounded-[10px] border border-hairline bg-chip p-3.5">
+                    <span className="caps-label text-[10px] text-muted">
+                        💡 Hint · advisory fee: 50% of the payout
+                    </span>
+                    {isNumeric && formulaHint ? (
+                        <p className="text-[15px] leading-relaxed text-ledger">
+                            <RichText text={formulaHint} />
+                        </p>
+                    ) : (
+                        <p className="text-[13px] text-ledger">
+                            Half of the wrong options were written off for you.
+                        </p>
+                    )}
                 </div>
             )}
 
@@ -243,17 +293,19 @@ export default function QuestionCard({
                     {instance.choices?.map((choice, i) => {
                         const isPicked = picked.includes(i);
                         const isCorrect = instance.correctIndices?.includes(i);
+                        const isEliminated = eliminated.includes(i);
                         let tone = "border-hairline bg-surface hover:border-[#c8d3de]";
                         if (result !== null && isCorrect) tone = "border-brand-border bg-brand-tint";
                         else if (result !== null && isPicked) tone = "border-warn-border bg-warn-tint";
                         else if (isPicked) tone = "border-brand-border bg-brand-tint";
+                        if (isEliminated) tone = "border-hairline bg-surface opacity-40 line-through";
 
                         return (
                             <button
                                 key={i}
                                 type="button"
                                 onClick={() => togglePick(i)}
-                                disabled={result !== null}
+                                disabled={result !== null || isEliminated}
                                 className={`flex w-full items-start gap-2.5 rounded-[10px] border px-3.5 py-3 text-left text-sm transition ${tone}`}
                             >
                                 <span
@@ -323,15 +375,38 @@ export default function QuestionCard({
 
             <div className="flex flex-wrap items-center gap-3">
                 {result === null ? (
-                    !isNumeric && (
+                    <>
+                        {!isNumeric && (
+                            <button
+                                type="button"
+                                onClick={check}
+                                className="h-[54px] w-full rounded-[10px] bg-ink-raised px-6 text-[15px] font-extrabold text-white transition hover:bg-ink sm:h-auto sm:w-auto sm:py-3"
+                            >
+                                Check
+                            </button>
+                        )}
+                        {hintAvailable && (
+                            <button
+                                type="button"
+                                onClick={useHint}
+                                disabled={hintUsed}
+                                className="flex-1 rounded-[10px] border border-hairline bg-surface px-4 py-2.5 text-[13px] font-bold text-muted transition hover:border-[#c8d3de] hover:text-ink disabled:cursor-default disabled:opacity-50 sm:flex-none"
+                            >
+                                💡 Hint · −50%
+                            </button>
+                        )}
                         <button
                             type="button"
-                            onClick={check}
-                            className="h-[54px] w-full rounded-[10px] bg-ink-raised px-6 text-[15px] font-extrabold text-white transition hover:bg-ink sm:h-auto sm:w-auto sm:py-3"
+                            onClick={onSkip}
+                            title="Out of the run, 0 BroDollars, no questions asked"
+                            className="flex-1 rounded-[10px] border border-hairline bg-surface px-4 py-2.5 text-[13px] font-bold text-muted transition hover:border-[#c8d3de] hover:text-ink sm:flex-none"
                         >
-                            Check
+                            Skip ⏭ · 0 {MONEY}
                         </button>
-                    )
+                        <span className="hidden text-[13px] text-muted-light lg:inline">
+                            Skipped postings go straight to your tax advisor.
+                        </span>
+                    </>
                 ) : (
                     <>
                         <button

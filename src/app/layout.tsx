@@ -21,7 +21,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 const SITE_URL = "https://www.finance-bro.de";
-const TITLE = "finance-bro";
+const TITLE = "FinanceBro";
 const DESCRIPTION =
     "Free exam trainer for business administration: practice questions on Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing - with instant feedback.";
 
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
     title: {
         default: TITLE,
-        template: "%s · finance-bro",
+        template: "%s · FinanceBro",
     },
     description: DESCRIPTION,
     applicationName: TITLE,
@@ -43,20 +43,20 @@ export const metadata: Metadata = {
         "marketing exam",
         "entrepreneurship exam",
     ],
-    authors: [{ name: "finance-bro" }],
-    creator: "finance-bro",
+    authors: [{ name: "FinanceBro" }],
+    creator: "FinanceBro",
     alternates: { canonical: "/" },
     openGraph: {
         type: "website",
         locale: "en_US",
         url: SITE_URL,
         siteName: TITLE,
-        title: "finance-bro - exam training for business administration",
+        title: "FinanceBro - exam training for business administration",
         description: DESCRIPTION,
     },
     twitter: {
         card: "summary_large_image",
-        title: "finance-bro - exam training for business administration",
+        title: "FinanceBro - exam training for business administration",
         description: DESCRIPTION,
     },
     robots: {

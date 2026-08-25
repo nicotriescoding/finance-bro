@@ -27,8 +27,8 @@ export type LedgerEntry = {
     id: string;
     /** short ledger label, e.g. "Annuities & Perpetuities" or "… (MC)" */
     label: string;
-    result: "credit" | "writeoff";
-    /** BroDollars credited (0 for a write-off) */
+    result: "credit" | "writeoff" | "skip";
+    /** BroDollars credited (0 for a write-off or a skip) */
     amount: number;
 };
 
@@ -44,6 +44,8 @@ export type StoredSession = {
     settled: string[];
     /** ids with at least one write-off in this run */
     missed: string[];
+    /** ids skipped out of the run ("forwarded to the tax advisor") */
+    skipped?: string[];
     log: LedgerEntry[];
     streak: number;
     startedAt: number;
@@ -69,6 +71,7 @@ export function buildUnlimitedSession(
         queue: dealt.map((q) => ({ id: q.id, seed: rng.int(1, 2_147_483_646) })),
         settled: [],
         missed: [],
+        skipped: [],
         log: [],
         streak: 0,
         startedAt: Date.now(),
@@ -88,6 +91,7 @@ export function loadSession(): StoredSession | null {
         s.order = s.order.filter(alive);
         s.settled = (s.settled ?? []).filter(alive);
         s.missed = (s.missed ?? []).filter(alive);
+        s.skipped = (s.skipped ?? []).filter(alive);
         if (s.order.length === 0) return null;
         return s;
     } catch {
@@ -160,6 +164,31 @@ export function applyAnswer(
     };
 }
 
+/**
+ * Skip the head posting entirely: it leaves the run (no re-queue, no
+ * BroDollars) and shows up in the ledger as forwarded to the tax advisor.
+ * A skip is neutral - it neither feeds nor breaks the streak.
+ */
+export function applySkip(s: StoredSession): StoredSession {
+    const head = s.queue[0];
+    if (!head) return s;
+    const question = QUESTION_BY_ID.get(head.id);
+    const entry: LedgerEntry = {
+        posting: s.log.length + 1,
+        id: head.id,
+        label: question ? ledgerLabel(question) : head.id,
+        result: "skip",
+        amount: 0,
+    };
+    const skipped = s.skipped ?? [];
+    return {
+        ...s,
+        queue: s.queue.slice(1),
+        skipped: skipped.includes(head.id) ? skipped : [...skipped, head.id],
+        log: [...s.log, entry],
+    };
+}
+
 export type SessionTotals = {
     /** distinct questions in the run */
     total: number;
@@ -167,6 +196,8 @@ export type SessionTotals = {
     settledCount: number;
     /** write-off events (a question can be written off more than once) */
     writeoffs: number;
+    /** distinct questions skipped out of the run */
+    skipped: number;
     /** postings still open */
     left: number;
     /** postings answered so far (next posting number = postings + 1) */
@@ -184,6 +215,7 @@ export function sessionTotals(s: StoredSession): SessionTotals {
         total: s.order.length,
         settledCount: s.settled.length,
         writeoffs: writeoffEntries.length,
+        skipped: (s.skipped ?? []).length,
         left: s.queue.length,
         postings: s.log.length,
         earned: s.log.reduce((sum, e) => sum + e.amount, 0),
@@ -195,13 +227,14 @@ export function sessionTotals(s: StoredSession): SessionTotals {
 }
 
 /** Per-question segment state for the progress strip, in dealt order. */
-export type SegmentState = "settled" | "missed" | "current" | "open";
+export type SegmentState = "settled" | "missed" | "skipped" | "current" | "open";
 
 export function segmentStates(s: StoredSession): SegmentState[] {
     const currentId = s.queue[0]?.id;
     return s.order.map((id) => {
         if (s.settled.includes(id)) return "settled";
         if (id === currentId) return "current";
+        if ((s.skipped ?? []).includes(id)) return "skipped";
         if (s.missed.includes(id)) return "missed";
         return "open";
     });

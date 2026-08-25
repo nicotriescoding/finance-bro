@@ -31,7 +31,7 @@ export default function Footer() {
                 </button>
             </div>
             <p className="text-[11px] text-muted-light">
-                © 2026 finance-bro · a private project · study material, not financial advice
+                © 2026 FinanceBro · a private project · study material, not financial advice
             </p>
         </footer>
     );

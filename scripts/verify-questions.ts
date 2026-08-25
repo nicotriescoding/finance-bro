@@ -10,6 +10,7 @@ import { ALL_QUESTIONS } from "../src/content/questions";
 import { buildInstance } from "../src/lib/questions/engine";
 import { SUBJECT_MAP } from "../src/content/subjects";
 import { formatAnswer, isWithinTolerance, parseNumericInput } from "../src/lib/questions/grading";
+import { extractFormulaHint } from "../src/lib/hints";
 
 const SEEDS = 200;
 const errors: string[] = [];
@@ -18,6 +19,17 @@ const seenIds = new Set<string>();
 
 /** Remove `$...$` math segments, so text-level checks don't trip over TeX. */
 const stripMath = (text: string) => text.replace(/\$[^$]+\$/g, " ");
+
+/**
+ * Display forms the answer could leak in inside a hint (en-US, matching the
+ * `n`/`n2` helpers the explanations are written with). Forms shorter than 4
+ * characters are skipped - "5" or "42" legitimately show up as exponents or
+ * coefficients in a symbolic formula.
+ */
+const nf = (min: number, max: number) =>
+    new Intl.NumberFormat("en-US", { minimumFractionDigits: min, maximumFractionDigits: max });
+const answerForms = (a: number) =>
+    [nf(2, 2).format(a), nf(0, 2).format(a)].filter((s) => s.length >= 4);
 
 /**
  * Compile every `$...$` segment with KaTeX. Invalid TeX or an odd number of
@@ -104,6 +116,23 @@ for (const q of ALL_QUESTIONS) {
         if (/(NaN|Infinity|undefined)/.test(inst.prompt + (inst.explanation ?? ""))) {
             errors.push(`${q.id} (seed ${seed}): NaN/Infinity/undefined leaked into text`);
             break;
+        }
+        // 💡 The quiz's hint button reveals the first `$…$` segment of the
+        // worked solution (src/lib/hints.ts). It has to exist, and it must
+        // not contain the graded answer in any display format - otherwise the
+        // hint is a free correct answer at half price.
+        const hint = extractFormulaHint(inst.explanation);
+        if (seed === 1 && !hint) {
+            warnings.push(`${q.id}: no $…$ segment in the explanation - the hint button stays hidden`);
+        }
+        if (hint) {
+            const leak = answerForms(a).find((form) => hint.includes(form));
+            if (leak) {
+                errors.push(
+                    `${q.id} (seed ${seed}): hint leaks the answer - "${leak}" appears in ${hint.slice(0, 70)}`
+                );
+                break;
+            }
         }
         // The TeX skeleton is identical across seeds - compiling a few is enough.
         if (seed <= 3) checkInstanceMath(q.id, inst);

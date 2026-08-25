@@ -35,7 +35,7 @@ export default function BalancePill() {
             </span>
             <span className="hidden h-[15px] w-px bg-ink-line sm:block" />
             <span className="hidden text-[13px] font-bold text-mint sm:block">
-                TIER {level} {rank.emoji}
+                {rank.title.toUpperCase()} {rank.emoji}
             </span>
             {credit && (
                 <span

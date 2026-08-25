@@ -10,10 +10,11 @@ this file holds the durable product shape.
 ## Product
 
 Exam trainer for TUM business-administration students, live at
-[finance-bro.de](https://www.finance-bro.de). Students pick a subject and
-topics, then solve exam-style questions against the clock, with instant
-grading, a worked solution in lecture notation, and a joke ranking system
-(BroDollars, Unemployed → FinanceBro).
+[finance-bro.de](https://www.finance-bro.de), branded **FinanceBro**. Students
+pick a subject and topics, then solve exam-style questions against the clock
+(the site copy says: against inflation), with instant grading, a worked
+solution in lecture notation, and a joke ranking system (BroDollars,
+Unemployed → FinanceBro, each rank with a satirical monthly `salary`).
 
 **Content policy — the one rule that shapes everything:** every question must be
 traceable to real TUM course material. Questions derived from actual past exams
@@ -69,6 +70,8 @@ its own work:
 | 21 | Career setup v2: stepped flow (Step 1/2), topics start **unselected**, "Select all" tick row, phone auto-scroll + tap-again-to-start | done |
 | 22 | Ads: all slots on IAB-standard sizes (160×600, 200×200, 728×90, 320×100, 468×60) + fixed 320×50 mobile anchor on every page except `/library`, consent-banner-aware | done — placeholders, no network wired |
 | 23 | Copy rule: no em dashes in shipped text (`-` instead), smoke-guarded on `/` and `/career` | done |
+| 24 | Quiz: 💡 hint button (reveals the lecture formula, extracted as the first `$…$` segment of the worked solution, leak-checked in `verify`; payout −50%) + Skip button (posting leaves the run, 0 💸, "forwarded to the tax advisor" in ledger/statement) | done |
+| 25 | Landing v3 "the banking app": navy account card (real balance, position + its last payroll - `salary` per rank), fake € statement with declined finance-bro expenses, CTA "Make some money 🤑"; brand recased **FinanceBro**; balance pill shows the rank name instead of TIER n; supersedes the v2 hero (#20) | done |
 
 ## Non-goals (deliberate)
 

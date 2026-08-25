@@ -34,6 +34,10 @@ export default function ActivityLedger({ log, limit = 4 }: Props) {
                         <span className="shrink-0 font-extrabold tabular-nums text-brand">
                             +{formatMoney(e.amount)}
                         </span>
+                    ) : e.result === "skip" ? (
+                        <span className="caps-label shrink-0 text-[9px] text-ledger-mute">
+                            Skipped
+                        </span>
                     ) : (
                         <span className="shrink-0 font-extrabold tabular-nums text-warn">−0</span>
                     )}

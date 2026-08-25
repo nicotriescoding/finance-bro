@@ -24,7 +24,7 @@ export default function Navbar() {
             <div className="flex h-14 items-center gap-3 px-4 md:h-16 md:px-[22px]">
                 <Link href="/" className="flex items-baseline gap-1.5">
                     <span className="text-lg font-extrabold tracking-[-0.02em] text-white md:text-xl">
-                        finance-bro
+                        FinanceBro
                     </span>
                     <span className="animate-fly inline-block text-[17px] md:text-[19px]">💸</span>
                 </Link>

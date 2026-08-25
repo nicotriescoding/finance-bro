@@ -10,6 +10,7 @@ const COLORS = {
     light: {
         settled: "bg-brand",
         missed: "bg-warn",
+        skipped: "bg-muted-light",
         open: "bg-hairline",
         currentRing: "border-brand bg-brand-tint",
         track: "bg-hairline",
@@ -18,6 +19,7 @@ const COLORS = {
     navy: {
         settled: "bg-mint",
         missed: "bg-warn-bright",
+        skipped: "bg-muted",
         open: "bg-ink-track",
         currentRing: "border-mint bg-[#e8eef5]",
         track: "bg-ink-track",
@@ -59,7 +61,13 @@ export default function ProgressSegments({ states, variant = "light" }: Props) {
                     <span
                         key={i}
                         className={`h-2 flex-1 rounded-[4px] ${
-                            s === "settled" ? c.settled : s === "missed" ? c.missed : c.open
+                            s === "settled"
+                                ? c.settled
+                                : s === "missed"
+                                  ? c.missed
+                                  : s === "skipped"
+                                    ? c.skipped
+                                    : c.open
                         }`}
                     />
                 )
