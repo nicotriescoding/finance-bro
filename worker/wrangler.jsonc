@@ -1,0 +1,27 @@
+// Cloudflare worker for finance-bro multiplayer.
+// Free tier: Workers (100k req/day) + SQLite-backed Durable Objects + D1.
+// Nothing here is on the site's read path (CLAUDE.md hard rule 1).
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "finance-bro-mp",
+    "main": "src/index.ts",
+    "compatibility_date": "2026-08-01",
+    "tsconfig": "tsconfig.json",
+    "observability": { "enabled": true },
+    "durable_objects": {
+        "bindings": [{ "name": "LOBBY", "class_name": "Lobby" }]
+    },
+    "migrations": [
+        // new_sqlite_classes is required for Durable Objects on the free plan
+        { "tag": "v1", "new_sqlite_classes": ["Lobby"] }
+    ],
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "finance-bro-mp",
+            // REPLACE with the id from `npx wrangler d1 create finance-bro-mp`
+            // or the Cloudflare dashboard (Storage & Databases > D1).
+            "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+        }
+    ]
+}

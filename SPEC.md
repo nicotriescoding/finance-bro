@@ -61,7 +61,7 @@ its own work:
 | 13a | Career setup page (`/career`): subject grid + topic ticks + single Semester-Marathon mode; `/quiz` resumes the stored run | done |
 | 13b | Unlimited session: whole selected pool dealt once, write-offs re-queue with fresh numbers until every posting settles | done |
 | 14 | German edition as a second locale (`/de/…` + hreflang) | planned |
-| 15 | Highscores/multiplayer backend — optional extra, never on the read path | icebox |
+| 15 | Highscores/multiplayer backend — optional extra, never on the read path | done — see #26 |
 | 16 | `/products` page: replace placeholder images and dead affiliate links or drop the page | icebox |
 | 17 | Library (`/library`): favourite-books shelf with affiliate placeholders; took the Language nav slot; ad-free by rule | done — placeholders (SPIN Selling, The Lean Startup) |
 | 18 | Legal pages: `/impressum` (§ 5 DDG, private operator) + `/privacy` (GDPR/TDDDG), site-wide footer (legal links only — Library lives in the nav) | done |
@@ -72,6 +72,7 @@ its own work:
 | 23 | Copy rule: no em dashes in shipped text (`-` instead), smoke-guarded on `/` and `/career` | done |
 | 24 | Quiz: 💡 hint button (reveals the lecture formula, extracted as the first `$…$` segment of the worked solution, leak-checked in `verify`; payout −50%) + Skip button (posting leaves the run, 0 💸, "forwarded to the tax advisor" in ledger/statement) | done |
 | 25 | Landing v3 "the banking app": navy account card (real balance, position + its last payroll - `salary` per rank), fake € statement with declined finance-bro expenses, CTA "Make some money 🤑"; brand recased **FinanceBro**; balance pill shows the rank name instead of TIER n; supersedes the v2 hero (#20) | done |
+| 26 | Multiplayer v1 "duels desk" (`/multiplayer` + `worker/`): lobby rooms with code + invite link, two modes (Front Running 🏃 shared-posting race, Bull Run 🐂 own-pace race), Inflation 📈 bot, live scoreboard, self-chosen names with slur filter, D1 semester leaderboard, server-side grading in a Durable Object with the shared engine, BroDollar payouts credited to the account balance (base points per settled/won posting + 250 💸 win bonus). Optional extra per hard rule 1: without `NEXT_PUBLIC_MP_URL` the page shows the canon placeholder | built — needs Nico's one-time Cloudflare setup (`worker/README.md`) |
 
 ## Non-goals (deliberate)
 

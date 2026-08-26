@@ -6,6 +6,38 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Multiplayer v1 built (2026-08-26, evening) - awaiting Nico's Cloudflare
+setup.** SPEC #26: `/multiplayer` is now the real duels desk, `worker/` holds a
+Cloudflare worker (free tier, never paused for inactivity - the anti-Supabase
+choice). One Durable Object per lobby: 5-char room codes (no 0/O/1/I) +
+copyable invite link (`/multiplayer?room=CODE`), up to 8 humans, self-chosen
+names (localStorage, slur filter -> "Intern"), host picks mode / posting count
+(5/10/15) / any mix of subjects with per-topic ticks (nothing ticked = whole
+bank). Two modes: **Front Running 🏃** (shared posting, first correct settles
+it for everyone, 120s deadline then reveal, 3s wrong-answer lockout) and
+**Bull Run 🐂** (own pace, write-offs re-queue with fresh seeds, first
+finished statement ends the game). **Inflation 📈** bot on DO alarms with
+per-difficulty delay/accuracy; "Quick duel" = room + bot + start in one tap.
+Server sends only (question id, seed); clients build postings with the shared
+engine; the DO grades with `isWithinTolerance` - scoreboards cannot be faked
+from devtools. Duels pay real BroDollars: every settled/won posting pays its
+difficulty's base points, the winner adds a flat +250 💸 closing-bell bonus
+(server-computed, credited to the `bwr_score_v1` balance once on the end
+message - the navbar pill picks it up live). Game ends upsert a D1 semester
+leaderboard (SS/WS key, top 10
+on the duels desk, resets by keying on the semester). Without
+`NEXT_PUBLIC_MP_URL` the page renders the canon placeholder verbatim (hard
+rule 1; canon copy preserved inside `MultiplayerClient`). Verified: root
+`npm run check` green (66 smoke checks, from the /tmp/fb rsync copy as usual),
+`worker` tsc green, and a real e2e - wrangler dev + two WebSocket players +
+bot played both modes to the closing bell, 12/12 PASS (`worker/test/e2e.ts`,
+run from repo root: `npx tsx worker/test/e2e.ts`). Headless-Chromium
+screenshots of home/lobby/game (dark-mode OS, page stays light) looked right;
+fonts/emoji tofu remain sandbox artifacts. Not built yet (deliberate):
+matchmaking queue, rapid mode (needs difficulty curation), friend system,
+nickname market, anti-LLM prompt injection (cut - seeded numbers + the
+frontrun clock already do the work; injection is lost cat-and-mouse).
+
 **Landing polish + rank economy shipped (2026-08-26).** Nico's punch list:
 (1) hero de-emphasized - h1 down to text-2xl/3xl, tagline to 14px, the
 account view leads the page; (2) the statement is wider on desktop
@@ -133,6 +165,23 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
 
 ## Next up
 
+- **Multiplayer go-live (Nico, ~10 min, `worker/README.md` has the details).**
+  Cloudflare account exists (nicolas.dumpe@gmx.de). (1) Dashboard -> D1 ->
+  create `finance-bro-mp`, paste its Database ID into `worker/wrangler.jsonc`,
+  run `schema.sql` in the D1 console; (2) Workers & Pages -> Import repository
+  -> `nicotriescoding/finance-bro`, root directory `worker` - every push to
+  main then auto-deploys the worker (same flow as Vercel); (3) Vercel env var
+  `NEXT_PUBLIC_MP_URL` = the worker URL, redeploy. Then a two-tab test duel
+  (`npm run dev` also works: `NEXT_PUBLIC_MP_URL=http://localhost:8787` +
+  `cd worker && npm run dev`).
+- **Multiplayer visual check on Nico's machine** (sandbox screenshots looked
+  right, real Chrome still owed): duels desk, lobby with topic ticks, both
+  modes, the settled-by banner in Front Running, closing bell + leaderboard
+  row, and the canon placeholder when the env var is absent.
+- **Multiplayer icebox:** matchmaking queue (a special always-open room),
+  rapid mode (filter on `difficulty` once curated), rematch keeps the room -
+  friends/accounts and the BroDollar nickname market stay parked until the
+  base sees real use.
 - **PostHog go-live** (whenever Nico wants analytics): create the project on
   PostHog Cloud **EU** (eu.posthog.com — the privacy policy promises Frankfurt
   hosting), set `NEXT_PUBLIC_POSTHOG_KEY` in Vercel per `.env.example`,
@@ -199,8 +248,9 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
 - **SEO after the language switch.** finance-bro.de serves English metadata to
   an audience that searches in German. Watch Search Console; the German locale
   above is the fix, not reverting.
-- **Where highscores live.** `localStorage` only; leaderboard and multiplayer
-  pages are stubs. Any backend must stay off the read path (CLAUDE.md rule 1).
+- **Where highscores live - resolved 2026-08-26.** Solo balance stays in
+  `localStorage`; multiplayer results live in Cloudflare D1 keyed by semester,
+  written only by the Durable Object. Off the read path per CLAUDE.md rule 1.
 
 ## Known gaps
 
