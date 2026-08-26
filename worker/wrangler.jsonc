@@ -19,9 +19,7 @@
         {
             "binding": "DB",
             "database_name": "finance-bro-mp",
-            // REPLACE with the id from `npx wrangler d1 create finance-bro-mp`
-            // or the Cloudflare dashboard (Storage & Databases > D1).
-            "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+            "database_id": "dd809efe-68c4-4113-9622-c2eaea76269e"
         }
     ]
 }
