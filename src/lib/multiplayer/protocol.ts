@@ -43,6 +43,17 @@ export const DEFAULT_COUNT = 10;
 
 /** Front Running: per-posting deadline before the answer is revealed. */
 export const FRONTRUN_DEADLINE_MS = 120_000;
+/** Front Running with rapid on: the bell rings much sooner. */
+export const RAPID_DEADLINE_MS = 45_000;
+/** Rapid mode deals only these difficulties. */
+export const RAPID_DIFFICULTIES = ["very_easy", "easy"] as const;
+/**
+ * Keepalive: Cloudflare's edge drops a WebSocket after ~100s of silence, and
+ * a hard question takes longer than that to solve. The client sends a raw
+ * "ping" frame on this interval; the Durable Object answers "pong" via
+ * setWebSocketAutoResponse without even waking up.
+ */
+export const PING_INTERVAL_MS = 25_000;
 /** Front Running: lockout after a wrong answer (anti button-mash). */
 export const WRONG_COOLDOWN_MS = 3_000;
 /**
@@ -67,12 +78,15 @@ export type MpConfig = {
     mode: MpMode;
     count: number;
     selections: MpSelection[];
+    /** rapid ⚡: only quick/easy postings, and a 45s bell in Front Running */
+    rapid: boolean;
 };
 
 export const DEFAULT_CONFIG: MpConfig = {
     mode: "bullrun",
     count: DEFAULT_COUNT,
     selections: [{ subject: "finance", topicIds: [] }],
+    rapid: false,
 };
 
 export type MpPhase = "lobby" | "play" | "end";
@@ -103,7 +117,9 @@ export type C2S =
     | { t: "bot"; on: boolean }
     | { t: "start" }
     | { t: "answer"; value: number | number[] }
-    | { t: "rematch" };
+    | { t: "rematch" }
+    /** deliberate exit - distinguishes "left the desk" from a dropped line */
+    | { t: "leave" };
 
 // ---------------------------------------------------------------------------
 // messages: server -> client

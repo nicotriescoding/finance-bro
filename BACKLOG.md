@@ -6,6 +6,30 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Multiplayer v1.1 (2026-08-26, night) - live-feedback round.** Nico played on
+prod and reported drops + wishes; all shipped: (1) **disconnect fix** - the
+edge kills WebSockets silent for ~100s (idle lobby or a hard question both
+qualify); client now heartbeats "ping" every 25s, the DO answers via
+`setWebSocketAutoResponse` (no wake), plus silent auto-reconnect with backoff
+(1-2-4-8-8s) and a "reconnecting to the floor" banner; empty rooms get a 5-min
+grace before reaping so reconnects and locked phones survive, and an explicit
+`leave` message distinguishes walking out from a dropped line. (2) **Challenge
+Inflation** now opens the lobby with the bot pre-seated instead of
+auto-starting - mode/subjects/pace stay pickable. (3) **⚡ Rapid mode** toggle:
+pool filtered to very_easy+easy (38 in Finance), Front Running bell drops to
+45s. (4) **Game view redesign**: MARKET OPEN header chips, xl ad rail
+(160×600 + 200×200), 728×90 under the card (md+) / 320×100 feed (phone),
+**corporate-ladder scoreboard** - players climb an office tower from Mailroom
+to Corner office 🏆, one settled posting per floor, with per-player 💸 and 📉
+fine print; phone gets a thin scrollable race strip that never blocks play;
+compact semester leaderboard in the desktop game rail; duels desk also got
+728×90/320×100. (5) Landing statement jokes now wrap on phones
+(`sm:truncate` instead of `truncate`). Verified: root check green (66),
+worker tsc green, e2e now 14/14 incl. a rapid-only-deals-easy case,
+headless shots desktop+phone (game, lobby with rapid, landing). Deploys on
+push: Cloudflare rebuilds the worker, Vercel the site - protocol added
+optional-ish `rapid`/`leave`, old clients stay compatible during rollout.
+
 **Multiplayer v1 built (2026-08-26, evening) - awaiting Nico's Cloudflare
 setup.** SPEC #26: `/multiplayer` is now the real duels desk, `worker/` holds a
 Cloudflare worker (free tier, never paused for inactivity - the anti-Supabase

@@ -28,7 +28,12 @@ const done = new Promise<void>((resolve, reject) => {
         if (msg.t === "room" && msg.phase === "lobby") {
             ws.send(JSON.stringify({
                 t: "config",
-                config: { mode: "bullrun", count: 5, selections: [{ subject: "finance", topicIds: [] }] },
+                config: {
+                    mode: "bullrun",
+                    count: 5,
+                    selections: [{ subject: "finance", topicIds: [] }],
+                    rapid: false,
+                },
             }));
             ws.send(JSON.stringify({ t: "start" }));
         }

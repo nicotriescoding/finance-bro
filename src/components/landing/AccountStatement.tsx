@@ -272,10 +272,10 @@ export default function AccountStatement() {
                 {/* the one credit: last payroll of the current position */}
                 <div className="flex items-center justify-between gap-3 border-b border-[#f4f7fa] px-3.5 py-2.5">
                     <div className="flex min-w-0 flex-col">
-                        <span className="truncate text-[13px] font-bold text-ledger">
+                        <span className="text-[13px] font-bold leading-snug text-ledger sm:truncate">
                             Salary · {rank.title}
                         </span>
-                        <span className="caps-label truncate text-[9px] text-ledger-mute">
+                        <span className="caps-label text-[9px] leading-snug text-ledger-mute sm:truncate">
                             Today · SEPA credit
                         </span>
                     </div>
@@ -295,13 +295,13 @@ export default function AccountStatement() {
                     >
                         <div className="flex min-w-0 flex-col">
                             <span
-                                className={`truncate text-[13px] text-ledger ${
+                                className={`text-[13px] leading-snug text-ledger [text-wrap:pretty] sm:truncate ${
                                     e.status ? "opacity-60" : ""
                                 }`}
                             >
                                 {e.label}
                             </span>
-                            <span className="caps-label truncate text-[9px] text-ledger-mute">
+                            <span className="caps-label text-[9px] leading-snug text-ledger-mute sm:truncate">
                                 {e.detail}
                             </span>
                         </div>

@@ -106,7 +106,12 @@ async function bullRunGame() {
     await new Promise((r) => setTimeout(r, 300));
     alice.send({
         t: "config",
-        config: { mode: "bullrun", count: 5, selections: [{ subject: "finance", topicIds: [] }] },
+        config: {
+            mode: "bullrun",
+            count: 5,
+            selections: [{ subject: "finance", topicIds: [] }],
+            rapid: false,
+        },
     });
     await new Promise((r) => setTimeout(r, 300));
     alice.send({ t: "start" });
@@ -149,7 +154,12 @@ async function frontRunGame() {
     await new Promise((r) => setTimeout(r, 300));
     alice.send({
         t: "config",
-        config: { mode: "frontrun", count: 5, selections: [{ subject: "finance", topicIds: [] }] },
+        config: {
+            mode: "frontrun",
+            count: 5,
+            selections: [{ subject: "finance", topicIds: [] }],
+            rapid: false,
+        },
     });
     alice.send({ t: "bot", on: true });
     await new Promise((r) => setTimeout(r, 300));
@@ -166,6 +176,43 @@ async function frontRunGame() {
     alice.ws.close();
 }
 
+async function rapidGame() {
+    const code = await createRoom();
+    const dave = await connect(code, "dddddddddddddddd", "Dave");
+    const dealtDifficulties: string[] = [];
+
+    const end = new Promise<Extract<S2C, { t: "end" }>>((resolve) => {
+        dave.on("end", (m) => resolve(m as Extract<S2C, { t: "end" }>));
+    });
+    dave.on("deal", (m) => {
+        const d = m as Extract<S2C, { t: "deal" }>;
+        dealtDifficulties.push(QMAP.get(d.qid)!.difficulty);
+        dave.send({ t: "answer", value: correctValueFor(d.qid, d.seed) });
+    });
+
+    await new Promise((r) => setTimeout(r, 300));
+    dave.send({
+        t: "config",
+        config: {
+            mode: "bullrun",
+            count: 5,
+            selections: [{ subject: "finance", topicIds: [] }],
+            rapid: true,
+        },
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    dave.send({ t: "start" });
+
+    await withinDeadline(end, 15000, "rapid end");
+    check(
+        "rapid: only quick/easy postings dealt",
+        dealtDifficulties.length === 5 &&
+            dealtDifficulties.every((d) => d === "very_easy" || d === "easy"),
+        dealtDifficulties.join(",")
+    );
+    dave.ws.close();
+}
+
 async function leaderboard() {
     const res = await fetch(`${BASE}/api/leaderboard`);
     const data = (await res.json()) as { semester: string; rows: { name: string; wins: number }[] };
@@ -179,6 +226,7 @@ async function leaderboard() {
 const t0 = Date.now();
 await bullRunGame();
 await frontRunGame();
+await rapidGame();
 await leaderboard();
 console.log(`\n${failures === 0 ? "ALL GREEN" : `${failures} FAILURE(S)`} in ${Date.now() - t0}ms`);
 process.exit(failures === 0 ? 0 : 1);

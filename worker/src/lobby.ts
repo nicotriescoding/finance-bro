@@ -17,6 +17,8 @@ import {
     BOT_NAME,
     DEFAULT_CONFIG,
     FRONTRUN_DEADLINE_MS,
+    RAPID_DEADLINE_MS,
+    RAPID_DIFFICULTIES,
     WIN_BONUS,
     MAX_PLAYERS,
     POSTING_COUNTS,
@@ -35,6 +37,12 @@ import type { Env } from "./index";
 const BOT_ID = "bot";
 /** an empty lobby self-destructs after this long without a connection */
 const EMPTY_TTL_MS = 30 * 60 * 1000;
+/**
+ * Grace period before an empty room is reaped. Long enough for the client's
+ * auto-reconnect (and a locked phone) to come back, short enough that stale
+ * rooms do not linger.
+ */
+const EMPTY_GRACE_MS = 5 * 60 * 1000;
 
 const QUESTION_BY_ID: Map<string, Question> = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
 
@@ -102,12 +110,14 @@ function shuffleInPlace<T>(items: T[]): T[] {
 function poolFor(config: MpConfig): Question[] {
     const seen = new Set<string>();
     const out: Question[] = [];
+    const rapidOk = new Set<string>(RAPID_DIFFICULTIES);
     for (const sel of config.selections) {
         const qs =
             sel.topicIds.length === 0
                 ? questionsForSubject(sel.subject)
                 : questionsFor(sel.subject, sel.topicIds);
         for (const q of qs) {
+            if (config.rapid && !rapidOk.has(q.difficulty)) continue;
             if (!seen.has(q.id)) {
                 seen.add(q.id);
                 out.push(q);
@@ -155,6 +165,12 @@ export class Lobby {
     constructor(ctx: DurableObjectState, env: Env) {
         this.ctx = ctx;
         this.env = env;
+        // Keepalive: answer the client's "ping" frames with "pong" WITHOUT
+        // waking the DO. Cloudflare's edge closes WebSockets after ~100s of
+        // silence - an idle lobby or a hard question both exceed that.
+        this.ctx.setWebSocketAutoResponse(
+            new WebSocketRequestResponsePair("ping", "pong")
+        );
     }
 
     // ------------------------------------------------------------------ state
@@ -318,6 +334,30 @@ export class Lobby {
                 await this.handleAnswer(pid, msg.value);
                 return;
             }
+            case "leave": {
+                // deliberate exit: drop the player from the roster entirely
+                // (a mid-game leaver stays in the ranking math as a ghost only
+                // if the game is running - lobby and end just forget them)
+                if (room.phase !== "play") {
+                    delete room.players[pid];
+                } else {
+                    room.players[pid].connected = false;
+                }
+                const humansLeft = Object.values(room.players).filter(
+                    (p) => !p.bot && (room.phase === "play" ? true : p.connected)
+                );
+                if (room.hostId === pid) room.hostId = humansLeft[0]?.id ?? null;
+                for (const sock of this.ctx.getWebSockets(pid)) {
+                    try {
+                        sock.close(1000, "left");
+                    } catch {
+                        /* already gone */
+                    }
+                }
+                await this.save();
+                this.broadcastRoom();
+                return;
+            }
             case "rematch": {
                 if (!isHost || room.phase !== "end") return;
                 room.phase = "lobby";
@@ -349,18 +389,15 @@ export class Lobby {
         if (remaining.length > 0) return;
 
         player.connected = false;
-        if (room.phase === "lobby") delete room.players[pid];
 
         const humansLeft = Object.values(room.players).filter((p) => !p.bot && p.connected);
-        if (humansLeft.length === 0) {
-            if (room.phase === "lobby") {
-                await this.destroy();
-                return;
-            }
-            // mid-game: keep the room for reconnects, the TTL reaps it later
+        if (humansLeft.length === 0 && room.phase !== "play") {
+            // keep the room so auto-reconnect (or a locked phone) can return;
+            // the alarm reaps it after the grace period
+            await this.ctx.storage.setAlarm(Date.now() + EMPTY_GRACE_MS + 1000);
         }
-        if (room.hostId === pid) {
-            room.hostId = humansLeft[0]?.id ?? room.hostId;
+        if (room.hostId === pid && humansLeft.length > 0) {
+            room.hostId = humansLeft[0].id;
         }
         await this.save();
         this.broadcastRoom();
@@ -386,7 +423,7 @@ export class Lobby {
                 : [];
             selections.push({ subject: subject.id, topicIds });
         }
-        return { mode: raw.mode, count: raw.count, selections };
+        return { mode: raw.mode, count: raw.count, selections, rapid: raw.rapid === true };
     }
 
     private async startGame(): Promise<void> {
@@ -412,10 +449,11 @@ export class Lobby {
         }
 
         const now = Date.now();
+        const deadlineMs = room.config.rapid ? RAPID_DEADLINE_MS : FRONTRUN_DEADLINE_MS;
         room.game = {
             deck,
             index: 0,
-            deadline: now + FRONTRUN_DEADLINE_MS,
+            deadline: now + deadlineMs,
             botNextAt: this.botDelayFor(deck[0]) + now,
             startedAt: now,
             nextRank: 1,
@@ -541,7 +579,8 @@ export class Lobby {
             return;
         }
         const now = Date.now();
-        game.deadline = now + FRONTRUN_DEADLINE_MS;
+        game.deadline =
+            now + (room.config.rapid ? RAPID_DEADLINE_MS : FRONTRUN_DEADLINE_MS);
         game.botNextAt = now + this.botDelayFor(game.deck[game.index]);
         for (const p of Object.values(room.players)) p.cooldownUntil = 0;
         this.broadcast(this.scoreMsg());
@@ -643,8 +682,13 @@ export class Lobby {
         if (!room) return;
         const game = room.game;
         if (room.phase !== "play" || !game) {
-            // stale room reaper
-            if (Date.now() - room.lastActive > EMPTY_TTL_MS) await this.destroy();
+            // stale room reaper: nobody connected and quiet past the grace
+            const anyConnected = Object.values(room.players).some(
+                (p) => !p.bot && p.connected
+            );
+            const idleMs = Date.now() - room.lastActive;
+            if (!anyConnected && idleMs > EMPTY_GRACE_MS) await this.destroy();
+            else if (idleMs > EMPTY_TTL_MS) await this.destroy();
             return;
         }
         const now = Date.now();
