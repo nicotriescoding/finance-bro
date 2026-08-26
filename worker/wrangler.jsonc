@@ -3,7 +3,8 @@
 // Nothing here is on the site's read path (CLAUDE.md hard rule 1).
 {
     "$schema": "node_modules/wrangler/config-schema.json",
-    "name": "finance-bro-mp",
+    // must match the Worker's name in the Cloudflare dashboard
+    "name": "finance-bro",
     "main": "src/index.ts",
     "compatibility_date": "2026-08-01",
     "tsconfig": "tsconfig.json",
