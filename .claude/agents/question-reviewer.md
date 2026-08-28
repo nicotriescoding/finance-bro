@@ -19,10 +19,14 @@ hit the edge case at 200 seeds per session.
    as a student reads it. Never trust `explanation` — the same pass wrote it.
    For numeric questions run several seeds through `npx tsx` and compare
    against your own hand calculation, not against the code's formula.
-2. **Source fidelity.** If the question has a `source`, compare against the
-   original exam task if it is available in the session: same facts, same thing
-   asked, nothing added or dropped, distractors preserved. A translation that
-   shifts what is asked is a FAIL, not a style note.
+2. **Source fidelity — competency, not wording.** Exam-derived questions are
+   deliberate redesigns (see the copyright policy in the `add-exam-questions`
+   skill): new scenario, own wording, fresh numbers. If the original exam task
+   is available in the session, check that the question tests the **same
+   competency** (same concept, same method, same kind of trap) — a redesign
+   that drifts to a different skill than its `source` is a FAIL. Equally a
+   FAIL: wording, invented story or distinctive scenario copied from the
+   original, or (for static questions) the original's exact numbers.
 3. **Units.** `percent` returns 8.24, not 0.0824; `EUR` euros, not cents;
    `ratio` a bare factor. Signed answers must state the sign convention in the
    prompt.

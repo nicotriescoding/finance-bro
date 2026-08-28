@@ -6,6 +6,31 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Calculation banks shipped: Econ 1 + Econ 2 + Cost Accounting (2026-08-28,
+evening).** 104 new questions from 16 real TUM exam PDFs (project knowledge):
+econ1 24 (Exercise Exam WT22/23), econ2 40 (SS2017 OCR'd + SS2018 + SS2019,
+58 catalog entries merged into 40 generators), cost_accounting 40 (SS2015,
+WS16/17, SS2017, WS17/18, SS2018, WS18/19, Mock + 2021 answer-key deck — 7
+papers deduped into 40 variant families). 87 numeric seeded generators + 17
+choice; all topics added to `subjects.ts` (7 econ1, 10 econ2, 9
+cost_accounting). Everything redesigned per the copyright policy: new
+scenarios/names, numbers drawn per seed, and draws explicitly exclude the
+source exams' own parameter sets. Loop ran in full: three authoring agents →
+gate → three `question-reviewer` agents (opus, independent recomputation, up
+to 5,000 seeds/question) found 13 FAILs (6 seeded draws that could reproduce
+exam numbers, 5 wrong/misplaced `source` citations, 2 notation slips) — all
+fixed, plus reviewer nice-to-haves (dead rng draw removed, plural fix,
+negative-wage clamp, thinnest redesign hardened). Gate green after fixes:
+typecheck, verify 201 questions × 200 seeds, build, 73 smoke checks (run from
+/tmp copy as usual). Solo + multiplayer both deal from these banks
+automatically. Not done on purpose: the ingested exams' pure concept/MC
+questions (Nico: calculations only for now); Nico's other MC-exam list
+(Marketing, Financial Accounting, IVF, ML, Entrepreneurial & Ethical
+Business, Strategic & Intl. Management) waits for exam files. **Visual check
+owed on Nico's machine:** /career shows the three new subjects with topic
+ticks; play one econ1, one econ2, one cost_accounting posting each (KaTeX in
+prompt/given/explanation, hint = first formula segment, units).
+
 **Copyright-safe exam redesign policy (2026-08-28).** Nico wants calculation
 modules built from real MC/SC exams of the two bachelor/master programs
 (calculation questions first — the 9-subject MC list lives in this session's
@@ -15,10 +40,11 @@ chat and SPEC #11). Web research confirmed the approach: German copyright
 questions are redesigned (own wording, new scenario/names, fresh numbers via
 seeded `build`), not translated copies. Policy written into the
 `add-exam-questions` skill (step 3) and `.claude/rules/questions.md`
-(Provenance). Source exam PDFs never enter the repo. **Blocked on Nico:
-the calculation exam files did not arrive in the session (uploads folder was
-empty) — re-upload, then ingest starts.** Solo and multiplayer share the same
-banks, so ingested questions serve both automatically.
+(Provenance). Source exam PDFs never enter the repo. The exam files turned
+out to live in the Claude project knowledge (not uploads) — found and
+ingested the same day, see the entry above. The `question-reviewer`
+definition's criterion 2 was rewritten to match (competency fidelity instead
+of wording fidelity).
 
 **Shop + Library go real, ladder gets rungs (2026-08-28).** (1) The
 multiplayer corporate-ladder scoreboard now draws an actual ladder behind the
