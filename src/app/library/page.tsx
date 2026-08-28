@@ -22,8 +22,9 @@ export const metadata: Metadata = {
  *
  * Ratings: the ROI multiplier - what a book returned per hour it cost to
  * read. Everything on the shelf was actually read by Nico; `roi` and `review`
- * are HIS numbers and words. null = Nico still owes them (rendered as
- * "pending audit") - fill them in as he delivers, do not invent them.
+ * are HIS numbers and (edited) words, dictated 2026-08-28. For future books:
+ * null = Nico still owes them (rendered as "pending audit") - never invent
+ * a rating or review for him.
  */
 
 type Book = {
@@ -50,18 +51,18 @@ const SECTIONS: Section[] = [
                 author: "Eric Ries",
                 cover: "https://covers.openlibrary.org/b/id/7104760-M.jpg",
                 q: "the lean startup eric ries",
-                roi: null,
+                roi: 7,
                 review:
-                    "Turns the black box of a startup into a deeper understanding of what is actually going on inside one.",
+                    "Opens the startup black box and shows you the machine inside: a system you can learn, measure, and actually steer. Once you see it, decisions stop being vibes and start being iterations. Must-read before you found anything.",
             },
             {
                 title: "SPIN Selling",
                 author: "Neil Rackham",
                 cover: "https://covers.openlibrary.org/b/id/55114-M.jpg",
                 q: "spin selling neil rackham",
-                roi: null,
+                roi: 21,
                 review:
-                    "Understanding B2B sales - and what separates them from B2C.",
+                    "The book that explains why selling software to a company is nothing like selling ketchup to a person. Focused on B2B, but the small-ticket lessons ride along for free. Understanding these dynamics is the difference between chasing your first customer and closing them - and keeping them.",
             },
         ],
     },
@@ -74,8 +75,9 @@ const SECTIONS: Section[] = [
                 author: "Morgan Housel",
                 cover: "https://covers.openlibrary.org/b/id/10389354-M.jpg",
                 q: "the psychology of money morgan housel",
-                roi: null,
-                review: null,
+                roi: 13,
+                review:
+                    "Less about picking stocks, more about understanding the person holding them. Teaches you to see investing as behavior you can leverage - the payoff compounds the longer your horizon. ×13 today, higher if you hold.",
             },
         ],
     },
@@ -88,24 +90,27 @@ const SECTIONS: Section[] = [
                 author: "Joe Navarro",
                 cover: "https://covers.openlibrary.org/b/id/8734461-M.jpg",
                 q: "what every body is saying joe navarro",
-                roi: null,
-                review: null,
+                roi: 9,
+                review:
+                    "Body language decoded by an FBI agent: the clues people leak constantly and everyone misses. Must-read for better social reads - helps you spot a liar and sharpens your negotiations as a side effect.",
             },
             {
                 title: "Never Split the Difference",
                 author: "Chris Voss",
                 cover: "https://covers.openlibrary.org/b/id/8365942-M.jpg",
                 q: "never split the difference chris voss",
-                roi: null,
-                review: null,
+                roi: 7,
+                review:
+                    "Hostage negotiation applied to everyday deals. Brilliant material, but it does not work by reading alone - the ROI only pays out if you put in the reps. Read it anyway.",
             },
             {
                 title: "How to Win Friends and Influence People",
                 author: "Dale Carnegie",
                 cover: "https://covers.openlibrary.org/b/id/13314878-M.jpg",
                 q: "how to win friends and influence people dale carnegie",
-                roi: null,
-                review: null,
+                roi: 8,
+                review:
+                    "The OG. Genuinely surprising the first time, because how humans actually think is not obvious. Not a cheat code - it does not always work - but the fundamentals have compounded since 1936.",
             },
         ],
     },
@@ -118,16 +123,18 @@ const SECTIONS: Section[] = [
                 author: "James Clear",
                 cover: "https://covers.openlibrary.org/b/id/12539702-M.jpg",
                 q: "atomic habits james clear",
-                roi: null,
-                review: null,
+                roi: 6,
+                review:
+                    "Habits compound, and compounding is the closest thing to magic this site respects. Brutally hard to apply - the interest rate is high precisely because most people quit - but stick it out and the position pays for life.",
             },
             {
                 title: "The Child in You",
                 author: "Stefanie Stahl",
                 cover: "https://covers.openlibrary.org/b/id/10555909-M.jpg",
                 q: "the child in you stefanie stahl",
-                roi: null,
-                review: null,
+                roi: 11,
+                review:
+                    "The surprise position in the portfolio: a book about understanding yourself. Real insight into why you work the way you do - read it to grasp yourself better, and watch your relationships collect the dividend.",
             },
         ],
     },
@@ -175,8 +182,10 @@ export default function LibraryPage() {
                     Books are rated like investments: <strong>ROI ×N</strong> is what a
                     book returned per hour it cost to read. ×1 breaks even with
                     scrolling, ×5 beats most lectures, ×10 should be illegal insider
-                    knowledge. Ratings marked <em>pending audit</em> are with the
-                    librarian&apos;s back office.
+                    knowledge. <strong>Disclaimer:</strong> anything above ×1 is worth
+                    a read - this shelf is the favorites out of roughly 100 books the
+                    librarian has read, every single one of them cover to cover. The
+                    multiplier ranks favorites; it does not filter duds.
                 </p>
             </section>
 

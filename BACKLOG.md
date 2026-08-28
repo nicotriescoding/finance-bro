@@ -36,8 +36,15 @@ buttons live (untagged until the tag exists). (5) Smoke grew 7 checks
 amazon + ROI): 73 green, build from the /tmp/fb copy as usual. Visual check
 on Nico's machine still owed: /multiplayer ladder, /products, /library.
 
-**Waiting on Nico:** per-book ROI multipliers + personal one-paragraph
-reviews (all 8), PartnerNet signup -> tag into `src/lib/affiliate.ts`.
+**Library reviews landed (2026-08-28, same day).** Nico dictated ROI + opinion
+for all 8 books (Lean Startup ×7, SPIN ×21, Psychology of Money ×13, What
+Every BODY ×9, Never Split ×7, How to Win Friends ×8, Atomic Habits ×6, The
+Child in You ×11); texts edited for brevity/jokes but the substance is his.
+Legend card gained his disclaimer: anything above ×1 is worth a read - the
+shelf is favorites out of ~100 read books, the multiplier ranks favorites.
+More books will come later per Nico.
+
+**Waiting on Nico:** PartnerNet signup -> tag into `src/lib/affiliate.ts`.
 
 
 **Multiplayer v1.1 (2026-08-26, night) - live-feedback round.** Nico played on
