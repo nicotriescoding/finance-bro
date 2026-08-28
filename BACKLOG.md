@@ -6,6 +6,20 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Copyright-safe exam redesign policy (2026-08-28).** Nico wants calculation
+modules built from real MC/SC exams of the two bachelor/master programs
+(calculation questions first — the 9-subject MC list lives in this session's
+chat and SPEC #11). Web research confirmed the approach: German copyright
+(§ 2 UrhG) can protect an exam task's *wording and invented scenario*
+(Schöpfungshöhe), but never the tested method, formula, or concept — so
+questions are redesigned (own wording, new scenario/names, fresh numbers via
+seeded `build`), not translated copies. Policy written into the
+`add-exam-questions` skill (step 3) and `.claude/rules/questions.md`
+(Provenance). Source exam PDFs never enter the repo. **Blocked on Nico:
+the calculation exam files did not arrive in the session (uploads folder was
+empty) — re-upload, then ingest starts.** Solo and multiplayer share the same
+banks, so ingested questions serve both automatically.
+
 **Shop + Library go real, ladder gets rungs (2026-08-28).** (1) The
 multiplayer corporate-ladder scoreboard now draws an actual ladder behind the
 climbers - two SVG rails + one rung per posting (capped at 20), aligned to

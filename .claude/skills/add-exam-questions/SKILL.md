@@ -25,14 +25,32 @@ Append to the matching `src/content/questions/<subject>.ts`. Follow
 `.claude/rules/questions.md` exactly. Every question gets
 `source: "TUM <exam> <term>, A<n>"`.
 
-**The exams are German, the app is English — translate as you go.** Keep the
-wording as close to the original as English allows: same facts, same thing being
-asked, nothing added or dropped. A German statutory term the question actually
-tests (`HGB`, `§ 253 HGB`, `GmbH`, `beizulegender Wert`) stays verbatim with an
-English gloss in parentheses on first use. Rephrase only to remove references the
-app can't show (a diagram, an attached balance sheet, "siehe Aufgabe 2").
-If a question depends on an exhibit, either inline the data into `given` or skip
-it and list it as skipped.
+**The exams are German, the app is English — and every question is a
+copyright-safe redesign, never a translation-copy.** German law (§ 2 UrhG)
+protects the exam author's *expression* — the wording, the invented story, the
+specific scenario. It does not protect the method, formula, concept, or the
+competency being tested. So work per task like this:
+
+1. Identify what the task actually tests (the competency, formula, concept).
+2. Write a **new scenario in your own words**: different company/person names,
+   different framing, different narrative. Never carry over a distinctive
+   invented story, character, or creative setup from the original.
+3. **Change every number.** For `kind: "numeric"` the seeded `build` does this
+   for free; for `kind: "choice"` with numbers in the stem, pick fresh values
+   and recompute the options.
+4. Keep only what is unprotectable: the tested concept, standard lecture
+   formulas, statutory terms, standard technical vocabulary.
+
+A German statutory term the question actually tests (`HGB`, `§ 253 HGB`,
+`GmbH`, `beizulegender Wert`) stays verbatim with an English gloss in
+parentheses on first use. If a task depends on an exhibit, either build an
+equivalent (redesigned) dataset into `given` or skip it and list it as skipped.
+Never commit the source exam PDF or reproduce it anywhere in the repo — the
+`source` field cites provenance (a fact, always fine); the file itself stays
+with Nico.
+
+The measure of success: a student who drilled the module is prepared for the
+real exam, but no question can be laid next to the original and called a copy.
 
 Prefer `kind: "numeric"` with a `build` function when the task is a calculation —
 that turns one exam question into unlimited practice. Keep it `kind: "choice"`

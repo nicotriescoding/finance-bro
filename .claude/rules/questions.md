@@ -18,6 +18,12 @@ exams carry `source: "TUM <exam> <term>, A<n>"` and are written with the
 general knowledge — the syllabus-derived seed banks were deliberately removed
 on 2026-08-21 and must not come back.
 
+**Exam-derived ≠ exam-copied.** Every exam-derived question is a redesign:
+own wording, new scenario and names, changed numbers (seeded `build` for
+numeric). Only the tested concept, standard formulas, and statutory terms carry
+over — the exam author's expression never does. Details in the
+`add-exam-questions` skill. Source exam files never enter the repo.
+
 ## Shape
 
 `topic` must be a topic id from `src/content/subjects.ts` (add the topic there
