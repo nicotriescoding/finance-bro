@@ -1018,14 +1018,31 @@ function MpLadder(props: { players: MpPlayerPub[]; total: number; you: string })
             </div>
 
             <div className="relative h-[340px] overflow-hidden rounded-[10px] border border-hairline-soft bg-field">
-                {/* floors */}
-                {[0.2, 0.4, 0.6, 0.8].map((f) => (
-                    <div
-                        key={f}
-                        className="absolute inset-x-0 border-t border-dashed border-hairline-soft"
-                        style={{ bottom: `${f * 100}%` }}
-                    />
-                ))}
+                {/* the actual ladder - two rails, one rung per floor */}
+                <svg
+                    aria-hidden
+                    className="absolute inset-0 h-full w-full"
+                    style={{ stroke: "var(--color-hairline)" }}
+                >
+                    <line x1="22%" y1="4%" x2="22%" y2="98%" strokeWidth="5" strokeLinecap="round" />
+                    <line x1="78%" y1="4%" x2="78%" y2="98%" strokeWidth="5" strokeLinecap="round" />
+                    {Array.from({ length: Math.min(total, 20) + 1 }, (_, i) => {
+                        // rung i sits where a player with i settled postings stands
+                        const pct = i / Math.max(1, Math.min(total, 20));
+                        const y = 100 - (6 + pct * 78) - 2;
+                        return (
+                            <line
+                                key={i}
+                                x1="22%"
+                                y1={`${y}%`}
+                                x2="78%"
+                                y2={`${y}%`}
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                            />
+                        );
+                    })}
+                </svg>
                 <span className="caps-label absolute right-2 top-1.5 text-[9px] text-muted-light">
                     Corner office 🏆
                 </span>

@@ -212,15 +212,31 @@ try {
     const libraryHtml = await library.text();
     check("/library returns 200", library.status === 200, `got ${library.status}`);
     check(
-        "/library shelves the two placeholder books",
+        "/library shelves the founding books",
         libraryHtml.includes("SPIN Selling") && libraryHtml.includes("The Lean Startup")
     );
     check(
-        "/library discloses the future affiliate links as advertising",
+        "/library discloses the affiliate links as advertising",
         libraryHtml.includes("affiliate")
     );
     // Nico's rule: the Library is ad-free. "Sponsored" is AdSlot's label.
     check("/library carries no ad slots", !libraryHtml.includes("Sponsored"));
+    // Real shop since 2026-08-28: Amazon links live, the dead placeholder is gone.
+    check("/library links Amazon", libraryHtml.includes("amazon.de"));
+    check("/library rates by ROI multiplier", libraryHtml.includes("ROI"));
+    const products = await fetch(`${BASE}/products`);
+    const productsHtml = await products.text();
+    check("/products returns 200", products.status === 200, `got ${products.status}`);
+    check("/products links Amazon", productsHtml.includes("amazon.de"));
+    check(
+        "/products lost the dead placeholder links",
+        !productsHtml.includes("affiliate-link.de")
+    );
+    check(
+        "/products keeps the canon vest copy",
+        productsHtml.includes("superiority complex")
+    );
+    check("/products sells the Birkin out", productsHtml.includes("SOLD OUT"));
     check("/ links the Library", homeHtml.includes("Library 📚"));
     check("/ no longer links the Language page", !homeHtml.includes("Language 🎤"));
 

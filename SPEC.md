@@ -62,8 +62,8 @@ its own work:
 | 13b | Unlimited session: whole selected pool dealt once, write-offs re-queue with fresh numbers until every posting settles | done |
 | 14 | German edition as a second locale (`/de/…` + hreflang) | planned |
 | 15 | Highscores/multiplayer backend — optional extra, never on the read path | done — see #26 |
-| 16 | `/products` page: replace placeholder images and dead affiliate links or drop the page | icebox |
-| 17 | Library (`/library`): favourite-books shelf with affiliate placeholders; took the Language nav slot; ad-free by rule | done — placeholders (SPIN Selling, The Lean Startup) |
+| 16 | `/products` page: real Wikimedia product photos + live Amazon search links (tag pending), Birkin sold-out gag, disclosure + photo credits | done - tag TODO in `src/lib/affiliate.ts` |
+| 17 | Library (`/library`): four sections, 8 read books with Open Library covers, ROI-multiplier rating system, live Amazon links; ad-free by rule | done - Nico's reviews/ROIs pending |
 | 18 | Legal pages: `/impressum` (§ 5 DDG, private operator) + `/privacy` (GDPR/TDDDG), site-wide footer (legal links only — Library lives in the nav) | done |
 | 19 | Cookie consent banner + consent-gated PostHog (EU cloud) | prepared — inert until `NEXT_PUBLIC_POSTHOG_KEY` set in Vercel |
 | 20 | Landing page v2: joke hero + "Start your career" CTA, coming-soon teasers (Munich Matcha Alert, duels, leaderboard), compact subject strip for SEO | done |

@@ -6,6 +6,40 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Shop + Library go real, ladder gets rungs (2026-08-28).** (1) The
+multiplayer corporate-ladder scoreboard now draws an actual ladder behind the
+climbers - two SVG rails + one rung per posting (capped at 20), aligned to
+the same 6..84% climb band as the player chips. (2) **Affiliate decision:
+Amazon PartnerNet** - rationale + Nico's tag TODO live in
+`src/lib/affiliate.ts`; every link is an amazon.de *search* link (rot-proof,
+tag drops in with one constant). Patagonia (AvantLink, 4-6 week manual
+review, traffic vetting) judged unrealistic for now. (3) `/products` rebuilt:
+Birkin Bag ("something small for forgetting her birthday", SOLD OUT chip),
+canon Patagonia Vest copy with a real ellesse search link + "Patagonia would
+not return our calls" note, canon Business School Cigarettes copy linking
+bubble cigarettes, Hela Curry Gewürz Ketchup, TI-30 calculator, Matcha
+starter set (Munich Matcha Alert tie-in). Images hotlinked from Wikimedia
+Commons (PD/CC0 where possible; CC-BY images credited in a photo-credits
+card - keep it). § 5a UWG disclosure card + Amazon's "earns from qualifying
+purchases" sentence added. (4) `/library` rebuilt: sections Startup /
+Personal Investing / Social Understanding & Negotiation / Psychology; shelf =
+Lean Startup, SPIN Selling, Psychology of Money, What Every BODY Is Saying
+(the English "Menschen lesen"), Never Split the Difference, How to Win
+Friends, Atomic Habits, The Child in You (the English "Das Kind in dir muss
+Heimat finden"); $100M Money Models (Hormozi) sits in "on order" (unread =
+unrated). **ROI-multiplier rating system** (ROI ×N per reading hour, legend
+card); `roi`+`review` are null until Nico delivers HIS numbers/words
+(rendered as "pending audit" - do not invent them; his two one-liners for
+Lean Startup and SPIN are in). Covers via Open Library covers API. Amazon
+buttons live (untagged until the tag exists). (5) Smoke grew 7 checks
+(products 200/amazon/no-dead-links/canon-copy/SOLD OUT, library
+amazon + ROI): 73 green, build from the /tmp/fb copy as usual. Visual check
+on Nico's machine still owed: /multiplayer ladder, /products, /library.
+
+**Waiting on Nico:** per-book ROI multipliers + personal one-paragraph
+reviews (all 8), PartnerNet signup -> tag into `src/lib/affiliate.ts`.
+
+
 **Multiplayer v1.1 (2026-08-26, night) - live-feedback round.** Nico played on
 prod and reported drops + wishes; all shipped: (1) **disconnect fix** - the
 edge kills WebSockets silent for ~100s (idle lobby or a hard question both
@@ -213,13 +247,15 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
 - **Impressum email is temporary.** nicolas.dumpe@gmx.de is public on
   `/impressum` + `/privacy`; swap to a finance-bro.de address once mail
   exists (per Nico: "we will have to change that later").
-- **Pick the affiliate program** — Amazon PartnerNet is the hope, possibly
-  several, not decided. Then: real links on `/library` (Amazon requires its
-  associate-disclosure sentence), and the same program can fix the Bro Shop's
-  dead links (SPEC #16). Shelf queue after the two placeholders: Never Split
-  the Difference · Atomic Habits · How to Win Friends and Influence People ·
-  What Every BODY Is Saying (the English original of "Menschen lesen", Joe
-  Navarro) · The Psychology of Money.
+- **Affiliate go-live (Nico):** sign up at partnernet.amazon.de (site
+  qualifies: original content, Impressum, privacy page; approval finalizes
+  after 3 sales in 180 days), then set `AMAZON_TAG` in `src/lib/affiliate.ts`
+  and push. Decided 2026-08-28 - program is Amazon PartnerNet, links already
+  live untagged on `/products` + `/library`.
+- **Library content (Nico):** ROI multiplier + one-paragraph personal review
+  for each of the 8 read books - drop them into the `SECTIONS` array in
+  `src/app/library/page.tsx` (`roi` / `review`, currently null = "pending
+  audit").
 - **Ingest TUM MC past exams.** Nico has them and uploads them after the
   styling setup. Use the `add-exam-questions` skill (translates as it goes,
   KaTeX per the rules, every question gets `source`). This refills Econ 1,
