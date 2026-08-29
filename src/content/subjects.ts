@@ -35,14 +35,17 @@ export const SUBJECTS: Subject[] = [
         emoji: "📉",
         description: "Supply & demand, elasticities, consumer and production theory, market structures.",
         accent: "from-sky-500 to-blue-600",
-        // Topics derived from the TUM Economics I exercise exam WT22/23.
+        // Topics derived from the TUM Economics I exercise exam WT22/23 and
+        // the W22/23 problem sets 2-13.
         topics: [
+            { id: "opportunity_cost", label: "Opportunity Cost & Pareto Efficiency" },
             { id: "comparative_advantage", label: "Comparative Advantage & Trade" },
             { id: "consumer_theory", label: "Consumer Theory" },
             { id: "production_costs", label: "Production & Cost Minimization" },
             { id: "perfect_competition", label: "Perfect Competition" },
             { id: "market_equilibrium", label: "Market Equilibrium, Surplus & Taxes" },
             { id: "monopoly", label: "Monopoly" },
+            { id: "externalities", label: "Externalities & Pigouvian Taxes" },
             { id: "game_theory", label: "Game Theory" },
         ],
     },

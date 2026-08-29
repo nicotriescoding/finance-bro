@@ -55,7 +55,7 @@ its own work:
 | 8 | Empty-bank state for subjects awaiting exam ingest | done |
 | 9 | Verification gate (`npm run check`) + CI | done |
 | 10 | English end to end; German only for glossed statutory terms | done |
-| 11 | Ingest TUM MC past exams for Econ 1, Econ 2, Financial Accounting, Cost Accounting, Entrepreneurship, Marketing | **calculation modules done for Econ 1 (24 q), Econ 2 (40 q), Cost Accounting (40 q)** — from 16 real exam PDFs, redesigned per the copyright policy (own scenarios, seeded numbers); Financial Accounting, Entrepreneurship, Marketing wait on their exams; the concept/MC-only questions of the ingested exams are deliberately deferred |
+| 11 | Ingest TUM MC past exams for Econ 1, Econ 2, Financial Accounting, Cost Accounting, Entrepreneurship, Marketing | **calculation modules done for Econ 1 (52 q — exercise exam + W22/23 problem sets 2-13), Econ 2 (40 q), Cost Accounting (40 q)** — from real exam PDFs + official course material, redesigned per the copyright policy (own scenarios, seeded numbers); Financial Accounting, Entrepreneurship, Marketing wait on their exams; the concept/MC-only questions of the ingested exams are deliberately deferred |
 | 12 | Finance: add `source` links for questions matching actual exam tasks | planned |
 | 13 | Redesign — direction 3a "The Statement" (`docs/design/3a/`): private-bank shell, ad + question + account on one screen, phone tab bar | done |
 | 13a | Career setup page (`/career`): subject grid + topic ticks + single Semester-Marathon mode; `/quiz` resumes the stored run | done |

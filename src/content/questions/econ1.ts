@@ -4,12 +4,13 @@ import { eur, n, n2, pct } from "./_helpers";
 /**
  * Economics 1 - Microeconomics.
  *
- * Built from the real TUM Economics I exercise exam WT2022/23 under the
- * copyright-redesign policy: every question keeps only the tested competency
- * and the standard lecture formulas. Scenarios, names, goods, wording and all
- * numbers are new - numeric questions draw every figure from the seeded rng,
- * choice questions use freshly picked numbers with all options recomputed.
- * `source` records provenance only.
+ * Built from the real TUM Economics I course W2022/23 (Prof. Schwenen) under
+ * the copyright-redesign policy: the exercise exam WT22/23 plus the tutorial
+ * problem sets 2-13 (with official solutions). Every question keeps only the
+ * tested competency and the standard lecture formulas. Scenarios, names,
+ * goods, wording and all numbers are new - numeric questions draw every
+ * figure from the seeded rng, choice questions use freshly picked numbers
+ * with all options recomputed. `source` records provenance only.
  */
 export const econ1Questions: Question[] = [
     // ------------------------------------------------ comparative advantage
@@ -622,5 +623,733 @@ export const econ1Questions: Question[] = [
         ],
         correct: 0,
         explanation: String.raw`A Nash equilibrium is a cell where both strategies are **mutual best responses**. Quesada's best response (comparing its payoffs within each row): to Low → Medium (4), to Medium → Medium (5), to High → High (4). Piatto's best response (within each column): to Low → Low (3), to Medium → Medium (4), to High → Low (5). Only (Medium, Medium) is a best response for both: Piatto gets 4 (vs 1 or 3), Quesada gets 5 (vs 1 or 3) - no one gains by deviating. (Low, Low) fails because Quesada would switch to Medium; (High, High) fails because Piatto would switch to Low.`,
+    },
+
+    // ------------------------------------ opportunity cost & Pareto efficiency
+    {
+        id: "e1-oc-min-benefit",
+        subject: "econ1",
+        topic: "opportunity_cost",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 2, T1",
+        build: (rng) => {
+            const ticket = rng.int(6, 15);
+            const wage = rng.int(16, 30);
+            const effort = rng.int(5, wage - 8); // job surplus >= 8 ...
+            const jobSurplus = wage - effort;
+            const home = rng.int(3, jobSurplus - 2); // ... and strictly the best alternative
+            const pass = rng.int(30, 60);
+            const answer = ticket + jobSurplus;
+            return {
+                prompt: `Jonas can spend Saturday evening in one of three ways: (i) attend a jazz concert (ticket ${eur(ticket)}; he would get there with the annual transit pass he already bought for ${eur(pass)}), (ii) play video games at home, which is worth a benefit of ${eur(home)} to him, or (iii) help a neighbor move furniture for a payment of ${eur(wage)}, where the effort feels like a cost of ${eur(effort)} to him. What is the minimum benefit the concert must provide so that Jonas chooses option (i)?`,
+                given: {
+                    "Concert ticket": eur(ticket),
+                    "Transit pass (already bought)": eur(pass),
+                    "Benefit of gaming": eur(home),
+                    "Moving job: pay / effort cost": `${eur(wage)} / ${eur(effort)}`,
+                },
+                answer,
+                explanation: String.raw`He picks the concert only if its surplus beats the best alternative: $b_{\text{concert}} - \text{expenditure} \geq \text{opportunity cost}$, where the opportunity cost is the highest surplus among the alternatives forgone. Gaming is worth ${eur(home)}; the moving job yields a producer surplus of ${eur(wage)} − ${eur(effort)} = ${eur(jobSurplus)} — the best alternative. The transit pass is a **sunk cost**: it was bought either way and never enters the decision. The concert must therefore be worth at least its expenditure plus the forgone surplus: ${eur(ticket)} + ${eur(jobSurplus)} = ${eur(answer)}.`,
+            };
+        },
+    },
+    {
+        id: "e1-oc-pareto-improvement",
+        subject: "econ1",
+        topic: "opportunity_cost",
+        difficulty: "medium",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 2, T2",
+        prompt: `Two startups, Alba and Boreal, both want the last office in a co-working hub, which rents for ${eur(400)} per month. The office is worth ${eur(500)} per month to Alba and ${eur(900)} to Boreal. Consider three allocations: **(i)** Alba rents and uses the office, **(ii)** Boreal rents and uses the office, **(iii)** Alba rents the office and subleases it to Boreal for ${eur(700)}. Which statement about the Pareto criterion is correct?`,
+        choices: [
+            `Allocation (iii) is a Pareto improvement over (i): Alba's surplus rises from ${eur(100)} to ${eur(300)} and Boreal's from ${eur(0)} to ${eur(200)}.`,
+            "Allocation (ii) Pareto-dominates (i), because total surplus is higher when the office goes to the firm that values it most.",
+            `Allocation (iii) is a Pareto improvement over (ii), because in (iii) both firms earn a positive surplus.`,
+            "No allocation Pareto-dominates another, since someone always pays more or receives less.",
+        ],
+        correct: 0,
+        explanation: String.raw`A Pareto improvement makes at least one party better off and **no one** worse off. Surpluses: (i) Alba ${eur(500)} − ${eur(400)} = ${eur(100)}, Boreal ${eur(0)}. (ii) Boreal ${eur(900)} − ${eur(400)} = ${eur(500)}, Alba ${eur(0)}. (iii) Alba ${eur(700)} − ${eur(400)} = ${eur(300)}, Boreal ${eur(900)} − ${eur(700)} = ${eur(200)}. Moving from (i) to (iii) raises both surpluses — a Pareto improvement. From (ii) to (iii) Boreal falls from ${eur(500)} to ${eur(200)}, and from (i) to (ii) Alba falls from ${eur(100)} to ${eur(0)} — higher **total** surplus alone is not the Pareto criterion.`,
+    },
+
+    // ------------------------------------------- comparative advantage (cont.)
+    {
+        id: "e1-ca-autarky-assembly",
+        subject: "econ1",
+        topic: "comparative_advantage",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "units",
+        source: "TUM Economics I W22/23, Problem Set 3, T2",
+        build: (rng) => {
+            const a = rng.int(2, 4); // cases per hour
+            const b = a + rng.int(1, 3); // movements per hour
+            const k = rng.int(4, 9);
+            const T = k * (a + b);
+            const answer = k * a * b;
+            return {
+                prompt: String.raw`Marta assembles mechanical watches; every watch needs exactly **one case and one movement**. Per hour she can machine either ${n(a)} cases or ${n(b)} movements. In a working month of ${n(T)} hours, producing both parts herself, how many complete watches can she assemble at most?`,
+                given: {
+                    "Cases per hour": n(a),
+                    "Movements per hour": n(b),
+                    "Hours available": n(T),
+                },
+                answer,
+                explanation: String.raw`With one of each part per watch, output solves $x = y$ together with the time constraint $\frac{x}{a} + \frac{y}{b} = T$, so $y = \frac{a \cdot b}{a + b} \cdot T$. Substituting: (${n(a)} · ${n(b)}) / (${n(a)} + ${n(b)}) · ${n(T)} = ${n(answer)} watches. Equivalently, the time split must be proportional to how long each part takes: movements get $\frac{a}{a+b}$ of the hours, cases the rest — producing equal numbers of both.`,
+            };
+        },
+    },
+
+    // ------------------------------------------------ consumer theory (cont.)
+    {
+        id: "e1-ct-mrs-cobb-douglas",
+        subject: "econ1",
+        topic: "consumer_theory",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "ratio",
+        source: "TUM Economics I W22/23, Problem Set 4, T2",
+        build: (rng) => {
+            const pair = rng.pick([
+                [1, 2],
+                [2, 1],
+                [1, 3],
+                [3, 1],
+                [2, 3],
+                [3, 2],
+            ] as const);
+            const [aExp, bExp] = pair;
+            const q1 = rng.int(2, 9);
+            const q2 = rng.int(2, 9);
+            const answer = (aExp * q2) / (bExp * q1);
+            return {
+                prompt: String.raw`A consumer has the utility function $U(q_1, q_2) = q_1^{${aExp}} \cdot q_2^{${bExp}}$. At the bundle $(q_1, q_2) = (${n(q1)},\; ${n(q2)})$, how many units of good 2 is she willing to give up for one additional unit of good 1 — the absolute value of the marginal rate of substitution $|MRS_{1,2}|$?`,
+                given: {
+                    "Utility": String.raw`$U = q_1^{${aExp}} \cdot q_2^{${bExp}}$`,
+                    "Bundle $(q_1, q_2)$": `(${n(q1)}, ${n(q2)})`,
+                },
+                answer,
+                explanation: String.raw`$|MRS_{1,2}| = \frac{MU_1}{MU_2} = \frac{a \cdot q_2}{b \cdot q_1}$ for $U = q_1^{a} q_2^{b}$: the marginal utilities are $MU_1 = a\, q_1^{a-1} q_2^{b}$ and $MU_2 = b\, q_1^{a} q_2^{b-1}$, and the powers cancel in the ratio. Substituting: (${n(aExp)} · ${n(q2)}) / (${n(bExp)} · ${n(q1)}) = ${n2(answer)}. The MRS is the (absolute) slope of the indifference curve through the bundle — it falls as $q_1$ rises, which is exactly the convexity of the indifference curves.`,
+            };
+        },
+    },
+    {
+        id: "e1-ct-substitutes-quantity",
+        subject: "econ1",
+        topic: "consumer_theory",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "units",
+        source: "TUM Economics I W22/23, Problem Set 5, T2",
+        build: (rng) => {
+            const alpha = rng.int(1, 3);
+            const beta = rng.int(2, 4);
+            const p2 = rng.int(2, 6);
+            const p1 = Math.ceil((alpha * p2) / beta) + rng.int(1, 3); // ensures MU2/p2 > MU1/p1
+            let m = p2 * rng.int(8, 20);
+            // Never reproduce the source's own tuple (α=1, β=2, p1=4, p2=5, m=50).
+            if (alpha === 1 && beta === 2 && p1 === 4 && p2 === 5 && m === 50) m += p2;
+            const answer = m / p2;
+            return {
+                prompt: String.raw`A commuter treats regional-train tickets ($q_1$) and express-bus tickets ($q_2$) as perfect substitutes with utility $U(q_1, q_2) = ${n(alpha)} q_1 + ${n(beta)} q_2$. A train ticket costs ${eur(p1)}, a bus ticket ${eur(p2)}, and her monthly travel budget is ${eur(m)}. How many **bus tickets** does she buy at the optimum?`,
+                given: {
+                    "Utility": String.raw`$U = ${n(alpha)} q_1 + ${n(beta)} q_2$`,
+                    "Price $p_1$": eur(p1),
+                    "Price $p_2$": eur(p2),
+                    "Budget m": eur(m),
+                },
+                answer,
+                explanation: String.raw`With linear preferences, compare marginal utility per euro: $\frac{MU_2}{p_2} \gtrless \frac{MU_1}{p_1}$. Here ${n(beta)} / ${n(p2)} = ${n2(beta / p2)} beats ${n(alpha)} / ${n(p1)} = ${n2(alpha / p1)}, so every euro is best spent on bus tickets — a corner solution with $q_1 = 0$ and $q_2 = \frac{m}{p_2}$ = ${eur(m)} / ${eur(p2)} = ${n(answer)} tickets. The tangency condition $MRS = p_1 / p_2$ never holds here, because the MRS is constant along the linear indifference curves.`,
+            };
+        },
+    },
+    {
+        id: "e1-ct-compensated-income",
+        subject: "econ1",
+        topic: "consumer_theory",
+        difficulty: "very_hard",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 5, T3",
+        build: (rng) => {
+            const px = rng.int(11, 24);
+            const py = rng.int(10, 30);
+            const pyNew = py + rng.int(5, 20);
+            const m = 10 * rng.int(30, 80);
+            const xStar = m / (2 * px);
+            const yStar = m / (2 * py);
+            const uBar = xStar * yStar;
+            const answer = m * Math.sqrt(pyNew / py);
+            return {
+                prompt: String.raw`A household with utility $U(x, y) = x \cdot y$ and income ${eur(m)} faces prices $p_x$ = ${eur(px)} and $p_y$ = ${eur(py)}. Then the price of good $y$ rises to ${eur(pyNew)}. What income would the household need at the **new** prices to reach exactly its **old** utility level?`,
+                given: {
+                    "Income m": eur(m),
+                    "Price $p_x$": eur(px),
+                    "Old price $p_y$": eur(py),
+                    "New price $p_y'$": eur(pyNew),
+                },
+                answer,
+                explanation: String.raw`The required income is the minimum expenditure that restores the old utility at the new prices: for $U = x \cdot y$ it is $E = 2 \sqrt{p_x \cdot p_y' \cdot \bar{U}}$. Old optimum (each good gets half the budget): $x^* = \frac{m}{2 p_x}$ = ${n2(xStar)}, $y^* = \frac{m}{2 p_y}$ = ${n2(yStar)}, so $\bar{U} = x^* y^*$ = ${n2(uBar)}. Then E = 2 · √(${n(px)} · ${n(pyNew)} · ${n2(uBar)}) = ${eur(answer)} — equivalently $E = m \sqrt{p_y' / p_y}$. The difference of ${eur(answer - m)} to the old income is the compensation the price increase would require.`,
+            };
+        },
+    },
+
+    // -------------------------------------------- elasticities & market (cont.)
+    {
+        id: "e1-mkt-point-elasticity",
+        subject: "econ1",
+        topic: "market_equilibrium",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "number",
+        source: "TUM Economics I W22/23, Problem Set 6, T1",
+        build: (rng) => {
+            const b = rng.int(2, 8);
+            const p0 = rng.int(4, 12);
+            const Q0 = rng.int(20, 80);
+            const a = Q0 + b * p0;
+            const answer = (b * p0) / Q0;
+            return {
+                prompt: String.raw`The demand for museum tickets is $Q_D = ${n(a)} - ${n(b)} p$. What is the **absolute value** of the price elasticity of demand at a price of ${eur(p0)}?`,
+                given: {
+                    "Demand": String.raw`$Q_D = ${n(a)} - ${n(b)} p$`,
+                    "Price p": eur(p0),
+                },
+                answer,
+                explanation: String.raw`$\varepsilon_p = \frac{dQ}{dp} \cdot \frac{p}{Q}$ — slope times price-quantity ratio, evaluated at the point. Quantity at ${eur(p0)}: ${n(a)} − ${n(b)} · ${n(p0)} = ${n(Q0)}, and $\frac{dQ}{dp} = -${n(b)}$. So $|\varepsilon_p|$ = ${n(b)} · ${n(p0)} / ${n(Q0)} = ${n2(answer)}. Values above 1 mean elastic, below 1 inelastic demand — along a linear demand curve the elasticity rises from 0 (at $p = 0$) to infinity (at the choke price), so the same curve is inelastic at low and elastic at high prices.`,
+            };
+        },
+    },
+    {
+        id: "e1-mkt-unit-elastic-price",
+        subject: "econ1",
+        topic: "market_equilibrium",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 6, T1",
+        build: (rng) => {
+            const b = rng.int(2, 6);
+            const half = rng.int(5, 15);
+            const a = 2 * b * half;
+            return {
+                prompt: String.raw`The demand for open-air-cinema tickets is $Q_D = ${n(a)} - ${n(b)} p$. At which price is demand exactly **unit-elastic** ($|\varepsilon_p| = 1$)?`,
+                given: {
+                    "Demand": String.raw`$Q_D = ${n(a)} - ${n(b)} p$`,
+                },
+                answer: half,
+                explanation: String.raw`Along a linear demand curve, $|\varepsilon_p| = \frac{b\, p}{a - b\, p}$, which equals 1 exactly at the **midpoint** $p = \frac{a}{2b}$. Substituting: ${n(a)} / (2 · ${n(b)}) = ${eur(half)}. Check: there $Q$ = ${n(a)} − ${n(b)} · ${n(half)} = ${n(a - b * half)}, and ${n(b)} · ${n(half)} / ${n(a - b * half)} = 1. Below this price demand is inelastic (elasticity 0 at $p = 0$), above it elastic ($|\varepsilon_p| \to \infty$ toward the choke price ${eur(a / b)}) — and revenue $p \cdot Q$ is maximal at the unit-elastic point.`,
+            };
+        },
+    },
+    {
+        id: "e1-mkt-cross-price-sign",
+        subject: "econ1",
+        topic: "market_equilibrium",
+        difficulty: "easy",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 6, T1",
+        prompt: "E-scooter rides (good 1) and monthly transit passes (good 2) are substitutes; helmet rentals (good 3) are a complement to scooter rides. The price of e-scooter rides rises. Which statement is correct?",
+        choices: [
+            "The cross-price elasticity of transit-pass demand with respect to the scooter price is positive: pass demand shifts right, and both the equilibrium price and quantity of passes rise. For helmet rentals it is negative: demand shifts left, and both fall.",
+            "The cross-price elasticity is negative for the substitute and positive for the complement, since substitutes move in opposite directions.",
+            "Both cross-price elasticities are negative, because any price increase reduces real income and therefore the demand for all goods.",
+            "Transit-pass demand moves along its unchanged demand curve, so only the quantity of passes changes while their equilibrium price stays constant.",
+        ],
+        correct: 0,
+        explanation: String.raw`The cross-price elasticity is $\eta_{p_1}(q_j) = \frac{dq_j}{dp_1} \cdot \frac{p_1}{q_j}$: **positive for substitutes** (dearer scooter rides push riders toward passes, $q_2 \uparrow$) and **negative for complements** (fewer rides mean fewer helmet rentals, $q_3 \downarrow$). In the market for the other good this is a **shift of the demand curve**, not a movement along it: pass demand shifts right, creating excess demand at the old price, so both price and quantity of passes rise; helmet demand shifts left and both fall. The income-effect answer confuses cross-price with income elasticity.`,
+    },
+    {
+        id: "e1-mkt-supply-elasticity",
+        subject: "econ1",
+        topic: "market_equilibrium",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "number",
+        source: "TUM Economics I W22/23, Problem Set 10, T2",
+        build: (rng) => {
+            const s = rng.int(3, 6) * 10;
+            const p0 = rng.int(1, 3);
+            const B = s * p0;
+            const gap = rng.int(3, 6);
+            const pStar = p0 + gap;
+            const Q = s * gap;
+            const d = rng.int(2, 5) * 10;
+            const c = Q + d * pStar;
+            const answer = (s * pStar) / Q;
+            return {
+                prompt: String.raw`In the market for oat flour, supply is $Q_S = ${n(s)} p - ${n(B)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p$. What is the **price elasticity of supply** in the market equilibrium?`,
+                given: {
+                    "Supply": String.raw`$Q_S = ${n(s)} p - ${n(B)}$`,
+                    "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p$`,
+                },
+                answer,
+                explanation: String.raw`$\varepsilon_p^S = \frac{dQ_S}{dp} \cdot \frac{p^*}{Q^*}$, evaluated at the equilibrium. Equilibrium: $${n(s)} p - ${n(B)} = ${n(c)} - ${n(d)} p$ gives $p^* = \frac{${n(c)} + ${n(B)}}{${n(s)} + ${n(d)}}$ = ${eur(pStar)} and $Q^*$ = ${n(Q)}. With $\frac{dQ_S}{dp} = ${n(s)}$: $\varepsilon_p^S$ = ${n(s)} · ${n(pStar)} / ${n(Q)} = ${n2(answer)} > 1 — supply is price-elastic. A linear supply curve that cuts the price axis at a positive price is elastic everywhere on it.`,
+            };
+        },
+    },
+    {
+        id: "e1-mkt-demand-shifters",
+        subject: "econ1",
+        topic: "market_equilibrium",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 10, T2",
+        build: (rng) => {
+            const s = rng.int(30, 50);
+            const p0 = rng.int(2, 4);
+            const B = s * p0;
+            const gap = rng.int(4, 6);
+            const pStar = p0 + gap;
+            const Qstar = s * gap;
+            const d = rng.int(15, 30);
+            const cEff = Qstar + d * pStar;
+            const mPart = rng.int(5, 15) * 10;
+            const M = mPart * 100;
+            const rC = rng.int(2, 5);
+            const R = rng.int(10, 30);
+            const A = cEff - mPart + rC * R; // >= 80 by construction
+            return {
+                prompt: String.raw`The demand for ice cream at a lakeside kiosk is $Q_D = ${n(A)} - ${n(d)} p + ${n(0.01)} M - ${n(rC)} R$, where $M$ is average monthly income and $R$ the number of rainy days per season. Supply is $Q_S = ${n(s)} p - ${n(B)}$. This season, $M$ = ${eur(M)} and $R$ = ${n(R)}. What is the equilibrium price?`,
+                given: {
+                    "Demand": String.raw`$Q_D = ${n(A)} - ${n(d)} p + ${n(0.01)} M - ${n(rC)} R$`,
+                    "Supply": String.raw`$Q_S = ${n(s)} p - ${n(B)}$`,
+                    "Income M": eur(M),
+                    "Rainy days R": n(R),
+                },
+                answer: pStar,
+                explanation: String.raw`First substitute the exogenous shifters into the demand curve, then set $Q_D = Q_S$. The demand intercept becomes ${n(A)} + ${n(0.01)} · ${n(M)} − ${n(rC)} · ${n(R)} = ${n(cEff)}, so demand is $Q_D = ${n(cEff)} - ${n(d)} p$. Equating with supply: $${n(cEff)} - ${n(d)} p = ${n(s)} p - ${n(B)}$ gives $p^* = \frac{${n(cEff)} + ${n(B)}}{${n(d)} + ${n(s)}}$ = ${eur(pStar)}, with $Q^*$ = ${n(Qstar)}. Higher income or fewer rainy days shift the demand curve right and would raise both equilibrium price and quantity.`,
+            };
+        },
+    },
+    {
+        id: "e1-mkt-two-part-tariff",
+        subject: "econ1",
+        topic: "market_equilibrium",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 6, T2",
+        build: (rng) => {
+            const chokeA = 2 * rng.int(15, 25);
+            const chokeB = chokeA + 2 * rng.int(20, 30);
+            const bA = rng.pick([0.5, 1] as const);
+            const bB = bA * rng.pick([1, 2] as const);
+            const p = 2 * rng.int(5, 10);
+            const xA = chokeA - p;
+            const xB = chokeB - p;
+            const cA = bA * chokeA;
+            const cB = bB * chokeB;
+            const qA = bA * xA;
+            const qB = bB * xB;
+            const csA = 0.5 * bA * xA * xA;
+            const csB = 0.5 * bB * xB * xB;
+            const F = csA + rng.int(5, 45) * 10; // strictly between the two surpluses
+            const answer = F + p * qB;
+            return {
+                prompt: String.raw`A car-sharing service charges ${eur(p)} per hour of use and has two members: a casual user with monthly demand $q_A = ${n(cA)} - ${n(bA)} p$ and a commuter with $q_B = ${n(cB)} - ${n(bB)} p$ (hours per month). The service introduces a monthly **membership fee** of ${eur(F)} on top of the unchanged hourly price. What is its new total monthly revenue from these two members? (The income effect of the fee on hourly demand is negligible.)`,
+                given: {
+                    "Hourly price p": eur(p),
+                    "Casual demand": String.raw`$q_A = ${n(cA)} - ${n(bA)} p$`,
+                    "Commuter demand": String.raw`$q_B = ${n(cB)} - ${n(bB)} p$`,
+                    "Membership fee": eur(F),
+                },
+                answer,
+                explanation: String.raw`A member keeps the contract only if the consumer surplus at the hourly price covers the fee: $CS = \frac{1}{2} \left( p_{max} - p \right) q$. Casual: $q_A$ = ${n(qA)} hours, choke price ${eur(chokeA)}, so $CS_A$ = ½ · (${n(chokeA)} − ${n(p)}) · ${n(qA)} = ${eur(csA)} — **less** than the fee of ${eur(F)}, so the casual user cancels. Commuter: $q_B$ = ${n(qB)} hours, $CS_B$ = ½ · (${n(chokeB)} − ${n(p)}) · ${n(qB)} = ${eur(csB)} > ${eur(F)}, so the commuter stays and keeps driving ${n(qB)} hours. Revenue: ${eur(F)} + ${eur(p)} · ${n(qB)} = ${eur(answer)} — the fee skims part of the remaining member's surplus.`,
+            };
+        },
+    },
+    {
+        id: "e1-mkt-vat-revenue",
+        subject: "econ1",
+        topic: "market_equilibrium",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 11, T2",
+        build: (rng) => {
+            const pair = rng.pick([
+                [25, 4],
+                [25, 8],
+                [50, 2],
+                [50, 6],
+                [20, 5],
+                [20, 10],
+                [10, 10],
+            ] as const); // combinations where d * (1 + t) stays an integer
+            const [t, d] = pair;
+            const tau = 1 + t / 100;
+            const s = rng.int(4, 8);
+            const pS = rng.int(10, 20);
+            const Q = s * pS;
+            const c = pS * (s + d * tau);
+            const answer = (t / 100) * pS * Q;
+            return {
+                prompt: String.raw`In the competitive market for craft cider, demand is $Q_D = ${n(c)} - ${n(d)} p_D$ and supply is $Q_S = ${n(s)} p_S$. A value-added tax of ${pct(t)} is introduced, so that $p_D = ${n(tau)} \cdot p_S$. How much tax revenue does the government collect in the new equilibrium?`,
+                given: {
+                    "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p_D$`,
+                    "Supply": String.raw`$Q_S = ${n(s)} p_S$`,
+                    "VAT rate t": pct(t),
+                },
+                answer,
+                explanation: String.raw`$T = t \cdot p_S \cdot Q$ — the tax is levied on the net producer price. The net price solves $Q_D\big((1 + t)\, p_S\big) = Q_S(p_S)$: $${n(c)} - ${n(d)} \cdot ${n(tau)}\, p_S = ${n(s)} p_S$ gives $p_S = \frac{${n(c)}}{${n(s)} + ${n(d)} \cdot ${n(tau)}}$ = ${eur(pS)}. Quantity: $Q$ = ${n(s)} · ${n(pS)} = ${n(Q)}, and consumers pay $p_D$ = ${eur(tau * pS)}. Revenue: ${pct(t)} · ${eur(pS)} · ${n(Q)} = ${eur(answer)}. The wedge between ${eur(tau * pS)} and ${eur(pS)} is shared between the two market sides.`,
+            };
+        },
+    },
+
+    // --------------------------------------------- production & costs (cont.)
+    {
+        id: "e1-prod-mp-from-ap",
+        subject: "econ1",
+        topic: "production_costs",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "units",
+        source: "TUM Economics I W22/23, Problem Set 7, T1",
+        build: (rng) => {
+            // L >= 5 and AP >= 10: the source table's rows (L = 3..6 with
+            // single-digit APs, e.g. L=4, AP=9, MP=3) can never be reproduced.
+            const L = rng.int(5, 8);
+            const AP = rng.int(10, 15);
+            const QL = L * AP;
+            const MP = rng.int(2, AP - 1); // diminishing: MP below AP
+            const Qprev = QL - MP;
+            return {
+                prompt: `A pottery workshop keeps its kilns fixed. With ${n(L - 1)} potters it produced ${n(Qprev)} bowls per day; with ${n(L)} potters the **average product** of labor is ${n(AP)} bowls. What is the marginal product of the ${n(L)}th potter?`,
+                given: {
+                    [`Output with ${n(L - 1)} potters`]: `${n(Qprev)} bowls`,
+                    [`Average product with ${n(L)} potters`]: `${n(AP)} bowls`,
+                },
+                answer: MP,
+                explanation: String.raw`$MP_L = Q(L) - Q(L-1)$, and total output follows from the average: $Q(L) = AP_L \cdot L$. Output with ${n(L)} potters: ${n(AP)} · ${n(L)} = ${n(QL)} bowls. The ${n(L)}th potter therefore adds ${n(QL)} − ${n(Qprev)} = ${n(MP)} bowls — less than the average product of ${n(AP)}, which is exactly why the average product is falling at this employment level.`,
+            };
+        },
+    },
+    {
+        id: "e1-prod-ap-maximum",
+        subject: "econ1",
+        topic: "production_costs",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "units",
+        source: "TUM Economics I W22/23, Problem Set 7, T2",
+        build: (rng) => {
+            // [0.08, 25] deliberately absent: it comes close to the source's
+            // own Q = -50 + 10L - 0.02L^2 shape (PS7).
+            const pair = rng.pick([
+                [0.05, 20],
+                [0.05, 40],
+                [0.1, 30],
+                [0.02, 40],
+            ] as const);
+            const [b, Lstar] = pair;
+            const cFix = b * Lstar * Lstar;
+            const a = rng.int(8, 15);
+            return {
+                prompt: String.raw`A bottling plant with a fixed machine park produces $Q = -${n(cFix)} + ${n(a)} L - ${n(b)} L^2$ crates with labor input $L$. At which labor input does the **average product of labor** reach its maximum?`,
+                given: {
+                    "Production function": String.raw`$Q = -${n(cFix)} + ${n(a)} L - ${n(b)} L^2$`,
+                },
+                answer: Lstar,
+                explanation: String.raw`$AP_L = \frac{Q}{L} = -\frac{${n(cFix)}}{L} + ${n(a)} - ${n(b)} L$; the maximum solves $\frac{dAP_L}{dL} = \frac{${n(cFix)}}{L^2} - ${n(b)} = 0$, i.e. $L^* = \sqrt{${n(cFix)} / ${n(b)}}$ = ${n(Lstar)}. At that point the marginal product $MP_L = ${n(a)} - ${n(2 * b)} L$ equals the average product: both are ${n(a - 2 * b * Lstar)} crates — the MP curve always crosses the AP curve exactly at its maximum (as long as $MP > AP$, one more worker pulls the average up).`,
+            };
+        },
+    },
+    {
+        id: "e1-prod-returns-to-scale",
+        subject: "econ1",
+        topic: "production_costs",
+        difficulty: "easy",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 8, T2",
+        prompt: String.raw`A logistics firm produces according to $Q = K^{0.6} \cdot L^{0.7}$. Which statement about its returns to scale is correct?`,
+        choices: [
+            String.raw`Increasing returns to scale: scaling both inputs by $t$ multiplies output by $t^{0.6 + 0.7} = t^{1.3} > t$.`,
+            "Decreasing returns to scale, because both exponents are below 1 and each factor therefore has a diminishing marginal product.",
+            "Constant returns to scale, because every Cobb-Douglas production function is homogeneous.",
+            "The returns to scale cannot be determined without knowing the wage and the rental rate of capital.",
+        ],
+        correct: 0,
+        explanation: String.raw`For $Q = K^{a} L^{b}$, scaling both inputs by $t > 1$ gives $Q(tK, tL) = t^{a+b} \cdot K^{a} L^{b}$, so the sum of the exponents decides: $a + b > 1$ increasing, $= 1$ constant, $< 1$ decreasing returns to scale. Here $0.6 + 0.7 = 1.3 > 1$: doubling both inputs multiplies output by $2^{1.3} \approx 2.46$. The classic trap is confusing **diminishing marginal products** (each exponent below 1, a statement about one input alone) with **decreasing returns to scale** (a statement about scaling all inputs together) — the two are independent properties. Input prices are irrelevant: returns to scale are a property of the technology.`,
+    },
+    {
+        id: "e1-prod-factor-demand",
+        subject: "econ1",
+        topic: "production_costs",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "units",
+        source: "TUM Economics I W22/23, Problem Set 9, T3",
+        build: (rng) => {
+            const w = rng.int(2, 6);
+            const m = rng.int(2, 5);
+            const p = rng.int(2, 4);
+            const A = 2 * w * m;
+            const k = m * p; // sqrt(L*) - an integer by construction
+            const answer = k * k;
+            return {
+                prompt: String.raw`A price-taking olive press produces $Q = ${n(A)} \sqrt{L}$ bottles per day with labor $L$ (its capital is fixed). The market price is ${eur(p)} per bottle and the daily wage is ${eur(w)}. How many workers does it employ at the profit maximum?`,
+                given: {
+                    "Technology": String.raw`$Q = ${n(A)} \sqrt{L}$`,
+                    "Output price p": eur(p),
+                    "Wage w": eur(w),
+                },
+                answer,
+                explanation: String.raw`A competitive firm hires until the **value of the marginal product** equals the wage: $p \cdot MP_L = w$. Here $MP_L = \frac{${n(A)}}{2 \sqrt{L}}$, so $${n(p)} \cdot \frac{${n(A)}}{2 \sqrt{L}} = ${n(w)}$ gives $\sqrt{L} = \frac{${n(p)} \cdot ${n(A)}}{2 \cdot ${n(w)}} = ${n(k)}$, hence $L^* = ${n(k)}^2 = ${n(answer)}$ workers. A higher wage would raise the required marginal product and — since $MP_L$ is diminishing — cut employment.`,
+            };
+        },
+    },
+    {
+        id: "e1-prod-minimum-wage-cost",
+        subject: "econ1",
+        topic: "production_costs",
+        difficulty: "very_easy",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 8, T3",
+        build: (rng) => {
+            const w = rng.int(4, 9);
+            const dw = rng.pick([1.5, 2, 2.5, 3] as const);
+            const wmin = w + dw;
+            const L = rng.int(6, 15) * 10;
+            const K = rng.int(20, 60);
+            const r = rng.int(8, 15);
+            const answer = dw * L;
+            return {
+                prompt: `A furniture factory produces its output $Q^*$ at minimum cost with ${n(L)} workers at a wage of ${eur(w)} and ${n(K)} machines at a rental rate of ${eur(r)}. Overnight, a statutory minimum wage of ${eur(wmin)} is introduced. In the **short run** the machine stock cannot be adjusted. By how much do the costs of producing $Q^*$ rise?`,
+                given: {
+                    "Labor / old wage": `${n(L)} workers at ${eur(w)}`,
+                    "Minimum wage": eur(wmin),
+                    "Capital / rental rate": `${n(K)} machines at ${eur(r)}`,
+                },
+                answer,
+                explanation: String.raw`$\Delta C = (w_{min} - w) \cdot L^*$: with capital fixed in the short run, producing $Q^*$ still requires the same ${n(L)} workers, so only the wage bill changes. ΔC = (${eur(wmin)} − ${eur(w)}) · ${n(L)} = ${eur(answer)}; the rental payments for the ${n(K)} machines are unaffected. Only in the long run could the firm substitute capital for the now dearer labor along the isoquant — reaching a cost level between the old one and this short-run level.`,
+            };
+        },
+    },
+
+    // ---------------------------------------------- perfect competition (cont.)
+    {
+        id: "e1-comp-number-of-firms",
+        subject: "econ1",
+        topic: "perfect_competition",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "number",
+        source: "TUM Economics I W22/23, Problem Set 10, T1",
+        build: (rng) => {
+            const sQ = rng.int(2, 5); // long-run output per firm
+            const F = sQ * sQ;
+            const b = rng.int(2, 6);
+            const nF = rng.int(20, 60);
+            const A = sQ * (nF + 2 * b);
+            return {
+                prompt: String.raw`In a competitive market with free entry and exit, every (potential) firm has the cost function $C(q) = q^2 + ${n(F)}$ for $q > 0$ and $C(0) = 0$. Market demand is $Q_D = ${n(A)} - ${n(b)} p$. How many firms are active in the long-run equilibrium?`,
+                given: {
+                    "Cost function": String.raw`$C(q) = q^2 + ${n(F)}$ for $q > 0$`,
+                    "Demand": String.raw`$Q_D = ${n(A)} - ${n(b)} p$`,
+                },
+                answer: nF,
+                explanation: String.raw`$n = \frac{Q_D(p^*)}{q^*}$, where free entry drives the price down to minimum average cost. $AC(q) = q + \frac{${n(F)}}{q}$ is minimal where $MC = AC$: $2q = q + \frac{${n(F)}}{q}$, so $q^* = \sqrt{${n(F)}}$ = ${n(sQ)} and $p^* = MC(q^*)$ = ${eur(2 * sQ)}. Market demand at that price: ${n(A)} − ${n(b)} · ${n(2 * sQ)} = ${n(A - 2 * b * sQ)} units. Number of firms: ${n(A - 2 * b * sQ)} / ${n(sQ)} = ${n(nF)} — each produces $q^*$ and earns exactly zero profit, so no firm wants to enter or exit.`,
+            };
+        },
+    },
+
+    // ----------------------------------------------------------- externalities
+    {
+        id: "e1-ext-social-output",
+        subject: "econ1",
+        topic: "externalities",
+        difficulty: "medium",
+        kind: "numeric",
+        unit: "units",
+        source: "TUM Economics I W22/23, Problem Set 11, T1",
+        build: (rng) => {
+            const cSlope = rng.int(1, 3);
+            const Qsoc = rng.int(20, 60);
+            const dmg = rng.int(2, 8) * 10;
+            const p = 2 * cSlope * Qsoc + dmg;
+            return {
+                prompt: String.raw`A gravel quarry sells at the fixed market price of ${eur(p)} per ton and has production costs $C(Q) = ${n(cSlope)} Q^2$. Its dust damages a neighboring vineyard by ${eur(dmg)} for every ton of gravel produced. What is the **socially optimal** output of the quarry?`,
+                given: {
+                    "Price per ton": eur(p),
+                    "Quarry costs": String.raw`$C(Q) = ${n(cSlope)} Q^2$`,
+                    "External damage per ton": eur(dmg),
+                },
+                answer: Qsoc,
+                explanation: String.raw`The social optimum equates the price with the **social** marginal cost: $p = MC(Q) + MEC$, where $MEC$ is the marginal external cost borne by the vineyard. Here $${n(p)} = ${n(2 * cSlope)} Q + ${n(dmg)}$ gives $Q_{soc}$ = ${n(Qsoc)} tons. Left alone, the quarry ignores the damage and produces where $p = MC$ only: $Q_{priv} = ${n(p)} / ${n(2 * cSlope)}$ = ${n2(p / (2 * cSlope))} tons — more than is socially efficient, because part of its true cost falls on the neighbor.`,
+            };
+        },
+    },
+    {
+        id: "e1-ext-internalize-gain",
+        subject: "econ1",
+        topic: "externalities",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 11, T1",
+        build: (rng) => {
+            const cSlope = rng.pick([1, 2, 4, 5] as const);
+            const k = rng.int(5, 20); // output reduction Q0 - Q1
+            const dmg = 2 * cSlope * k;
+            const Q0 = k + rng.int(10, 40);
+            const p = 2 * cSlope * Q0;
+            const Q1 = Q0 - k;
+            const answer = cSlope * k * k;
+            return {
+                prompt: String.raw`A dye plant sells at the fixed price of ${eur(p)} per batch and has costs $C(Q) = ${n(cSlope)} Q^2$; its wastewater reduces a downstream oyster farm's profit by ${eur(dmg)} per batch. The two firms merge and from now on maximize **joint profit**. By how much does the sum of the two profits rise compared to separate profit maximization?`,
+                given: {
+                    "Price per batch": eur(p),
+                    "Plant costs": String.raw`$C(Q) = ${n(cSlope)} Q^2$`,
+                    "External damage per batch": eur(dmg),
+                },
+                answer,
+                explanation: String.raw`For a constant marginal damage $d$, the gain from internalizing is $\Delta\pi = \frac{d^2}{4c}$ — the triangle between the private and the joint optimum. Separately, the plant produces where $p = MC$: $Q_0 = \frac{${n(p)}}{${n(2 * cSlope)}}$ = ${n(Q0)} batches. Jointly, the damage enters the calculus, $p = MC + d$: $Q_1 = \frac{${n(p)} - ${n(dmg)}}{${n(2 * cSlope)}}$ = ${n(Q1)}. On each of the ${n(k)} batches cut, the damage saved exceeds the profit lost, and joint profit rises by $c \left( Q_0 - Q_1 \right)^2 = ${n(cSlope)} \cdot ${n(k)}^2$ = ${eur(answer)}. The merged firm produces the socially optimal quantity.`,
+            };
+        },
+    },
+    {
+        id: "e1-ext-pigou-tax",
+        subject: "econ1",
+        topic: "externalities",
+        difficulty: "medium",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 11, T1",
+        prompt: String.raw`A paper mill sells at the fixed market price of ${eur(90)} per ton, has marginal cost $MC = 2Q + 10$, and causes ${eur(20)} of damage per ton to a downstream fishery. Which per-unit tax on the mill induces it to choose the socially optimal output?`,
+        choices: [
+            `A tax of ${eur(20)} per ton — equal to the marginal external damage. The mill then faces the full social marginal cost and cuts output from 40 to the efficient 30 tons.`,
+            `A tax of ${eur(80)} per ton — the difference between the market price and the marginal-cost intercept.`,
+            `A tax of ${eur(800)} — the total damage caused at the mill's current output of 40 tons (${eur(20)} · 40).`,
+            `A tax of ${eur(10)} per ton — half the damage, so that mill and fishery share the burden of the externality equally.`,
+        ],
+        correct: 0,
+        explanation: String.raw`The Pigouvian tax sets $t = MEC$, the marginal external cost, so the polluter's private optimality condition $p = MC + t$ coincides with the social one $p = MC + MEC$. Untaxed, the mill produces where $90 = 2Q + 10$, i.e. $Q$ = 40 tons; the social optimum solves $90 = 2Q + 10 + 20$, i.e. $Q$ = 30 tons. A per-unit tax of ${eur(20)} shifts the mill's marginal cost to $2Q + 30$ and it chooses exactly 30 tons on its own. Taxing the total damage or splitting it misses the point: what must be corrected is the **marginal** incentive, per additional ton.`,
+    },
+
+    // -------------------------------------------------------- monopoly (cont.)
+    {
+        id: "e1-mono-price-midpoint",
+        subject: "econ1",
+        topic: "monopoly",
+        difficulty: "easy",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 12, T2",
+        build: (rng) => {
+            const kS = rng.pick([0.5, 1, 2] as const);
+            const qM = rng.int(20, 60);
+            const cM = rng.int(2, 10);
+            const A = cM + 2 * kS * qM;
+            const answer = cM + kS * qM;
+            return {
+                prompt: String.raw`The only hot-air-balloon operator in an alpine valley faces the inverse demand $P = ${n(A)} - ${n(kS)} Q$ and a constant marginal cost of ${eur(cM)} per ride (no fixed costs). What price does it charge at the profit maximum?`,
+                given: {
+                    "Inverse demand": String.raw`$P = ${n(A)} - ${n(kS)} Q$`,
+                    "Marginal cost": eur(cM),
+                },
+                answer,
+                explanation: String.raw`Set $MR = MC$, where linear demand doubles the slope: $MR = ${n(A)} - ${n(2 * kS)} Q$. From $${n(A)} - ${n(2 * kS)} Q = ${n(cM)}$: $Q^M = \frac{${n(A)} - ${n(cM)}}{${n(2 * kS)}}$ = ${n(qM)} rides. The price comes from the demand curve, not from MR: $P^M = ${n(A)} - ${n(kS)} \cdot ${n(qM)}$ = ${eur(answer)}. With linear demand and constant MC this is exactly the midpoint $\frac{${n(A)} + ${n(cM)}}{2}$ between the choke price and marginal cost.`,
+            };
+        },
+    },
+    {
+        id: "e1-mono-deadweight-loss",
+        subject: "econ1",
+        topic: "monopoly",
+        difficulty: "hard",
+        kind: "numeric",
+        unit: "EUR",
+        source: "TUM Economics I W22/23, Problem Set 12, T2",
+        build: (rng) => {
+            const kS = rng.pick([0.2, 0.5, 1] as const);
+            const qM = rng.int(6, 16) * 5; // multiple of 5 keeps A an integer for k = 0.2
+            const cM = rng.int(2, 10);
+            const A = cM + 2 * kS * qM;
+            const pM = cM + kS * qM;
+            const Qc = 2 * qM;
+            const answer = 0.5 * kS * qM * qM;
+            return {
+                prompt: String.raw`A regional utility is the sole supplier of district heating, with inverse demand $P = ${n(A)} - ${n(kS)} Q$ and a constant marginal cost of ${eur(cM)}. What is the **deadweight loss** of the monopoly compared to the perfectly competitive outcome?`,
+                given: {
+                    "Inverse demand": String.raw`$P = ${n(A)} - ${n(kS)} Q$`,
+                    "Marginal cost": eur(cM),
+                },
+                answer,
+                explanation: String.raw`$DWL = \frac{1}{2} \left( P^M - MC \right) \left( Q_{PC} - Q^M \right)$ — the triangle of units whose willingness to pay exceeds marginal cost but which the monopolist withholds. $MR = MC$: $${n(A)} - ${n(2 * kS)} Q = ${n(cM)}$ gives $Q^M$ = ${n(qM)} and $P^M$ = ${eur(pM)}. Competition would price at marginal cost: $${n(A)} - ${n(kS)} Q = ${n(cM)}$ gives $Q_{PC}$ = ${n(Qc)} — twice the monopoly quantity. DWL = ½ · (${n(pM)} − ${n(cM)}) · (${n(Qc)} − ${n(qM)}) = ${eur(answer)}. Under perfect price discrimination the DWL would vanish (all surplus going to the monopolist).`,
+            };
+        },
+    },
+    {
+        id: "e1-mono-profit-tax-neutrality",
+        subject: "econ1",
+        topic: "monopoly",
+        difficulty: "medium",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 12, T2",
+        prompt: `A profit-maximizing monopolist currently sells at its optimal price. The government introduces a proportional **profit tax** of ${pct(30)}. How does the monopolist react?`,
+        choices: [
+            String.raw`Neither price nor quantity changes; only profit falls by ${pct(30)}. Maximizing $(1 - t)\,\pi(q)$ picks the same $q$ as maximizing $\pi(q)$.`,
+            `It raises its price by ${pct(30)} to pass the tax on to consumers.`,
+            "It cuts its quantity, because the tax works like an increase in marginal cost.",
+            "It expands its quantity, because it must recover the tax payment through additional sales.",
+        ],
+        correct: 0,
+        explanation: String.raw`With a profit tax, the monopolist maximizes $(1 - t) \cdot \pi(q)$ — a positive constant times the old objective. The first-order condition $(1 - t)\,\pi'(q) = 0$ has the same solution as $\pi'(q) = 0$, so $Q^M$ and $P^M$ are unchanged and profit simply shrinks to $(1 - t)\,\pi^M$: the tax is **neutral** for the output decision (and leaves the deadweight loss unchanged). This is the key contrast to a **per-unit tax**, which does shift marginal cost, reduces quantity and raises the price — the trap behind the other answers. Passing the tax on is impossible: the pre-tax price was already the profit-maximizing one.`,
+    },
+
+    // ------------------------------------------------------ game theory (cont.)
+    {
+        id: "e1-game-dominant-strategy",
+        subject: "econ1",
+        topic: "game_theory",
+        difficulty: "medium",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 13, T1",
+        prompt: String.raw`Two ski resorts, **Arlenau** (row) and **Bergfels** (column), simultaneously choose their season-pass pricing. Payoffs in millions (Arlenau, Bergfels): $\begin{array}{c|cc} & \text{Discount} & \text{Full price} \\ \hline \text{Discount} & (2,\,2) & (6,\,1) \\ \text{Full price} & (1,\,6) & (4,\,4) \end{array}$ Which statement is correct?`,
+        choices: [
+            "Discount is a dominant strategy for both resorts; the unique Nash equilibrium is (Discount, Discount) — even though both would earn more at (Full price, Full price).",
+            "(Full price, Full price) is the Nash equilibrium, because it gives both resorts their highest joint payoff.",
+            "Neither resort has a dominant strategy, so the game has two Nash equilibria on the diagonal.",
+            "(Discount, Full price) and (Full price, Discount) are the Nash equilibria, since one resort undercutting the other is stable.",
+        ],
+        correct: 0,
+        explanation: String.raw`A strategy is **dominant** if it is the best response to every opponent strategy. Arlenau: against Discount, 2 > 1; against Full price, 6 > 4 — Discount dominates. By symmetry the same holds for Bergfels. Two dominant strategies meet in the unique Nash equilibrium (Discount, Discount) with payoffs (2, 2). That both resorts would prefer (4, 4) does not make (Full price, Full price) an equilibrium: from there each resort gains by unilaterally deviating to Discount (6 > 4). This is the prisoner's-dilemma structure — individual rationality defeats the collectively better outcome.`,
+    },
+    {
+        id: "e1-game-no-pure-equilibrium",
+        subject: "econ1",
+        topic: "game_theory",
+        difficulty: "medium",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 13, T1-T2",
+        prompt: String.raw`A market inspector (row) decides whether to **Patrol** the town square or stay at her **Desk**; an unlicensed street vendor (column) decides whether to **Show up** or **Stay home**. Payoffs (inspector, vendor): $\begin{array}{c|cc} & \text{Show up} & \text{Stay home} \\ \hline \text{Patrol} & (2,\,-2) & (-1,\,1) \\ \text{Desk} & (-2,\,2) & (1,\,-1) \end{array}$ Which statement is correct?`,
+        choices: [
+            "The game has no Nash equilibrium in pure strategies — the best responses cycle — but it has a Nash equilibrium in mixed strategies, where both players randomize.",
+            "(Patrol, Stay home) is a pure-strategy Nash equilibrium, because the vendor stays home whenever the inspector patrols.",
+            "The game has two pure-strategy Nash equilibria, like every 2x2 coordination game.",
+            "The game has no equilibrium of any kind, because the players' interests are exactly opposed.",
+        ],
+        correct: 0,
+        explanation: String.raw`Check each cell for mutual best responses: at (Patrol, Show up) the vendor prefers Stay home (1 > −2); at (Patrol, Stay home) the inspector prefers Desk (1 > −1); at (Desk, Stay home) the vendor prefers Show up (2 > −1); at (Desk, Show up) the inspector prefers Patrol (2 > −2). The best responses chase each other in a circle — matching-pennies structure, so no pure-strategy Nash equilibrium exists. But by Nash's theorem every finite game has an equilibrium in **mixed strategies**: here each player randomizes so that the opponent is indifferent between their two actions. "No equilibrium of any kind" is therefore wrong.`,
+    },
+    {
+        id: "e1-game-coordination-equilibria",
+        subject: "econ1",
+        topic: "game_theory",
+        difficulty: "easy",
+        kind: "choice",
+        source: "TUM Economics I W22/23, Problem Set 13, T1",
+        prompt: String.raw`Two logistics firms, **Fuhrmann** (row) and **Grebe** (column), must each commit to one of two shared depot sites. Sharing a site saves cost, but each firm prefers the site nearer its own hub. Payoffs (Fuhrmann, Grebe): $\begin{array}{c|cc} & \text{North} & \text{South} \\ \hline \text{North} & (5,\,3) & (0,\,0) \\ \text{South} & (0,\,0) & (3,\,5) \end{array}$ Which statement is correct?`,
+        choices: [
+            "There are two pure-strategy Nash equilibria, (North, North) and (South, South); neither firm has a dominant strategy.",
+            "(North, North) is the unique Nash equilibrium, because Fuhrmann's payoff is highest there.",
+            "(North, South) is a Nash equilibrium, since each firm then picks its individually preferred site.",
+            "North is a dominant strategy for Fuhrmann, because 5 is the highest payoff in the matrix.",
+        ],
+        correct: 0,
+        explanation: String.raw`Check mutual best responses: at (North, North), Fuhrmann gets 5 (vs 0 from deviating) and Grebe 3 (vs 0) — an equilibrium; by the same logic (South, South) with (3, 5) is one too. This is a battle-of-the-sexes coordination game: **both** coordinated outcomes are Nash equilibria, and the players disagree only about which one they prefer. No strategy is dominant — North is Fuhrmann's best response to North but not to South (0 < 3). Mismatched cells like (North, South) pay (0, 0) and both players would deviate; that each firm "picks its favorite" does not make the pair stable.`,
     },
 ];

@@ -6,6 +6,25 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Econ 1 grew to 52 from the W22/23 problem sets (2026-08-28, night).** Nico
+zipped the full TUM Economics I W22/23 course (13 problem sets with official
+solutions + 12 lecture decks + the already-ingested exercise exam). 28 new
+questions authored from problem sets 2-13 (20 numeric generators, 8 choice),
+capped deliberately below Nico's 100-question ceiling - only exam-plausible
+calculations; graph-sketching, page-long symbolic derivations and edge-case
+tasks were left out on purpose (list in the session log). Two new topics:
+`opportunity_cost`, `externalities`. New coverage: elasticities (point,
+unit-elastic, cross-price, supply), externalities/Pigou, two-part tariff,
+VAT revenue, MP/AP mechanics, returns to scale, factor demand, number of
+firms, monopoly DWL + tax neutrality, three 2×2 game-theory classics.
+Reviewer pass (opus, 600-seed independent recomputation): 1 FAIL (a draw
+could reproduce the PS7 table row) + 3 tightenings - all fixed (ranges
+shifted, [0.08,25] pair dropped, source-tuple guard, source labels
+normalized). Gate green after fixes: typecheck, verify 229 × 200 seeds,
+build, 73 smoke (from /tmp/fb2 copy). The uploaded course zip stays out of
+the repo per the copyright policy. Same visual check owed as below: /career
+econ1 now shows 9 topics.
+
 **Calculation banks shipped: Econ 1 + Econ 2 + Cost Accounting (2026-08-28,
 evening).** 104 new questions from 16 real TUM exam PDFs (project knowledge):
 econ1 24 (Exercise Exam WT22/23), econ2 40 (SS2017 OCR'd + SS2018 + SS2019,
