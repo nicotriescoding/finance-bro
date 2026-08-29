@@ -6,6 +6,23 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Shop images go Adobe Stock, ketchup + cigarettes delisted (2026-08-29,
+same day).** Per Nico: professional-shop image quality, scout 5+ options
+per picture, replace them all. Done via the Adobe connector: 19 Stock
+searches (free tier only), candidates compared by eye on browser contact
+sheets, 19 winners licensed on Nico's Adobe account (all free-tier,
+standard license, `just_purchased`, zero credits/cost) and committed as
+~900px optimized JPEGs (12-123 KB) under `public/products/` - no more
+hotlinks, no attribution owed (Wikimedia credits card replaced by a
+one-line "licensed via Adobe Stock" note). Hela Curry Ketchup and the
+Business School Cigarettes removed per Nico (comment in the page says not
+to resurrect them); Starter Pack is 6 positions now. Smoke +2: local
+images + no wikimedia hotlinks, ketchup/cigarettes stay gone - gate green,
+79 checks (typecheck, verify 204 × 200 seeds, build, smoke, from
+/tmp/fb3). Sandbox Chromium screenshot of /products looked like an actual
+shop. Visual check owed on Nico's machine: /products image quality at
+real retina sizes.
+
 **Shop bundles + library portfolio + sticky ad rails (2026-08-29).** Nico's
 punch list, all shipped: (1) `/products` rebuilt as three bundles - The
 FinanceBro Starter Pack (8), The Undercover Broke Student (6), BWL Marie (7) -

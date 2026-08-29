@@ -248,6 +248,18 @@ try {
         "/products carries the desktop skyscraper rail",
         productsHtml.includes("wide skyscraper")
     );
+    // Images are committed Adobe Stock files since 2026-08-29 - no hotlinks.
+    check(
+        "/products serves local product images",
+        productsHtml.includes("/products/birkin.jpg") &&
+            !productsHtml.includes("wikimedia.org")
+    );
+    // Removed per Nico 2026-08-29 - keep them gone.
+    check(
+        "/products dropped the ketchup and the cigarettes",
+        !productsHtml.includes("Ketchup") &&
+            !productsHtml.includes("Cigarettes")
+    );
     // Lean Startup's corrected rating (Nico, 2026-08-29): ×67, that's the point.
     check("/library rates Lean Startup ×67", libraryHtml.includes("ROI ×67"));
     // The small print merged into one compact card (Nico: less dominant).
