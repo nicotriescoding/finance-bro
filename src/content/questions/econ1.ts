@@ -8,29 +8,13 @@ import { eur, n, n2, pct } from "./_helpers";
  * the copyright-redesign policy: the exercise exam WT22/23 plus the tutorial
  * problem sets 2-13 (with official solutions). Every question keeps only the
  * tested competency and the standard lecture formulas. Scenarios, names,
- * goods, wording and all numbers are new - numeric questions draw every
- * figure from the seeded rng, choice questions use freshly picked numbers
- * with all options recomputed. `source` records provenance only.
+ * goods, wording and all numbers are new - every question draws its
+ * figures from the seeded rng. `source` records provenance only.
+ * Numeric-only for now: the choice questions were removed on 2026-08-28
+ * per Nico (recoverable from git, commits ed4eb4f + 560c0a0).
  */
 export const econ1Questions: Question[] = [
     // ------------------------------------------------ comparative advantage
-    {
-        id: "e1-ca-comparative-advantage",
-        subject: "econ1",
-        topic: "comparative_advantage",
-        difficulty: "easy",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q1",
-        prompt: `The country of Nordavia can produce ${n(1800)} tons of wheat **or** ${n(600)} tons of cloth per year; Sudland can produce ${n(800)} tons of wheat **or** ${n(400)} tons of cloth. Which statement is true?`,
-        choices: [
-            "Sudland has the comparative advantage in cloth: one ton of cloth costs it only 2 tons of wheat, versus 3 tons for Nordavia.",
-            "Nordavia has the comparative advantage in both goods, because it can produce more of each.",
-            "Sudland has the comparative advantage in wheat, because its opportunity cost of wheat is higher.",
-            "Trade cannot benefit both countries, since Nordavia holds the absolute advantage in both goods.",
-        ],
-        correct: 0,
-        explanation: String.raw`Comparative advantage follows from opportunity cost, not output levels. Opportunity cost of one ton of cloth: Nordavia $\frac{${n(1800)}}{${n(600)}} = 3$ tons of wheat, Sudland $\frac{${n(800)}}{${n(400)}} = 2$ tons of wheat. Sudland gives up less wheat per ton of cloth, so it has the comparative advantage in cloth - even though Nordavia has the absolute advantage in both goods. Absolute advantage never rules out mutually beneficial trade.`,
-    },
     {
         id: "e1-ca-specialization-total",
         subject: "econ1",
@@ -56,23 +40,6 @@ export const econ1Questions: Question[] = [
                 explanation: String.raw`Each producer specializes where their opportunity cost is lowest: $OC_{\text{table}} = \frac{\text{chairs given up}}{\text{tables gained}}$. Ava's opportunity cost of a table is ${n(cA)} / ${n(tA)} = ${n2(cA / tA)} chairs, Ben's is ${n(cB)} / ${n(tB)} = ${n2(cB / tB)} chairs. Ben's is lower, so Ben builds only tables (${n(tB)}) and Ava builds only chairs (${n(cA)}). Total output: ${n(cA)} + ${n(tB)} = ${n(answer)} pieces.`,
             };
         },
-    },
-    {
-        id: "e1-ca-fixed-rate-trade",
-        subject: "econ1",
-        topic: "comparative_advantage",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q4",
-        prompt: `The Ostheim orchard can grow ${n(1600)} apples **or** ${n(400)} pears per season; the Weststadt orchard can grow ${n(1000)} apples **or** ${n(800)} pears. They consider trading at a fixed rate of **1 apple per pear**. What happens?`,
-        choices: [
-            `No trade takes place: at that rate only Ostheim wants to trade, because a pear costs Weststadt ${n(1.25)} apples of forgone output but earns it just ${n(1)} apple.`,
-            "Both orchards trade, because their comparative advantages differ.",
-            "Only Weststadt wants to trade, since it is the more efficient pear producer.",
-            "Both orchards trade, because any exchange rate between two specialized producers is mutually beneficial.",
-        ],
-        correct: 0,
-        explanation: String.raw`Trade needs a price between both opportunity costs. Opportunity cost of one pear: Ostheim $\frac{${n(1600)}}{${n(400)}} = 4$ apples, Weststadt $\frac{${n(1000)}}{${n(800)}} = 1.25$ apples. Ostheim would happily buy pears at 1 apple each (far below its own cost of 4), but Weststadt would sell each pear for 1 apple while giving up 1.25 apples of production - a loss. A rate of 1 lies **outside** the interval $[1.25,\, 4]$, so the pear producer refuses and no trade occurs.`,
     },
     {
         id: "e1-ca-trade-price-bound",
@@ -102,23 +69,6 @@ export const econ1Questions: Question[] = [
     },
 
     // ------------------------------------------------------- consumer theory
-    {
-        id: "e1-ct-complements-utility",
-        subject: "econ1",
-        topic: "consumer_theory",
-        difficulty: "very_easy",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q8",
-        prompt: String.raw`A hot-chocolate stand always serves drinks the same way: for every 3 cups of cocoa ($q_1$) it uses exactly 4 marshmallows ($q_2$), so consumption always satisfies $\frac{q_2}{q_1} = \frac{4}{3}$. Which utility function represents these preferences?`,
-        choices: [
-            String.raw`$U(q_1, q_2) = \min\{4 q_1,\; 3 q_2\}$`,
-            String.raw`$U(q_1, q_2) = \min\{3 q_1,\; 4 q_2\}$`,
-            String.raw`$U(q_1, q_2) = 4 q_1 + 3 q_2$`,
-            String.raw`$U(q_1, q_2) = q_1^{4} \cdot q_2^{3}$`,
-        ],
-        correct: 0,
-        explanation: String.raw`Perfect complements are represented by $U = \min\{a q_1,\; b q_2\}$, and the optimum sits at the kink where $a q_1 = b q_2$, i.e. $\frac{q_2}{q_1} = \frac{a}{b}$. A ratio of $\frac{q_2}{q_1} = \frac{4}{3}$ therefore needs $a = 4$ and $b = 3$: $U = \min\{4 q_1,\; 3 q_2\}$. Note the coefficients sit on the **opposite** good from the naive reading - $\min\{3 q_1, 4 q_2\}$ would give a ratio of 3/4. A linear function means perfect substitutes (no fixed ratio), and Cobb-Douglas lets the ratio vary with prices.`,
-    },
     {
         id: "e1-ct-cobb-douglas-demand",
         subject: "econ1",
@@ -192,42 +142,8 @@ export const econ1Questions: Question[] = [
             };
         },
     },
-    {
-        id: "e1-ct-substitutes-corner",
-        subject: "econ1",
-        topic: "consumer_theory",
-        difficulty: "easy",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q14",
-        prompt: String.raw`A hiker treats trail-mix packs ($q_1$) and fruit bars ($q_2$) as perfect substitutes with utility $U(q_1, q_2) = 3 q_1 + q_2$. A pack costs ${eur(6)}, a bar costs ${eur(3)}. How does she spend her snack budget?`,
-        choices: [
-            String.raw`Entirely on trail-mix packs: $\frac{MU_1}{p_1} = \frac{3}{6}$ beats $\frac{MU_2}{p_2} = \frac{1}{3}$, so it is a corner solution in good 1.`,
-            "Entirely on fruit bars, because they are cheaper per unit.",
-            String.raw`On an interior mix where $MRS = \frac{p_1}{p_2}$ holds exactly.`,
-            "Half on packs and half on bars, since the goods are substitutes.",
-        ],
-        correct: 0,
-        explanation: String.raw`With linear (perfect-substitute) preferences the consumer compares marginal utility per euro: $\frac{MU_1}{p_1} \gtrless \frac{MU_2}{p_2}$. Here $\frac{3}{6} = 0.5 > \frac{1}{3} \approx 0.33$, so every euro buys more utility as trail mix and the whole budget goes to good 1 - a corner solution. The tangency condition $MRS = p_1/p_2$ never holds with linear indifference curves (the MRS is constant at 3, the price ratio at 2), and "cheaper per unit" ignores that a pack delivers three times the utility of a bar.`,
-    },
 
     // -------------------------------------------- production & cost minimum
-    {
-        id: "e1-pc-apl-mrts",
-        subject: "econ1",
-        topic: "production_costs",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q19",
-        prompt: String.raw`A bakery's technology is $Q = 3KL - L^2$ with capital $K$ and labor $L$. Which pair of expressions is correct for the average product of labor $AP_L$ and the marginal rate of technical substitution $MRTS_{L,K}$?`,
-        choices: [
-            String.raw`$AP_L = 3K - L$ and $MRTS_{L,K} = \frac{3K - 2L}{3L} = \frac{K}{L} - \frac{2}{3}$`,
-            String.raw`$AP_L = 3K - 2L$ and $MRTS_{L,K} = \frac{3K - 2L}{3L}$`,
-            String.raw`$AP_L = 3K - L$ and $MRTS_{L,K} = \frac{K}{L}$`,
-            String.raw`$AP_L = 3K - L$ and $MRTS_{L,K} = \frac{3L}{3K - 2L}$`,
-        ],
-        correct: 0,
-        explanation: String.raw`$AP_L = \frac{Q}{L}$ and $MRTS_{L,K} = \frac{MP_L}{MP_K}$. Average product: $AP_L = \frac{3KL - L^2}{L} = 3K - L$. Marginal products: $MP_L = \frac{\partial Q}{\partial L} = 3K - 2L$ (note the factor 2 from $L^2$) and $MP_K = \frac{\partial Q}{\partial K} = 3L$. So $MRTS_{L,K} = \frac{3K - 2L}{3L} = \frac{K}{L} - \frac{2}{3}$. The traps: $3K - 2L$ is the **marginal**, not the average product; dropping the $-2L$ term forgets to differentiate $L^2$; and $\frac{3L}{3K-2L}$ inverts the ratio.`,
-    },
     {
         id: "e1-pc-cost-minimization",
         subject: "econ1",
@@ -333,23 +249,6 @@ export const econ1Questions: Question[] = [
                 explanation: String.raw`Economies of scale last while $AC(q) = ${n(c2)} q + ${n(c1)} + \frac{${n(F)}}{q}$ is falling; they are exhausted at the minimum, where $\frac{dAC}{dq} = ${n(c2)} - \frac{${n(F)}}{q^2} = 0$, i.e. $q^* = \sqrt{F / c_2}$ = √(${n(F)} / ${n(c2)}) = ${n(qm)} units. Below ${n(qm)} the spread of the fixed cost dominates and AC falls; above it the rising marginal cost dominates.`,
             };
         },
-    },
-    {
-        id: "e1-pc-supply-identification",
-        subject: "econ1",
-        topic: "perfect_competition",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q26",
-        prompt: String.raw`A market has $n$ identical price-taking firms, each with cost $C(q) = q^2 + 25$ for $q > 0$ and $C(0) = 0$ (the fixed cost is avoided by not producing). Which is the correct market supply function?`,
-        choices: [
-            String.raw`$Q_S = \frac{n \cdot p}{2}$ for $p \geq 10$, and $Q_S = 0$ below - firms only produce above minimum average cost.`,
-            String.raw`$Q_S = \frac{n \cdot p}{2}$ for every $p \geq 0$, since $MC = 2q$ implies each firm supplies $q = p/2$.`,
-            String.raw`$Q_S = n \cdot p$ for $p \geq 10$.`,
-            String.raw`$Q_S = \frac{n \cdot p}{2}$ for $p \geq 5$, and $Q_S = 0$ below.`,
-        ],
-        correct: 0,
-        explanation: String.raw`Each firm supplies along $p = MC = 2q$, i.e. $q = p/2$, but **only** where price covers avoidable cost, i.e. $p \geq \min AC$. Here $AC = q + \frac{25}{q}$ is minimized where $1 = \frac{25}{q^2}$, so $q = 5$ and $\min AC = 5 + \frac{25}{5} = 10$. Each firm therefore supplies $q = p/2$ for $p \geq 10$ and nothing below (the fixed cost is avoidable, so producing at a loss is never optimal), giving market supply $Q_S = \frac{n \cdot p}{2}$ for $p \geq 10$. Ignoring the threshold, doubling the slope, or mistaking the min-AC quantity for the cutoff price are the classic errors.`,
     },
     {
         id: "e1-pc-longrun-firm-output",
@@ -463,23 +362,6 @@ export const econ1Questions: Question[] = [
                 explanation: String.raw`With an ad-valorem tax on consumers, $p_D = (1 + t) \cdot p_S$; set $Q_S(p_S) = Q_D(p_D)$ and solve for the net price: $${n(a)} p_S - ${n(b)} = ${n(c)} - ${n(d)} \cdot ${n(tau)}\, p_S$, so $p_S = \frac{${n(c)} + ${n(b)}}{${n(a)} + ${n(d)} \cdot ${n(tau)}}$ = ${n2(pS)}. Consumers pay $p_D = ${n(tau)} \cdot p_S$ = ${eur(answer)}. Both sides bear part of the tax: without it the price was ${eur(pStar)} - producers now net less, consumers pay more.`,
             };
         },
-    },
-    {
-        id: "e1-mkt-elasticity-class",
-        subject: "econ1",
-        topic: "market_equilibrium",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q33",
-        prompt: String.raw`In the market for bike tubes, inverse demand is $P = 150 - 2Q$ and inverse supply is $P = Q$. What is the price elasticity of demand in equilibrium, and is demand elastic or inelastic there?`,
-        choices: [
-            String.raw`$|\varepsilon_D| = 0.5$ - demand is **inelastic** in equilibrium.`,
-            String.raw`$|\varepsilon_D| = 2$ - demand is **elastic** in equilibrium.`,
-            String.raw`$|\varepsilon_D| = 0.5$ - demand is **elastic**, because the value is below 1.`,
-            String.raw`$|\varepsilon_D| = 1$ - demand is **unit-elastic** in equilibrium.`,
-        ],
-        correct: 0,
-        explanation: String.raw`$\varepsilon_D = \left| \frac{dQ}{dP} \right| \cdot \frac{P}{Q}$ evaluated at the equilibrium. Equilibrium: $Q = 150 - 2Q$ along $P = Q$ gives $Q^* = 50$, $P^* = 50$. From $P = 150 - 2Q$, demand is $Q = 75 - \frac{P}{2}$, so $\frac{dQ}{dP} = -\frac{1}{2}$ - the **inverse** of the slope in the P-Q form, which is the classic trap behind the answer 2. Then $|\varepsilon_D| = \frac{1}{2} \cdot \frac{50}{50} = 0.5 < 1$: demand is inelastic.`,
     },
     {
         id: "e1-mkt-unit-tax-dwl",
@@ -606,25 +488,6 @@ export const econ1Questions: Question[] = [
         },
     },
 
-    // -------------------------------------------------------------- game theory
-    {
-        id: "e1-game-nash-3x3",
-        subject: "econ1",
-        topic: "game_theory",
-        difficulty: "hard",
-        kind: "choice",
-        source: "TUM Economics I Exercise Exam WT22/23, Q40",
-        prompt: String.raw`Two food trucks, **Piatto** (row player) and **Quesada** (column player), simultaneously choose a price level. Weekly payoffs are (Piatto, Quesada): $\begin{array}{c|ccc} & \text{Low} & \text{Medium} & \text{High} \\ \hline \text{Low} & (3,\,2) & (1,\,4) & (5,\,1) \\ \text{Medium} & (2,\,1) & (4,\,5) & (2,\,3) \\ \text{High} & (1,\,3) & (3,\,2) & (4,\,4) \end{array}$ Which strategy pair is the unique pure-strategy Nash equilibrium?`,
-        choices: [
-            "(Medium, Medium)",
-            "(Low, Low)",
-            "(High, High)",
-            "There is no pure-strategy Nash equilibrium.",
-        ],
-        correct: 0,
-        explanation: String.raw`A Nash equilibrium is a cell where both strategies are **mutual best responses**. Quesada's best response (comparing its payoffs within each row): to Low → Medium (4), to Medium → Medium (5), to High → High (4). Piatto's best response (within each column): to Low → Low (3), to Medium → Medium (4), to High → Low (5). Only (Medium, Medium) is a best response for both: Piatto gets 4 (vs 1 or 3), Quesada gets 5 (vs 1 or 3) - no one gains by deviating. (Low, Low) fails because Quesada would switch to Medium; (High, High) fails because Piatto would switch to Low.`,
-    },
-
     // ------------------------------------ opportunity cost & Pareto efficiency
     {
         id: "e1-oc-min-benefit",
@@ -654,23 +517,6 @@ export const econ1Questions: Question[] = [
                 explanation: String.raw`He picks the concert only if its surplus beats the best alternative: $b_{\text{concert}} - \text{expenditure} \geq \text{opportunity cost}$, where the opportunity cost is the highest surplus among the alternatives forgone. Gaming is worth ${eur(home)}; the moving job yields a producer surplus of ${eur(wage)} − ${eur(effort)} = ${eur(jobSurplus)} — the best alternative. The transit pass is a **sunk cost**: it was bought either way and never enters the decision. The concert must therefore be worth at least its expenditure plus the forgone surplus: ${eur(ticket)} + ${eur(jobSurplus)} = ${eur(answer)}.`,
             };
         },
-    },
-    {
-        id: "e1-oc-pareto-improvement",
-        subject: "econ1",
-        topic: "opportunity_cost",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 2, T2",
-        prompt: `Two startups, Alba and Boreal, both want the last office in a co-working hub, which rents for ${eur(400)} per month. The office is worth ${eur(500)} per month to Alba and ${eur(900)} to Boreal. Consider three allocations: **(i)** Alba rents and uses the office, **(ii)** Boreal rents and uses the office, **(iii)** Alba rents the office and subleases it to Boreal for ${eur(700)}. Which statement about the Pareto criterion is correct?`,
-        choices: [
-            `Allocation (iii) is a Pareto improvement over (i): Alba's surplus rises from ${eur(100)} to ${eur(300)} and Boreal's from ${eur(0)} to ${eur(200)}.`,
-            "Allocation (ii) Pareto-dominates (i), because total surplus is higher when the office goes to the firm that values it most.",
-            `Allocation (iii) is a Pareto improvement over (ii), because in (iii) both firms earn a positive surplus.`,
-            "No allocation Pareto-dominates another, since someone always pays more or receives less.",
-        ],
-        correct: 0,
-        explanation: String.raw`A Pareto improvement makes at least one party better off and **no one** worse off. Surpluses: (i) Alba ${eur(500)} − ${eur(400)} = ${eur(100)}, Boreal ${eur(0)}. (ii) Boreal ${eur(900)} − ${eur(400)} = ${eur(500)}, Alba ${eur(0)}. (iii) Alba ${eur(700)} − ${eur(400)} = ${eur(300)}, Boreal ${eur(900)} − ${eur(700)} = ${eur(200)}. Moving from (i) to (iii) raises both surpluses — a Pareto improvement. From (ii) to (iii) Boreal falls from ${eur(500)} to ${eur(200)}, and from (i) to (ii) Alba falls from ${eur(100)} to ${eur(0)} — higher **total** surplus alone is not the Pareto criterion.`,
     },
 
     // ------------------------------------------- comparative advantage (cont.)
@@ -842,23 +688,6 @@ export const econ1Questions: Question[] = [
                 explanation: String.raw`Along a linear demand curve, $|\varepsilon_p| = \frac{b\, p}{a - b\, p}$, which equals 1 exactly at the **midpoint** $p = \frac{a}{2b}$. Substituting: ${n(a)} / (2 · ${n(b)}) = ${eur(half)}. Check: there $Q$ = ${n(a)} − ${n(b)} · ${n(half)} = ${n(a - b * half)}, and ${n(b)} · ${n(half)} / ${n(a - b * half)} = 1. Below this price demand is inelastic (elasticity 0 at $p = 0$), above it elastic ($|\varepsilon_p| \to \infty$ toward the choke price ${eur(a / b)}) — and revenue $p \cdot Q$ is maximal at the unit-elastic point.`,
             };
         },
-    },
-    {
-        id: "e1-mkt-cross-price-sign",
-        subject: "econ1",
-        topic: "market_equilibrium",
-        difficulty: "easy",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 6, T1",
-        prompt: "E-scooter rides (good 1) and monthly transit passes (good 2) are substitutes; helmet rentals (good 3) are a complement to scooter rides. The price of e-scooter rides rises. Which statement is correct?",
-        choices: [
-            "The cross-price elasticity of transit-pass demand with respect to the scooter price is positive: pass demand shifts right, and both the equilibrium price and quantity of passes rise. For helmet rentals it is negative: demand shifts left, and both fall.",
-            "The cross-price elasticity is negative for the substitute and positive for the complement, since substitutes move in opposite directions.",
-            "Both cross-price elasticities are negative, because any price increase reduces real income and therefore the demand for all goods.",
-            "Transit-pass demand moves along its unchanged demand curve, so only the quantity of passes changes while their equilibrium price stays constant.",
-        ],
-        correct: 0,
-        explanation: String.raw`The cross-price elasticity is $\eta_{p_1}(q_j) = \frac{dq_j}{dp_1} \cdot \frac{p_1}{q_j}$: **positive for substitutes** (dearer scooter rides push riders toward passes, $q_2 \uparrow$) and **negative for complements** (fewer rides mean fewer helmet rentals, $q_3 \downarrow$). In the market for the other good this is a **shift of the demand curve**, not a movement along it: pass demand shifts right, creating excess demand at the old price, so both price and quantity of passes rise; helmet demand shifts left and both fall. The income-effect answer confuses cross-price with income elasticity.`,
     },
     {
         id: "e1-mkt-supply-elasticity",
@@ -1058,23 +887,6 @@ export const econ1Questions: Question[] = [
         },
     },
     {
-        id: "e1-prod-returns-to-scale",
-        subject: "econ1",
-        topic: "production_costs",
-        difficulty: "easy",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 8, T2",
-        prompt: String.raw`A logistics firm produces according to $Q = K^{0.6} \cdot L^{0.7}$. Which statement about its returns to scale is correct?`,
-        choices: [
-            String.raw`Increasing returns to scale: scaling both inputs by $t$ multiplies output by $t^{0.6 + 0.7} = t^{1.3} > t$.`,
-            "Decreasing returns to scale, because both exponents are below 1 and each factor therefore has a diminishing marginal product.",
-            "Constant returns to scale, because every Cobb-Douglas production function is homogeneous.",
-            "The returns to scale cannot be determined without knowing the wage and the rental rate of capital.",
-        ],
-        correct: 0,
-        explanation: String.raw`For $Q = K^{a} L^{b}$, scaling both inputs by $t > 1$ gives $Q(tK, tL) = t^{a+b} \cdot K^{a} L^{b}$, so the sum of the exponents decides: $a + b > 1$ increasing, $= 1$ constant, $< 1$ decreasing returns to scale. Here $0.6 + 0.7 = 1.3 > 1$: doubling both inputs multiplies output by $2^{1.3} \approx 2.46$. The classic trap is confusing **diminishing marginal products** (each exponent below 1, a statement about one input alone) with **decreasing returns to scale** (a statement about scaling all inputs together) — the two are independent properties. Input prices are irrelevant: returns to scale are a property of the technology.`,
-    },
-    {
         id: "e1-prod-factor-demand",
         subject: "econ1",
         topic: "production_costs",
@@ -1211,23 +1023,6 @@ export const econ1Questions: Question[] = [
             };
         },
     },
-    {
-        id: "e1-ext-pigou-tax",
-        subject: "econ1",
-        topic: "externalities",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 11, T1",
-        prompt: String.raw`A paper mill sells at the fixed market price of ${eur(90)} per ton, has marginal cost $MC = 2Q + 10$, and causes ${eur(20)} of damage per ton to a downstream fishery. Which per-unit tax on the mill induces it to choose the socially optimal output?`,
-        choices: [
-            `A tax of ${eur(20)} per ton — equal to the marginal external damage. The mill then faces the full social marginal cost and cuts output from 40 to the efficient 30 tons.`,
-            `A tax of ${eur(80)} per ton — the difference between the market price and the marginal-cost intercept.`,
-            `A tax of ${eur(800)} — the total damage caused at the mill's current output of 40 tons (${eur(20)} · 40).`,
-            `A tax of ${eur(10)} per ton — half the damage, so that mill and fishery share the burden of the externality equally.`,
-        ],
-        correct: 0,
-        explanation: String.raw`The Pigouvian tax sets $t = MEC$, the marginal external cost, so the polluter's private optimality condition $p = MC + t$ coincides with the social one $p = MC + MEC$. Untaxed, the mill produces where $90 = 2Q + 10$, i.e. $Q$ = 40 tons; the social optimum solves $90 = 2Q + 10 + 20$, i.e. $Q$ = 30 tons. A per-unit tax of ${eur(20)} shifts the mill's marginal cost to $2Q + 30$ and it chooses exactly 30 tons on its own. Taxing the total damage or splitting it misses the point: what must be corrected is the **marginal** incentive, per additional ton.`,
-    },
 
     // -------------------------------------------------------- monopoly (cont.)
     {
@@ -1282,74 +1077,5 @@ export const econ1Questions: Question[] = [
             };
         },
     },
-    {
-        id: "e1-mono-profit-tax-neutrality",
-        subject: "econ1",
-        topic: "monopoly",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 12, T2",
-        prompt: `A profit-maximizing monopolist currently sells at its optimal price. The government introduces a proportional **profit tax** of ${pct(30)}. How does the monopolist react?`,
-        choices: [
-            String.raw`Neither price nor quantity changes; only profit falls by ${pct(30)}. Maximizing $(1 - t)\,\pi(q)$ picks the same $q$ as maximizing $\pi(q)$.`,
-            `It raises its price by ${pct(30)} to pass the tax on to consumers.`,
-            "It cuts its quantity, because the tax works like an increase in marginal cost.",
-            "It expands its quantity, because it must recover the tax payment through additional sales.",
-        ],
-        correct: 0,
-        explanation: String.raw`With a profit tax, the monopolist maximizes $(1 - t) \cdot \pi(q)$ — a positive constant times the old objective. The first-order condition $(1 - t)\,\pi'(q) = 0$ has the same solution as $\pi'(q) = 0$, so $Q^M$ and $P^M$ are unchanged and profit simply shrinks to $(1 - t)\,\pi^M$: the tax is **neutral** for the output decision (and leaves the deadweight loss unchanged). This is the key contrast to a **per-unit tax**, which does shift marginal cost, reduces quantity and raises the price — the trap behind the other answers. Passing the tax on is impossible: the pre-tax price was already the profit-maximizing one.`,
-    },
 
-    // ------------------------------------------------------ game theory (cont.)
-    {
-        id: "e1-game-dominant-strategy",
-        subject: "econ1",
-        topic: "game_theory",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 13, T1",
-        prompt: String.raw`Two ski resorts, **Arlenau** (row) and **Bergfels** (column), simultaneously choose their season-pass pricing. Payoffs in millions (Arlenau, Bergfels): $\begin{array}{c|cc} & \text{Discount} & \text{Full price} \\ \hline \text{Discount} & (2,\,2) & (6,\,1) \\ \text{Full price} & (1,\,6) & (4,\,4) \end{array}$ Which statement is correct?`,
-        choices: [
-            "Discount is a dominant strategy for both resorts; the unique Nash equilibrium is (Discount, Discount) — even though both would earn more at (Full price, Full price).",
-            "(Full price, Full price) is the Nash equilibrium, because it gives both resorts their highest joint payoff.",
-            "Neither resort has a dominant strategy, so the game has two Nash equilibria on the diagonal.",
-            "(Discount, Full price) and (Full price, Discount) are the Nash equilibria, since one resort undercutting the other is stable.",
-        ],
-        correct: 0,
-        explanation: String.raw`A strategy is **dominant** if it is the best response to every opponent strategy. Arlenau: against Discount, 2 > 1; against Full price, 6 > 4 — Discount dominates. By symmetry the same holds for Bergfels. Two dominant strategies meet in the unique Nash equilibrium (Discount, Discount) with payoffs (2, 2). That both resorts would prefer (4, 4) does not make (Full price, Full price) an equilibrium: from there each resort gains by unilaterally deviating to Discount (6 > 4). This is the prisoner's-dilemma structure — individual rationality defeats the collectively better outcome.`,
-    },
-    {
-        id: "e1-game-no-pure-equilibrium",
-        subject: "econ1",
-        topic: "game_theory",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 13, T1-T2",
-        prompt: String.raw`A market inspector (row) decides whether to **Patrol** the town square or stay at her **Desk**; an unlicensed street vendor (column) decides whether to **Show up** or **Stay home**. Payoffs (inspector, vendor): $\begin{array}{c|cc} & \text{Show up} & \text{Stay home} \\ \hline \text{Patrol} & (2,\,-2) & (-1,\,1) \\ \text{Desk} & (-2,\,2) & (1,\,-1) \end{array}$ Which statement is correct?`,
-        choices: [
-            "The game has no Nash equilibrium in pure strategies — the best responses cycle — but it has a Nash equilibrium in mixed strategies, where both players randomize.",
-            "(Patrol, Stay home) is a pure-strategy Nash equilibrium, because the vendor stays home whenever the inspector patrols.",
-            "The game has two pure-strategy Nash equilibria, like every 2x2 coordination game.",
-            "The game has no equilibrium of any kind, because the players' interests are exactly opposed.",
-        ],
-        correct: 0,
-        explanation: String.raw`Check each cell for mutual best responses: at (Patrol, Show up) the vendor prefers Stay home (1 > −2); at (Patrol, Stay home) the inspector prefers Desk (1 > −1); at (Desk, Stay home) the vendor prefers Show up (2 > −1); at (Desk, Show up) the inspector prefers Patrol (2 > −2). The best responses chase each other in a circle — matching-pennies structure, so no pure-strategy Nash equilibrium exists. But by Nash's theorem every finite game has an equilibrium in **mixed strategies**: here each player randomizes so that the opponent is indifferent between their two actions. "No equilibrium of any kind" is therefore wrong.`,
-    },
-    {
-        id: "e1-game-coordination-equilibria",
-        subject: "econ1",
-        topic: "game_theory",
-        difficulty: "easy",
-        kind: "choice",
-        source: "TUM Economics I W22/23, Problem Set 13, T1",
-        prompt: String.raw`Two logistics firms, **Fuhrmann** (row) and **Grebe** (column), must each commit to one of two shared depot sites. Sharing a site saves cost, but each firm prefers the site nearer its own hub. Payoffs (Fuhrmann, Grebe): $\begin{array}{c|cc} & \text{North} & \text{South} \\ \hline \text{North} & (5,\,3) & (0,\,0) \\ \text{South} & (0,\,0) & (3,\,5) \end{array}$ Which statement is correct?`,
-        choices: [
-            "There are two pure-strategy Nash equilibria, (North, North) and (South, South); neither firm has a dominant strategy.",
-            "(North, North) is the unique Nash equilibrium, because Fuhrmann's payoff is highest there.",
-            "(North, South) is a Nash equilibrium, since each firm then picks its individually preferred site.",
-            "North is a dominant strategy for Fuhrmann, because 5 is the highest payoff in the matrix.",
-        ],
-        correct: 0,
-        explanation: String.raw`Check mutual best responses: at (North, North), Fuhrmann gets 5 (vs 0 from deviating) and Grebe 3 (vs 0) — an equilibrium; by the same logic (South, South) with (3, 5) is one too. This is a battle-of-the-sexes coordination game: **both** coordinated outcomes are Nash equilibria, and the players disagree only about which one they prefer. No strategy is dominant — North is Fuhrmann's best response to North but not to South (0 < 3). Mismatched cells like (North, South) pay (0, 0) and both players would deviate; that each firm "picks its favorite" does not make the pair stable.`,
-    },
 ];

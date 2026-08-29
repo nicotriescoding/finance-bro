@@ -6,6 +6,19 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Choice questions removed - banks are numeric-only for now (2026-08-28,
+late).** Per Nico: no multiple-choice questions for now. All 25 `kind:
+"choice"` questions deleted from the new banks (econ1 16, econ2 8,
+cost_accounting 1; finance was already pure numeric). Banks now: finance 97,
+econ1 36, econ2 32, cost_accounting 39 = **204 questions, all seeded
+numeric**. The econ1 `game_theory` topic went with them (all four of its
+questions were choice) - a comment in `subjects.ts` marks the spot. The
+engine/UI keeps full choice support (types, shuffle, grading, multi-select) -
+nothing was removed from code, only from content. Recovery when Nico wants
+them back: the deleted questions live in commits `ed4eb4f` and `560c0a0`
+(ids listed in this entry's session log). Gate green: typecheck, verify
+204 × 200 seeds, build, 73 smoke.
+
 **Econ 1 grew to 52 from the W22/23 problem sets (2026-08-28, night).** Nico
 zipped the full TUM Economics I W22/23 course (13 problem sets with official
 solutions + 12 lecture decks + the already-ingested exercise exam). 28 new

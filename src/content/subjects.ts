@@ -46,7 +46,9 @@ export const SUBJECTS: Subject[] = [
             { id: "market_equilibrium", label: "Market Equilibrium, Surplus & Taxes" },
             { id: "monopoly", label: "Monopoly" },
             { id: "externalities", label: "Externalities & Pigouvian Taxes" },
-            { id: "game_theory", label: "Game Theory" },
+            // game_theory removed 2026-08-28: its four questions were all
+            // kind "choice", and choice questions are out for now (Nico).
+            // Recover them from git (commits ed4eb4f + 560c0a0) when wanted.
         ],
     },
     {

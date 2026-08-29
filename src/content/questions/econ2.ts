@@ -8,9 +8,10 @@ import { eur, n, n2, pct } from "./_helpers";
  * Built from the real TUM Economics II exams SS2017, SS2018 and SS2019 under
  * the copyright-redesign policy: only the tested competency, the standard
  * lecture formulas and standard terminology carry over from the exams. Every
- * scenario, country, firm and person is invented fresh, every numeric question
- * draws its numbers from the seeded rng, and choice questions use fresh
- * numbers with recomputed options. Structural variants that recur across
+ * scenario, country, firm and person is invented fresh, and every question
+ * draws its numbers from the seeded rng (numeric-only for now: choice
+ * questions removed 2026-08-28 per Nico, recoverable from git).
+ * Structural variants that recur across
  * exams are merged into one generator citing all occurrences.
  */
 
@@ -142,23 +143,6 @@ export const econ2Questions: Question[] = [
             };
         },
     },
-    {
-        id: "e2-gr-pc-comparison",
-        subject: "econ2",
-        topic: "growth_rates",
-        difficulty: "easy",
-        kind: "choice",
-        source: "TUM Economics II SS2018, Q2",
-        prompt: `Two economies report the following data. **Aldovia**: GDP ${n(240)} billion (year 1) and ${n(252)} billion (year 2); population ${n(8)} million, then ${n(8.4)} million. **Borravia**: GDP ${n(900)} billion, then ${n(924)} billion; population ${n(10)} million, then ${n(10.2)} million. Which statement is correct?`,
-        choices: [
-            "In both years, Aldovia's GDP per capita is roughly one third of Borravia's.",
-            "Because Aldovia has fewer inhabitants, its GDP per capita is higher than Borravia's in both years.",
-            "Aldovia's GDP per capita is one third of Borravia's in year 1, but the gap narrows to about one half in year 2.",
-            "Aldovia's GDP per capita grew faster than its total GDP between the two years.",
-        ],
-        correct: 0,
-        explanation: String.raw`$y_{pc} = \frac{Y}{N}$ per country and year. Aldovia: ${n(240 / 8)} thousand, then ${n(252 / 8.4)} thousand. Borravia: ${n(900 / 10)} thousand, then ${n2(924 / 10.2)} thousand. The ratio is ${n2(30 / 90)} in year 1 and ${n2(30 / (924 / 10.2))} in year 2 - about one third both times. Aldovia's per-capita GDP did not grow at all (its population grew exactly as fast as its GDP), while total GDP grew by ${pct(5)}.`,
-    },
 
     // --------------------------------------------------------- GDP accounting
     {
@@ -267,23 +251,6 @@ export const econ2Questions: Question[] = [
                 explanation: String.raw`$MPL = \frac{\partial Y}{\partial L}$ - differentiate with respect to labor only: $MPL = ${a * aL} \, ${lTerm} K^{${aK}}$. At $L = ${L0}$, $K = ${K0}$ this gives ${n(a * aL)} · ${n(L0 ** (aL - 1))} · ${n(K0 ** aK)} = ${n(answer)}.`,
             };
         },
-    },
-    {
-        id: "e2-tech-mrts",
-        subject: "econ2",
-        topic: "technology_rd",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics II SS2019, Q5",
-        prompt: String.raw`A furniture maker produces with $Y = 5 L^{3} K^{2}$. What is the marginal rate of technical substitution of labor for capital, $MRTS_{L,K} = \frac{MPL}{MPK}$?`,
-        choices: [
-            String.raw`$MRTS_{L,K} = \frac{3K}{2L}$`,
-            String.raw`$MRTS_{L,K} = \frac{2K}{3L}$`,
-            String.raw`$MRTS_{L,K} = \frac{3L}{2K}$`,
-            String.raw`$MRTS_{L,K} = 15 L^{2} K^{2}$`,
-        ],
-        correct: 0,
-        explanation: String.raw`$MRTS_{L,K} = \frac{MPL}{MPK}$ with $MPL = 15 L^{2} K^{2}$ and $MPK = 10 L^{3} K$: the powers of $L$ and $K$ cancel to $\frac{15 K}{10 L} = \frac{3K}{2L}$. Swapping the exponents' roles gives $\frac{2K}{3L}$, inverting the ratio gives $\frac{3L}{2K}$, and $15 L^2 K^2$ is just the $MPL$ on its own.`,
     },
     {
         id: "e2-rd-private-optimum",
@@ -662,23 +629,6 @@ export const econ2Questions: Question[] = [
 
     // ------------------------------------------------------------ intertemporal
     {
-        id: "e2-it-smoothing",
-        subject: "econ2",
-        topic: "intertemporal",
-        difficulty: "easy",
-        kind: "choice",
-        source: "TUM Economics II SS2018 Q22; SS2017 Q14",
-        prompt: String.raw`A household lives for two periods and has lifetime utility $U(C_1, C_2) = \sqrt{C_1 \cdot C_2}$. It can shift consumption freely between the periods, and total lifetime consumption is fixed at ${n(12)}. Which statement is correct?`,
-        choices: [
-            String.raw`It prefers the smooth plan $(6, 6)$ to $(9, 3)$, since $U(6,6) = 6 > U(9,3) = \sqrt{27} \approx 5.2$ - the utility function rewards consumption smoothing.`,
-            String.raw`It is indifferent between $(6, 6)$ and $(9, 3)$, because total consumption is the same in both plans.`,
-            String.raw`It prefers $(9, 3)$, because consumption today always counts more than consumption tomorrow.`,
-            String.raw`The marginal utility of $C_1$ increases in $C_1$, so the household concentrates all consumption in one period.`,
-        ],
-        correct: 0,
-        explanation: String.raw`$U = \sqrt{C_1 \cdot C_2}$ has diminishing marginal utility in each period, so for a fixed total, a product like $C_1 \cdot C_2$ is largest when the two are equal: $6 \cdot 6 = 36 > 9 \cdot 3 = 27$. Equal totals do not imply equal utility, the two periods enter symmetrically (no built-in impatience), and marginal utility falls - it does not rise - in each argument.`,
-    },
-    {
         id: "e2-it-interest-rate",
         subject: "econ2",
         topic: "intertemporal",
@@ -727,42 +677,8 @@ export const econ2Questions: Question[] = [
             };
         },
     },
-    {
-        id: "e2-it-investment-returns",
-        subject: "econ2",
-        topic: "intertemporal",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics II SS2019, Q26",
-        prompt: `Two orchard owners in Pellonia can convert present harvest into future harvest. **Ilka** can put ${n(80)} crates into storage and grafting today to obtain ${n(100)} crates next year. **Bruno** can put in ${n(50)} crates today to obtain ${n(45)} crates next year. Which statement is correct?`,
-        choices: [
-            String.raw`Ilka's implied return is $+25\,\%$ per year, while Bruno's is $-10\,\%$ - his project destroys value.`,
-            String.raw`Bruno's return is higher, because his project requires the smaller investment.`,
-            String.raw`Ilka's implied return is $+20\,\%$ per year.`,
-            String.raw`Both returns are positive, since both projects deliver a positive harvest next year.`,
-        ],
-        correct: 0,
-        explanation: String.raw`$1 + r = \frac{\text{output tomorrow}}{\text{input today}}$ per project. Ilka: ${n(100)} / ${n(80)} = ${n(1.25)}, so r = ${pct(25)}. Bruno: ${n(45)} / ${n(50)} = ${n(0.9)}, so r = ${pct(-10)} - he gets back less than he puts in, no matter that the output itself is positive. Dividing the gain by the output instead of the input is what produces the ${pct(20)} trap.`,
-    },
 
     // ----------------------------------------------------------- exchange rates
-    {
-        id: "e2-fx-appreciation",
-        subject: "econ2",
-        topic: "exchange_rates",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics II SS2018 Q28; SS2019 Q32",
-        prompt: `The exchange rate between Norvia (currency: norn) and Kessland (currency: kess) moves from ${n2(3.2)} norn per kess in year 1 to ${n2(2.95)} norn per kess in year 2. Which statement is correct?`,
-        choices: [
-            "The norn appreciated against the kess, so Kessland's goods became cheaper for Norvian consumers in year 2.",
-            "The kess appreciated against the norn, because the exchange rate fell.",
-            "Norvia's exports became cheaper for consumers in Kessland in year 2.",
-            "The norn depreciated by roughly 8 % against the kess.",
-        ],
-        correct: 0,
-        explanation: String.raw`$E$ is quoted in norn per kess, so a **fall** in $E$ means each kess buys fewer norn - the norn appreciated and the kess depreciated (by ${pct((1 - 2.95 / 3.2) * 100)}; the norn gained ${pct((3.2 / 2.95 - 1) * 100)}). A stronger norn makes Kessland's goods cheaper in Norvia, and simultaneously makes Norvian exports **more** expensive in Kessland, not cheaper.`,
-    },
     {
         id: "e2-fx-cross-rate",
         subject: "econ2",
@@ -960,42 +876,8 @@ export const econ2Questions: Question[] = [
             };
         },
     },
-    {
-        id: "e2-ii-best-real-rate",
-        subject: "econ2",
-        topic: "inflation_interest",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics II SS2017, Q22",
-        prompt: `You can place your savings for one year in one of two countries. In **Valtoria** deposits pay a nominal ${pct(4)} while inflation is ${pct(3.2)}. In **Meridia** deposits pay a nominal ${pct(1.5)} while inflation is ${pct(-1)}. Where is the real return higher?`,
-        choices: [
-            String.raw`Meridia: its real rate is $1.5\,\% - (-1.0\,\%) = 2.5\,\%$, beating Valtoria's $0.8\,\%$ - deflation adds to the real return.`,
-            String.raw`Valtoria, because its nominal rate is more than twice Meridia's.`,
-            String.raw`Meridia's real rate is only $0.5\,\%$, so Valtoria's $0.8\,\%$ wins.`,
-            String.raw`Neither - real returns cannot be compared across countries with different inflation rates.`,
-        ],
-        correct: 0,
-        explanation: String.raw`$r = i - \pi$ per country. Valtoria: ${pct(4)} − ${pct(3.2)} = ${pct(0.8)}. Meridia: ${pct(1.5)} − (${pct(-1)}) = ${pct(2.5)} - subtracting a **negative** inflation rate adds it. The ${pct(0.5)} figure comes from wrongly subtracting the absolute value, and nominal rates alone say nothing about purchasing power.`,
-    },
 
     // ------------------------------------------------------------------- Solow
-    {
-        id: "e2-solow-intensive-form",
-        subject: "econ2",
-        topic: "solow",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Economics II SS2018, Q35",
-        prompt: String.raw`An economy produces with $Y = \tfrac{1}{4} K^{2/3} (LE)^{1/3}$, where $L$ is labor and $E$ is labor efficiency. Which expression gives output per effective worker, $y = \frac{Y}{LE}$, in terms of capital per effective worker $k = \frac{K}{LE}$?`,
-        choices: [
-            String.raw`$y = \tfrac{1}{4} k^{2/3}$`,
-            String.raw`$y = \tfrac{1}{4} k^{1/3}$`,
-            String.raw`$y = 4 k^{2/3}$`,
-            String.raw`$y = \tfrac{1}{4} \frac{K^{2/3}}{LE}$`,
-        ],
-        correct: 0,
-        explanation: String.raw`$\frac{Y}{LE} = \tfrac{1}{4} \frac{K^{2/3} (LE)^{1/3}}{LE} = \tfrac{1}{4} \frac{K^{2/3}}{(LE)^{2/3}} = \tfrac{1}{4} \left( \frac{K}{LE} \right)^{2/3}$ - because the exponents sum to one, dividing by $LE$ turns $K$ into $k$ with the **same** exponent $2/3$. Picking the other exponent, flipping the coefficient, or leaving a bare $LE$ in the result are the standard slips.`,
-    },
     {
         id: "e2-solow-steady-state",
         subject: "econ2",
@@ -1120,22 +1002,5 @@ export const econ2Questions: Question[] = [
                 explanation: String.raw`$c^{gr} = f(k^{gr}) - (n + g + \delta) \cdot k^{gr}$ - output minus the investment needed to hold $k$ constant, evaluated at the golden rule. First $f'(k) = \frac{${cfg.A}}{2\sqrt{k}} = ${n(xPct / 100)}$ gives $\sqrt{k^{gr}} = ${n(cfg.r0)}$, so $k^{gr} = ${n(kGr)}$. Then $f(k^{gr}) = ${n(fk)}$ and the dilution term is ${n(xPct / 100)} · ${n(kGr)} = ${n(xPct / 100 * kGr)}, leaving $c^{gr}$ = ${n(fk)} − ${n(xPct / 100 * kGr)} = ${n(answer)}.`,
             };
         },
-    },
-    {
-        id: "e2-solow-golden-rule-symbolic",
-        subject: "econ2",
-        topic: "solow",
-        difficulty: "hard",
-        kind: "choice",
-        source: "TUM Economics II SS2019 Q35; SS2017 Q32",
-        prompt: String.raw`A Solow economy has production per effective worker $f(k) = k^{\alpha}$ with $0 < \alpha < 1$, savings rate $s$, population growth $n$, technological progress $g$ and depreciation $\delta$. Which expression gives the **golden-rule** capital stock per effective worker $k^{gr}$?`,
-        choices: [
-            String.raw`$k^{gr} = \left( \frac{\alpha}{n + g + \delta} \right)^{\frac{1}{1 - \alpha}}$`,
-            String.raw`$k^{gr} = \left( \frac{s}{n + g + \delta} \right)^{\frac{1}{1 - \alpha}}$`,
-            String.raw`$k^{gr} = \left( \frac{n + g + \delta}{\alpha} \right)^{\frac{1}{1 - \alpha}}$`,
-            String.raw`$k^{gr} = \left( \frac{\alpha}{n + g + \delta} \right)^{1 - \alpha}$`,
-        ],
-        correct: 0,
-        explanation: String.raw`$f'(k^{gr}) = n + g + \delta$ - consumption $c = f(k) - (n+g+\delta)k$ is maximized where the marginal product of capital equals the dilution rate. With $f'(k) = \alpha k^{\alpha - 1}$: $k^{gr} = \left( \frac{\alpha}{n+g+\delta} \right)^{\frac{1}{1-\alpha}}$. The version with $s$ instead of $\alpha$ is the **steady-state** capital stock $k^*$ for a given savings rate - the classic mix-up; the other two invert the fraction or the exponent.`,
     },
 ];

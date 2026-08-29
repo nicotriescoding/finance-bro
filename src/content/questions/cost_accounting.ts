@@ -455,23 +455,6 @@ export const costAccountingQuestions: Question[] = [
             };
         },
     },
-    {
-        id: "ca-alloc-reciprocal-equation",
-        subject: "cost_accounting",
-        topic: "cost_allocation",
-        difficulty: "medium",
-        kind: "choice",
-        source: "TUM Cost Accounting SS2015 Q38; SS2017 Q20; SS2018 Q38; Mock Exam Q37",
-        prompt: String.raw`A plant nursery has two indirect cost centers, Logistics ($I_1$, output measured in pallet moves) and Cafeteria ($I_2$, output measured in meals), plus the direct cost centers Greenhouse ($D_1$) and Shop ($D_2$). Logistics has primary overheads of ${eur(4500)} and performs ${n(900)} pallet moves: ${n(150)} for the Cafeteria, ${n(450)} for the Greenhouse, ${n(300)} for the Shop. The Cafeteria has primary overheads of ${eur(3600)} and serves ${n(120)} meals: ${n(30)} to Logistics, ${n(50)} to the Greenhouse, ${n(40)} to the Shop. Let $c_1$ and $c_2$ denote the costs of one output unit of $I_1$ and $I_2$. Under the **reciprocal method based on equations**, which equation correctly describes the Cafeteria?`,
-        choices: [
-            String.raw`$120 \cdot c_2 = 3600 + 150 \cdot c_1$`,
-            String.raw`$120 \cdot c_2 = 3600 + 150 \cdot c_1 + 50 \cdot c_3 + 40 \cdot c_4$ (with $c_3, c_4$ the rates of the direct cost centers)`,
-            String.raw`$3600 = 30 \cdot c_1 + 50 \cdot c_3 + 40 \cdot c_4$`,
-            String.raw`$150 \cdot c_1 = 3600 + 120 \cdot c_2$`,
-        ],
-        correct: 0,
-        explanation: String.raw`The system of equations values each indirect center's **total output** at its own transfer price: $\text{total output} \cdot c_2 = \text{primary overheads} + \text{services received}$. The Cafeteria produces ${n(120)} meals in total and receives ${n(150)} pallet moves from Logistics, so $120 \cdot c_2 = 3600 + 150 \cdot c_1$. Direct cost centers only receive services — they never appear as suppliers on the right-hand side — and swapping the sides confuses supplier and receiver.`,
-    },
 
     // ----------------------------------------------------- product costing
     {
