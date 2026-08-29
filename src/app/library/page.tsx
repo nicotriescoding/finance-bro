@@ -8,23 +8,27 @@ export const metadata: Metadata = {
 };
 
 /**
- * The Library replaced the Language page in the nav (2026-08-21). Affiliate
- * links come from src/lib/affiliate.ts (Amazon PartnerNet - rationale and
- * Nico's tag TODO live there). Covers are hotlinked from Open Library's
- * covers API - the standard source for book covers; swap to Amazon PA-API
- * images once PartnerNet is live if we ever want exact editions.
+ * The Library (redesigned 2026-08-29): the shelf is now a two-column card
+ * grid styled like a portfolio statement - every book is a "position", the
+ * header strip shows the fund totals, and the legal/rating small print is
+ * one compact footnote card instead of two dominant ones (per Nico).
  *
  * Two hard rules for this page:
  *   1. NO AdSlot - Nico wants the Library ad-free (and the smoke test asserts
  *      the word "Sponsored" never appears here).
  *   2. Affiliate links must be labelled as advertising (German fair-trading
- *      law, § 5a UWG) - keep the "AD" tags and the transparency card.
+ *      law, § 5a UWG) - keep the "AD" tags and the transparency sentence.
  *
  * Ratings: the ROI multiplier - what a book returned per hour it cost to
  * read. Everything on the shelf was actually read by Nico; `roi` and `review`
- * are HIS numbers and (edited) words, dictated 2026-08-28. For future books:
- * null = Nico still owes them (rendered as "pending audit") - never invent
- * a rating or review for him.
+ * are HIS numbers and (edited) words, dictated 2026-08-28 (Lean Startup
+ * corrected to ×67 on 2026-08-29 - yes, sixty-seven, that is the joke and
+ * the legend acknowledges it). For future books: null = Nico still owes them
+ * (rendered as "pending audit") - never invent a rating or review for him.
+ *
+ * Covers are Open Library covers-API links. Cover IDs can silently point at
+ * the wrong edition (How to Win Friends shipped as the French edition once) -
+ * prefer ISBN URLs of the exact English edition and LOOK at every new cover.
  */
 
 type Book = {
@@ -51,7 +55,7 @@ const SECTIONS: Section[] = [
                 author: "Eric Ries",
                 cover: "https://covers.openlibrary.org/b/id/7104760-M.jpg",
                 q: "the lean startup eric ries",
-                roi: 7,
+                roi: 67,
                 review:
                     "Opens the startup black box and shows you the machine inside: a system you can learn, measure, and actually steer. Once you see it, decisions stop being vibes and start being iterations. Must-read before you found anything.",
             },
@@ -106,7 +110,7 @@ const SECTIONS: Section[] = [
             {
                 title: "How to Win Friends and Influence People",
                 author: "Dale Carnegie",
-                cover: "https://covers.openlibrary.org/b/id/13314878-M.jpg",
+                cover: "https://covers.openlibrary.org/b/isbn/0671027034-M.jpg",
                 q: "how to win friends and influence people dale carnegie",
                 roi: 8,
                 review:
@@ -145,6 +149,13 @@ const ON_ORDER = [
     { title: "$100M Money Models", author: "Alex Hormozi" },
 ];
 
+const ALL_BOOKS = SECTIONS.flatMap((s) => s.books);
+const RATED = ALL_BOOKS.filter((b) => b.roi !== null) as (Book & { roi: number })[];
+const AVG_ROI = RATED.length
+    ? RATED.reduce((sum, b) => sum + b.roi, 0) / RATED.length
+    : 0;
+const TOP_BOOK = RATED.reduce((top, b) => (b.roi > top.roi ? b : top), RATED[0]);
+
 /** ROI chip: Nico's multiplier, or the pending-audit state. */
 function RoiChip({ roi }: { roi: number | null }) {
     if (roi === null) {
@@ -156,14 +167,56 @@ function RoiChip({ roi }: { roi: number | null }) {
     }
     return (
         <span className="caps-label inline-flex items-center rounded-full bg-brand-chip px-2 py-0.5 text-[9px] tracking-[.14em] text-brand">
-            ROI ×{roi.toLocaleString("en-US", { maximumFractionDigits: 1 })}
+            {`ROI ×${roi.toLocaleString("en-US", { maximumFractionDigits: 1 })}`}
         </span>
+    );
+}
+
+function BookCard({ book }: { book: Book }) {
+    return (
+        <div className="flex gap-4 rounded-[14px] border border-hairline bg-surface p-4 shadow-[0_1px_2px_rgba(15,33,55,.05)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+                src={book.cover}
+                alt={`Cover of ${book.title}`}
+                loading="lazy"
+                className="h-36 w-[92px] flex-none rounded-[6px] border border-hairline-soft bg-chip object-cover shadow-[0_1px_3px_rgba(15,33,55,.12)]"
+            />
+            <div className="flex min-w-0 flex-col">
+                <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-extrabold leading-snug">{book.title}</p>
+                    <RoiChip roi={book.roi} />
+                </div>
+                <p className="caps-label mt-0.5 text-[10px] text-muted-light">
+                    {book.author}
+                </p>
+                <p
+                    className={`mb-2.5 mt-1.5 flex-1 text-sm leading-relaxed ${
+                        book.review ? "text-muted" : "italic text-muted-light"
+                    }`}
+                >
+                    {book.review ??
+                        "The librarian's review is stuck in the approval workflow. It exists, it is opinionated, and it lands with the next release."}
+                </p>
+                <a
+                    href={amz(book.q)}
+                    target="_blank"
+                    rel="sponsored nofollow noopener"
+                    className="inline-flex items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
+                >
+                    Get the book →
+                    <span className="caps-label text-[9px] tracking-[.16em] text-muted-light">
+                        AD
+                    </span>
+                </a>
+            </div>
+        </div>
     );
 }
 
 export default function LibraryPage() {
     return (
-        <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-8">
+        <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
             <header>
                 <h1 className="text-2xl font-extrabold tracking-[-0.02em]">📚 The Library</h1>
                 <p className="mt-1.5 leading-relaxed text-muted">
@@ -173,90 +226,37 @@ export default function LibraryPage() {
                 </p>
             </header>
 
-            {/* The rating system */}
-            <section className="rounded-[14px] border border-hairline bg-surface p-4 shadow-[0_1px_2px_rgba(15,33,55,.05)] sm:p-5">
-                <p className="caps-label text-[10px] text-muted-light">
-                    Rating system · the ROI multiplier
-                </p>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                    Books are rated like investments: <strong>ROI ×N</strong> is what a
-                    book returned per hour it cost to read. ×1 breaks even with
-                    scrolling, ×5 beats most lectures, ×10 should be illegal insider
-                    knowledge. <strong>Disclaimer:</strong> anything above ×1 is worth
-                    a read - this shelf is the favorites out of roughly 100 books the
-                    librarian has read, every single one of them cover to cover. The
-                    multiplier ranks favorites; it does not filter duds.
-                </p>
-            </section>
-
-            {/* Transparency - affiliate links are advertising */}
-            <section className="rounded-[14px] border border-hairline bg-surface p-4 shadow-[0_1px_2px_rgba(15,33,55,.05)] sm:p-5">
-                <p className="caps-label text-[10px] text-muted-light">
-                    Transparency · advertising
-                </p>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                    The book buttons are <strong>affiliate links</strong> - that is
-                    advertising: buy a book through one and the site earns a small
-                    commission, while your price stays exactly the same. As an Amazon
-                    partner, this site earns from qualifying purchases. This page
-                    carries no other ads. Covers via Open Library.
-                </p>
-            </section>
+            {/* Fund overview - the shelf as a portfolio statement */}
+            <div className="flex flex-wrap gap-2.5">
+                <span className="caps-label inline-flex items-center rounded-full border border-hairline bg-surface px-3 py-1.5 text-[10px] tracking-[.14em] text-muted">
+                    {`${ALL_BOOKS.length} positions held`}
+                </span>
+                <span className="caps-label inline-flex items-center rounded-full border border-hairline bg-surface px-3 py-1.5 text-[10px] tracking-[.14em] text-muted">
+                    {`avg ROI ×${AVG_ROI.toLocaleString("en-US", { maximumFractionDigits: 1 })}`}
+                </span>
+                <span className="caps-label inline-flex items-center rounded-full border border-brand-border bg-brand-input px-3 py-1.5 text-[10px] tracking-[.14em] text-brand">
+                    {`top holding: ${TOP_BOOK.title} ×${TOP_BOOK.roi}`}
+                </span>
+                <span className="caps-label inline-flex items-center rounded-full border border-hairline bg-surface px-3 py-1.5 text-[10px] tracking-[.14em] text-muted">
+                    ad-free floor
+                </span>
+            </div>
 
             {/* The shelves */}
             {SECTIONS.map((section) => (
-                <section
-                    key={section.name}
-                    className="flex flex-col gap-4 rounded-[14px] border border-hairline bg-surface p-5 shadow-[0_1px_2px_rgba(15,33,55,.05)]"
-                >
-                    <h2 className="border-b border-hairline-soft pb-3 text-xl font-extrabold tracking-[-0.02em]">
+                <section key={section.name} className="flex flex-col gap-3">
+                    <h2 className="flex items-baseline gap-2 text-xl font-extrabold tracking-[-0.02em]">
                         {section.emoji} {section.name}
+                        <span className="caps-label text-[10px] font-normal tracking-[.14em] text-muted-light">
+                            {section.books.length}{" "}
+                            {section.books.length === 1 ? "position" : "positions"}
+                        </span>
                     </h2>
-
-                    {section.books.map((book, i) => (
-                        <div
-                            key={book.title}
-                            className={`flex gap-4 ${
-                                i > 0 ? "border-t border-hairline-soft pt-4" : ""
-                            }`}
-                        >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={book.cover}
-                                alt={`Cover of ${book.title}`}
-                                loading="lazy"
-                                className="h-32 w-[84px] flex-none rounded-[6px] border border-hairline-soft bg-chip object-cover shadow-[0_1px_3px_rgba(15,33,55,.12)]"
-                            />
-                            <div className="min-w-0">
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <p className="font-extrabold">{book.title}</p>
-                                    <RoiChip roi={book.roi} />
-                                </div>
-                                <p className="caps-label mt-0.5 text-[10px] text-muted-light">
-                                    {book.author}
-                                </p>
-                                <p
-                                    className={`mb-2.5 mt-1.5 text-sm leading-relaxed ${
-                                        book.review ? "text-muted" : "italic text-muted-light"
-                                    }`}
-                                >
-                                    {book.review ??
-                                        "The librarian's review is stuck in the approval workflow. It exists, it is opinionated, and it lands with the next release."}
-                                </p>
-                                <a
-                                    href={amz(book.q)}
-                                    target="_blank"
-                                    rel="sponsored nofollow noopener"
-                                    className="inline-flex items-center gap-2 rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
-                                >
-                                    Get the book →
-                                    <span className="caps-label text-[9px] tracking-[.16em] text-muted-light">
-                                        AD
-                                    </span>
-                                </a>
-                            </div>
-                        </div>
-                    ))}
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                        {section.books.map((book) => (
+                            <BookCard key={book.title} book={book} />
+                        ))}
+                    </div>
                 </section>
             ))}
 
@@ -265,6 +265,27 @@ export default function LibraryPage() {
                 {ON_ORDER.map((b) => `${b.title} (${b.author})`).join(" · ")} - unread
                 books do not get rated. That would be technical analysis.
             </p>
+
+            {/* The small print: rating legend + § 5a UWG disclosure, one compact card */}
+            <section className="rounded-[14px] border border-hairline bg-surface p-4 shadow-[0_1px_2px_rgba(15,33,55,.05)]">
+                <p className="caps-label text-[10px] text-muted-light">
+                    The small print · rating system &amp; advertising
+                </p>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-light">
+                    Books are rated like investments: <strong>ROI ×N</strong> is what a
+                    book returned per hour it cost to read. ×1 breaks even with
+                    scrolling, ×5 beats most lectures, ×10 should be illegal insider
+                    knowledge, and the ×67 is currently under investigation. Anything
+                    above ×1 is worth a read - this shelf is the favorites out of
+                    roughly 100 books the librarian has read cover to cover; the
+                    multiplier ranks favorites, it does not filter duds. The book
+                    buttons are affiliate links - that is advertising: buy a book
+                    through one and the site earns a small commission while your price
+                    stays exactly the same. As an Amazon partner, this site earns from
+                    qualifying purchases. This page carries no other ads. Covers via
+                    Open Library.
+                </p>
+            </section>
         </div>
     );
 }

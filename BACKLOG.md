@@ -6,6 +6,38 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Shop bundles + library portfolio + sticky ad rails (2026-08-29).** Nico's
+punch list, all shipped: (1) `/products` rebuilt as three bundles - The
+FinanceBro Starter Pack (8), The Undercover Broke Student (6), BWL Marie (7) -
+in a 2-col card grid with portfolio-style header chips; 15 new products
+(gold Casio "Intern's Rolex", AirPods, protein shaker, bulk ramen, cup
+noodles, moka pot, 89 € interview suit, earplugs, powerbank, Kånken, iPad
+pencil, pastel highlighters, claw clip, Prosecco, pilates mat) with new
+jokes; every image re-searched on Wikimedia Commons and **verified by eye**
+(the old ones showed wrong crops - candy-shop shelf, whisk bristles), all
+render `object-contain` in a white image box so nothing zooms; photo credits
+rebuilt from the files' actual extmetadata. Matcha moved to BWL Marie.
+(2) New `AdRail` (sticky 160×600 skyscraper + 200×200): both sides of
+`/products` and `/language`, around the multiplayer desk/lobby/closing-bell
+views; the existing quiz + multiplayer game rails made sticky. Per Nico's
+answer, legal pages stay rail-free. Format note in `AdRail`: 300×600 half
+page is the higher-earning sidebar unit - widen the rail, don't add slots.
+(3) `/library` v2: 2-col book grid, fund-overview chips (8 positions, avg
+ROI, top holding), Lean Startup corrected to **×67** (Nico: "that's the
+point"; legend jokes it is under investigation), Carnegie cover fixed to
+the English edition (ISBN URL - the cover ID served the French one), and
+the two disclaimer cards merged into one compact "small print" card at the
+bottom (Nico: less dominant). ROI/top-holding chips render via template
+literals so SSR does not split the strings with HTML comments. Gate green
+from /tmp/fb3 copy: typecheck, verify 204 × 200 seeds, build, **77 smoke**
+(4 new: bundles, products skyscraper, ROI ×67, small print). Sandbox
+Playwright-Chromium screenshots of products (desktop 2-col + rails, phone
+stack), library (desktop) looked right. **Visual check owed on Nico's
+machine:** /products all three bundles + image crops, /library grid +
+chips, sticky rails on quiz//multiplayer//products while scrolling, phone
+anchor ad still clear of the tab bar. No question banks touched, so no
+question-reviewer pass this session.
+
 **Choice questions removed - banks are numeric-only for now (2026-08-28,
 late).** Per Nico: no multiple-choice questions for now. All 25 `kind:
 "choice"` questions deleted from the new banks (econ1 16, econ2 8,

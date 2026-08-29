@@ -237,6 +237,24 @@ try {
         productsHtml.includes("superiority complex")
     );
     check("/products sells the Birkin out", productsHtml.includes("SOLD OUT"));
+    // The three joke bundles (2026-08-29) and the desktop skyscraper rails.
+    check(
+        "/products shelves the three bundles",
+        productsHtml.includes("FinanceBro Starter Pack") &&
+            productsHtml.includes("Undercover Broke Student") &&
+            productsHtml.includes("BWL Marie")
+    );
+    check(
+        "/products carries the desktop skyscraper rail",
+        productsHtml.includes("wide skyscraper")
+    );
+    // Lean Startup's corrected rating (Nico, 2026-08-29): ×67, that's the point.
+    check("/library rates Lean Startup ×67", libraryHtml.includes("ROI ×67"));
+    // The small print merged into one compact card (Nico: less dominant).
+    check(
+        "/library keeps the compact small print",
+        libraryHtml.includes("The small print")
+    );
     check("/ links the Library", homeHtml.includes("Library 📚"));
     check("/ no longer links the Language page", !homeHtml.includes("Language 🎤"));
 

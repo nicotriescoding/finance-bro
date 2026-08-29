@@ -16,7 +16,7 @@
  * site never waits for any of this.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ALL_QUESTIONS, countForSubject } from "@/content/questions";
 import { SUBJECTS } from "@/content/subjects";
 import { buildInstance } from "@/lib/questions/engine";
@@ -47,6 +47,22 @@ import {
     storeName,
 } from "@/lib/multiplayer/client";
 import { usePersistentState } from "@/hooks/usePersistentState";
+import AdRail from "@/components/AdRail";
+
+/**
+ * Desktop ad rails around the desk/lobby/closing-bell views (2026-08-29):
+ * every page except /, /library and /career carries the sticky wide-skyscraper
+ * rail alongside the whole page. GameView keeps its own in-layout rail.
+ */
+function WithRails({ children }: { children: ReactNode }) {
+    return (
+        <div className="mx-auto flex max-w-[1440px] gap-[18px] lg:px-[22px]">
+            <AdRail />
+            <div className="min-w-0 flex-1">{children}</div>
+            <AdRail />
+        </div>
+    );
+}
 import { formatMoney, MONEY } from "@/lib/money";
 import AdSlot from "@/components/AdSlot";
 import MpQuestionCard from "./MpQuestionCard";
@@ -361,16 +377,18 @@ export default function MultiplayerClient() {
 
     if (!room) {
         return (
-            <HomeView
-                name={name}
-                setName={setName}
-                joinCode={joinCode}
-                setJoinCode={setJoinCode}
-                onCreate={onCreate}
-                onJoin={onJoin}
-                connecting={connecting}
-                error={error}
-            />
+            <WithRails>
+                <HomeView
+                    name={name}
+                    setName={setName}
+                    joinCode={joinCode}
+                    setJoinCode={setJoinCode}
+                    onCreate={onCreate}
+                    onJoin={onJoin}
+                    connecting={connecting}
+                    error={error}
+                />
+            </WithRails>
         );
     }
 
@@ -382,7 +400,8 @@ export default function MultiplayerClient() {
 
     if (room.phase === "lobby" || (room.phase === "play" && !deal)) {
         return (
-            <LobbyView
+            <WithRails>
+                <LobbyView
                 room={room}
                 players={players}
                 send={send}
@@ -399,20 +418,23 @@ export default function MultiplayerClient() {
                         /* clipboard blocked - the code is on screen anyway */
                     }
                 }}
-            />
+                />
+            </WithRails>
         );
     }
 
     if (ranking) {
         return (
-            <EndView
-                room={room}
-                ranking={ranking}
-                lbStatus={lbStatus}
-                isHost={room.you === room.host}
-                send={send}
-                onLeave={leaveRoom}
-            />
+            <WithRails>
+                <EndView
+                    room={room}
+                    ranking={ranking}
+                    lbStatus={lbStatus}
+                    isHost={room.you === room.host}
+                    send={send}
+                    onLeave={leaveRoom}
+                />
+            </WithRails>
         );
     }
 
@@ -918,8 +940,9 @@ function GameView(props: {
     return (
         <div className="mx-auto max-w-[1440px] px-4 pt-4 lg:px-[22px] lg:pt-[18px]">
             <div className="flex gap-[18px]">
-                {/* left rail - ads only, kept away from the maths */}
-                <aside className="hidden w-[200px] flex-none flex-col gap-3 xl:flex">
+                {/* left rail - ads only, kept away from the maths; sticky so it
+                    rides alongside the whole page (2026-08-29) */}
+                <aside className="sticky top-20 hidden w-[200px] flex-none flex-col gap-3 self-start xl:flex">
                     <AdSlot variant="skyscraper" />
                     <AdSlot variant="square" />
                 </aside>

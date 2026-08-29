@@ -190,8 +190,9 @@ export default function QuizClient() {
 
             <div className="mx-auto max-w-[1440px] px-4 pt-4 lg:px-[22px] lg:pt-[18px]">
                 <div className="flex gap-[18px]">
-                    {/* left rail - ads only, kept away from the maths */}
-                    <aside className="hidden w-[200px] flex-none flex-col gap-3 xl:flex">
+                    {/* left rail - ads only, kept away from the maths; sticky so it
+                        rides alongside the whole page (2026-08-29) */}
+                    <aside className="sticky top-20 hidden w-[200px] flex-none flex-col gap-3 self-start xl:flex">
                         <AdSlot variant="skyscraper" />
                         <AdSlot variant="square" />
                     </aside>
