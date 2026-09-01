@@ -5,7 +5,7 @@ import CareerSetup from "@/components/career/CareerSetup";
 export const metadata: Metadata = {
     title: "Career",
     description:
-        "Choose your dead-end career: pick a subject, tick the topics, and start a run of TUM business-administration exam questions.",
+        "Choose your dead-end career: pick a subject, tick the topics, and start a run of business-administration exam questions.",
 };
 
 // Render per request so the ?subject param is resolved server-side and the

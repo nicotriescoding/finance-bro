@@ -6,6 +6,36 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Legal de-risking pass (2026-09-01).** Per Nico's audit (MarkenG/UWG/DSGVO):
+(1) TUM affiliation copy replaced everywhere with "Made by a TUM student, for
+TUM students" + calculation-only disclaimer; empty-bank/locked strings now say
+"questions in the works" with no TUM. (2) SEO: meta-keywords array deleted
+(Impuls I risk, Google ignores it anyway), TUM removed from /quiz, /career,
+/multiplayer meta descriptions; root description keeps ONE truthful
+"made by a TUM student for TUM students" mention. Footer + Impressum got an
+explicit "independent student project, not affiliated with TUM or any brand"
+disclaimer. (3) Library covers self-hosted under `public/covers/` (8 JPEGs,
+downloaded once from Open Library) - kills the Google-Fonts-style pre-consent
+IP transfer to a US host. (4) Privacy policy: new Cloudflare multiplayer
+section (display name, player ID, game state, leaderboard, Art. 6 (1) (b),
+DPF), Vercel transfer basis corrected SCC -> Art. 45 DPF, localStorage "we
+cannot read it" wording fixed, PostHog retention promised at max 24 months,
+short-version updated for multiplayer. Gate green from $HOME/fb-check copy
+(mount can't delete .next): typecheck, verify 204 questions x 200 seeds,
+build, 79 smoke.
+
+**Duties the new policy creates (do before/at go-live):**
+- PostHog: configure data retention/deletion to honor the 24-month promise.
+- Leaderboard: old-semester D1 rows must be deleted within 12 months of
+  semester end (cron or manual - not built yet).
+- Shop brand names still open: "Birkin Bag", "Patagonia Vest" (links ellesse),
+  "The Intern's Rolex" (links Casio) use famous marks for OTHER goods -
+  § 14 II Nr. 2/3 MarkenG / § 5 UWG risk. Nico decided 2026-09-01: advice
+  only for now, rename later. AirPods/Kånken/TI-30 link to the genuine
+  product = nominative use, keep.
+- Visual check owed on Nico's machine: /, /library, /privacy, /impressum in
+  dark mode (sandbox cannot screenshot).
+
 **Shop images go Adobe Stock, ketchup + cigarettes delisted (2026-08-29,
 same day).** Per Nico: professional-shop image quality, scout 5+ options
 per picture, replace them all. Done via the Adobe connector: 19 Stock

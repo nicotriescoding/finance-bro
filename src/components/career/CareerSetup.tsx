@@ -186,7 +186,7 @@ export default function CareerSetup() {
                                             <>
                                                 <span className="text-[11px] font-extrabold text-brand lg:hidden">
                                                     {locked
-                                                        ? "SELECTED · BEING REBUILT FROM REAL TUM EXAMS"
+                                                        ? "SELECTED · QUESTIONS IN THE WORKS"
                                                         : `SELECTED · TAP AGAIN TO START ${
                                                               selected.length > 0
                                                                   ? `(${pool.length} QUESTIONS)`
@@ -196,14 +196,14 @@ export default function CareerSetup() {
                                                 <span className="hidden text-[11px] font-extrabold text-brand lg:inline">
                                                     SELECTED ·{" "}
                                                     {locked
-                                                        ? "BEING REBUILT FROM REAL TUM EXAMS"
+                                                        ? "QUESTIONS IN THE WORKS"
                                                         : `${count} POSTINGS`}
                                                 </span>
                                             </>
                                         ) : (
                                             <span className="text-[11px] font-extrabold text-muted">
                                                 {locked
-                                                    ? "Locked · being rebuilt from real TUM exams"
+                                                    ? "Locked · questions in the works"
                                                     : `${count} questions`}
                                             </span>
                                         )}
@@ -271,8 +271,8 @@ export default function CareerSetup() {
                                 <p className="text-3xl">🏗️</p>
                                 <p className="text-sm font-extrabold">No postings yet</p>
                                 <p className="text-xs leading-relaxed text-muted">
-                                    This bank is being rebuilt from real TUM exams - questions
-                                    land here as soon as the past exams are ingested.
+                                    This bank is still under construction - questions land here
+                                    as soon as they are ready.
                                 </p>
                                 <Link
                                     href="/career?subject=finance"

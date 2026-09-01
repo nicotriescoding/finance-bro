@@ -26,9 +26,12 @@ export const metadata: Metadata = {
  * the legend acknowledges it). For future books: null = Nico still owes them
  * (rendered as "pending audit") - never invent a rating or review for him.
  *
- * Covers are Open Library covers-API links. Cover IDs can silently point at
- * the wrong edition (How to Win Friends shipped as the French edition once) -
- * prefer ISBN URLs of the exact English edition and LOOK at every new cover.
+ * Covers are SELF-HOSTED under public/covers/ (sourced once from the Open
+ * Library covers API - hotlinking it sent every visitor's IP to a US server
+ * pre-consent, the LG Muenchen Google-Fonts fact pattern; see 2026-09-01
+ * backlog entry). For a new book: download the cover of the exact English
+ * edition (ISBN URL beats cover-ID), drop it in public/covers/, and LOOK at
+ * it - cover IDs can silently point at the wrong edition.
  */
 
 type Book = {
@@ -53,7 +56,7 @@ const SECTIONS: Section[] = [
             {
                 title: "The Lean Startup",
                 author: "Eric Ries",
-                cover: "https://covers.openlibrary.org/b/id/7104760-M.jpg",
+                cover: "/covers/lean-startup.jpg",
                 q: "the lean startup eric ries",
                 roi: 67,
                 review:
@@ -62,7 +65,7 @@ const SECTIONS: Section[] = [
             {
                 title: "SPIN Selling",
                 author: "Neil Rackham",
-                cover: "https://covers.openlibrary.org/b/id/55114-M.jpg",
+                cover: "/covers/spin-selling.jpg",
                 q: "spin selling neil rackham",
                 roi: 21,
                 review:
@@ -77,7 +80,7 @@ const SECTIONS: Section[] = [
             {
                 title: "The Psychology of Money",
                 author: "Morgan Housel",
-                cover: "https://covers.openlibrary.org/b/id/10389354-M.jpg",
+                cover: "/covers/psychology-of-money.jpg",
                 q: "the psychology of money morgan housel",
                 roi: 13,
                 review:
@@ -92,7 +95,7 @@ const SECTIONS: Section[] = [
             {
                 title: "What Every BODY Is Saying",
                 author: "Joe Navarro",
-                cover: "https://covers.openlibrary.org/b/id/8734461-M.jpg",
+                cover: "/covers/what-every-body-is-saying.jpg",
                 q: "what every body is saying joe navarro",
                 roi: 9,
                 review:
@@ -101,7 +104,7 @@ const SECTIONS: Section[] = [
             {
                 title: "Never Split the Difference",
                 author: "Chris Voss",
-                cover: "https://covers.openlibrary.org/b/id/8365942-M.jpg",
+                cover: "/covers/never-split-the-difference.jpg",
                 q: "never split the difference chris voss",
                 roi: 7,
                 review:
@@ -110,7 +113,7 @@ const SECTIONS: Section[] = [
             {
                 title: "How to Win Friends and Influence People",
                 author: "Dale Carnegie",
-                cover: "https://covers.openlibrary.org/b/isbn/0671027034-M.jpg",
+                cover: "/covers/how-to-win-friends.jpg",
                 q: "how to win friends and influence people dale carnegie",
                 roi: 8,
                 review:
@@ -125,7 +128,7 @@ const SECTIONS: Section[] = [
             {
                 title: "Atomic Habits",
                 author: "James Clear",
-                cover: "https://covers.openlibrary.org/b/id/12539702-M.jpg",
+                cover: "/covers/atomic-habits.jpg",
                 q: "atomic habits james clear",
                 roi: 6,
                 review:
@@ -134,7 +137,7 @@ const SECTIONS: Section[] = [
             {
                 title: "The Child in You",
                 author: "Stefanie Stahl",
-                cover: "https://covers.openlibrary.org/b/id/10555909-M.jpg",
+                cover: "/covers/the-child-in-you.jpg",
                 q: "the child in you stefanie stahl",
                 roi: 11,
                 review:
@@ -282,8 +285,8 @@ export default function LibraryPage() {
                     buttons are affiliate links - that is advertising: buy a book
                     through one and the site earns a small commission while your price
                     stays exactly the same. As an Amazon partner, this site earns from
-                    qualifying purchases. This page carries no other ads. Covers via
-                    Open Library.
+                    qualifying purchases. This page carries no other ads. Covers
+                    sourced via Open Library, served from this site.
                 </p>
             </section>
         </div>

@@ -10,8 +10,12 @@ export const metadata: Metadata = {
 /**
  * Datenschutzerklärung (Art. 13 GDPR), in English like the rest of the site.
  * Keep this file in sync with reality: it promises that analytics (PostHog,
- * EU cloud) runs ONLY after consent via the cookie banner, that localStorage
- * data never leaves the browser, and that no ad network is wired. If any of
+ * EU cloud) runs ONLY after consent via the cookie banner AND is deleted or
+ * anonymized after at most 24 months (configure PostHog to match before
+ * go-live), that localStorage data is never transmitted to us, that the
+ * multiplayer worker (Cloudflare) only processes the display name + game
+ * state described in section 4 (old-semester leaderboard rows must actually
+ * be deleted within 12 months), and that no ad network is wired. If any of
  * that changes, change this page in the same commit.
  */
 
@@ -34,16 +38,17 @@ export default function PrivacyPage() {
                     Privacy Policy · Datenschutzerklärung
                 </h1>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                    Last updated: 21 August 2026
+                    Last updated: 1 September 2026
                 </p>
             </header>
 
             <Section title="The short version">
                 <p>
-                    No account, no newsletter, no forms. Your quiz scores stay in your
-                    browser. Analytics only runs if you explicitly say yes to the cookie
-                    banner - decline it and nothing is tracked. No ad network is
-                    currently connected.
+                    No account, no newsletter. Your quiz scores stay in your browser.
+                    Multiplayer works with a self-chosen display name - no
+                    registration. Analytics only runs if you explicitly say yes to the
+                    cookie banner - decline it and nothing is tracked. No ad network
+                    is currently connected.
                 </p>
             </Section>
 
@@ -67,26 +72,61 @@ export default function PrivacyPage() {
                     The site is hosted by Vercel Inc. (USA). When you visit, Vercel
                     technically necessarily processes connection data - IP address,
                     date and time, requested URL, browser and operating system - in
-                    server logs, which are deleted after a short period. Legal basis:
-                    our legitimate interest in delivering and securing the site
-                    (Art. 6 (1) (f) GDPR). A data processing agreement per Art. 28 GDPR
-                    is in place with Vercel; transfers to the USA are safeguarded by EU
-                    standard contractual clauses (Art. 46 GDPR).
+                    server logs. Logs are kept only as long as needed to deliver,
+                    secure and debug the site and are then deleted automatically.
+                    Legal basis: our legitimate interest in delivering and securing
+                    the site (Art. 6 (1) (f) GDPR). A data processing agreement per
+                    Art. 28 GDPR is in place with Vercel. Vercel Inc. is certified
+                    under the EU-US Data Privacy Framework, so transfers to the USA
+                    rest on the EU Commission&apos;s adequacy decision (Art. 45 GDPR),
+                    with EU standard contractual clauses (Art. 46 GDPR) as a
+                    fallback.
                 </p>
             </Section>
 
             <Section title="3. Local storage on your device">
                 <p>
                     Your scores, rank, current quiz run and your cookie-banner choice
-                    are stored in your browser&apos;s localStorage. This data never
-                    leaves your device and we cannot read it - it exists so the site
-                    works (progress survives a reload). Storing it is strictly
+                    are stored in your browser&apos;s localStorage. The site&apos;s
+                    code reads this data locally in your browser on each visit (for
+                    example to show your balance and rank), but it is never
+                    transmitted to our servers - it exists so the site works
+                    (progress survives a reload). Storing and reading it is strictly
                     necessary and requires no consent (§ 25 (2) TDDDG). Clearing your
                     browser data removes it.
                 </p>
             </Section>
 
-            <Section title="4. Analytics (PostHog) - only with your consent">
+            <Section title="4. Multiplayer (Cloudflare)">
+                <p>
+                    The optional multiplayer mode runs on infrastructure provided by
+                    Cloudflare, Inc. (USA). When you create or join a room, the
+                    following is processed on Cloudflare&apos;s servers: the display
+                    name you enter (free choice - it does not have to be your real
+                    name), a randomly generated player ID stored in your browser,
+                    your answers and scores during the game, and the connection data
+                    (including IP address) technically required to maintain the
+                    realtime connection. Room state is held only for the duration of
+                    a game and discarded when the room closes.
+                </p>
+                <p>
+                    If you finish ranked games, your display name, player ID and win
+                    statistics are stored in the semester leaderboard. Leaderboard
+                    entries are kept for the semester they belong to and deleted at
+                    the latest 12 months after that semester ends.
+                </p>
+                <p>
+                    Legal basis: performance of the service you request by starting a
+                    game (Art. 6 (1) (b) GDPR). A data processing agreement per
+                    Art. 28 GDPR is in place with Cloudflare; Cloudflare, Inc. is
+                    certified under the EU-US Data Privacy Framework, so transfers to
+                    the USA rest on the EU Commission&apos;s adequacy decision
+                    (Art. 45 GDPR). If you never open the multiplayer page, none of
+                    this processing happens.
+                </p>
+            </Section>
+
+            <Section title="5. Analytics (PostHog) - only with your consent">
                 <p>
                     We use PostHog to understand which pages and questions get used -
                     but <strong>only if you accept the cookie banner</strong>. Until
@@ -107,9 +147,13 @@ export default function PrivacyPage() {
                     <CookieSettingsLink /> - withdrawal stops all capturing and resets
                     the stored identifiers.
                 </p>
+                <p>
+                    Retention: analytics data is deleted or irreversibly anonymized at
+                    the latest 24 months after collection.
+                </p>
             </Section>
 
-            <Section title="5. Advertising and affiliate links">
+            <Section title="6. Advertising and affiliate links">
                 <p>
                     Ad placements on this site are currently decorative placeholders -
                     no ad network is connected and no ad-related data is processed. If
@@ -124,7 +168,7 @@ export default function PrivacyPage() {
                 </p>
             </Section>
 
-            <Section title="6. Contact by e-mail">
+            <Section title="7. Contact by e-mail">
                 <p>
                     If you write to us, the e-mail and its contents are processed to
                     answer your inquiry (Art. 6 (1) (b) and (f) GDPR) and deleted once
@@ -132,7 +176,7 @@ export default function PrivacyPage() {
                 </p>
             </Section>
 
-            <Section title="7. Your rights">
+            <Section title="8. Your rights">
                 <p>
                     Under the GDPR you have the right to access (Art. 15),
                     rectification (Art. 16), erasure (Art. 17), restriction of
@@ -149,7 +193,7 @@ export default function PrivacyPage() {
                 </p>
             </Section>
 
-            <Section title="8. Changes">
+            <Section title="9. Changes">
                 <p>
                     This policy is updated whenever the site&apos;s data processing
                     changes (for example when analytics goes live or an ad network is

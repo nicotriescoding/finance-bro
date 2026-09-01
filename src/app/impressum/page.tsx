@@ -65,6 +65,16 @@ export default function ImpressumPage() {
                     something through an affiliate link, the site may earn a commission;
                     your price does not change.
                 </p>
+                <h2 className="mt-5 font-extrabold">No affiliation · trademarks</h2>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted">
+                    finance-bro.de is an independent student project. It is not
+                    affiliated with, endorsed by, sponsored by or otherwise connected
+                    to the Technical University of Munich (TUM) or to any university,
+                    publisher or brand mentioned on this site. Third-party names and
+                    trademarks are used solely to refer descriptively to the goods or
+                    institutions they designate and remain the property of their
+                    respective owners.
+                </p>
                 <h2 className="mt-5 font-extrabold">Consumer dispute resolution</h2>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted">
                     The EU online dispute resolution (ODR) platform was discontinued on

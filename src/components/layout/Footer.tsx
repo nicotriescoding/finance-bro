@@ -33,6 +33,11 @@ export default function Footer() {
             <p className="text-[11px] text-muted-light">
                 © 2026 FinanceBro · a private project · study material, not financial advice
             </p>
+            <p className="max-w-xl text-[11px] leading-relaxed text-muted-light">
+                An independent student project. Not affiliated with, endorsed by or
+                connected to the Technical University of Munich (TUM) or any brand
+                mentioned on this site.
+            </p>
         </footer>
     );
 }

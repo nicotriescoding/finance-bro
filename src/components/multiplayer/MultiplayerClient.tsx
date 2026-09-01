@@ -849,7 +849,7 @@ function LobbyView(props: {
                                     key={s.id}
                                     type="button"
                                     disabled={!isHost || !available}
-                                    title={available ? s.label : "Being rebuilt from real TUM exams"}
+                                    title={available ? s.label : "Questions in the works"}
                                     onClick={() => toggleSubject(s.id)}
                                     className={`rounded-full px-3.5 py-1.5 text-sm font-bold transition ${
                                         selected

@@ -95,7 +95,7 @@ export default function Home() {
                     The seven flavors of pain
                 </h2>
                 <p className="mt-1 text-sm text-muted">
-                    Every question traceable to real TUM course material.
+                    Made by a TUM student, for TUM students - calculation questions only, no multiple choice.
                 </p>
                 <div className="mt-4 flex flex-wrap justify-center gap-2">
                     {SUBJECTS.map((subject) => {
@@ -116,8 +116,8 @@ export default function Home() {
                     })}
                 </div>
                 <p className="mt-3 text-xs text-muted-light">
-                    &quot;soon&quot; = Exam questions coming soon. The TUM past exams are being
-                    ingested, bank by bank.
+                    &quot;soon&quot; = Exam questions coming soon - new question banks are being
+                    built, one by one.
                 </p>
             </section>
         </div>

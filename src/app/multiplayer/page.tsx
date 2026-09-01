@@ -5,7 +5,7 @@ import MultiplayerClient from "@/components/multiplayer/MultiplayerClient";
 export const metadata: Metadata = {
     title: "Multiplayer 🥋 - FinanceBro",
     description:
-        "Duel other FinanceBros on real TUM exam questions - same postings, live scoreboard, semester leaderboard. Or lose to Inflation.",
+        "Duel other FinanceBros on real exam-style questions - same postings, live scoreboard, semester leaderboard. Or lose to Inflation.",
 };
 
 /**
