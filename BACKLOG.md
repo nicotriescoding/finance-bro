@@ -6,6 +6,41 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Question banks tripled from Nico's exam/exercise uploads (2026-09-02).** Per
+Nico: min 90 calculation questions per mode, every topic in >=3 phrasings,
+real countries/examples, data table only on request. Shipped: **Cost
+Accounting 39 -> 91** (all seven Friedl exam papers SS15-WS18/19 + Mock now
+fully covered, incl. previously missing families: credits & debits with levy,
+reciprocal variants, equivalence numbers, multi-stage with rejects,
+after-tax CVP, price floors with opportunity costs), **Econ 2 32 -> 90**
+(SS17/18/19 exams re-mined + lecture units II-IX; new topics `labor_stats`,
+`money_banking`), **Finance 97 -> 159** (actual IVF course material: tutorials
+1-7 interests/annuities/redemptions/bonds/stocks/options + corporate-finance
+chapters 1-6; new topic `capital_structure`). 376 questions total, all seeded
+numeric. UI: the given-values table is now **folded by default**, and per Nico
+(2026-09-02, second pass) hints are tiered: 📋 Table = given-values table for
+-30% of the payout, 💡 Hint = table + lecture formula for -50% (never stacking
+past 50%; table shows free once the posting settles). Multiplayer keeps a
+free fold - its payouts are graded in the worker and were left untouched.
+Every new prompt is self-contained in prose. Loop ran in full: 3 authoring
+agents (each reproduced the official solution numbers from the source PDFs
+before shipping - 63/38/84 original-number assertions green) -> gate -> 3
+opus `question-reviewer` agents (independent prompt-only recomputation, 800+
+seeds/question) found 10 FAILs (5 seeded draws that could reproduce exam
+tuples, 3 zero-branch/convention wordings, 2 range bugs: binomial u/d
+rounding, subscription right below grading tolerance) - all fixed and
+re-verified PASS. Gate green after fixes: typecheck, verify 376 x 200 seeds,
+build, 79 smoke. Sandbox Playwright shots (dark-mode OS): career shows
+159/90/91, collapsed table, SHOW TABLE opens it, KaTeX hint renders.
+Flagged for Nico: the WS16/17, SS17, WS17/18, SS18, WS18/19 cost-accounting
+answer marks were lost in extraction - the ~34 questions from them were
+solved independently (each matches exactly one printed option; list in the
+authoring report); a handful of econ2/finance generators come from lecture
+examples without a printed key (ids in the session reports). **Visual check
+owed on Nico's machine:** play one posting each in finance/econ2/cost
+accounting (SHOW TABLE fold, hint, KaTeX), /career topic lists for the three
+grown subjects, multiplayer card fold.
+
 **Legal de-risking pass (2026-09-01).** Per Nico's audit (MarkenG/UWG/DSGVO):
 (1) TUM affiliation copy replaced everywhere with "Made by a TUM student, for
 TUM students" + calculation-only disclaimer; empty-bank/locked strings now say

@@ -45,12 +45,14 @@ export default function MpQuestionCard({
     const [value, setValue] = useState("");
     const [picked, setPicked] = useState<number[]>([]);
     const [now, setNow] = useState(() => Date.now());
+    const [givenOpen, setGivenOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     // reset when a new posting comes in
     useEffect(() => {
         setValue("");
         setPicked([]);
+        setGivenOpen(false);
         inputRef.current?.focus();
     }, [instance.key]);
 
@@ -116,24 +118,34 @@ export default function MpQuestionCard({
 
             {instance.given && Object.keys(instance.given).length > 0 && (
                 <div className="overflow-hidden rounded-[10px] border border-hairline-table">
-                    <div className="caps-label bg-given-head px-3.5 py-2 text-[11px] text-muted">
-                        Given values · same numbers for everyone
-                    </div>
-                    <div className="grid sm:grid-cols-2">
-                        {Object.entries(instance.given).map(([k, v]) => (
-                            <div
-                                key={k}
-                                className="flex justify-between gap-4 border-t border-hairline-soft px-3.5 py-2 text-sm sm:odd:border-r"
-                            >
-                                <span className="text-muted">
-                                    <RichText text={k} />
-                                </span>
-                                <span className="font-bold tabular-nums">
-                                    <RichText text={v} />
-                                </span>
-                            </div>
-                        ))}
-                    </div>
+                    {/* Folded by default, same as solo play - the posting text
+                        carries every number; the table is a free convenience. */}
+                    <button
+                        type="button"
+                        onClick={() => setGivenOpen((o) => !o)}
+                        aria-expanded={givenOpen}
+                        className="caps-label flex w-full items-center justify-between bg-given-head px-3.5 py-2 text-left text-[11px] text-muted"
+                    >
+                        <span>Given values · same numbers for everyone</span>
+                        <span className="font-bold">{givenOpen ? "HIDE TABLE" : "SHOW TABLE"}</span>
+                    </button>
+                    {givenOpen && (
+                        <div className="grid sm:grid-cols-2">
+                            {Object.entries(instance.given).map(([k, v]) => (
+                                <div
+                                    key={k}
+                                    className="flex justify-between gap-4 border-t border-hairline-soft px-3.5 py-2 text-sm sm:odd:border-r"
+                                >
+                                    <span className="text-muted">
+                                        <RichText text={k} />
+                                    </span>
+                                    <span className="font-bold tabular-nums">
+                                        <RichText text={v} />
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 

@@ -37,7 +37,8 @@ type Props = {
     /** flat seniority bonus of the current rank, added to every settled posting */
     rankBonus: number;
     /** `usedHint` halves the payout upstream */
-    onAnswered: (correct: boolean, usedHint: boolean) => void;
+    /** payoutFactor: 1 = clean, 0.7 = table shown (-30%), 0.5 = formula hint (-50%) */
+    onAnswered: (correct: boolean, payoutFactor: number) => void;
     /** forward the posting to the tax advisor - out of the run, 0 BroDollars */
     onSkip: () => void;
     onNext: () => void;
@@ -66,6 +67,7 @@ export default function QuestionCard({
     const [result, setResult] = useState<null | boolean>(null);
     const [hintUsed, setHintUsed] = useState(false);
     const [eliminated, setEliminated] = useState<number[]>([]);
+    const [tableUsed, setTableUsed] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     // reset whenever a new question comes in
@@ -75,6 +77,7 @@ export default function QuestionCard({
         setResult(null);
         setHintUsed(false);
         setEliminated([]);
+        setTableUsed(false);
         inputRef.current?.focus();
     }, [instance.key]);
 
@@ -92,9 +95,23 @@ export default function QuestionCard({
               .filter((i) => !(instance.correctIndices ?? []).includes(i));
     const hintAvailable = isNumeric ? formulaHint !== null : wrongIndices.length >= 2;
 
+    // Two advisory tiers: peeking at the tidy data table costs 30% of the
+    // payout, the full hint (table + lecture formula) costs 50%. The formula
+    // hint always includes the table, so the discounts never stack past 50%.
+    const hasTable = !!instance.given && Object.keys(instance.given).length > 0;
+    const tableVisible = tableUsed || hintUsed || result !== null;
+    const payoutFactor = hintUsed ? 0.5 : tableUsed ? 0.7 : 1;
+
+    const useTable = () => {
+        if (result !== null || tableUsed || hintUsed || !hasTable) return;
+        setTableUsed(true);
+        inputRef.current?.focus();
+    };
+
     const useHint = () => {
         if (result !== null || hintUsed || !hintAvailable) return;
         setHintUsed(true);
+        setTableUsed(true);
         if (!isNumeric) {
             const cut = wrongIndices.slice(0, Math.floor(wrongIndices.length / 2));
             setEliminated(cut);
@@ -121,7 +138,7 @@ export default function QuestionCard({
         }
 
         setResult(correct);
-        onAnswered(correct, hintUsed);
+        onAnswered(correct, payoutFactor);
     };
 
     // Enter advances once the posting is settled - the input is disabled by
@@ -195,9 +212,7 @@ export default function QuestionCard({
                     </span>
                 )}
                 <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-bold text-muted">
-                    {hintUsed
-                        ? `UP TO ${formatMoney(maxPoints(instance.question.difficulty) * 0.5 + rankBonus)} ${MONEY} · HINT`
-                        : `UP TO ${formatMoney(maxPoints(instance.question.difficulty) + rankBonus)} ${MONEY}`}
+                    {`UP TO ${formatMoney(maxPoints(instance.question.difficulty) * payoutFactor + rankBonus)} ${MONEY}${hintUsed ? " · HINT" : tableUsed ? " · TABLE" : ""}`}
                 </span>
                 {instance.question.source && (
                     <span className="caps-label rounded-full bg-chip px-2.5 py-1 text-[10px] text-muted">
@@ -211,33 +226,48 @@ export default function QuestionCard({
                 <RichText text={instance.prompt} />
             </p>
 
-            {instance.given && Object.keys(instance.given).length > 0 && (
+            {hasTable && (
                 <div className="overflow-hidden rounded-[10px] border border-hairline-table">
-                    <div className="caps-label bg-given-head px-3.5 py-2 text-[11px] text-muted">
-                        Given values · rerolled every run
-                    </div>
-                    <div className="grid sm:grid-cols-2">
-                        {Object.entries(instance.given).map(([k, v]) => (
-                            <div
-                                key={k}
-                                className="flex justify-between gap-4 border-t border-hairline-soft px-3.5 py-2 text-sm sm:odd:border-r"
-                            >
-                                <span className="text-muted">
-                                    <RichText text={k} />
-                                </span>
-                                <span className="font-bold tabular-nums">
-                                    <RichText text={v} />
-                                </span>
-                            </div>
-                        ))}
-                    </div>
+                    {/* Exam mode: every number is already in the posting text, like
+                        on the real exam sheet. The tidy table is paid advice -
+                        30% of the payout, included in the 50% formula hint, free
+                        once the posting is settled. */}
+                    <button
+                        type="button"
+                        onClick={useTable}
+                        disabled={tableVisible}
+                        aria-expanded={tableVisible}
+                        className="caps-label flex w-full items-center justify-between bg-given-head px-3.5 py-2 text-left text-[11px] text-muted disabled:cursor-default"
+                    >
+                        <span>Given values · rerolled every run</span>
+                        <span className="font-bold">
+                            {tableVisible ? "" : "📋 SHOW TABLE · −30%"}
+                        </span>
+                    </button>
+                    {tableVisible && (
+                        <div className="grid sm:grid-cols-2">
+                            {Object.entries(instance.given ?? {}).map(([k, v]) => (
+                                <div
+                                    key={k}
+                                    className="flex justify-between gap-4 border-t border-hairline-soft px-3.5 py-2 text-sm sm:odd:border-r"
+                                >
+                                    <span className="text-muted">
+                                        <RichText text={k} />
+                                    </span>
+                                    <span className="font-bold tabular-nums">
+                                        <RichText text={v} />
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 
             {hintUsed && (
                 <div className="flex flex-col gap-1.5 rounded-[10px] border border-hairline bg-chip p-3.5">
                     <span className="caps-label text-[10px] text-muted">
-                        💡 Hint · advisory fee: 50% of the payout
+                        💡 Hint · table + formula · advisory fee: 50% of the payout
                     </span>
                     {isNumeric && formulaHint ? (
                         <p className="text-[15px] leading-relaxed text-ledger">
@@ -388,11 +418,23 @@ export default function QuestionCard({
                                 Check
                             </button>
                         )}
+                        {hasTable && (
+                            <button
+                                type="button"
+                                onClick={useTable}
+                                disabled={tableUsed || hintUsed}
+                                title="Reveals the given-values table"
+                                className="flex-1 rounded-[10px] border border-hairline bg-surface px-4 py-2.5 text-[13px] font-bold text-muted transition hover:border-[#c8d3de] hover:text-ink disabled:cursor-default disabled:opacity-50 sm:flex-none"
+                            >
+                                📋 Table · −30%
+                            </button>
+                        )}
                         {hintAvailable && (
                             <button
                                 type="button"
                                 onClick={useHint}
                                 disabled={hintUsed}
+                                title={isNumeric ? "Reveals the table and the lecture formula" : "Writes off half of the wrong options"}
                                 className="flex-1 rounded-[10px] border border-hairline bg-surface px-4 py-2.5 text-[13px] font-bold text-muted transition hover:border-[#c8d3de] hover:text-ink disabled:cursor-default disabled:opacity-50 sm:flex-none"
                             >
                                 💡 Hint · −50%

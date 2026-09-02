@@ -73,19 +73,20 @@ export default function QuizClient() {
     }, [ready, session, router, subjectParam]);
 
     const handleAnswered = useCallback(
-        (correct: boolean, usedHint: boolean) => {
+        (correct: boolean, payoutFactor: number) => {
             if (!session || !view) return;
             stop();
             let points = 0;
             if (correct) {
                 const difficulty = view.instance.question.difficulty;
                 const limit = difficultyTimes[difficulty] ?? 120;
-                // the hint halves the payout - advice was never free
+                // advice was never free: peeking at the table costs 30% of
+                // the payout, the full hint (table + formula) costs 50%
                 points = addScore(
                     difficulty,
                     Math.round(elapsedMs / 1000),
                     limit,
-                    usedHint ? 0.5 : 1
+                    payoutFactor
                 );
             }
             const next = applyAnswer(session, correct, points);
