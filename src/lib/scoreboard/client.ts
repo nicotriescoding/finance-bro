@@ -15,6 +15,8 @@ import { sanitizeName } from "@/lib/multiplayer/protocol";
 import type { SubjectId } from "@/lib/questions/types";
 import {
     internName,
+    internSuggestions,
+    isInternName,
     type EarningReport,
     type ScoreboardResponse,
     type ScoreboardScope,
@@ -22,14 +24,25 @@ import {
 
 export const scoreboardEnabled = mpEnabled;
 
-/** the claimed desk name, or "" when the player is still an intern */
+/** the stored desk name, or "" when nothing was ever picked */
 export function claimedName(): string {
     return getStoredName();
+}
+
+/** true once the player picked a real name - an intern name kept by choice does not count */
+export function hasRealName(): boolean {
+    const n = getStoredName();
+    return n.length > 0 && !isInternName(n);
 }
 
 /** the name the board shows for this browser right now */
 export function deskName(): string {
     return getStoredName() || internName(getPlayerId());
+}
+
+/** intern names to cycle through while the field is empty, own one first */
+export function nameSuggestions(): string[] {
+    return internSuggestions(getPlayerId());
 }
 
 export function myPlayerId(): string {

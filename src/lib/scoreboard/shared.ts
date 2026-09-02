@@ -93,12 +93,26 @@ function hash32(s: string): number {
     return h >>> 0;
 }
 
+/** the player's badge number - the same on every suggestion for this id */
+export function internNumber(pid: string): number {
+    return 1000 + ((hash32(pid) >>> 8) % 9000);
+}
+
 /** "Brainrot Intern #4127" - stable per player id, numbered so they stay apart */
 export function internName(pid: string): string {
     const h = hash32(pid);
     const title = INTERN_TITLES[h % INTERN_TITLES.length];
-    const no = 1000 + ((h >>> 8) % 9000);
-    return `${title} #${no}`;
+    return `${title} #${internNumber(pid)}`;
+}
+
+/**
+ * Every intern title with this player's badge number, the player's own
+ * intern name first - what the name field cycles through while empty.
+ */
+export function internSuggestions(pid: string): string[] {
+    const start = hash32(pid) % INTERN_TITLES.length;
+    const no = internNumber(pid);
+    return INTERN_TITLES.map((_, i) => `${INTERN_TITLES[(start + i) % INTERN_TITLES.length]} #${no}`);
 }
 
 export function isInternName(name: string): boolean {

@@ -242,9 +242,11 @@ async function leaderboard() {
 
     // a solo posting: re-graded, capped, paid once
     const q = ALL_QUESTIONS.find((x) => x.subject === "econ1" && x.kind === "numeric")!;
-    const seed = 123456;
+    // fresh identity + seed per run: the local D1 persists between runs
+    const solo = [...crypto.getRandomValues(new Uint8Array(8))].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const seed = Math.floor(Math.random() * 2_000_000_000) + 1;
     const value = correctValueFor(q.id, seed);
-    const body = { pid: "eeeeeeeeeeeeeeee", name: "", qid: q.id, seed, value, amount: 99999 };
+    const body = { pid: solo, name: "", qid: q.id, seed, value, amount: 99999 };
     const post = (b: unknown) =>
         fetch(`${BASE}/api/earnings`, {
             method: "POST",
@@ -257,10 +259,19 @@ async function leaderboard() {
     check("solo: unnamed player gets an intern name", /Intern #\d{4}$/.test(first.name ?? ""), first.name);
     const again = await post(body);
     check("solo: replay is refused", again.ok === false && again.reason === "duplicate", JSON.stringify(again));
+    // practising the same question again is a new run with a fresh seed -
+    // that pays every time, only the exact same (question, seed) is a replay
+    const seed2 = seed % 2_000_000_000 + 1;
+    const practice = await post({ ...body, seed: seed2, value: correctValueFor(q.id, seed2) });
+    check("solo: same question, fresh seed pays again", practice.ok === true, JSON.stringify(practice));
     const wrong = await post({ ...body, seed: seed + 1, value: -424242 });
     check("solo: wrong answer books nothing", wrong.ok === false && wrong.reason === "wrong", JSON.stringify(wrong));
     const econ = (await (await fetch(`${BASE}/api/leaderboard?subject=econ1`)).json()) as Board;
-    check("solo: lands on the subject board", econ.rows.some((r) => r.playerId === "eeeeee" && r.amount === first.amount));
+    check(
+        "solo: both postings land on the subject board",
+        econ.rows.some((r) => r.playerId === solo.slice(0, 6) && r.amount === (first.amount ?? 0) + (practice.amount ?? 0) && r.postings === 2),
+        JSON.stringify(econ.rows)
+    );
     console.log(`scoreboard semester: ${data.semester}`);
 }
 

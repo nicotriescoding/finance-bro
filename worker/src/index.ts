@@ -146,7 +146,10 @@ export default {
 
         // ------------------------------------------------------------------
         // solo quiz: one settled posting. Re-graded here with the shared
-        // engine, paid at most the difficulty's cap, and only once per seed.
+        // engine, paid at most the difficulty's cap, and only once per
+        // (player, question, seed). Practising the same topic again is fine:
+        // every run and every write-off re-queue draws a fresh random seed,
+        // so the guard only ever catches the very same posting sent twice.
         if (request.method === "POST" && path === "/api/earnings") {
             const body = await readJson<Partial<EarningReport>>(request);
             if (!body || typeof body.pid !== "string" || !PID_RE.test(body.pid)) {

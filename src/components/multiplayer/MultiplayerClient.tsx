@@ -46,8 +46,9 @@ import {
     socketUrl,
     storeName,
 } from "@/lib/multiplayer/client";
-import { deskName, fetchScoreboard, scoreboardEnabled } from "@/lib/scoreboard/client";
-import { isInternName, type ScoreboardResponse } from "@/lib/scoreboard/shared";
+import { fetchScoreboard, nameSuggestions, scoreboardEnabled } from "@/lib/scoreboard/client";
+import type { ScoreboardResponse } from "@/lib/scoreboard/shared";
+import NameField from "@/components/scoreboard/NameField";
 import { usePersistentState } from "@/hooks/usePersistentState";
 import Link from "next/link";
 import AdRail from "@/components/AdRail";
@@ -117,6 +118,8 @@ function CanonPlaceholder() {
 
 export default function MultiplayerClient() {
     const [name, setName] = useState("");
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const suggestionRef = useRef("");
     const [joinCode, setJoinCode] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [connecting, setConnecting] = useState(false);
@@ -147,9 +150,10 @@ export default function MultiplayerClient() {
     const leaveRef = useRef(false);
 
     useEffect(() => {
-        // the desk name auto-loads: the claimed one, or the numbered intern
-        // name the scoreboard already knows this browser by
-        setName(getStoredName() || deskName());
+        // the desk name auto-loads once picked; before that the field stays
+        // empty and cycles through this browser's intern names
+        setName(getStoredName());
+        setSuggestions(nameSuggestions());
         const params = new URLSearchParams(window.location.search);
         const code = (params.get("room") ?? "").toUpperCase();
         if (isValidCode(code)) setJoinCode(code);
@@ -334,14 +338,15 @@ export default function MultiplayerClient() {
     );
 
     const commitName = (): string | null => {
-        const clean = sanitizeName(name);
-        if (!name.trim()) {
+        // an empty field adopts the intern name it was showing - the board
+        // keeps nudging for a real one until the player types their own
+        const picked = name.trim() ? name : suggestionRef.current;
+        if (!picked.trim()) {
             setError("Pick a name first - HR insists.");
             return null;
         }
-        // keeping the prefilled intern name is not a claim - the scoreboard
-        // keeps nudging until a real desk name is picked
-        storeName(isInternName(clean) ? "" : clean);
+        const clean = sanitizeName(picked);
+        storeName(clean);
         setName(clean);
         return clean;
     };
@@ -388,6 +393,10 @@ export default function MultiplayerClient() {
                 <HomeView
                     name={name}
                     setName={setName}
+                    suggestions={suggestions}
+                    onSuggestion={(s) => {
+                        suggestionRef.current = s;
+                    }}
                     joinCode={joinCode}
                     setJoinCode={setJoinCode}
                     onCreate={onCreate}
@@ -466,6 +475,8 @@ export default function MultiplayerClient() {
 function HomeView(props: {
     name: string;
     setName: (v: string) => void;
+    suggestions: string[];
+    onSuggestion: (s: string) => void;
     joinCode: string;
     setJoinCode: (v: string) => void;
     onCreate: (withBot: boolean) => void;
@@ -496,15 +507,20 @@ function HomeView(props: {
                 <label className="caps-label text-[11px] text-muted" htmlFor="mp-name">
                     Your trading name
                 </label>
-                <input
+                <NameField
                     id="mp-name"
-                    type="text"
                     value={props.name}
-                    maxLength={20}
-                    onChange={(e) => props.setName(e.target.value)}
-                    placeholder="e.g. WolfOfGarching"
-                    className="rounded-[10px] border-2 border-brand bg-brand-input px-4 py-3 text-lg font-extrabold outline-none placeholder:text-sm placeholder:font-medium placeholder:text-muted"
+                    suggestions={props.suggestions}
+                    onChange={props.setName}
+                    onSuggestion={props.onSuggestion}
                 />
+                <p className="-mt-1 text-xs text-muted">
+                    Leave it empty and you go in as the intern shown. Same name on the{" "}
+                    <Link href="/leaderboard" className="font-bold text-brand hover:underline">
+                        leaderboard
+                    </Link>
+                    .
+                </p>
 
                 <div className="mt-2 grid gap-3 sm:grid-cols-2">
                     <button

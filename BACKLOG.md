@@ -28,8 +28,16 @@ interns derived from the player id (`Brainrot/Unpaid/Excel/Oat Milk/
 PowerPoint/LinkedIn/Overtime/Matcha/Reply-All/Circle-Back Intern #NNNN`,
 same hash on client and worker), the board nudges them to claim a name
 once they are on it, the name field is always there, and the claimed name
-auto-loads at the duels desk (keeping the prefilled intern name there is
-not a claim). Solo reports are fire-and-forget (`keepalive`), never awaited.
+auto-loads at the duels desk. Second pass (Nico): the name field
+(`NameField`, shared by duels desk + board) starts **empty**, its
+placeholder cycles through the player's intern names (same badge number,
+every title, 2.2 s), 🎲 drops the shown one in; submitting empty adopts the
+shown intern name - an intern name kept by choice still counts as "no real
+name", so the board keeps nudging. Replay guard clarified: it is keyed on
+(player, question, seed) and every run / write-off re-queue draws a fresh
+random seed, so practising the same topic again always pays - e2e now
+proves "same question, fresh seed pays again". Multiplayer winnings count
+for both the Overall tab and the subject tabs (Nico, 2nd pass). Solo reports are fire-and-forget (`keepalive`), never awaited.
 Privacy policy section 4 updated for the per-posting reports. Proof: gate
 green in the cloud clone (typecheck, verify 447 x 200, build, **82 smoke**
 incl. new /leaderboard checks; the mount cannot delete `.next`), worker

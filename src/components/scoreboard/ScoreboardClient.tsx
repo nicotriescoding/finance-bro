@@ -17,15 +17,16 @@ import { formatMoney, MONEY } from "@/lib/money";
 import type { SubjectId } from "@/lib/questions/types";
 import {
     claimDeskName,
-    claimedName,
     deskName,
     fetchScoreboard,
+    hasRealName,
     myPlayerId,
+    nameSuggestions,
     scoreboardEnabled,
 } from "@/lib/scoreboard/client";
-import { MAX_NAME_LENGTH } from "@/lib/multiplayer/protocol";
 import type { ScoreboardResponse, ScoreboardScope } from "@/lib/scoreboard/shared";
 import AdSlot from "@/components/AdSlot";
+import NameField from "./NameField";
 
 const CARD =
     "rounded-[14px] border border-hairline bg-surface shadow-[0_1px_2px_rgba(15,33,55,.05)]";
@@ -40,11 +41,16 @@ export default function ScoreboardClient() {
     const [data, setData] = useState<ScoreboardResponse | null>(null);
     const [failed, setFailed] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [me, setMe] = useState({ id: "", name: "", claimed: "" });
+    const [me, setMe] = useState({ id: "", name: "", real: false, suggestions: [] as string[] });
     const [reloadKey, setReloadKey] = useState(0);
 
     useEffect(() => {
-        setMe({ id: myPlayerId().slice(0, 6), name: deskName(), claimed: claimedName() });
+        setMe({
+            id: myPlayerId().slice(0, 6),
+            name: deskName(),
+            real: hasRealName(),
+            suggestions: nameSuggestions(),
+        });
     }, []);
 
     useEffect(() => {
@@ -72,7 +78,7 @@ export default function ScoreboardClient() {
     }, [scope, reloadKey]);
 
     const onRenamed = useCallback((shown: string) => {
-        setMe((m) => ({ ...m, name: shown, claimed: claimedName() }));
+        setMe((m) => ({ ...m, name: shown, real: hasRealName() }));
         setReloadKey((k) => k + 1);
     }, []);
 
@@ -235,8 +241,9 @@ function Tabs({
 
 /**
  * Your standing in the current scope, plus the desk-name field. An intern on
- * the board without a claimed name gets the nudge; everybody else can still
- * rename at any time (the duels desk picks the new name up automatically).
+ * the board without a real name gets the nudge (an intern name kept by choice
+ * still counts as intern); everybody can rename at any time - the duels desk
+ * picks the new name up automatically.
  */
 function YouCard({
     me,
@@ -245,7 +252,7 @@ function YouCard({
     scopeLabel,
     onRenamed,
 }: {
-    me: { id: string; name: string; claimed: string };
+    me: { id: string; name: string; real: boolean; suggestions: string[] };
     you: ScoreboardResponse["you"];
     semester: string;
     scopeLabel: string;
@@ -253,19 +260,22 @@ function YouCard({
 }) {
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState("");
+    const [suggestion, setSuggestion] = useState("");
     const [saving, setSaving] = useState(false);
-    const intern = !me.claimed;
+    const intern = !me.real;
     const nudge = intern && you !== null;
 
     const open = () => {
-        setDraft(me.claimed);
+        setDraft(me.real ? me.name : "");
         setEditing(true);
     };
 
+    // an empty field adopts the intern name it was showing
     const save = async () => {
-        if (!draft.trim()) return;
+        const picked = draft.trim() ? draft : suggestion;
+        if (!picked.trim()) return;
         setSaving(true);
-        const shown = await claimDeskName(draft);
+        const shown = await claimDeskName(picked);
         setSaving(false);
         setEditing(false);
         onRenamed(shown);
@@ -308,22 +318,22 @@ function YouCard({
 
             {editing ? (
                 <div className="flex flex-col gap-2 sm:flex-row">
-                    <input
-                        type="text"
-                        value={draft}
-                        maxLength={MAX_NAME_LENGTH}
-                        autoFocus
-                        onChange={(e) => setDraft(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") void save();
-                            if (e.key === "Escape") setEditing(false);
-                        }}
-                        placeholder="e.g. WolfOfGarching"
-                        className="flex-1 rounded-[10px] border-2 border-brand bg-brand-input px-4 py-2.5 text-[15px] font-extrabold outline-none placeholder:text-sm placeholder:font-medium placeholder:text-muted"
-                    />
+                    <div className="flex-1">
+                        <NameField
+                            id="board-name"
+                            size="md"
+                            value={draft}
+                            suggestions={me.suggestions}
+                            onChange={setDraft}
+                            onSuggestion={setSuggestion}
+                            onEnter={() => void save()}
+                            onEscape={() => setEditing(false)}
+                            autoFocus
+                        />
+                    </div>
                     <button
                         type="button"
-                        disabled={saving || !draft.trim()}
+                        disabled={saving}
                         onClick={() => void save()}
                         className="rounded-[10px] bg-brand px-5 py-2.5 text-[15px] font-extrabold text-white transition hover:bg-[#175a3a] disabled:opacity-60"
                     >
