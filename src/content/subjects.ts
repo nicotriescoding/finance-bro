@@ -36,8 +36,10 @@ export const SUBJECTS: Subject[] = [
         emoji: "📉",
         description: "Supply & demand, elasticities, consumer and production theory, market structures.",
         accent: "from-sky-500 to-blue-600",
-        // Topics derived from the TUM Economics I exercise exam WT22/23 and
-        // the W22/23 problem sets 2-13.
+        // Topics derived from the TUM Economics I exercise exam WT22/23, the
+        // W22/23 problem sets 2-13, the exam WS19/20, the eTest W20/21 and the
+        // micro blocks of the Principles of Economics exercise exams
+        // WS17/18 = WS20/21.
         topics: [
             { id: "opportunity_cost", label: "Opportunity Cost & Pareto Efficiency" },
             { id: "comparative_advantage", label: "Comparative Advantage & Trade" },
@@ -47,6 +49,8 @@ export const SUBJECTS: Subject[] = [
             { id: "market_equilibrium", label: "Market Equilibrium, Surplus & Taxes" },
             { id: "monopoly", label: "Monopoly" },
             { id: "externalities", label: "Externalities & Pigouvian Taxes" },
+            { id: "price_controls", label: "Price Ceilings & Floors" },
+            { id: "public_goods", label: "Public Goods" },
             // game_theory removed 2026-08-28: its four questions were all
             // kind "choice", and choice questions are out for now (Nico).
             // Recover them from git (commits ed4eb4f + 560c0a0) when wanted.

@@ -6,6 +6,48 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Econ 1 tripled from the four uploaded Econ 1 papers (2026-09-02, later
+session).** Sources: Economics I exam WS19/20 (Kurschilgen, scanned with
+model solution - read page by page), eTest W20/21 (Moodle review with answer
+key), Principles of Economics exercise exams WS17/18 and WS20/21 (identical
+paper; only the micro blocks 1-5 were used - Nico decided the macro blocks
+6-8 stay out, Econ 2 is untouched), plus the WT22/23 exercise exam re-mined
+for the calculation items it still had (Q19-Q21, Q26, Q33). **Econ 1 36 ->
+107**, all seeded numeric; two new topics `price_controls` (ceilings incl.
+the non-binding trap, floors) and `public_goods` (Samuelson condition, two
+groups, free-riding gap). New families: minutes-table comparative advantage
+(OC, hourly output, three-producer joint PPF, lower ToT bound), two-country
+trade consumption with the partner-capacity trap, Pareto threshold, sunk
+cost, Cobb-Douglas with coefficient (post-change bundle, indirect utility,
+hypothetical income), labour-leisure choice (F*, L*, q*, compensated bundle,
+hypothetical time budget), Leontief, substitutes utility, cross/own-price
+elasticity, MRTS/AP at a point, returns to scale, bilinear + Cobb-Douglas
+cost minimisation (inputs, cost, budget -> output, zero-profit price, MC from
+technology, CRS unit cost), shutdown price, long-run exit branch, free-entry
+price/n/PS(= n·F trap)/TS, market supply with n firms, PS trapezoid + verbal
+supply schedule, elasticity at equilibrium, unit-tax consumer price/revenue,
+TS, quadratic-cost monopoly (price, CS, profit, perfect discrimination
+quantity + profit), linear-cost monopoly price + unit-tax profit,
+externality DWL (negative + positive), rising Pigou tax. Loop ran in full:
+4 opus authoring agents (each reproduced every official answer from the
+source numbers) -> gate -> 3 opus `question-reviewer` agents (independent
+recomputation, brute-force optimisers, 2,000-5,000 seeds/question) found 2
+FAILs (threshold-price draw could reproduce the source's 10q²+1,000 -> 200;
+linear-cost monopoly could draw a loss-making F) - both fixed and swept
+20,000 seeds clean - plus cosmetic nits (unit coefficients printed as "1 q",
+plural/verb glitches, rationing clause) all fixed. Gate green in the
+sandbox after fixes: typecheck, verify 447 x 200 seeds, build, 79 smoke.
+Solved without a printed key (flag for Nico): the binding-cap/floor
+variants, positive-externality and two-type public-good questions are
+lecture-concept extensions of diagram/concept items (WT22/23 Q28/29, eTest
+Q17/18, WS19/20 P34, Principles P24) - formulas standard, no official
+number to compare against. **Visual check owed on Nico's machine:** one
+posting each in the new topics (Price Ceilings & Floors, Public Goods),
+/career Econ 1 topic list (10 topics now), and the folded given table on a
+labour-leisure question. Housekeeping: the Cowork sandbox cannot delete on
+the mount - the copy of `Klausur_WS_1920_mit_Musterlosung.pdf` was only
+staged from ~/Downloads, nothing was written there.
+
 **Question banks tripled from Nico's exam/exercise uploads (2026-09-02).** Per
 Nico: min 90 calculation questions per mode, every topic in >=3 phrasings,
 real countries/examples, data table only on request. Shipped: **Cost
