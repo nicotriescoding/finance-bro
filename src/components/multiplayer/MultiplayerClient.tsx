@@ -26,10 +26,10 @@ import {
     MODES,
     PING_INTERVAL_MS,
     POSTING_COUNTS,
+    WIN_BONUS,
     isValidCode,
     sanitizeName,
     type C2S,
-    type LeaderboardRow,
     type MpConfig,
     type MpMode,
     type MpPlayerPub,
@@ -46,7 +46,10 @@ import {
     socketUrl,
     storeName,
 } from "@/lib/multiplayer/client";
+import { deskName, fetchScoreboard, scoreboardEnabled } from "@/lib/scoreboard/client";
+import { isInternName, type ScoreboardResponse } from "@/lib/scoreboard/shared";
 import { usePersistentState } from "@/hooks/usePersistentState";
+import Link from "next/link";
 import AdRail from "@/components/AdRail";
 
 /**
@@ -144,7 +147,9 @@ export default function MultiplayerClient() {
     const leaveRef = useRef(false);
 
     useEffect(() => {
-        setName(getStoredName());
+        // the desk name auto-loads: the claimed one, or the numbered intern
+        // name the scoreboard already knows this browser by
+        setName(getStoredName() || deskName());
         const params = new URLSearchParams(window.location.search);
         const code = (params.get("room") ?? "").toUpperCase();
         if (isValidCode(code)) setJoinCode(code);
@@ -334,7 +339,9 @@ export default function MultiplayerClient() {
             setError("Pick a name first - HR insists.");
             return null;
         }
-        storeName(clean);
+        // keeping the prefilled intern name is not a claim - the scoreboard
+        // keeps nudging until a real desk name is picked
+        storeName(isInternName(clean) ? "" : clean);
         setName(clean);
         return clean;
     };
@@ -562,30 +569,28 @@ function HomeView(props: {
 }
 
 // ---------------------------------------------------------------------------
-// leaderboard
+// semester scoreboard (compact): overall top rows, the full board lives at
+// /leaderboard - duel winnings are booked there per subject at the closing bell
 
 function LeaderboardPanel({ compact = false }: { compact?: boolean }) {
-    const [rows, setRows] = useState<LeaderboardRow[] | null>(null);
-    const [semester, setSemester] = useState("");
+    const [data, setData] = useState<ScoreboardResponse | null>(null);
     const [failed, setFailed] = useState(false);
 
     useEffect(() => {
+        if (!scoreboardEnabled) {
+            setFailed(true);
+            return;
+        }
         let alive = true;
-        fetch(`${MP_URL}/api/leaderboard`)
-            .then((r) => r.json())
-            .then((data: { semester?: string; rows?: LeaderboardRow[]; error?: string }) => {
-                if (!alive) return;
-                setSemester(data.semester ?? "");
-                if (data.error || !data.rows) setFailed(true);
-                else setRows(data.rows);
-            })
+        fetchScoreboard("all")
+            .then((d) => alive && setData(d))
             .catch(() => alive && setFailed(true));
         return () => {
             alive = false;
         };
     }, []);
 
-    const shown = rows?.slice(0, compact ? 5 : 10) ?? null;
+    const shown = data?.rows.slice(0, compact ? 5 : 10) ?? null;
 
     return (
         <div
@@ -601,16 +606,19 @@ function LeaderboardPanel({ compact = false }: { compact?: boolean }) {
                 >
                     Semester leaderboard 🏆
                 </h2>
-                {semester && (
+                {data?.semester && (
                     <span className="rounded-full bg-chip px-2 py-0.5 text-[10px] font-bold text-muted">
-                        {semester}
+                        {data.semester}
                     </span>
                 )}
-                {!compact && (
-                    <span className="caps-label ml-auto text-[10px] text-muted-light">
-                        resets every semester
-                    </span>
-                )}
+                <Link
+                    href="/leaderboard"
+                    className={`ml-auto font-bold text-brand hover:underline ${
+                        compact ? "text-[11px]" : "text-sm"
+                    }`}
+                >
+                    Full board →
+                </Link>
             </div>
             {failed && (
                 <p className={compact ? "text-xs text-muted" : "text-sm text-muted"}>
@@ -619,7 +627,7 @@ function LeaderboardPanel({ compact = false }: { compact?: boolean }) {
             )}
             {shown && shown.length === 0 && (
                 <p className={compact ? "text-xs text-muted" : "text-sm text-muted"}>
-                    Nobody on the board yet. First win takes the corner office.
+                    Nobody on the board yet. First settled posting takes the corner office.
                 </p>
             )}
             {shown && shown.length > 0 && (
@@ -641,14 +649,20 @@ function LeaderboardPanel({ compact = false }: { compact?: boolean }) {
                                 </span>
                             )}
                             <span className="ml-auto shrink-0 tabular-nums text-muted">
-                                {r.wins}W · {r.settled}
+                                {!compact && `${r.postings} settled · `}
+                                <span className="font-extrabold text-ink">
+                                    {formatMoney(r.amount)} {MONEY}
+                                </span>
                             </span>
                         </div>
                     ))}
                 </div>
             )}
-            {rows === null && !failed && (
-                <p className={compact ? "text-xs text-muted" : "text-sm text-muted"}>Loading…</p>
+            {!compact && (
+                <p className="text-xs text-muted">
+                    BroDollars earned this semester, solo and duels combined. Per-subject
+                    boards on the full page.
+                </p>
             )}
         </div>
     );
@@ -1177,8 +1191,17 @@ function EndView(props: {
     send: (msg: C2S) => void;
     onLeave: () => void;
 }) {
-    const winner = props.ranking[0];
+    // the game's winner is decided by the mode (first finished / most won);
+    // the payroll ranking below orders everyone by BroDollars earned this
+    // round - the winner's closing-bell bonus usually, not always, tops it
+    const winner = props.ranking.find((r) => r.winner) ?? props.ranking[0];
     const mine = props.ranking.find((r) => r.id === props.room.you);
+    const payroll = [...props.ranking].sort((a, b) => {
+        if (b.earned !== a.earned) return b.earned - a.earned;
+        if (a.winner !== b.winner) return a.winner ? -1 : 1;
+        return b.progress - a.progress;
+    });
+    const myPayrollRank = payroll.findIndex((p) => p.id === props.room.you) + 1;
     return (
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 p-4 sm:p-6">
             <header className="flex flex-col items-center gap-2 rounded-[14px] border border-hairline bg-surface p-6 text-center shadow-[0_1px_2px_rgba(15,33,55,.05)]">
@@ -1199,12 +1222,21 @@ function EndView(props: {
                 {mine && mine.earned > 0 && (
                     <p className="text-[15px] font-extrabold text-brand">
                         +{formatMoney(mine.earned)} {MONEY} credited to your account
+                        {myPayrollRank > 0 && ` · #${myPayrollRank} on this round's payroll`}
                     </p>
                 )}
             </header>
 
             <div className="flex flex-col rounded-[14px] border border-hairline bg-surface p-4 shadow-[0_1px_2px_rgba(15,33,55,.05)] sm:p-6">
-                {props.ranking.map((p, i) => (
+                <div className="mb-1 flex items-center gap-2">
+                    <h2 className="text-lg font-extrabold tracking-[-0.01em]">
+                        Payroll · this round
+                    </h2>
+                    <span className="caps-label ml-auto text-[10px] text-muted-light">
+                        by {MONEY} earned
+                    </span>
+                </div>
+                {payroll.map((p, i) => (
                     <div
                         key={p.id}
                         className="flex items-center gap-3 border-t border-hairline-soft py-2.5 text-sm first:border-t-0"
@@ -1221,17 +1253,37 @@ function EndView(props: {
                             {p.name}
                             {p.id === props.room.you && " (you)"}
                         </span>
-                        {p.winner && <span>🏆</span>}
+                        {p.winner && <span title="took the game">🏆</span>}
                         <span className="ml-auto shrink-0 tabular-nums text-muted">
-                            {p.progress} settled · {p.writeoffs}📉 · {formatMoney(p.earned)} {MONEY}
+                            <span className="hidden sm:inline">
+                                {p.progress} settled · {p.writeoffs}📉 ·{" "}
+                            </span>
+                            <span className="font-extrabold text-ink">
+                                {formatMoney(p.earned)} {MONEY}
+                            </span>
+                            {p.winner && p.earned > 0 && (
+                                <span className="hidden text-[11px] text-muted-light sm:inline">
+                                    {" "}
+                                    incl. {formatMoney(WIN_BONUS)} bell bonus
+                                </span>
+                            )}
                         </span>
                     </div>
                 ))}
                 <p className="mt-3 text-xs text-muted">
-                    {props.lbStatus === "ok" &&
-                        "Reported to the semester leaderboard 🏆 - check the duels desk."}
+                    {props.lbStatus === "ok" && (
+                        <>
+                            Booked to the{" "}
+                            <Link href="/leaderboard" className="font-bold text-brand hover:underline">
+                                semester leaderboard 🏆
+                            </Link>{" "}
+                            per subject - the round itself stays here.
+                        </>
+                    )}
                     {props.lbStatus === "failed" &&
-                        "The leaderboard desk was unreachable - this result went unrecorded."}
+                        "The leaderboard desk was unreachable - these BroDollars are on your account but not on the board."}
+                    {props.lbStatus === "skipped" &&
+                        "Nothing to book - Inflation does not get a payslip."}
                 </p>
             </div>
 

@@ -42,3 +42,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .next_stale_sandbox*/
+
+# worker (Cloudflare) + sandbox scratch
+worker/node_modules/
+worker/.wrangler/
+_to_delete/

@@ -6,6 +6,46 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Semester leaderboard rebuilt around BroDollars (2026-09-02, latest
+session).** Per Nico: the board shows who earned the most BroDollars this
+semester, once overall and once per subject; multiplayer shows a ranking
+per round at the closing bell instead of feeding a wins table, but its
+BroDollars still count. Shipped: `/leaderboard` page (tabs Overall + 7
+subjects, medals, your own rank/amount card even outside the top 50, ads +
+rails), nav + tab bar link ("Board" on phones), landing teaser now "live"
+with a link, compact overall top-10 on the duels desk linking to the full
+board, closing bell = "Payroll · this round" sorted by 💸 earned (winner
+keeps 🏆 + 250 bell bonus, footnote says the winnings were booked per
+subject). Worker: `earnings(semester, player_id, subject)` + replay guard
+`settled_postings`; `GET /api/leaderboard?subject=all|<id>&pid=` returns
+rows + `you`; `POST /api/earnings` re-grades every solo posting with the
+shared engine (wrong -> not booked, amount capped at base points + 150 max
+rank bonus, one payout per (player, qid, seed)); `POST /api/players/name`
+renames every row of the semester; the Lobby DO tracks `bySubject` per
+player and books humans at game end (bell bonus goes to the subject that
+paid the winner most). Names per Nico: unclaimed players are numbered
+interns derived from the player id (`Brainrot/Unpaid/Excel/Oat Milk/
+PowerPoint/LinkedIn/Overtime/Matcha/Reply-All/Circle-Back Intern #NNNN`,
+same hash on client and worker), the board nudges them to claim a name
+once they are on it, the name field is always there, and the claimed name
+auto-loads at the duels desk (keeping the prefilled intern name there is
+not a claim). Solo reports are fire-and-forget (`keepalive`), never awaited.
+Privacy policy section 4 updated for the per-posting reports. Proof: gate
+green in the cloud clone (typecheck, verify 447 x 200, build, **82 smoke**
+incl. new /leaderboard checks; the mount cannot delete `.next`), worker
+typecheck green, `worker/test/e2e.ts` extended and **ALL GREEN** against a
+local wrangler (Bull Run/Front Running/Rapid + scoreboard overall/subject/
+you/bot-free + solo booked/capped/intern-named/replay-refused/wrong-refused),
+Playwright dark-mode shots of /leaderboard (desktop, Finance tab, claim
+field, phone), /multiplayer desk and / against a mock worker. **Owed:**
+(1) Nico applies the schema: `cd worker && npx wrangler d1 execute
+finance-bro-mp --remote --file=schema.sql` (idempotent; the old
+`leaderboard` table can be dropped afterwards); (2) real-Chrome check of
+/leaderboard + a real closing bell (could not be screenshotted without a
+live game). Known gap: a scripted client could still post correct answers
+it computed from the bundled engine - the cap + replay guard bound the
+damage, no rate limit yet (joke ranking, revisit if it ever matters).
+
 **Econ 1 tripled from the four uploaded Econ 1 papers (2026-09-02, later
 session).** Sources: Economics I exam WS19/20 (Kurschilgen, scanned with
 model solution - read page by page), eTest W20/21 (Moodle review with answer
@@ -103,8 +143,9 @@ build, 79 smoke.
 
 **Duties the new policy creates (do before/at go-live):**
 - PostHog: configure data retention/deletion to honor the 24-month promise.
-- Leaderboard: old-semester D1 rows must be deleted within 12 months of
-  semester end (cron or manual - not built yet).
+- Leaderboard: old-semester D1 rows (`earnings`, and `settled_postings` by
+  `created_at`) must be deleted within 12 months of semester end (cron or
+  manual - not built yet).
 - Shop brand names still open: "Birkin Bag", "Patagonia Vest" (links ellesse),
   "The Intern's Rolex" (links Casio) use famous marks for OTHER goods -
   § 14 II Nr. 2/3 MarkenG / § 5 UWG risk. Nico decided 2026-09-01: advice
@@ -469,8 +510,11 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
   `cd worker && npm run dev`).
 - **Multiplayer visual check on Nico's machine** (sandbox screenshots looked
   right, real Chrome still owed): duels desk, lobby with topic ticks, both
-  modes, the settled-by banner in Front Running, closing bell + leaderboard
-  row, and the canon placeholder when the env var is absent.
+  modes, the settled-by banner in Front Running, closing bell payroll
+  ranking, and the canon placeholder when the env var is absent.
+- **Leaderboard go-live (2026-09-02):** apply `worker/schema.sql` to the
+  remote D1 (see the entry above), then check /leaderboard in real Chrome -
+  intern name + claim flow, per-subject tabs, your-rank card.
 - **Multiplayer icebox:** matchmaking queue (a special always-open room),
   rapid mode (filter on `difficulty` once curated), rematch keeps the room -
   friends/accounts and the BroDollar nickname market stay parked until the

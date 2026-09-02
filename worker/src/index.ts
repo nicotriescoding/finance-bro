@@ -4,21 +4,63 @@
  * Routes:
  *   POST /api/rooms                 -> create a lobby, returns { code }
  *   GET  /api/rooms/:code/ws        -> WebSocket upgrade, forwarded to the Lobby DO
- *   GET  /api/leaderboard           -> current-semester top 50 from D1
+ *   GET  /api/leaderboard?subject=all|<id>&pid=  -> semester scoreboard (BroDollars)
+ *   POST /api/earnings              -> one settled solo posting, re-graded here
+ *   POST /api/players/name          -> claim / change the desk name
  *
  * One Durable Object per lobby (id = idFromName(code)). The DO grades every
  * answer server-side with the same engine the client renders with, so the
- * scoreboard cannot be faked from the browser console.
+ * scoreboard cannot be faked from the browser console. Solo postings are
+ * re-graded the same way before they count.
  */
 
+import { ALL_QUESTIONS } from "@/content/questions";
+import { getSubject } from "@/content/subjects";
+import { buildInstance } from "@/lib/questions/engine";
+import { isWithinTolerance } from "@/lib/questions/grading";
+import type { Question } from "@/lib/questions/types";
 import {
     CODE_ALPHABET,
     CODE_LENGTH,
-    currentSemester,
     isValidCode,
-    type LeaderboardRow,
 } from "@/lib/multiplayer/protocol";
+import { payoutCap, type EarningReport, type ScoreboardScope } from "@/lib/scoreboard/shared";
 import { Lobby } from "./lobby";
+import {
+    PID_RE,
+    bookEarnings,
+    claimPosting,
+    displayName,
+    readScoreboard,
+    renamePlayer,
+} from "./scoreboard";
+
+const QUESTION_BY_ID: Map<string, Question> = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
+
+/** same grading as the Lobby DO - a solo posting only counts if it was right */
+function gradeSolo(q: Question, seed: number, value: unknown): boolean {
+    const inst = buildInstance(q, seed);
+    if (q.kind === "numeric") {
+        return (
+            typeof value === "number" &&
+            Number.isFinite(value) &&
+            inst.answer !== undefined &&
+            isWithinTolerance(value, inst.answer, q.unit, q.tolerance)
+        );
+    }
+    if (!Array.isArray(value) || value.length === 0) return false;
+    const expected = [...(inst.correctIndices ?? [])].sort().join(",");
+    const got = [...value].map(Number).sort().join(",");
+    return got === expected;
+}
+
+async function readJson<T>(request: Request): Promise<T | null> {
+    try {
+        return (await request.json()) as T;
+    } catch {
+        return null;
+    }
+}
 
 export { Lobby };
 
@@ -89,28 +131,63 @@ export default {
         }
 
         // ------------------------------------------------------------------
-        // leaderboard: top 50 of the running semester
+        // scoreboard: top 50 of the running semester, overall or per subject
         if (request.method === "GET" && path === "/api/leaderboard") {
-            const semester = currentSemester();
+            const raw = url.searchParams.get("subject") ?? "all";
+            if (raw !== "all" && !getSubject(raw)) return json({ error: "bad_subject" }, 400);
+            const scope = raw as ScoreboardScope;
+            const pid = url.searchParams.get("pid");
             try {
-                const { results } = await env.DB.prepare(
-                    `SELECT name, player_id, wins, games, settled
-                     FROM leaderboard WHERE semester = ?
-                     ORDER BY wins DESC, settled DESC, updated_at ASC LIMIT 50`
-                )
-                    .bind(semester)
-                    .all();
-                const rows: LeaderboardRow[] = (results ?? []).map((r) => ({
-                    name: String(r.name),
-                    playerId: String(r.player_id).slice(0, 6),
-                    wins: Number(r.wins),
-                    games: Number(r.games),
-                    settled: Number(r.settled),
-                }));
-                return json({ semester, rows });
+                return json(await readScoreboard(env.DB, scope, pid));
             } catch {
-                return json({ error: "leaderboard_unavailable", semester }, 503);
+                return json({ error: "leaderboard_unavailable" }, 503);
             }
+        }
+
+        // ------------------------------------------------------------------
+        // solo quiz: one settled posting. Re-graded here with the shared
+        // engine, paid at most the difficulty's cap, and only once per seed.
+        if (request.method === "POST" && path === "/api/earnings") {
+            const body = await readJson<Partial<EarningReport>>(request);
+            if (!body || typeof body.pid !== "string" || !PID_RE.test(body.pid)) {
+                return json({ error: "bad_pid" }, 400);
+            }
+            const q = typeof body.qid === "string" ? QUESTION_BY_ID.get(body.qid) : undefined;
+            const seed = Number(body.seed);
+            if (!q || !Number.isInteger(seed) || seed < 1 || seed > 2_147_483_646) {
+                return json({ error: "bad_posting" }, 400);
+            }
+            const amount = Math.min(Math.max(0, Math.round(Number(body.amount) || 0)), payoutCap(q.difficulty));
+            if (!gradeSolo(q, seed, body.value)) return json({ ok: false, reason: "wrong" });
+            if (amount <= 0) return json({ ok: false, reason: "nothing_to_book" });
+            try {
+                const fresh = await claimPosting(env.DB, body.pid, q.id, seed);
+                if (!fresh) return json({ ok: false, reason: "duplicate" });
+                const ok = await bookEarnings(env.DB, [
+                    {
+                        pid: body.pid,
+                        name: typeof body.name === "string" ? body.name : "",
+                        bySubject: { [q.subject]: { amount, postings: 1 } },
+                    },
+                ]);
+                if (!ok) return json({ error: "leaderboard_unavailable" }, 503);
+                return json({ ok: true, amount, name: displayName(body.pid, body.name ?? "") });
+            } catch {
+                return json({ error: "leaderboard_unavailable" }, 503);
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // claim / change the desk name on every row of this semester
+        if (request.method === "POST" && path === "/api/players/name") {
+            const body = await readJson<{ pid?: string; name?: string }>(request);
+            if (!body || typeof body.pid !== "string" || !PID_RE.test(body.pid)) {
+                return json({ error: "bad_pid" }, 400);
+            }
+            const name = displayName(body.pid, typeof body.name === "string" ? body.name : "");
+            const ok = await renamePlayer(env.DB, body.pid, name);
+            if (!ok) return json({ error: "leaderboard_unavailable" }, 503);
+            return json({ ok: true, name });
         }
 
         return json({ error: "not_found" }, 404);

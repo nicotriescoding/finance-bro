@@ -150,20 +150,15 @@ export type S2C =
     | { t: "settled"; index: number; by: string | null; answerText: string }
     /** live scoreboard */
     | { t: "score"; players: MpPlayerPub[] }
-    /** game over */
+    /**
+     * game over. `leaderboard` says whether the humans' winnings were booked
+     * to the semester scoreboard (per subject) - "skipped" when nobody earned.
+     */
     | { t: "end"; ranking: MpRanking[]; leaderboard: "ok" | "failed" | "skipped" }
     | { t: "error"; code: string; msg: string };
 
 // ---------------------------------------------------------------------------
-// leaderboard
-
-export type LeaderboardRow = {
-    name: string;
-    playerId: string;
-    wins: number;
-    games: number;
-    settled: number;
-};
+// semester (the scoreboard's period - types live in src/lib/scoreboard/shared.ts)
 
 /** "SS26" (Apr-Sep) or "WS26/27" (Oct-Mar). TUM semesters, roughly. */
 export function currentSemester(now = new Date()): string {

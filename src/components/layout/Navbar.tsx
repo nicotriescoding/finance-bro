@@ -8,6 +8,7 @@ const LINKS = [
     { href: "/quiz", label: "Quiz 🧠", match: "/quiz" },
     { href: "/products", label: "Bro Shop 💸", match: "/products" },
     { href: "/multiplayer", label: "Multiplayer 🥋", match: "/multiplayer" },
+    { href: "/leaderboard", label: "Leaderboard 🏆", match: "/leaderboard" },
     { href: "/library", label: "Library 📚", match: "/library" },
     { href: "/career", label: "Career 🪦", match: "/career" },
 ];
@@ -28,7 +29,7 @@ export default function Navbar() {
                     </span>
                     <span className="animate-fly inline-block text-[17px] md:text-[19px]">💸</span>
                 </Link>
-                <span className="caps-label hidden pl-0.5 text-[10px] tracking-[.16em] text-muted-light lg:inline">
+                <span className="caps-label hidden pl-0.5 text-[10px] tracking-[.16em] text-muted-light 2xl:inline">
                     Private client · est. 2026
                 </span>
                 <div className="flex-1" />
@@ -39,7 +40,7 @@ export default function Navbar() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`rounded-[9px] px-3.5 py-2 text-[15px] transition ${
+                                className={`whitespace-nowrap rounded-[9px] px-3 py-2 text-[15px] transition ${
                                     active
                                         ? "bg-brand font-extrabold text-white"
                                         : "font-semibold text-link-navy hover:text-[#e8eef5]"

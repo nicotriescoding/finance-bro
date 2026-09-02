@@ -12,7 +12,7 @@ import AccountStatement from "@/components/landing/AccountStatement";
  * smoke test).
  */
 
-const TEASERS = [
+const TEASERS: { emoji: string; title: string; text: string; status: string; href?: string }[] = [
     {
         emoji: "🍵",
         title: "Munich Matcha Alert",
@@ -29,7 +29,8 @@ const TEASERS = [
         emoji: "🏆",
         title: "Semester leaderboard",
         text: "Prove you are a top performer to people who never asked. Rankings reset every semester, trauma does not.",
-        status: "planned",
+        status: "live",
+        href: "/leaderboard",
     },
 ];
 
@@ -84,6 +85,14 @@ export default function Home() {
                             <p className="mt-1 text-[13px] leading-relaxed text-muted">
                                 {t.text}
                             </p>
+                            {t.href && (
+                                <Link
+                                    href={t.href}
+                                    className="mt-2.5 text-[13px] font-extrabold text-brand hover:underline"
+                                >
+                                    Open the board →
+                                </Link>
+                            )}
                         </div>
                     ))}
                 </div>

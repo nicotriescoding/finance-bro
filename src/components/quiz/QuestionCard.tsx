@@ -37,8 +37,11 @@ type Props = {
     /** flat seniority bonus of the current rank, added to every settled posting */
     rankBonus: number;
     /** `usedHint` halves the payout upstream */
-    /** payoutFactor: 1 = clean, 0.7 = table shown (-30%), 0.5 = formula hint (-50%) */
-    onAnswered: (correct: boolean, payoutFactor: number) => void;
+    /**
+     * payoutFactor: 1 = clean, 0.7 = table shown (-30%), 0.5 = formula hint (-50%).
+     * `value` is what was submitted - the scoreboard re-grades it server-side.
+     */
+    onAnswered: (correct: boolean, payoutFactor: number, value: number | number[]) => void;
     /** forward the posting to the tax advisor - out of the run, 0 BroDollars */
     onSkip: () => void;
     onNext: () => void;
@@ -123,6 +126,7 @@ export default function QuestionCard({
     const check = () => {
         if (result !== null) return;
         let correct = false;
+        let submitted: number | number[];
 
         if (isNumeric) {
             const parsed = parseNumericInput(value);
@@ -132,13 +136,15 @@ export default function QuestionCard({
                 q.kind === "numeric" &&
                 instance.answer !== undefined &&
                 isWithinTolerance(parsed, instance.answer, q.unit, q.tolerance);
+            submitted = parsed;
         } else {
             const expected = [...(instance.correctIndices ?? [])].sort().join(",");
             correct = [...picked].sort().join(",") === expected && picked.length > 0;
+            submitted = [...picked];
         }
 
         setResult(correct);
-        onAnswered(correct, payoutFactor);
+        onAnswered(correct, payoutFactor, submitted);
     };
 
     // Enter advances once the posting is settled - the input is disabled by

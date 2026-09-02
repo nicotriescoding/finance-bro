@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         })),
         { url: `${BASE}/products`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.4 },
         { url: `${BASE}/multiplayer`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.4 },
+        { url: `${BASE}/leaderboard`, lastModified: now, changeFrequency: "daily" as const, priority: 0.4 },
         { url: `${BASE}/library`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 },
         { url: `${BASE}/impressum`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.2 },
         { url: `${BASE}/privacy`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.2 },

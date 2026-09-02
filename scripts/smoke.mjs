@@ -270,6 +270,18 @@ try {
     check("/ links the Library", homeHtml.includes("Library 📚"));
     check("/ no longer links the Language page", !homeHtml.includes("Language 🎤"));
 
+    // --- semester leaderboard (2026-09-02) ---------------------------------
+    // Optional extra (hard rule 1): the page must render without the worker.
+    const board = await fetch(`${BASE}/leaderboard`);
+    const boardHtml = await board.text();
+    check("/leaderboard returns 200", board.status === 200, `got ${board.status}`);
+    check(
+        "/leaderboard renders its own state without a worker",
+        boardHtml.includes("Leaderboard 🏆") &&
+            (boardHtml.includes("desk is not staffed") || boardHtml.includes("Overall"))
+    );
+    check("/ links the Leaderboard", homeHtml.includes("Leaderboard 🏆"));
+
     // --- legal pages (added 2026-08-21) -----------------------------------
     const impressum = await fetch(`${BASE}/impressum`);
     const impressumHtml = await impressum.text();

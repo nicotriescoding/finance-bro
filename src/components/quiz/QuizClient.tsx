@@ -19,6 +19,7 @@ import {
     type StoredSession,
 } from "@/lib/session";
 import { useScore } from "@/hooks/useScore";
+import { reportEarning } from "@/lib/scoreboard/client";
 import { useLevel } from "@/hooks/useLevel";
 import { useStopwatch } from "@/hooks/useStopwatch";
 import { difficultyTimes } from "@/lib/scoring";
@@ -73,7 +74,7 @@ export default function QuizClient() {
     }, [ready, session, router, subjectParam]);
 
     const handleAnswered = useCallback(
-        (correct: boolean, payoutFactor: number) => {
+        (correct: boolean, payoutFactor: number, value: number | number[]) => {
             if (!session || !view) return;
             stop();
             let points = 0;
@@ -88,6 +89,11 @@ export default function QuizClient() {
                     limit,
                     payoutFactor
                 );
+                // semester scoreboard: fire-and-forget, re-graded server-side
+                const head = session.queue[0];
+                if (head) {
+                    reportEarning({ qid: head.id, seed: head.seed, value, amount: points });
+                }
             }
             const next = applyAnswer(session, correct, points);
             saveSession(next);

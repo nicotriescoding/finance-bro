@@ -3,8 +3,8 @@
  *
  * Holds the room state, relays via WebSockets (hibernation API, so an idle
  * lobby costs nothing), grades every answer server-side with the shared
- * question engine, runs the "Inflation" bot on alarms, and reports finished
- * games to the D1 semester leaderboard.
+ * question engine, runs the "Inflation" bot on alarms, and books every human's
+ * winnings per subject into the D1 semester scoreboard at the closing bell.
  */
 
 import { ALL_QUESTIONS, questionsFor, questionsForSubject } from "@/content/questions";
@@ -23,7 +23,6 @@ import {
     MAX_PLAYERS,
     POSTING_COUNTS,
     WRONG_COOLDOWN_MS,
-    currentSemester,
     sanitizeName,
     type C2S,
     type MpConfig,
@@ -33,6 +32,7 @@ import {
     type S2C,
 } from "@/lib/multiplayer/protocol";
 import type { Env } from "./index";
+import { bookEarnings, type Booking } from "./scoreboard";
 
 const BOT_ID = "bot";
 /** an empty lobby self-destructs after this long without a connection */
@@ -67,6 +67,8 @@ type PlayerState = {
     writeoffs: number;
     /** BroDollars earned this game */
     earned: number;
+    /** the same, split by subject - what the semester scoreboard books */
+    bySubject: Record<string, { amount: number; postings: number }>;
     rank: number | null;
     /** bullrun: remaining postings, head is current */
     queue: Dealt[];
@@ -242,6 +244,7 @@ export class Lobby {
                     progress: 0,
                     writeoffs: 0,
                     earned: 0,
+                    bySubject: {},
                     rank: null,
                     queue: [],
                     cooldownUntil: 0,
@@ -314,6 +317,7 @@ export class Lobby {
                         progress: 0,
                         writeoffs: 0,
                         earned: 0,
+                        bySubject: {},
                         rank: null,
                         queue: [],
                         cooldownUntil: 0,
@@ -366,6 +370,7 @@ export class Lobby {
                     p.progress = 0;
                     p.writeoffs = 0;
                     p.earned = 0;
+                    p.bySubject = {};
                     p.rank = null;
                     p.queue = [];
                     p.cooldownUntil = 0;
@@ -463,6 +468,7 @@ export class Lobby {
             p.progress = 0;
             p.writeoffs = 0;
             p.earned = 0;
+            p.bySubject = {};
             p.rank = null;
             p.cooldownUntil = 0;
             p.queue = room.config.mode === "bullrun" ? deck.map((d) => ({ ...d })) : [];
@@ -515,7 +521,7 @@ export class Lobby {
             if (!dealt) return;
             if (grade(dealt, value)) {
                 player.progress += 1;
-                player.earned += this.payoutFor(dealt);
+                this.credit(player, dealt);
                 await this.settleFrontrun(pid);
             } else {
                 player.writeoffs += 1;
@@ -537,7 +543,7 @@ export class Lobby {
         if (grade(head, value)) {
             player.queue.shift();
             player.progress += 1;
-            player.earned += this.payoutFor(head);
+            this.credit(player, head);
             this.sendToPlayer(pid, { t: "graded", correct: true });
             if (player.queue.length === 0) {
                 player.rank = game.nextRank++;
@@ -604,17 +610,27 @@ export class Lobby {
             if (a.progress !== b.progress) return b.progress - a.progress;
             return a.writeoffs - b.writeoffs;
         });
-        // the closing bell pays the winner a flat bonus on top
-        if (sorted[0]) sorted[0].earned += WIN_BONUS;
+        // the closing bell pays the winner a flat bonus on top - booked to the
+        // subject that paid the winner most this game (first pick as fallback)
+        const winner = sorted[0];
+        if (winner) {
+            winner.earned += WIN_BONUS;
+            const subject = this.bonusSubjectFor(winner);
+            const cell = (winner.bySubject[subject] ??= { amount: 0, postings: 0 });
+            cell.amount += WIN_BONUS;
+        }
         const ranking: MpRanking[] = sorted.map((p, i) => ({
             ...this.pub(p),
             winner: i === 0,
         }));
 
+        // book every human's winnings into the semester scoreboard
         let leaderboard: "ok" | "failed" | "skipped" = "skipped";
-        const humans = players.filter((p) => !p.bot);
-        if (humans.length > 0) {
-            leaderboard = await this.reportToLeaderboard(ranking);
+        const bookings: Booking[] = players
+            .filter((p) => !p.bot && p.earned > 0)
+            .map((p) => ({ pid: p.id, name: p.name, bySubject: p.bySubject }));
+        if (bookings.length > 0) {
+            leaderboard = (await bookEarnings(this.env.DB, bookings)) ? "ok" : "failed";
         }
 
         await this.ctx.storage.deleteAlarm();
@@ -623,29 +639,16 @@ export class Lobby {
         this.broadcastRoom();
     }
 
-    private async reportToLeaderboard(ranking: MpRanking[]): Promise<"ok" | "failed"> {
-        const semester = currentSemester();
-        const now = Date.now();
-        try {
-            const stmts = ranking
-                .filter((r) => !r.bot)
-                .map((r) =>
-                    this.env.DB.prepare(
-                        `INSERT INTO leaderboard (semester, player_id, name, wins, games, settled, updated_at)
-                         VALUES (?, ?, ?, ?, 1, ?, ?)
-                         ON CONFLICT (semester, player_id) DO UPDATE SET
-                            name = excluded.name,
-                            wins = wins + excluded.wins,
-                            games = games + 1,
-                            settled = settled + excluded.settled,
-                            updated_at = excluded.updated_at`
-                    ).bind(semester, r.id, r.name, r.winner ? 1 : 0, r.progress, now)
-                );
-            if (stmts.length > 0) await this.env.DB.batch(stmts);
-            return "ok";
-        } catch {
-            return "failed";
+    private bonusSubjectFor(p: PlayerState): string {
+        let best: string | null = null;
+        let bestAmount = -1;
+        for (const [subject, v] of Object.entries(p.bySubject)) {
+            if (v.amount > bestAmount) {
+                best = subject;
+                bestAmount = v.amount;
+            }
         }
+        return best ?? this.room!.config.selections[0]?.subject ?? "finance";
     }
 
     // -------------------------------------------------------------- bot + alarm
@@ -654,6 +657,19 @@ export class Lobby {
     private payoutFor(dealt: Dealt): number {
         const q = QUESTION_BY_ID.get(dealt.qid);
         return q ? maxPoints(q.difficulty) : 0;
+    }
+
+    /** pay a settled/won posting, and remember which subject it came from */
+    private credit(p: PlayerState, dealt: Dealt): void {
+        const q = QUESTION_BY_ID.get(dealt.qid);
+        const amount = q ? maxPoints(q.difficulty) : 0;
+        p.earned += amount;
+        if (!q) return;
+        // rooms persisted before the per-subject split come back without it
+        p.bySubject ??= {};
+        const cell = (p.bySubject[q.subject] ??= { amount: 0, postings: 0 });
+        cell.amount += amount;
+        cell.postings += 1;
     }
 
     private botDelayFor(dealt: Dealt): number {
@@ -699,7 +715,7 @@ export class Lobby {
                 const dealt = game.deck[game.index];
                 if (Math.random() < this.botAccuracyFor(dealt)) {
                     bot.progress += 1;
-                    bot.earned += this.payoutFor(dealt);
+                    this.credit(bot, dealt);
                     await this.settleFrontrun(BOT_ID);
                     return;
                 }
@@ -717,7 +733,7 @@ export class Lobby {
                 if (Math.random() < this.botAccuracyFor(head)) {
                     bot.queue.shift();
                     bot.progress += 1;
-                    bot.earned += this.payoutFor(head);
+                    this.credit(bot, head);
                     if (bot.queue.length === 0) {
                         bot.rank = game.nextRank++;
                         await this.save();

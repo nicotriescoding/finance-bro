@@ -13,10 +13,11 @@ export const metadata: Metadata = {
  * EU cloud) runs ONLY after consent via the cookie banner AND is deleted or
  * anonymized after at most 24 months (configure PostHog to match before
  * go-live), that localStorage data is never transmitted to us, that the
- * multiplayer worker (Cloudflare) only processes the display name + game
- * state described in section 4 (old-semester leaderboard rows must actually
- * be deleted within 12 months), and that no ad network is wired. If any of
- * that changes, change this page in the same commit.
+ * multiplayer/scoreboard worker (Cloudflare) only processes the display
+ * name, game state and the per-posting scoreboard reports described in
+ * section 4 (old-semester scoreboard rows must actually be deleted within
+ * 12 months), and that no ad network is wired. If any of that changes,
+ * change this page in the same commit.
  */
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -44,9 +45,11 @@ export default function PrivacyPage() {
 
             <Section title="The short version">
                 <p>
-                    No account, no newsletter. Your quiz scores stay in your browser.
-                    Multiplayer works with a self-chosen display name - no
-                    registration. Analytics only runs if you explicitly say yes to the
+                    No account, no newsletter. Your quiz balance stays in your
+                    browser; the semester leaderboard only receives a random player
+                    ID plus the BroDollars you earn. Multiplayer works with a
+                    self-chosen display name - no registration. Analytics only runs
+                    if you explicitly say yes to the
                     cookie banner - decline it and nothing is tracked. No ad network
                     is currently connected.
                 </p>
@@ -97,10 +100,10 @@ export default function PrivacyPage() {
                 </p>
             </Section>
 
-            <Section title="4. Multiplayer (Cloudflare)">
+            <Section title="4. Multiplayer and semester leaderboard (Cloudflare)">
                 <p>
-                    The optional multiplayer mode runs on infrastructure provided by
-                    Cloudflare, Inc. (USA). When you create or join a room, the
+                    The optional multiplayer mode and the semester leaderboard run on
+                    infrastructure provided by Cloudflare, Inc. (USA). When you create or join a room, the
                     following is processed on Cloudflare&apos;s servers: the display
                     name you enter (free choice - it does not have to be your real
                     name), a randomly generated player ID stored in your browser,
@@ -110,10 +113,16 @@ export default function PrivacyPage() {
                     a game and discarded when the room closes.
                 </p>
                 <p>
-                    If you finish ranked games, your display name, player ID and win
-                    statistics are stored in the semester leaderboard. Leaderboard
-                    entries are kept for the semester they belong to and deleted at
-                    the latest 12 months after that semester ends.
+                    The semester leaderboard ranks players by the BroDollars they
+                    earn. Each time you solve a quiz question correctly, and at the
+                    end of every multiplayer game, the following is sent to
+                    Cloudflare&apos;s servers: your player ID, your display name (or
+                    an automatically generated placeholder such as &quot;Excel
+                    Intern #4127&quot; until you pick one), the question and answer
+                    involved (so the result can be re-checked) and the BroDollars
+                    earned, per subject. Leaderboard entries are kept for the
+                    semester they belong to and deleted at the latest 12 months after
+                    that semester ends.
                 </p>
                 <p>
                     Legal basis: performance of the service you request by starting a
@@ -121,8 +130,8 @@ export default function PrivacyPage() {
                     Art. 28 GDPR is in place with Cloudflare; Cloudflare, Inc. is
                     certified under the EU-US Data Privacy Framework, so transfers to
                     the USA rest on the EU Commission&apos;s adequacy decision
-                    (Art. 45 GDPR). If you never open the multiplayer page, none of
-                    this processing happens.
+                    (Art. 45 GDPR). If the leaderboard service is unreachable, the
+                    site keeps working - the result simply goes unrecorded.
                 </p>
             </Section>
 

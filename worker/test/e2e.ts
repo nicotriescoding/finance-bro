@@ -5,7 +5,8 @@
  *   npx tsx worker/test/e2e.ts
  *
  * Plays a full Bull Run (two humans, one deliberately failing first) and a
- * full Front Running game (vs. the bot), then checks the leaderboard.
+ * full Front Running game (vs. the bot), then checks the semester scoreboard
+ * (BroDollars, overall + per subject) and the solo reporting endpoint.
  */
 
 import { ALL_QUESTIONS } from "@/content/questions";
@@ -214,13 +215,53 @@ async function rapidGame() {
 }
 
 async function leaderboard() {
-    const res = await fetch(`${BASE}/api/leaderboard`);
-    const data = (await res.json()) as { semester: string; rows: { name: string; wins: number }[] };
-    check("leaderboard: reachable", res.ok, String(res.status));
-    check("leaderboard: has rows", (data.rows?.length ?? 0) >= 2, JSON.stringify(data));
+    type Board = {
+        semester: string;
+        scope: string;
+        rows: { name: string; playerId: string; amount: number; postings: number }[];
+        you: { rank: number; amount: number } | null;
+    };
+    const res = await fetch(`${BASE}/api/leaderboard?subject=all&pid=aaaaaaaaaaaaaaaa`);
+    const data = (await res.json()) as Board;
+    check("scoreboard: reachable", res.ok, String(res.status));
+    check("scoreboard: has rows", (data.rows?.length ?? 0) >= 2, JSON.stringify(data));
     const alice = data.rows?.find((r) => r.name === "Alice");
-    check("leaderboard: Alice has a win", (alice?.wins ?? 0) >= 1);
-    console.log(`leaderboard semester: ${data.semester}`);
+    check(
+        "scoreboard: Alice banked her Bull Run (5 postings + bell bonus)",
+        (alice?.amount ?? 0) >= 250 + 5 * 50 && (alice?.postings ?? 0) >= 5,
+        JSON.stringify(alice)
+    );
+    check("scoreboard: Alice sees her own rank", data.you !== null && data.you.rank >= 1, JSON.stringify(data.you));
+    check("scoreboard: the bot never gets a payslip", !data.rows.some((r) => r.name.includes("Inflation")));
+    const fin = (await (await fetch(`${BASE}/api/leaderboard?subject=finance`)).json()) as Board;
+    check("scoreboard: finance board carries the same games", fin.scope === "finance" && fin.rows.some((r) => r.name === "Alice"));
+    const empty = (await (await fetch(`${BASE}/api/leaderboard?subject=marketing`)).json()) as Board;
+    check("scoreboard: untouched subject is empty", empty.rows.length === 0);
+    const bad = await fetch(`${BASE}/api/leaderboard?subject=nope`);
+    check("scoreboard: unknown subject is a 400", bad.status === 400);
+
+    // a solo posting: re-graded, capped, paid once
+    const q = ALL_QUESTIONS.find((x) => x.subject === "econ1" && x.kind === "numeric")!;
+    const seed = 123456;
+    const value = correctValueFor(q.id, seed);
+    const body = { pid: "eeeeeeeeeeeeeeee", name: "", qid: q.id, seed, value, amount: 99999 };
+    const post = (b: unknown) =>
+        fetch(`${BASE}/api/earnings`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(b),
+        }).then((r) => r.json() as Promise<{ ok?: boolean; amount?: number; reason?: string; name?: string }>);
+    const first = await post(body);
+    check("solo: correct posting booked", first.ok === true, JSON.stringify(first));
+    check("solo: payout capped at the difficulty's ceiling", (first.amount ?? 0) < 99999, String(first.amount));
+    check("solo: unnamed player gets an intern name", /Intern #\d{4}$/.test(first.name ?? ""), first.name);
+    const again = await post(body);
+    check("solo: replay is refused", again.ok === false && again.reason === "duplicate", JSON.stringify(again));
+    const wrong = await post({ ...body, seed: seed + 1, value: -424242 });
+    check("solo: wrong answer books nothing", wrong.ok === false && wrong.reason === "wrong", JSON.stringify(wrong));
+    const econ = (await (await fetch(`${BASE}/api/leaderboard?subject=econ1`)).json()) as Board;
+    check("solo: lands on the subject board", econ.rows.some((r) => r.playerId === "eeeeee" && r.amount === first.amount));
+    console.log(`scoreboard semester: ${data.semester}`);
 }
 
 const t0 = Date.now();
