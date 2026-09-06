@@ -107,3 +107,11 @@ the wrong GitHub account and 403s.
 - The Cowork sandbox cannot delete files under the mount and may leave stale
   `.git/*.lock` files. If git refuses to run:
   `rm -f .git/index.lock .git/HEAD.lock .git/objects/maintenance.lock`.
+- **Never run `npm install`, `npm ci` or `npm run check` from the Cowork
+  sandbox against the mounted folder.** The sandbox is Linux; it swaps
+  `node_modules/esbuild` for the Linux binary (Nico's Mac then fails with
+  "installed esbuild for another platform") and `next build` cannot clear
+  `.next/` there. Instead: run typecheck/verify/build/smoke in the cloud
+  container on a fresh `git clone` (`npm ci` there), and only edit files and
+  `git commit` through the mount. Nico's part is `git push` — nothing else.
+  If `node_modules` ever got clobbered: `rm -rf node_modules .next && npm ci`.
