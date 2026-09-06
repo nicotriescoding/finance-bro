@@ -6,16 +6,20 @@ import AffiliateLabel from "@/components/AffiliateLabel";
 export const metadata: Metadata = {
     title: "Bro Shop",
     description:
-        "The FinanceBro shop - seven curated bundles: from the Starter Pack and BWL Marie to the Boring Index Fund.",
+        "The FinanceBro shop - eight curated bundles: from the Starter Pack and BWL Marie to the After-Exam Party Kit.",
 };
 
 /**
  * The Bro Shop (rebuilt 2026-08-29, images upgraded same day, four more
- * bundles 2026-09-05): seven joke bundles in a two-column card grid, flanked
- * by the sticky desktop ad rails (AdRail). Order: Starter Pack, BWL Marie,
- * Undercover Broke Student, then the four 2026-09-05 bundles (Excel Monkey,
- * Doomsday Bunker, LinkedIn Thought Leader, Boring Index Fund - the last one
- * is the "would actually buy" bundle, keep it earnest). The vest blurb is original finance-bro canon: do not touch it (card renamed
+ * bundles 2026-09-05, After-Exam Party Kit 2026-09-06): eight joke bundles
+ * in a two-column card grid, flanked by the sticky desktop ad rails
+ * (AdRail). Order: Starter Pack, BWL Marie, Undercover Broke Student, then
+ * the four 2026-09-05 bundles (Excel Monkey, Doomsday Bunker, LinkedIn
+ * Thought Leader, Boring Index Fund - the "would actually buy" bundle, keep
+ * it earnest), then the After-Exam Party Kit (Nico's picks: an Aperol tower
+ * = beer tower, the mortar-shaped beer opener, plus more drinking gear).
+ * The Birkin card shows a gold crocodile-leather clutch since 2026-09-06
+ * (Nico: croc leather, and only imagery we hold rights to). The vest blurb is original finance-bro canon: do not touch it (card renamed
  * 2026-09-06 - it links an ellesse vest, so it may not carry the Patagonia mark). (Business School Cigarettes and the Hela Ketchup were removed
  * 2026-08-29 per Nico - do not resurrect without asking him.)
  *
@@ -63,7 +67,7 @@ const BUNDLES: Bundle[] = [
                 name: "Birkin Bag",
                 img: {
                     src: "/products/birkin.jpg",
-                    alt: "A pink designer handbag",
+                    alt: "A gold crocodile-leather clutch bag",
                 },
                 blurb:
                     "Something small for when you forgot her birthday. Again. The waiting list is longer than your DCF model and twice as fictional.",
@@ -461,6 +465,75 @@ const BUNDLES: Bundle[] = [
             },
         ],
     },
+    {
+        name: "The After-Exam Party Kit",
+        emoji: "🍾",
+        tagline: "Grades are lagging indicators. The party is priced in tonight.",
+        chips: ["6 positions", "risk: blackout", "liquidity: 3 liters"],
+        products: [
+            {
+                name: "The Aperol Tower",
+                img: {
+                    src: "/products/aperol-tower.jpg",
+                    alt: "A tall drink dispenser tower filled with an orange drink",
+                },
+                blurb:
+                    "Three liters of Spritz with its own tap, technically a beer tower with an identity crisis. The only tower in this shop with more liquidity than your bank account.",
+                href: amz("getränkespender turm 3 liter zapfhahn"),
+            },
+            {
+                name: "Beer Mortar, Heavy Artillery",
+                img: {
+                    src: "/products/bottle-opener.jpg",
+                    alt: "A steel bottle opener next to a bottle cap",
+                },
+                blurb:
+                    "A bottle opener shaped like a mortar that fires the cap across the room. Recoil: none. Casualties: one lampshade per semester. Opens beer, closes exam season.",
+                href: amz("bierflaschenöffner mörser"),
+                note: "Picture shows the civilian model. The link goes to the actual artillery.",
+            },
+            {
+                name: "Beer Pong, Regulation Set",
+                img: {
+                    src: "/products/beer-pong.jpg",
+                    alt: "Six red plastic cups in a triangle with a white ball above them",
+                },
+                blurb:
+                    "Twenty-two cups, six balls, one table you will owe your flatmate a new one of. The only game where a re-rack is a legitimate risk-management strategy.",
+                href: amz("beer pong set becher bälle"),
+            },
+            {
+                name: "Shot Roulette",
+                img: {
+                    src: "/products/shots.jpg",
+                    alt: "Tequila shot glasses with lime and salt on a white background",
+                },
+                blurb:
+                    "Sixteen shot glasses, one wheel, zero expected value. Finally a casino where the house is you and the house always loses. Bring lime and a designated economist.",
+                href: amz("shot roulette trinkspiel"),
+            },
+            {
+                name: "Spritz Glasses, Oversized",
+                img: {
+                    src: "/products/spritz-glass.jpg",
+                    alt: "A large wine glass filled with an orange spritz cocktail",
+                },
+                blurb:
+                    "Big enough to make a 4.0 look like a rounding error. Hold one at the right angle and the whole faculty terrace thinks you passed.",
+                href: amz("aperol spritz gläser set"),
+            },
+            {
+                name: "Party Speaker, Neighbor-Grade",
+                img: {
+                    src: "/products/party-speaker.jpg",
+                    alt: "A black portable Bluetooth speaker with a carry handle",
+                },
+                blurb:
+                    "Loud enough to get a noise complaint filed before the first tower is empty. Pairs with three phones and one very unfortunate playlist decision at 2 AM.",
+                href: amz("bluetooth lautsprecher party"),
+            },
+        ],
+    },
 ];
 
 function ProductCard({ p }: { p: Product }) {
@@ -521,7 +594,7 @@ export default function ProductsPage() {
                         📦 The Bro Shop
                     </h1>
                     <p className="mt-1.5 leading-relaxed text-muted">
-                        Seven curated bundles, zero due diligence. Pick the portfolio
+                        Eight curated bundles, zero due diligence. Pick the portfolio
                         that matches the person you are pretending to be this semester.
                     </p>
                     {/* Transparency: affiliate links are advertising (§ 5a UWG) */}

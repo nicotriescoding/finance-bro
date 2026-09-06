@@ -292,6 +292,13 @@ try {
             !productsHtml.includes("wikimedia.org")
     );
     // Removed per Nico 2026-08-29 - keep them gone.
+    // After-Exam Party Kit (2026-09-06) and the croc Birkin.
+    check(
+        "/products shelves the After-Exam Party Kit",
+        productsHtml.includes("After-Exam Party Kit") &&
+            productsHtml.includes("/products/aperol-tower.jpg") &&
+            productsHtml.includes("bierflaschen")
+    );
     check(
         "/products dropped the ketchup and the cigarettes",
         !productsHtml.includes("Ketchup") &&

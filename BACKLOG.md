@@ -6,6 +6,26 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Bro Shop: After-Exam Party Kit + croc Birkin (2026-09-06, latest
+session).** Per Nico: the Birkin card now shows a gold crocodile-leather
+clutch (Adobe Stock 472404769 - the free tier has exactly two croc bags,
+the other sits on a dark background; 12 candidates compared on a contact
+sheet). New eighth bundle "The After-Exam Party Kit" (6 positions): Aperol
+Tower (a 3 l beer tower - only free-tier photo of an actual tower, dark
+background, kept because it is literally an orange tower), Beer Mortar
+opener (Nico's Amazon link, search term "bierflaschenöffner mörser"; photo
+is a plain opener, the card's note says so), Beer Pong set, Shot Roulette,
+oversized Spritz glasses, party speaker. Six Stock photos licensed on
+Nico's account (free tier, `just_purchased`, zero cost), 5+ candidates
+each, ~900px JPEGs under `public/products/`; beer pong cropped tighter.
+Smoke +1 (92): party kit present, tower image local, mortar link. Gate
+green in the device-VM copy `$HOME/fb-check` (typecheck, verify 447 x 200,
+build, 92 smoke); dark-mode Playwright shots of /products (Starter Pack top,
+Party Kit both rows) checked in the cloud sandbox. Open: real-Chrome look
+on Nico's machine; delete `_to_delete/fb-src-0906b.tgz` (build tarball the
+sandbox cannot remove). Brand-name note unchanged: "Birkin Bag" and
+"The Intern's Rolex" still use famous marks (advice only, per Nico).
+
 **Consent fallback fixed - PostHog was never starting for new visitors
 (2026-09-06, commit 0cde8ef).** Live check in a fresh browser profile:
 AdSense's GDPR message is not served yet (`googlefc.getConsentStatus()` =
