@@ -5,8 +5,11 @@ import { Manrope, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import TabBar from "@/components/layout/TabBar";
 import Footer from "@/components/layout/Footer";
+import Script from "next/script";
 import CookieBanner from "@/components/consent/CookieBanner";
+import ConsentBridge from "@/components/consent/ConsentBridge";
 import AnchorAd from "@/components/AnchorAd";
+import { ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
 
 const manrope = Manrope({
     subsets: ["latin"],
@@ -89,6 +92,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <AnchorAd />
                 <TabBar />
                 <CookieBanner />
+                {/* AdSense loader = ad units + Google's certified consent dialog
+                    (the only cookie banner once this is on); ConsentBridge maps
+                    that decision onto PostHog. Off until the env var exists. */}
+                {adsEnabled && (
+                    <>
+                        <Script
+                            async
+                            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+                            crossOrigin="anonymous"
+                            strategy="afterInteractive"
+                        />
+                        <ConsentBridge />
+                    </>
+                )}
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

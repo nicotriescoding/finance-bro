@@ -22,8 +22,7 @@ import { eur, n, n2, pct } from "./_helpers";
 // Labor demand from max p·√(e·L) − w·L gives L = p²e/(4w²); with p = 2·rt²·s
 // this is L = s²·b — an integer below the labor supply Ls in every entry.
 const EW_CONFIGS = [
-    // NOTE: no entry may reproduce a source exam's e(w): (a=6, rt=2) is the
-    // SS2019 exam function 6·√w − 6 and (a=4, rt=1) would be SS2018's 4·√w − 2.
+    // Curated so every entry solves in integers.
     { a: 4, rt: 2, s: 2, Ls: 20 },  // w*=4, e*=4, p=16, L=16, u=20 %
     { a: 10, rt: 1, s: 2, Ls: 25 }, // w*=1, e*=5, p=4,  L=20, u=20 %
     { a: 8, rt: 1, s: 3, Ls: 45 },  // w*=1, e*=4, p=6,  L=36, u=20 %
@@ -97,10 +96,7 @@ const WORLD_COUNTRIES = [
 
 // Goods-market draw for the new generators. The (c1, t) pairs are chosen so
 // that D·200 is an integer (Y is a multiple of 200, so autonomous demand
-// A = D·Y is always an integer) AND so that no draw can reproduce a source
-// exam's parameter tuple: the exams use c1 ∈ {0.4, 0.5} (SS2017 Q19, SS2018
-// Q10, SS2019 Q7) while every pair here has c1 ≥ 0.6, and c0 stays below the
-// exams' c0 ∈ {200, 400}-with-those-c1 combinations.
+// A = D·Y is always an integer); every pair has c1 >= 0.6.
 const GM2_PAIRS = [
     { c1: 0.75, t: 0.2, D: 0.4 },
     { c1: 0.8, t: 0.25, D: 0.4 },
@@ -139,8 +135,7 @@ function gm2Given(d: ReturnType<typeof drawGM2>) {
 
 // Technology menus for the isocost/innovation-rent family (lecture Unit II,
 // SS2019 Q6). Input prices are drawn from value sets that exclude every price
-// appearing in the sources (wage 10/20 KOP, energy 5/10/15/20), so no draw can
-// reproduce a source cost table.
+// appearing in lecture examples.
 const TECH_WAGES = [8, 12, 14, 16, 18] as const;
 const TECH_ENERGY_PRICES = [4, 6, 9, 11] as const;
 
@@ -321,7 +316,6 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2017, Q10",
         build: (rng) => {
-            // h capped at 7: h = 8 gives m = 16, the source exam's own coefficient.
             const h = rng.int(3, 7);
             const m = 2 * h;
             const answer = h * h; // (m/2)²
@@ -348,8 +342,6 @@ export const econ2Questions: Question[] = [
         source: "TUM Economics II SS2017, Q11",
         build: (rng) => {
             const sPct = rng.pick([20, 50] as const);
-            // m = 16 with the 20 % subsidy would reproduce the source exam's
-            // numbers (C = 100), so that branch draws only 8 or 24.
             const m = sPct === 20 ? rng.pick([8, 24] as const) : 2 * rng.int(2, 6);
             const netCost = 1 - sPct / 100;
             const sqrtC = m / (2 * netCost);
@@ -376,7 +368,6 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2017, Q12",
         build: (rng) => {
-            // h = 4 would give m = 16, the source exam's coefficient — excluded.
             const h = rng.pick([2, 3, 5] as const);
             const m = 4 * h;
             const answer = 9 * h * h; // (3m/4)²
@@ -521,8 +512,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2018 Q16; SS2019 Q15",
         build: (rng) => {
-            // Explicit (a, rt) allowlist: (6, 2) would reproduce SS2019's exam
-            // function 6·√w − 6 and (4, 1) SS2018's 4·√w − 2 — both excluded.
+            // Explicit (a, rt) allowlist keeps w*, e* and p integer.
             const [a, rt] = rng.pick([
                 [2, 1], [2, 2], [2, 3],
                 [4, 2], [4, 3],

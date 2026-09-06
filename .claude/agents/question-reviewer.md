@@ -27,6 +27,10 @@ hit the edge case at 200 seeds per session.
    that drifts to a different skill than its `source` is a FAIL. Equally a
    FAIL: wording, invented story or distinctive scenario copied from the
    original, or (for static questions) the original's exact numbers.
+   Also a FAIL: the exam's parameter values written into code or comments
+   (tuple guards like `if (a === 4 && ...)`, "dropped X, it reproduced Q23"
+   notes). Ranges must avoid the source silently; report the line, never
+   restate the numbers in your own output either.
 3. **Units.** `percent` returns 8.24, not 0.0824; `EUR` euros, not cents;
    `ratio` a bare factor. Signed answers must state the sign convention in the
    prompt.

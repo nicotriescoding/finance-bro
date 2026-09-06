@@ -13,6 +13,9 @@
  * exactly what those units need.
  */
 
+import AdUnit from "@/components/AdUnit";
+import { slotLive } from "@/lib/ads";
+
 type Variant = "skyscraper" | "square" | "leaderboard" | "feed" | "sponsored-career";
 
 const SPEC: Record<
@@ -48,11 +51,40 @@ type Props = {
     variant: Variant;
     /** optional first line replacing the default slot copy (e.g. a slot name) */
     note?: string;
+    /**
+     * Change this value only on a user-driven content change (the next quiz
+     * posting): a live unit then requests a fresh ad. Leave it off for the
+     * sticky rails - refreshing those is what the AdSense policy forbids.
+     */
+    refreshKey?: string | number;
 };
 
-export default function AdSlot({ variant, note }: Props) {
+export default function AdSlot({ variant, note, refreshKey }: Props) {
     const spec = SPEC[variant];
     const lines = note ? [note, ...spec.lines] : spec.lines;
+
+    // Live AdSense unit once the slot id exists (src/lib/ads.ts); the card
+    // chrome and the fixed height stay identical, so nothing shifts.
+    if (slotLive(variant)) {
+        if (variant === "sponsored-career") {
+            return (
+                <div className="flex justify-center" style={{ height: spec.height }}>
+                    <AdUnit name={variant} refreshKey={refreshKey} />
+                </div>
+            );
+        }
+        return (
+            <div className="flex-none overflow-hidden rounded-xl border border-hairline bg-surface">
+                <div className="caps-label flex justify-between border-b border-hairline-soft px-3 py-2 text-[9px] tracking-[.16em] text-muted-light">
+                    <span>Sponsored</span>
+                    <span>AD</span>
+                </div>
+                <div className="flex justify-center" style={{ height: spec.height }}>
+                    <AdUnit name={variant} refreshKey={refreshKey} />
+                </div>
+            </div>
+        );
+    }
 
     if (variant === "sponsored-career") {
         return (

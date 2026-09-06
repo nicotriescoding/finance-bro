@@ -66,6 +66,16 @@ export default function QuizClient() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // the server-rendered intro above the quiz (quiz/page.tsx) hides while a
+    // run is open - crawlers never carry a session, so they always see it
+    useEffect(() => {
+        if (view) document.body.dataset.quizRun = "1";
+        else delete document.body.dataset.quizRun;
+        return () => {
+            delete document.body.dataset.quizRun;
+        };
+    }, [view]);
+
     // no run to resume -> the Career page is where a run starts
     useEffect(() => {
         if (ready && session === null) {
@@ -237,11 +247,13 @@ export default function QuizClient() {
                             isLast={totals.left === 0}
                         />
 
+                        {/* in-flow units re-request an ad per posting (user-driven
+                            content change); the sticky rails above never refresh */}
                         <div className="hidden md:block">
-                            <AdSlot variant="leaderboard" />
+                            <AdSlot variant="leaderboard" refreshKey={view.instance.key} />
                         </div>
                         <div className="md:hidden">
-                            <AdSlot variant="feed" />
+                            <AdSlot variant="feed" refreshKey={view.instance.key} />
                         </div>
 
                         <button

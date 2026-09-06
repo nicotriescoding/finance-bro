@@ -9,6 +9,7 @@ import {
     getStoredConsent,
     initAnalyticsIfConsented,
 } from "@/lib/analytics";
+import { adsEnabled } from "@/lib/ads";
 
 /**
  * Cookie consent banner (§ 25 TDDDG / Art. 6 (1) (a) GDPR).
@@ -24,6 +25,12 @@ export default function CookieBanner() {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
+        // With AdSense on, Google's certified consent dialog is the one and
+        // only banner (see ConsentBridge) - this one stays closed for good.
+        if (adsEnabled) {
+            void initAnalyticsIfConsented();
+            return;
+        }
         // After hydration: show the banner if the visitor never chose; boot
         // analytics for returning visitors who accepted earlier (no-op until
         // the PostHog key exists).

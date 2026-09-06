@@ -1,0 +1,84 @@
+"use client";
+
+import { useEffect } from "react";
+import { CONSENT_EVENT, acceptAnalytics, declineAnalytics, getStoredConsent } from "@/lib/analytics";
+import { adsEnabled } from "@/lib/ads";
+
+/**
+ * With AdSense on, Google's certified consent dialog (AdSense -> Privacy &
+ * messaging, IAB TCF 2.2) is the site's only cookie banner. This bridge makes
+ * that one decision drive everything else:
+ *
+ *   - TCF purpose 1 (store/access information on a device) AND purpose 8
+ *     (measure content performance) granted  -> `acceptAnalytics()`:
+ *     PostHog may start, the mobile anchor ad may show.
+ *   - anything less                          -> `declineAnalytics()`:
+ *     PostHog stays off / is switched off and its identifiers are dropped.
+ *
+ * Both calls also persist the choice in our own consent store, so the rest
+ * of the site (AnchorAd, CookieBanner's "already decided" check) keeps
+ * working unchanged. "Cookie settings" in the footer and the privacy policy
+ * dispatch CONSENT_EVENT; here that reopens Google's revocation dialog
+ * instead of our own banner.
+ *
+ * Renders nothing. Does nothing at all while AdSense is off - then the
+ * site's own CookieBanner is in charge.
+ */
+export default function ConsentBridge() {
+    useEffect(() => {
+        if (!adsEnabled) return;
+
+        let cancelled = false;
+        let listenerId: number | undefined;
+
+        const apply = (data: TcfData) => {
+            if (data.eventStatus !== "tcloaded" && data.eventStatus !== "useractioncomplete") return;
+            if (data.gdprApplies === false) {
+                // Outside the GDPR area the dialog never shows; treat as no
+                // analytics consent rather than assuming one.
+                if (getStoredConsent() === null) declineAnalytics();
+                return;
+            }
+            const c = data.purpose?.consents ?? {};
+            const ok = c["1"] === true && c["8"] === true;
+            const stored = getStoredConsent();
+            if (ok && stored?.analytics !== true) void acceptAnalytics();
+            if (!ok && stored?.analytics !== false) declineAnalytics();
+        };
+
+        // adsbygoogle.js installs __tcfapi asynchronously; poll briefly.
+        const started = Date.now();
+        const hook = () => {
+            if (cancelled) return;
+            if (typeof window.__tcfapi === "function") {
+                window.__tcfapi("addEventListener", 2, (data, success) => {
+                    if (!success) return;
+                    listenerId = data.listenerId;
+                    apply(data);
+                });
+                return;
+            }
+            if (Date.now() - started < 20_000) window.setTimeout(hook, 250);
+        };
+        hook();
+
+        const reopen = () => {
+            const fc = window.googlefc;
+            if (!fc?.callbackQueue) return;
+            fc.callbackQueue.push({
+                CONSENT_DATA_READY: () => fc.showRevocationMessage?.(),
+            });
+        };
+        window.addEventListener(CONSENT_EVENT, reopen);
+
+        return () => {
+            cancelled = true;
+            window.removeEventListener(CONSENT_EVENT, reopen);
+            if (listenerId !== undefined && typeof window.__tcfapi === "function") {
+                window.__tcfapi("removeEventListener", 2, () => {}, listenerId);
+            }
+        };
+    }, []);
+
+    return null;
+}

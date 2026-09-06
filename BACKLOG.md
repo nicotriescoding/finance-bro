@@ -6,6 +6,39 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**AdSense wiring + single consent dialog + crawlable quiz + bank cleanup
+(2026-09-06, later session).** Per Nico. (1) `src/lib/ads.ts` +
+`AdUnit`: with `NEXT_PUBLIC_ADSENSE_CLIENT` set, `layout.tsx` loads
+adsbygoogle.js (which also delivers Google's certified TCF 2.2 consent
+dialog from AdSense "Privacy & messaging"), `AdSlot`/`AnchorAd` render real
+`<ins>` units per slot id in `AD_SLOTS` (empty id = placeholder stays),
+and the in-flow quiz units get `refreshKey={instance.key}` - a new ad per
+posting, never on a timer, never the rails (AdSense placement policy).
+(2) One banner: `ConsentBridge` maps the TCF decision (purposes 1 + 8) onto
+`acceptAnalytics()`/`declineAnalytics()`, so PostHog and the anchor ad
+keep working off our consent store; `CookieBanner` stays closed in AdSense
+mode; footer/privacy "Cookie settings" reopen Google's revocation dialog.
+Nico's funny copy goes into Google's message editor - text + all account
+steps (PostHog EU key, AdSense review, message, ad units, PartnerNet tag)
+in `docs/adsense-setup.md`. (3) `/privacy`: section 6 renders the full
+AdSense text (Google Ireland, cookie names, DPF, opt-out links, FCCDCF
+consent cookie) when `adsEnabled`, the placeholder text otherwise; short
+version + section 5 say "consent dialog". (4) `/quiz?subject=<id>` is now
+a server component: real h1, per-subject intro (`src/content/
+subject-intros.ts`, 7 entries), live question count + topic list,
+per-subject metadata; hidden via `body[data-quiz-run]` while a run is
+open. No per-subject routes (Nico: no more subpages). (5) Question banks:
+every exam-tuple guard and every comment quoting exam numbers removed
+from econ1/econ2/cost_accounting - ranges and value sets now avoid the
+sources silently (12 generators re-ranged); rule written into
+`.claude/rules/questions.md` and the reviewer definition. Reviewer pass
+12/12 PASS (2,000 seeds each). Gate green (`$HOME/fb-check` copy):
+typecheck, verify 447 x 200, build, **89 smoke** (+3 quiz SSR checks);
+cloud build with a dummy `ca-pub` id: privacy AdSense section, script
+tag, no own banner, intro hidden during a run, zero console errors.
+Owed: real-Chrome look; delete `_to_delete/fb-src-0906*.tgz`; the
+account steps in `docs/adsense-setup.md`.
+
 **Legal pass 2 - TUM labels, affiliate labelling, GDPR gaps (2026-09-06).**
 Per Nico's second audit. (1) UrhG/MarkenG: the per-question `source` chip
 is no longer rendered in `QuestionCard` (field stays in the banks as

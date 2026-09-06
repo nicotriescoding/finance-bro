@@ -24,6 +24,14 @@ numeric). Only the tested concept, standard formulas, and statutory terms carry
 over — the exam author's expression never does. Details in the
 `add-exam-questions` skill. Source exam files never enter the repo.
 
+**The exam's numbers never enter the repo either — not in code, not in
+comments.** Choose draw ranges and value grids so a source parameter set
+simply cannot come out, and say nothing about what was excluded. No
+`if (a === 4 && b === 100) ...` guards, no "dropped X because it reproduced
+Q23" comments: those quote the exam inside the codebase, which is worse than
+the coincidence they prevent. Only `source` names the exam. (Cleanup done
+2026-09-06 across all banks - keep it that way.)
+
 ## Shape
 
 `topic` must be a topic id from `src/content/subjects.ts` (add the topic there

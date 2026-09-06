@@ -96,8 +96,7 @@ const fracTex = (num: number, den: number) => (den === 1 ? `${num}` : String.raw
  * wage is w' = p * m and the time budget is Z = p (m+1)^2 (p + w). Then the
  * old optimum F_0 = p^2 (m+1)^2 and q_0 = (w (m+1))^2 are perfect squares, so
  * U_0 = (m+1)(p+w) and the compensated bundle are integers too, and Z stays
- * inside 30..168 hours. The source exam's (p, w, Z) = (1, 5, 24) is not in
- * the list.
+ * inside 30..168 hours.
  */
 const LABOR_TUPLES = [
     [1, 3, 2],
@@ -175,10 +174,8 @@ export const econ1Questions: Question[] = [
             const yA = rng.int(3, 6) * 100; // Livonia: barrels of oil
             const mult = rng.pick([3, 4, 5]); // Livonia's opportunity cost of oil (sacks of grain)
             const xA = yA * mult; // Livonia: sacks of grain
-            let yB = rng.int(6, 10) * 100; // Carinia: barrels of oil
-            const fac = rng.pick([1, 1.5, 2]); // Carinia's opportunity cost of oil
-            // Never reproduce the source exam's own table (2,000/500 vs 1,500/1,000).
-            if (yA === 500 && mult === 4 && yB === 1000 && fac === 1.5) yB = 900;
+            const yB = rng.int(6, 10) * 100; // Carinia: barrels of oil
+            const fac = rng.pick([1, 1.25, 2]); // Carinia's opportunity cost of oil
             const xB = yB * fac; // Carinia: sacks of grain
             return {
                 prompt: `Livonia can produce ${n(xA)} sacks of grain **or** ${n(yA)} barrels of olive oil per year; Carinia can produce ${n(xB)} sacks of grain **or** ${n(yB)} barrels of olive oil. They want to trade oil for grain. What is the **maximum** price of one barrel of oil, measured in sacks of grain, at which both countries still gain from trade?`,
@@ -248,9 +245,7 @@ export const econ1Questions: Question[] = [
             const b = (den - num) / den;
             const p1 = rng.int(2, 5);
             const p1New = 2 * p1; // the price of good 1 doubles
-            let p2 = rng.int(3, 8);
-            // Keep clear of the source exam's parameter set (1/4-3/4, p1 2 -> 4, p2 = 6).
-            if (num === 1 && den === 4 && p1 === 2 && p2 === 6) p2 = 7;
+            const p2 = rng.pick([3, 4, 5, 7, 8]);
             const k = rng.int(4, 12);
             const m = p1New * den * k; // q1 stays a clean integer at the NEW price
             const q1 = num * k;
@@ -281,11 +276,9 @@ export const econ1Questions: Question[] = [
         build: (rng) => {
             const a = rng.pick([2, 4]); // technology coefficient
             const s = rng.int(1, 3); // wage-rental ratio w/r
-            const r = rng.pick([5, 10, 20]);
+            const r = rng.pick([5, 15, 20]);
             const w = s * r;
-            let L = rng.int(6, 14);
-            // The source exam's own draw (2KL - L^2, w = 20, r = 10, L* = 10) stays out.
-            if (a === 2 && w === 20 && r === 10 && L === 10) L = 11;
+            const L = rng.int(6, 14);
             const coef = s * a + 1; // Q = (sa + 1) L^2 at the optimum
             const Q = coef * L * L;
             const K = ((s * a + 2) / a) * L;
@@ -314,13 +307,11 @@ export const econ1Questions: Question[] = [
         source: "TUM Economics I Exercise Exam WT22/23, Q23",
         build: (rng) => {
             const c2 = rng.pick([0.2, 0.25, 0.5]);
-            const c1 = rng.int(6, 14);
+            const c1 = rng.pick([6, 7, 8, 9, 11, 12, 13, 14]);
             const q = rng.int(4, 10);
             const p = c1 + 2 * c2 * q; // price such that MC = p at q
             const vp = c2 * q * q; // variable profit (p - AVC) * q area
-            let loss = rng.int(2, 8) * 10;
-            // Never print the source exam's cost function (0.2q^2 + 10q + 45 at p = 12).
-            if (c2 === 0.2 && c1 === 10 && q === 5 && loss === 40) loss = 50;
+            const loss = rng.int(2, 8) * 10;
             const F = vp + loss; // fixed cost chosen so profit = -loss < 0
             return {
                 prompt: String.raw`A price-taking brewery has short-run costs $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$. The market price is ${eur(p)} per crate. What profit does it earn at its optimal short-run output? (A loss is a negative number.)`,
@@ -505,11 +496,9 @@ export const econ1Questions: Question[] = [
             const d = rng.int(4, 8); // demand slope
             const s = rng.int(3, 6); // supply slope
             const t = rng.int(2, 5); // per-unit tax
-            const pStar = rng.int(15, 30);
+            const pStar = rng.int(15, 29);
             const hi = Math.min(80, s * pStar - 5);
-            let Q0 = rng.int(25, hi);
-            // The source exam's market (240 - 6p vs 4p - 60, tax 4) must not come out.
-            if (d === 6 && s === 4 && t === 4 && pStar === 30 && Q0 === 60) Q0 = 55;
+            const Q0 = rng.int(25, hi);
             const A = Q0 + d * pStar; // demand intercept
             const B = s * pStar - Q0; // supply intercept (>= 5 by construction)
             const dQ = (d * s * t) / (d + s); // drop in quantity
@@ -541,10 +530,8 @@ export const econ1Questions: Question[] = [
         build: (rng) => {
             const beta = rng.pick([2, 4]); // demand slope
             const gamma = rng.pick([1, 2]); // MC slope
-            let Qstar = rng.int(40, 75);
+            const Qstar = rng.int(40, 69);
             const cc = rng.int(1, 2) * 100; // MC intercept
-            // Q = 200 - 0.25P with MC = 2Q + 100 is the source exam's monopoly - skip it.
-            if (beta === 4 && gamma === 2 && cc === 100 && Qstar === 70) Qstar = 65;
             const alpha = cc + Qstar * (2 * beta + gamma); // <= 950 by construction
             const FC = rng.int(1, 5) * 100;
             return {
@@ -570,10 +557,8 @@ export const econ1Questions: Question[] = [
         build: (rng) => {
             const beta = rng.pick([2, 4]);
             const gamma = 2; // keeps the cost function's quadratic term clean
-            let Qstar = 2 * rng.int(20, 39); // even, so alpha is divisible by beta
+            const Qstar = 2 * rng.int(20, 34); // even, so alpha is divisible by beta
             const cc = rng.pick([100, 200]);
-            // Q = 200 - 0.25P with MC = 2Q + 100 is the source exam's monopoly - skip it.
-            if (beta === 4 && cc === 100 && Qstar === 70) Qstar = 66;
             const alpha = cc + Qstar * (2 * beta + gamma);
             const A = alpha / beta; // integer by construction
             const k = 1 / beta;
@@ -729,9 +714,7 @@ export const econ1Questions: Question[] = [
             const beta = rng.int(2, 4);
             const p2 = rng.int(2, 6);
             const p1 = Math.ceil((alpha * p2) / beta) + rng.int(1, 3); // ensures MU2/p2 > MU1/p1
-            let m = p2 * rng.int(8, 20);
-            // Never reproduce the source's own tuple (α=1, β=2, p1=4, p2=5, m=50).
-            if (alpha === 1 && beta === 2 && p1 === 4 && p2 === 5 && m === 50) m += p2;
+            const m = p2 * rng.int(11, 24);
             const answer = m / p2;
             return {
                 prompt: String.raw`A commuter treats regional-train tickets ($q_1$) and express-bus tickets ($q_2$) as perfect substitutes with utility $U(q_1, q_2) = ${n(alpha)} q_1 + ${n(beta)} q_2$. A train ticket costs ${eur(p1)}, a bus ticket ${eur(p2)}, and her monthly travel budget is ${eur(m)}. How many **bus tickets** does she buy at the optimum?`,
@@ -974,8 +957,7 @@ export const econ1Questions: Question[] = [
         unit: "units",
         source: "TUM Economics I W22/23, Problem Set 7, T1",
         build: (rng) => {
-            // L >= 5 and AP >= 10: the source table's rows (L = 3..6 with
-            // single-digit APs, e.g. L=4, AP=9, MP=3) can never be reproduced.
+            // L >= 5 and AP >= 10 keep the table in two-digit territory.
             const L = rng.int(5, 8);
             const AP = rng.int(10, 15);
             const QL = L * AP;
@@ -1001,8 +983,6 @@ export const econ1Questions: Question[] = [
         unit: "units",
         source: "TUM Economics I W22/23, Problem Set 7, T2",
         build: (rng) => {
-            // [0.08, 25] deliberately absent: it comes close to the source's
-            // own Q = -50 + 10L - 0.02L^2 shape (PS7).
             const pair = rng.pick([
                 [0.05, 20],
                 [0.05, 40],
@@ -1724,8 +1704,7 @@ export const econ1Questions: Question[] = [
             const p = rng.pick([1, 2, 3, 4]);
             const w = rng.pick([2, 3, 4, 5, 6, 8, 10, 12].filter((x) => x !== p));
             const cycle = p * (p + w); // Z = cycle * v keeps F, L and q integer
-            let v = rng.int(Math.ceil(24 / cycle), Math.floor(168 / cycle));
-            if (p === 1 && w === 5 && cycle * v === 24) v += 1; // never the source's (p, w, Z)
+            const v = rng.int(Math.ceil(30 / cycle), Math.floor(168 / cycle));
             const Z = cycle * v;
             const answer = p * p * v; // = p Z / (p + w)
             return {
@@ -2170,7 +2149,7 @@ export const econ1Questions: Question[] = [
         unit: "units",
         source: "TUM Economics I Exam WS19/20, P23",
         build: (rng) => {
-            const c = rng.pick([1, 2, 3, 4]);
+            const c = rng.pick([1, 3, 4, 5]);
             const w = rng.int(2, 12);
             const r = rng.int(2, 12);
             const lcm = (w * r) / gcd(w, r);
@@ -2178,9 +2157,7 @@ export const econ1Questions: Question[] = [
             const scale = (c * lcm) / gcd(w, r);
             const lo = Math.max(1, Math.ceil(Math.sqrt(50 / scale)), Math.ceil(60 / lcm));
             const hi = Math.max(lo, Math.floor(Math.sqrt(9000 / scale)));
-            let k = rng.int(lo, hi);
-            // never the source's tuple (c = 2, {w, r} = {5, 6}, budget 360)
-            if (c === 2 && w * r === 30 && w >= 5 && r >= 5 && 2 * lcm * k === 360) k = 5;
+            const k = rng.int(lo, hi);
             const B = 2 * lcm * k;
             const L = B / (2 * w);
             const K = B / (2 * r);
@@ -2315,8 +2292,7 @@ export const econ1Questions: Question[] = [
         source: "TUM Principles of Economics Exercise Exam WS20/21, P14",
         build: (rng) => {
             const k = rng.pick([2, 4, 5, 8, 10, 20, 25]); // slope of MC
-            // q never equals 5 when k = 20, so the original (k, p) = (20, 100) is out
-            const q = k === 20 ? rng.int(6, 14) : rng.int(3, 14);
+            const q = rng.int(6, 14);
             const p = k * q; // price is a multiple of k, so q* is an integer
             const F = rng.int(2, 12) * 10;
             return {
@@ -2341,9 +2317,7 @@ export const econ1Questions: Question[] = [
         source: "TUM Principles of Economics Exercise Exam WS20/21, P15",
         build: (rng) => {
             const a = rng.pick([1, 2, 4, 5, 10]); // cost curvature
-            // efficient scale sqrt(F/a); a = 10 with qm = 10 would reproduce the
-            // source's C(q) = 10 q^2 + 1,000 (threshold 200), so cap qm at 9 there.
-            const qm = rng.int(3, a === 10 ? 9 : 10);
+            const qm = rng.int(3, 9); // efficient scale sqrt(F/a)
             const F = a * qm * qm; // makes F/a a perfect square
             const answer = 2 * a * qm; // min AC = 2 sqrt(a F)
             return {
@@ -2843,8 +2817,6 @@ export const econ1Questions: Question[] = [
         unit: "units",
         source: "TUM Economics I Exam WS19/20, P28; TUM Economics I eTest W20/21, Q15",
         build: (rng) => {
-            // Original tuples (A = 2,600, d = 50, s = 80) and (A = 900, d = 10,
-            // s = 20) are out of reach: both slopes are drawn from 20..60.
             const d = rng.int(2, 6) * 10; // demand slope
             const s = rng.int(2, 6) * 10; // supply slope
             const pStar = rng.int(6, 15); // equilibrium fare, integer by construction
@@ -3189,7 +3161,6 @@ export const econ1Questions: Question[] = [
         unit: "EUR",
         source: "TUM Principles of Economics Exercise Exam WS20/21, P21",
         build: (rng) => {
-            // Original tuple (A = 15, b = 3, F = 1) is unreachable: b starts at 4.
             const b = rng.int(4, 14);
             const k = rng.int(3, 15); // monopoly quantity
             const A = b + 4 * k;

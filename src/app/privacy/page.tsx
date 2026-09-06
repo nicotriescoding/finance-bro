@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import CookieSettingsLink from "@/components/consent/CookieSettingsLink";
+import { adsEnabled } from "@/lib/ads";
 
 export const metadata: Metadata = {
     title: "Privacy Policy",
@@ -16,8 +17,11 @@ export const metadata: Metadata = {
  * multiplayer/scoreboard worker (Cloudflare) only processes the display
  * name, game state and the per-posting scoreboard reports described in
  * section 4 (old-semester scoreboard rows must actually be deleted within
- * 12 months), and that no ad network is wired. If any of that changes,
- * change this page in the same commit.
+ * 12 months). Advertising (section 6) is rendered in two versions from the
+ * build-time `adsEnabled` flag: placeholders-only while AdSense is off, the
+ * full Google AdSense / consent-dialog text once NEXT_PUBLIC_ADSENSE_CLIENT
+ * is set - so the page and reality flip in the same deploy. If any of that
+ * changes, change this page in the same commit.
  */
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -50,8 +54,10 @@ export default function PrivacyPage() {
                     ID plus the BroDollars you earn. Multiplayer works with a
                     self-chosen display name - no registration. Analytics only runs
                     if you explicitly say yes to the
-                    cookie banner - decline it and nothing is tracked. No ad network
-                    is currently connected.
+                    consent dialog - decline it and nothing is tracked.{" "}
+                    {adsEnabled
+                        ? "Ads come from Google AdSense and are personalised only with your consent in that same dialog."
+                        : "No ad network is currently connected."}
                 </p>
             </Section>
 
@@ -138,7 +144,7 @@ export default function PrivacyPage() {
             <Section title="5. Analytics (PostHog) - only with your consent">
                 <p>
                     We use PostHog to understand which pages and questions get used -
-                    but <strong>only if you accept the cookie banner</strong>. Until
+                    but <strong>only if you accept the consent dialog</strong>. Until
                     you do, no analytics script loads, no cookie is set and no data is
                     collected. If you decline, the site works exactly the same.
                 </p>
@@ -151,8 +157,10 @@ export default function PrivacyPage() {
                     EU standard contractual clauses).
                 </p>
                 <p>
-                    Legal basis: your consent (Art. 6 (1) (a) GDPR, § 25 (1) TDDDG). You
-                    can withdraw it at any time with effect for the future via{" "}
+                    Legal basis: your consent (Art. 6 (1) (a) GDPR, § 25 (1) TDDDG).
+                    {adsEnabled &&
+                        " You give or refuse it once, in the consent dialog on your first visit, which covers analytics and advertising (section 6) together."}{" "}
+                    You can withdraw it at any time with effect for the future via{" "}
                     <CookieSettingsLink /> - withdrawal stops all capturing and resets
                     the stored identifiers.
                 </p>
@@ -163,12 +171,65 @@ export default function PrivacyPage() {
             </Section>
 
             <Section title="6. Advertising and affiliate links">
-                <p>
-                    Ad placements on this site are currently decorative placeholders -
-                    no ad network is connected and no ad-related data is processed. If
-                    that changes, this policy and the consent banner will be updated
-                    first.
-                </p>
+                {adsEnabled ? (
+                    <>
+                        <p>
+                            Ads on this site are served by Google AdSense, a service of
+                            Google Ireland Limited, Gordon House, Barrow Street, Dublin 4,
+                            Ireland (&quot;Google&quot;). Google uses cookies and similar
+                            identifiers to select ads, measure their performance, prevent
+                            fraud and - only with your consent - to show ads personalised
+                            to your interests, which may involve advertising partners
+                            listed in the consent dialog (IAB Transparency &amp; Consent
+                            Framework).
+                        </p>
+                        <p>
+                            Cookies involved: <code>__gads</code>, <code>__gpi</code> and{" "}
+                            <code>__eoi</code> (set for finance-bro.de and google.com, up
+                            to 13 months), <code>IDE</code> and <code>test_cookie</code>{" "}
+                            (doubleclick.net), plus <code>FCCDCF</code>, the first-party
+                            cookie that stores your consent choice (13 months, strictly
+                            necessary, § 25 (2) TDDDG). Your IP address and browser
+                            details are transmitted to Google when an ad loads.
+                        </p>
+                        <p>
+                            Legal basis: your consent for personalised ads and for storing
+                            identifiers (Art. 6 (1) (a) GDPR, § 25 (1) TDDDG), given or
+                            refused in the consent dialog. If you decline, Google shows
+                            at most non-personalised ads that use no cross-site
+                            identifiers; declining does not limit the site. You can change
+                            your choice any time via <CookieSettingsLink />.
+                        </p>
+                        <p>
+                            Google may transfer data to Google LLC in the USA. Google LLC
+                            is certified under the EU-US Data Privacy Framework, so the
+                            transfer rests on the EU Commission&apos;s adequacy decision
+                            (Art. 45 GDPR), with EU standard contractual clauses (Art. 46
+                            GDPR) as a fallback. More at{" "}
+                            <a
+                                href="https://policies.google.com/technologies/ads"
+                                className="font-bold text-brand underline underline-offset-2"
+                            >
+                                policies.google.com/technologies/ads
+                            </a>
+                            ; manage Google&apos;s ad personalisation at{" "}
+                            <a
+                                href="https://adssettings.google.com"
+                                className="font-bold text-brand underline underline-offset-2"
+                            >
+                                adssettings.google.com
+                            </a>
+                            .
+                        </p>
+                    </>
+                ) : (
+                    <p>
+                        Ad placements on this site are currently decorative placeholders -
+                        no ad network is connected and no ad-related data is processed. If
+                        that changes, this policy and the consent dialog will be updated
+                        first.
+                    </p>
+                )}
                 <p>
                     The Library and Bro Shop pages contain affiliate links to Amazon.de
                     (Amazon EU S.à r.l., Luxembourg - Amazon PartnerNet), each labelled

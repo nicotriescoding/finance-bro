@@ -66,8 +66,6 @@ function walkLayers(layers: Array<[number, number]>, qty: number) {
  * Guards: c1 <= b0 + q1 (min 1,100 vs max 1,000) and
  * c1 + c2 <= b0 + q1 + q2 - 100 (max 1,300 vs min 1,400), so no draw can
  * run the stock negative. Prices stay >= 5.25 EUR/kg.
- * Note: the source exams' parameter tuples (SS15 raw milk, WS17/18 sheep wool)
- * are unreachable — price grids and quantity ranges do not contain them.
  */
 type Stock2 = {
     b0: number; p0: number;
@@ -1678,7 +1676,6 @@ export const costAccountingQuestions: Question[] = [
         unit: "EUR",
         source: "TUM Cost Accounting Mock Exam Q40; SS2017 Q21; WS16/17 Q20",
         build: (rng) => {
-            // 1.4 dropped: with qty=2,000 t it reproduced Mock Exam Q40's exact tuple.
             const tp = rng.pick([0.8, 1.2, 1.5, 1.6, 2.5]);
             const qty = rng.int(10, 40) * 100;
             const O2 = rng.int(20, 80) * 1000;
@@ -1704,7 +1701,6 @@ export const costAccountingQuestions: Question[] = [
         unit: "EUR",
         source: "TUM Cost Accounting WS16/17, Q19",
         build: (rng) => {
-            // 15 dropped: with q=50 h it reproduced WS16/17 Q19's exact tuple.
             const tp = rng.pick([12, 18, 22, 24, 25, 30, 35]);
             const q = rng.int(3, 12) * 10;
             const X = tp * q;
@@ -1781,7 +1777,6 @@ export const costAccountingQuestions: Question[] = [
         unit: "EUR",
         source: "TUM Cost Accounting WS16/17, Q23",
         build: (rng) => {
-            // Floor at 5: (4 EUR/kg, 2.5 kg) was WS16/17 Q23's exact tuple.
             const pKg = rng.int(5, 14);
             const w = rng.pick([1.5, 2, 2.5, 4, 5]);
             const answer = pKg * w;
@@ -2726,7 +2721,6 @@ export const costAccountingQuestions: Question[] = [
             const v = rng.int(3, 20);
             const cm = rng.int(2, 12);
             const p = v + cm;
-            // 0.2 dropped: with p=5, v=3 it reproduced Mock Exam Q22's exact tuple.
             const t = rng.pick([0.25, 0.4, 0.5]);
             const answer = cm / t;
             return {

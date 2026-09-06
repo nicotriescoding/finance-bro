@@ -204,6 +204,25 @@ try {
     const quiz = await fetch(`${BASE}/quiz?subject=finance`);
     const quizHtml = await quiz.text();
     check("/quiz has no ad-rail meta label", !quizHtml.includes("kept away from the maths"));
+    // 2026-09-06: the quiz page server-renders a real h1 + subject intro so a
+    // crawler / AdSense reviewer never lands on a bare "Loading..." shell.
+    const quizText = quizHtml
+        .replace(/<script[\s\S]*?<\/script>/g, "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ");
+    check(
+        "/quiz?subject=finance server-renders the subject h1 and intro",
+        quizHtml.includes("<h1") &&
+            quizHtml.includes("Investment &amp; Financial Management") &&
+            quizText.includes("questions across")
+    );
+    check(
+        "/quiz?subject=finance has >150 words of visible text",
+        quizText.split(" ").length > 150,
+        `${quizText.split(" ").length} words`
+    );
+    const quizBare = await (await fetch(`${BASE}/quiz`)).text();
+    check("/quiz without a subject lists the subjects", quizBare.includes("Cost Accounting"));
     // the navy chrome links every page to the setup
     check("/ links the Career page", homeHtml.includes("Career 🪦"));
 

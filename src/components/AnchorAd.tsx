@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { CONSENT_DECIDED_EVENT, CONSENT_EVENT, getStoredConsent } from "@/lib/analytics";
+import AdUnit from "@/components/AdUnit";
+import { slotLive } from "@/lib/ads";
 
 /**
  * Phone-only anchor ad: 320 × 50 (the IAB mobile anchor standard, and the
@@ -54,11 +56,15 @@ export default function AnchorAd() {
                 style={{ height: BAR_HEIGHT }}
             >
                 <div className="mx-auto flex h-full max-w-[352px] items-center justify-center px-2">
-                    <div className="bg-ad-stripes flex h-[50px] w-full max-w-[320px] items-center justify-center rounded-md border border-hairline">
-                        <span className="font-mono text-[10px] text-slot-text">
-                            AD · 320 × 50 · mobile anchor
-                        </span>
-                    </div>
+                    {slotLive("anchor") ? (
+                        <AdUnit name="anchor" />
+                    ) : (
+                        <div className="bg-ad-stripes flex h-[50px] w-full max-w-[320px] items-center justify-center rounded-md border border-hairline">
+                            <span className="font-mono text-[10px] text-slot-text">
+                                AD · 320 × 50 · mobile anchor
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
         </>
