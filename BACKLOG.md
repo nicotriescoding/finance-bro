@@ -6,6 +6,22 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Consent fallback fixed - PostHog was never starting for new visitors
+(2026-09-06, commit 0cde8ef).** Live check in a fresh browser profile:
+AdSense's GDPR message is not served yet (`googlefc.getConsentStatus()` =
+UNKNOWN, no TCF `tcloaded`/`cmpuishown` ever fires), but `adsbygoogle.js`
+still installs a `window.__tcfapi` stub. `CookieBanner` treated the stub
+as proof Google would ask, so nobody was asked, consent never stored,
+PostHog never booted - hence "$pageview missing" in Installation Health
+(the one passing `$pageleave` came from Nico's own profile with consent
+stored earlier). Now `ConsentBridge` marks the dialog active only on a
+real TCF event and `CookieBanner` opens after 6 s otherwise; "Cookie
+settings" follows the same flag. Gate green on a clean clone (typecheck,
+verify, build, 91 smoke). **Nico next:** push, then in a private window
+wait ~6 s, accept the banner, confirm `$pageview` in PostHog -> Activity
+and Installation Health goes 6/6. Publishing the AdSense GDPR message
+remains open.
+
 **AdSense tag moved into the raw `<head>` (2026-09-06, same session).**
 AdSense reported "code not found": `next/script` (afterInteractive)
 injects client-side, so the verification crawler saw no tag in the HTML.
