@@ -19,8 +19,8 @@
  * moves to the next posting (`refreshKey` on `AdSlot`). Never on a timer,
  * never the sticky rails.
  *
- * TODO(Nico): after AdSense approval create one "Display ad, fixed size"
- * unit per row below and paste its data-ad-slot id (digits only).
+ * Units created 2026-09-06 in AdSense (Ads -> By ad unit, "Display ads",
+ * fixed size, named fb-<slot>); the ids below are theirs.
  */
 const configured = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-6951760347839431";
 
@@ -49,12 +49,12 @@ export const AD_SIZES: Record<AdSlotName, { width: number; height: number }> = {
 
 /** data-ad-slot ids from AdSense -> Ads -> By ad unit. Empty = placeholder. */
 export const AD_SLOTS: Record<AdSlotName, string> = {
-    skyscraper: "",
-    square: "",
-    leaderboard: "",
-    feed: "",
-    "sponsored-career": "",
-    anchor: "",
+    skyscraper: "3992721442",
+    square: "4497435120",
+    leaderboard: "9829652850",
+    feed: "7203489515",
+    "sponsored-career": "5116277029",
+    anchor: "4978500057",
 };
 
 /** A unit renders live only when AdSense is on AND its slot id is filled in. */

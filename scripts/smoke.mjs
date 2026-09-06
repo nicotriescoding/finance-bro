@@ -281,7 +281,9 @@ try {
     );
     check(
         "/products carries the desktop skyscraper rail",
-        productsHtml.includes("wide skyscraper")
+        // striped placeholder while the slot id is empty, live AdSense unit once filled
+        productsHtml.includes("wide skyscraper") ||
+            productsHtml.includes('class="adsbygoogle')
     );
     // Images are committed Adobe Stock files since 2026-08-29 - no hotlinks.
     check(
