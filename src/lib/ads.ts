@@ -1,9 +1,10 @@
 /**
- * Google AdSense wiring (2026-09-06). OFF until `NEXT_PUBLIC_ADSENSE_CLIENT`
- * exists in Vercel - until then every slot keeps rendering the striped
- * placeholder and the site shows its own cookie banner.
+ * Google AdSense wiring (2026-09-06). The publisher id is baked in (it is a
+ * public id, printed in the page source anyway); `NEXT_PUBLIC_ADSENSE_CLIENT`
+ * overrides it, and setting it to `off` turns the whole thing off for a
+ * build (own cookie banner, striped placeholders).
  *
- * With the client id set:
+ * With AdSense on:
  *   - `layout.tsx` loads adsbygoogle.js, which also delivers Google's
  *     certified consent dialog (AdSense -> Privacy & messaging, TCF 2.2).
  *     That dialog is THE cookie banner then - `CookieBanner` stays off and
@@ -21,9 +22,11 @@
  * TODO(Nico): after AdSense approval create one "Display ad, fixed size"
  * unit per row below and paste its data-ad-slot id (digits only).
  */
-export const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "";
+const configured = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-6951760347839431";
 
-/** True once the AdSense client id is configured (build-time constant). */
+export const ADSENSE_CLIENT = configured === "off" ? "" : configured;
+
+/** True unless the env var says `off` (build-time constant). */
 export const adsEnabled = ADSENSE_CLIENT.length > 0;
 
 export type AdSlotName =

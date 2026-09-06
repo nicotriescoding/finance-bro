@@ -1,10 +1,12 @@
 /**
  * Consent-gated PostHog bootstrap - prepared before the key even exists.
  *
- * Analytics loads only when BOTH hold:
- *   1. `NEXT_PUBLIC_POSTHOG_KEY` is set (Vercel env var; absent until Nico
- *      creates the PostHog project), and
- *   2. the visitor accepted the cookie banner.
+ * Analytics loads only when the visitor accepted the consent dialog. The
+ * project token is the public client token from PostHog Cloud EU (project
+ * "finance-bro", 2026-09-06) - baked in as the default so no env var is
+ * needed; `NEXT_PUBLIC_POSTHOG_KEY` still overrides it (dev/staging).
+ * PostHog's own HTML snippet is NOT used: it would start capturing before
+ * consent. posthog-js (npm) does the same thing, behind the gate below.
  *
  * That order is the legally load-bearing part: § 25 (1) TDDDG and
  * Art. 6 (1) (a) GDPR require consent BEFORE any tracking, so posthog-js is
@@ -23,6 +25,10 @@ export type CookieConsent = {
 };
 
 const CONSENT_KEY = "fb-cookie-consent";
+
+/** PostHog Cloud EU project token - a public client key, not a secret. */
+const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY || "phc_pRVMDQsyuWhSqWKwJr4LAd3p8gZ57NxW7yLw8bmA4t8x";
+const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com";
 
 /** Window event that re-opens the banner ("Cookie settings" in the footer). */
 export const CONSENT_EVENT = "fb:cookie-settings";
@@ -63,13 +69,21 @@ function storeConsent(analytics: boolean) {
 
 /** Boot PostHog if (and only if) the key exists and consent was given. */
 export async function initAnalyticsIfConsented(): Promise<void> {
-    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-    if (!key || posthogRef || !getStoredConsent()?.analytics) return;
+    if (posthogRef || !getStoredConsent()?.analytics) return;
     const { default: posthog } = await import("posthog-js");
-    posthog.init(key, {
-        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com",
+    posthog.init(POSTHOG_KEY, {
+        api_host: POSTHOG_HOST,
+        // PostHog's current snippet defaults (2026-05-30): history-based
+        // pageviews for the App Router, pageleave, web vitals off by default.
+        defaults: "2026-05-30",
+        // No person profiles for anonymous visitors - nobody is identified on
+        // this site, so every event stays an anonymous event (cheaper, and
+        // less personal data to explain in the policy).
+        person_profiles: "identified_only",
         capture_pageview: true,
         capture_pageleave: true,
+        // No session replay: not disclosed in the privacy policy.
+        disable_session_recording: true,
     });
     posthogRef = posthog;
 }

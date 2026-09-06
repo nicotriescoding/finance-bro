@@ -3,27 +3,22 @@
 Code is done (2026-09-06). Everything below is account work; each step
 flips on by itself once its env var / id exists.
 
-## 1. PostHog (10 min)
+## 1. PostHog - DONE in code (2026-09-06)
 
-1. https://eu.posthog.com/signup - sign up with nicolas.dumpe@gmx.de. **EU
-   region** (Frankfurt) - the privacy policy promises it. Skip the wizard
-   (`npx @posthog/wizard` would re-wire what `src/lib/analytics.ts` already
-   does, consent-gated); just create a project "finance-bro".
-2. Project settings -> copy the **Project API key** (`phc_...`).
-3. Vercel -> finance-bro -> Settings -> Environment Variables:
-   `NEXT_PUBLIC_POSTHOG_KEY = phc_...`, `NEXT_PUBLIC_POSTHOG_HOST =
-   https://eu.i.posthog.com`. Redeploy.
-4. PostHog -> Project settings -> Data management: set data retention so
-   events are deleted/anonymised within 24 months (policy promise).
+Project token from the PostHog Cloud EU project is baked into
+`src/lib/analytics.ts`; nothing to set in Vercel. Left for Nico: PostHog ->
+Project settings -> data retention <= 24 months (policy promise), and
+keep session replay OFF in the project (the code disables it too).
 
 ## 2. AdSense (account, ~30 min + Google's review, days to weeks)
 
 1. https://adsense.google.com -> sign in with the gmx account -> add site
    `finance-bro.de`. Country Germany, payment name = Impressum name.
-2. Copy the publisher id (`ca-pub-...`). Vercel env var
-   `NEXT_PUBLIC_ADSENSE_CLIENT = ca-pub-...`, redeploy. That alone puts the
-   AdSense tag on every page - which is what the site review needs. The
-   striped placeholders stay until step 5.
+2. Publisher id `ca-pub-6951760347839431` is baked into `src/lib/ads.ts`
+   (2026-09-06) - the AdSense tag is on every page after the next push,
+   which is what the site review needs. Striped placeholders stay until
+   step 5. Until step 4 is published, the site's own cookie banner shows
+   as a fallback (6 s after load, only if Google's dialog never appears).
 3. AdSense -> Sites -> "Request review". Google checks content, Impressum,
    privacy page (all in place). Wait for "Ready".
 4. **Privacy & messaging -> European regulations -> Create message**

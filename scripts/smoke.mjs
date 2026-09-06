@@ -340,6 +340,14 @@ try {
         privacyHtml.includes("PostHog") && privacyHtml.includes("consent")
     );
     check(
+        "/privacy carries the AdSense section (ads are live in code)",
+        privacyHtml.includes("Google AdSense") && privacyHtml.includes("FCCDCF")
+    );
+    check(
+        "/ loads the AdSense tag with the publisher id",
+        homeHtml.includes("adsbygoogle.js?client=ca-pub-6951760347839431")
+    );
+    check(
         "/privacy names Amazon PartnerNet and the under-16 rule",
         privacyHtml.includes("PartnerNet") && privacyHtml.includes("under 16")
     );

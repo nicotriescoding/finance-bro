@@ -6,6 +6,23 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**PostHog + AdSense keys baked in (2026-09-06, same session, after Nico
+sent both snippets).** PostHog EU project token and AdSense publisher id
+`ca-pub-6951760347839431` are defaults in `src/lib/analytics.ts` /
+`src/lib/ads.ts` (both public client ids; env vars override, AdSense
+`off` disables). PostHog's HTML snippet was NOT pasted - it would capture
+before consent; posthog-js init now uses the snippet's options
+(`defaults: "2026-05-30"`, `person_profiles: "identified_only"`, session
+replay off). Because AdSense is on but the GDPR message is not published
+yet, `CookieBanner` acts as a fallback: it opens 6 s after load only if
+Google's `__tcfapi` never appeared and nothing is stored (also covers ad
+blockers); "Cookie settings" opens ours when `googlefc` is absent. Cloud
+proof: zero PostHog requests before consent, fallback banner at ~6 s,
+PostHog `/array` + `/flags` requests after accept; 91 smoke (+2: AdSense
+tag on /, AdSense section on /privacy). **Nico next:** AdSense site
+review, then Privacy & messaging message (copy in `docs/adsense-setup.md`)
+and the six slot ids; PostHog retention <= 24 months.
+
 **AdSense wiring + single consent dialog + crawlable quiz + bank cleanup
 (2026-09-06, later session).** Per Nico. (1) `src/lib/ads.ts` +
 `AdUnit`: with `NEXT_PUBLIC_ADSENSE_CLIENT` set, `layout.tsx` loads

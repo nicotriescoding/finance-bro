@@ -25,21 +25,35 @@ export default function CookieBanner() {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        // With AdSense on, Google's certified consent dialog is the one and
-        // only banner (see ConsentBridge) - this one stays closed for good.
-        if (adsEnabled) {
-            void initAnalyticsIfConsented();
-            return;
-        }
-        // After hydration: show the banner if the visitor never chose; boot
-        // analytics for returning visitors who accepted earlier (no-op until
-        // the PostHog key exists).
-        if (getStoredConsent() === null) setOpen(true);
-        else void initAnalyticsIfConsented();
+        // Returning visitors who accepted earlier: boot analytics.
+        void initAnalyticsIfConsented();
 
-        const reopen = () => setOpen(true);
+        // With AdSense on, Google's certified consent dialog is the banner
+        // (see ConsentBridge). This one only steps in as a FALLBACK when that
+        // dialog cannot appear - the GDPR message is not published yet in the
+        // AdSense account, or an ad blocker stopped adsbygoogle.js - so
+        // PostHog still never starts without an explicit yes.
+        let timer: number | undefined;
+        if (adsEnabled) {
+            timer = window.setTimeout(() => {
+                if (typeof window.__tcfapi !== "function" && getStoredConsent() === null) {
+                    setOpen(true);
+                }
+            }, 6000);
+        } else if (getStoredConsent() === null) {
+            setOpen(true);
+        }
+
+        // "Cookie settings": Google's dialog when it is there, ours otherwise.
+        const reopen = () => {
+            if (adsEnabled && window.googlefc?.callbackQueue) return;
+            setOpen(true);
+        };
         window.addEventListener(CONSENT_EVENT, reopen);
-        return () => window.removeEventListener(CONSENT_EVENT, reopen);
+        return () => {
+            window.removeEventListener(CONSENT_EVENT, reopen);
+            if (timer !== undefined) window.clearTimeout(timer);
+        };
     }, []);
 
     if (!open) return null;
