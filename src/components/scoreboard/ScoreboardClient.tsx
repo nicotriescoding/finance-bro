@@ -2,7 +2,8 @@
 
 /**
  * The semester leaderboard - BroDollars earned this semester, one tab for the
- * whole book and one per subject. Your own standing rides on top even when
+ * whole book and one per subject that has questions (the page passes the
+ * list, see leaderboard/page.tsx). Your own standing rides on top even when
  * you are not in the visible rows, and an intern still on the board without
  * a name gets nudged to claim one (the name is shared with the duels desk).
  *
@@ -12,7 +13,6 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { SUBJECTS } from "@/content/subjects";
 import { formatMoney, MONEY } from "@/lib/money";
 import type { SubjectId } from "@/lib/questions/types";
 import {
@@ -31,12 +31,16 @@ import NameField from "./NameField";
 const CARD =
     "rounded-[14px] border border-hairline bg-surface shadow-[0_1px_2px_rgba(15,33,55,.05)]";
 
-const TABS: { scope: ScoreboardScope; label: string; emoji: string }[] = [
-    { scope: "all", label: "Overall", emoji: "🏆" },
-    ...SUBJECTS.map((s) => ({ scope: s.id as SubjectId, label: s.short, emoji: s.emoji })),
-];
+type Tab = { scope: ScoreboardScope; label: string; emoji: string };
 
-export default function ScoreboardClient() {
+/** Subjects with at least one question - computed by the server page. */
+export type BoardSubject = { id: SubjectId; short: string; emoji: string };
+
+export default function ScoreboardClient({ subjects }: { subjects: BoardSubject[] }) {
+    const TABS: Tab[] = [
+        { scope: "all", label: "Overall", emoji: "🏆" },
+        ...subjects.map((s) => ({ scope: s.id, label: s.short, emoji: s.emoji })),
+    ];
     const [scope, setScope] = useState<ScoreboardScope>("all");
     const [data, setData] = useState<ScoreboardResponse | null>(null);
     const [failed, setFailed] = useState(false);
@@ -102,7 +106,7 @@ export default function ScoreboardClient() {
                 <DeskClosed />
             ) : (
                 <>
-                    <Tabs scope={scope} onPick={setScope} />
+                    <Tabs tabs={TABS} scope={scope} onPick={setScope} />
 
                     <YouCard
                         me={me}
@@ -208,16 +212,18 @@ function medal(i: number): string {
 }
 
 function Tabs({
+    tabs,
     scope,
     onPick,
 }: {
+    tabs: Tab[];
     scope: ScoreboardScope;
     onPick: (s: ScoreboardScope) => void;
 }) {
     return (
         <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
             <div className="flex w-max gap-1.5 sm:w-auto sm:flex-wrap">
-                {TABS.map((t) => {
+                {tabs.map((t) => {
                     const active = t.scope === scope;
                     return (
                         <button

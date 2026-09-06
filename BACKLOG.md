@@ -6,6 +6,29 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Bro Shop: four more bundles + BWL Marie moved to #2; leaderboard tabs
+only for subjects with questions (2026-09-05).** Per Nico. Shop order is
+now Starter Pack, BWL Marie, Undercover Broke Student, then the new ones:
+Excel Monkey Survival Kit (keyboard, vertical mouse, second monitor,
+blue-light glasses), Exam Week Doomsday Bunker (energy drinks, sticky
+notes, desk lamp, sleep mask), LinkedIn Thought Leader Kit (ring light,
+podcast mic, ideas notebook, books) and The Boring Index Fund - the
+"would actually buy" bundle (noise-cancelling headphones, e-reader,
+insulated bottle, a Monstera), keep it earnest. 16 new Adobe Stock photos,
+each picked from 5+ candidates on contact sheets, all free-tier standard
+license (`just_purchased`, no cost), committed ~900px under
+`public/products/`. Amazon search terms stay generic (no new brand-name
+risk). Leaderboard: `leaderboard/page.tsx` now computes the subjects with
+`countForSubject > 0` on the server and passes them to `ScoreboardClient`
+- the four empty banks (Financial Accounting, Entrepreneurship, Marketing,
+plus anything else empty) get no tab until their first questions land,
+then appear automatically. Gate: typecheck + verify (447 questions) on the
+mount, build + smoke (82 checks) in a copy under `$HOME` because the mount
+still cannot unlink `.next`; dark-mode Playwright shots of /products and
+/leaderboard checked in the cloud sandbox. Open: (1) real-Chrome look on
+Nico's machine, (2) the `_to_delete/fb-src.tgz` build tarball the sandbox
+could not remove - delete it.
+
 **Semester leaderboard rebuilt around BroDollars (2026-09-02, latest
 session).** Per Nico: the board shows who earned the most BroDollars this
 semester, once overall and once per subject; multiplayer shows a ranking

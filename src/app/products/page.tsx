@@ -5,13 +5,16 @@ import { amz } from "@/lib/affiliate";
 export const metadata: Metadata = {
     title: "Bro Shop",
     description:
-        "The FinanceBro shop - three curated bundles: the Starter Pack, the Undercover Broke Student and BWL Marie.",
+        "The FinanceBro shop - seven curated bundles: from the Starter Pack and BWL Marie to the Boring Index Fund.",
 };
 
 /**
- * The Bro Shop (rebuilt 2026-08-29, images upgraded same day): three joke
- * bundles in a two-column card grid, flanked by the sticky desktop ad rails
- * (AdRail). The Patagonia Vest blurb is original finance-bro canon: do not
+ * The Bro Shop (rebuilt 2026-08-29, images upgraded same day, four more
+ * bundles 2026-09-05): seven joke bundles in a two-column card grid, flanked
+ * by the sticky desktop ad rails (AdRail). Order: Starter Pack, BWL Marie,
+ * Undercover Broke Student, then the four 2026-09-05 bundles (Excel Monkey,
+ * Doomsday Bunker, LinkedIn Thought Leader, Boring Index Fund - the last one
+ * is the "would actually buy" bundle, keep it earnest). The Patagonia Vest blurb is original finance-bro canon: do not
  * touch it. (Business School Cigarettes and the Hela Ketchup were removed
  * 2026-08-29 per Nico - do not resurrect without asking him.)
  *
@@ -119,74 +122,6 @@ const BUNDLES: Bundle[] = [
         ],
     },
     {
-        name: "The Undercover Broke Student",
-        emoji: "🥷",
-        tagline: "Everything you need to look liquid while being insolvent.",
-        chips: ["6 positions", "risk: actual", "burn rate: 4.20 €/day"],
-        products: [
-            {
-                name: "Instant Noodles, Bulk Position",
-                img: {
-                    src: "/products/ramen.jpg",
-                    alt: "An instant noodle block on a white background",
-                },
-                blurb:
-                    "Unit economics no meal-prep influencer can beat: 0.40 € a serving, shelf life longer than your student loan. Buy the dip. Eat the dip.",
-                href: amz("instant nudeln vorratspack"),
-            },
-            {
-                name: "Cup Noodles, To Go",
-                img: {
-                    src: "/products/cup-noodles.jpg",
-                    alt: "A fork lifting noodles out of an instant noodle cup",
-                },
-                blurb:
-                    "Same asset class as the position above. That is not diversification - but at 1 € a cup, nobody is auditing you.",
-                href: amz("cup nudeln vorteilspack"),
-            },
-            {
-                name: "Espresso Machine (Value Edition)",
-                img: {
-                    src: "/products/moka.jpg",
-                    alt: "A red moka pot on a white background",
-                },
-                blurb:
-                    "Does what the campus coffee subscription does at 0.09 € a shot. The single highest-ROI machine ever admitted to a shared kitchen.",
-                href: amz("espressokocher 6 tassen"),
-            },
-            {
-                name: "The 89 € Interview Suit",
-                img: {
-                    src: "/products/suit.jpg",
-                    alt: "A dark suit with white shirt and tie on an invisible mannequin",
-                },
-                blurb:
-                    "Looks like 800 € on Zoom, feels like 89 € in person. Schedule accordingly: first rounds are always remote.",
-                href: amz("anzug herren slim fit"),
-            },
-            {
-                name: "Library-Grade Earplugs",
-                img: {
-                    src: "/products/earplugs.jpg",
-                    alt: "Colorful foam earplugs on a white background",
-                },
-                blurb:
-                    "Blocks out the guy who types like he is settling a personal score with his keyboard. 35 dB of pure alpha for 2 €.",
-                href: amz("ohropax classic"),
-            },
-            {
-                name: "20,000 mAh Powerbank",
-                img: {
-                    src: "/products/powerbank.jpg",
-                    alt: "A white power bank with cable on a yellow background",
-                },
-                blurb:
-                    "The only outlets in the library are guarded like board seats. This keeps the laptop alive through exam season and the denial phase after.",
-                href: amz("powerbank 20000mah"),
-            },
-        ],
-    },
-    {
         name: "BWL Marie",
         emoji: "🎀",
         tagline:
@@ -265,6 +200,266 @@ const BUNDLES: Bundle[] = [
             },
         ],
     },
+    {
+        name: "The Undercover Broke Student",
+        emoji: "🥷",
+        tagline: "Everything you need to look liquid while being insolvent.",
+        chips: ["6 positions", "risk: actual", "burn rate: 4.20 €/day"],
+        products: [
+            {
+                name: "Instant Noodles, Bulk Position",
+                img: {
+                    src: "/products/ramen.jpg",
+                    alt: "An instant noodle block on a white background",
+                },
+                blurb:
+                    "Unit economics no meal-prep influencer can beat: 0.40 € a serving, shelf life longer than your student loan. Buy the dip. Eat the dip.",
+                href: amz("instant nudeln vorratspack"),
+            },
+            {
+                name: "Cup Noodles, To Go",
+                img: {
+                    src: "/products/cup-noodles.jpg",
+                    alt: "A fork lifting noodles out of an instant noodle cup",
+                },
+                blurb:
+                    "Same asset class as the position above. That is not diversification - but at 1 € a cup, nobody is auditing you.",
+                href: amz("cup nudeln vorteilspack"),
+            },
+            {
+                name: "Espresso Machine (Value Edition)",
+                img: {
+                    src: "/products/moka.jpg",
+                    alt: "A red moka pot on a white background",
+                },
+                blurb:
+                    "Does what the campus coffee subscription does at 0.09 € a shot. The single highest-ROI machine ever admitted to a shared kitchen.",
+                href: amz("espressokocher 6 tassen"),
+            },
+            {
+                name: "The 89 € Interview Suit",
+                img: {
+                    src: "/products/suit.jpg",
+                    alt: "A dark suit with white shirt and tie on an invisible mannequin",
+                },
+                blurb:
+                    "Looks like 800 € on Zoom, feels like 89 € in person. Schedule accordingly: first rounds are always remote.",
+                href: amz("anzug herren slim fit"),
+            },
+            {
+                name: "Library-Grade Earplugs",
+                img: {
+                    src: "/products/earplugs.jpg",
+                    alt: "Colorful foam earplugs on a white background",
+                },
+                blurb:
+                    "Blocks out the guy who types like he is settling a personal score with his keyboard. 35 dB of pure alpha for 2 €.",
+                href: amz("ohropax classic"),
+            },
+            {
+                name: "20,000 mAh Powerbank",
+                img: {
+                    src: "/products/powerbank.jpg",
+                    alt: "A white power bank with cable on a yellow background",
+                },
+                blurb:
+                    "The only outlets in the library are guarded like board seats. This keeps the laptop alive through exam season and the denial phase after.",
+                href: amz("powerbank 20000mah"),
+            },
+        ],
+    },
+    {
+        name: "The Excel Monkey Survival Kit",
+        emoji: "🐒",
+        tagline: "Alt+Tab is not a shortcut. It is a personality.",
+        chips: ["4 positions", "risk: carpal tunnel", "yield: 0.3 s per VLOOKUP"],
+        products: [
+            {
+                name: "Mechanical Keyboard, Clicky",
+                img: {
+                    src: "/products/keyboard.jpg",
+                    alt: "A mechanical keyboard with blue keycaps and loose key switches",
+                },
+                blurb:
+                    "Every keystroke sounds like a decision. The library will hate you, the model will be done by midnight, and F2 has never felt this important.",
+                href: amz("mechanische tastatur"),
+            },
+            {
+                name: "Vertical Mouse, Orthopedic",
+                img: {
+                    src: "/products/vertical-mouse.jpg",
+                    alt: "A black ergonomic vertical computer mouse",
+                },
+                blurb:
+                    "Looks like a small shark, feels like a handshake with yourself. Bought after the first wrist twinge, recommended by everyone who ignored theirs.",
+                href: amz("vertikale maus ergonomisch"),
+            },
+            {
+                name: "The Second Monitor",
+                img: {
+                    src: "/products/monitors.jpg",
+                    alt: "Two computer monitors side by side with blank screens",
+                },
+                blurb:
+                    "One screen for the model, one for the lecture you are pretending to watch. Doubles productivity, or at least the number of open tabs.",
+                href: amz("monitor 27 zoll"),
+            },
+            {
+                name: "Blue-Light Glasses",
+                img: {
+                    src: "/products/glasses.jpg",
+                    alt: "A pair of black-rimmed glasses",
+                },
+                blurb:
+                    "Non-prescription, purely theatrical. Filters out screen glare and any doubt that you are a serious person now.",
+                href: amz("blaulichtfilter brille"),
+            },
+        ],
+    },
+    {
+        name: "The Exam Week Doomsday Bunker",
+        emoji: "🧟",
+        tagline: "Fourteen chapters, four days, one plan: none.",
+        chips: ["4 positions", "risk: caffeine-adjusted", "maturity: Thursday, 8 AM"],
+        products: [
+            {
+                name: "Energy Drinks, 24-Pack",
+                img: {
+                    src: "/products/energy-can.jpg",
+                    alt: "Cold aluminum drink cans on ice",
+                },
+                blurb:
+                    "Sleep is a fixed cost and you are cutting fixed costs. Twenty-four cans, one exam, roughly the same heart rate as the day the grades come out.",
+                href: amz("energy drink 24er pack"),
+            },
+            {
+                name: "Sticky Notes, Industrial Quantity",
+                img: {
+                    src: "/products/sticky-notes.jpg",
+                    alt: "Colorful sticky notes covering a wall",
+                },
+                blurb:
+                    "For the formula wall that turns your room into a crime-scene investigation. Suspect: the lecturer. Motive: § 253 HGB (impairment rules).",
+                href: amz("haftnotizen set"),
+            },
+            {
+                name: "Desk Lamp, 3 AM Edition",
+                img: {
+                    src: "/products/desk-lamp.jpg",
+                    alt: "A black articulated desk lamp",
+                },
+                blurb:
+                    "The only light on the whole floor at 3 AM. Bends further than your study plan and, unlike the plan, actually switches on.",
+                href: amz("schreibtischlampe led"),
+            },
+            {
+                name: "Post-Exam Coma Mask",
+                img: {
+                    src: "/products/sleep-mask.jpg",
+                    alt: "A gold satin sleep mask",
+                },
+                blurb:
+                    "For the 14-hour recovery position right after the exam. Blocks light, roommates and the question of how part 3b went.",
+                href: amz("schlafmaske seide"),
+            },
+        ],
+    },
+    {
+        name: "The LinkedIn Thought Leader Kit",
+        emoji: "🧠",
+        tagline: "Agree? Repost. Your network needs to hear this.",
+        chips: ["4 positions", "risk: cringe", "engagement: your mom"],
+        products: [
+            {
+                name: "Ring Light, Founder Mode",
+                img: {
+                    src: "/products/ring-light.jpg",
+                    alt: "An LED ring light on a tripod against a blue background",
+                },
+                blurb:
+                    "Turns a dorm room into a studio and a 20-year-old into a 'serial entrepreneur'. The glow you see in every 'I got rejected 47 times' post.",
+                href: amz("ringlicht mit stativ"),
+            },
+            {
+                name: "Podcast Microphone",
+                img: {
+                    src: "/products/microphone.jpg",
+                    alt: "A studio condenser microphone with pop filter on a boom arm",
+                },
+                blurb:
+                    "Episode 1: 'Why I left my internship'. Episode 2: never recorded. Sounds expensive enough that nobody asks about the download numbers.",
+                href: amz("podcast mikrofon usb"),
+            },
+            {
+                name: "The Ideas Notebook",
+                img: {
+                    src: "/products/notebook.jpg",
+                    alt: "A black leather notebook with a pen",
+                },
+                blurb:
+                    "Contains three startup ideas, two of which are Uber for something. Carried into every lecture, opened in none.",
+                href: amz("notizbuch a5 leder"),
+            },
+            {
+                name: "Books You Will Quote, Not Read",
+                img: {
+                    src: "/products/books.jpg",
+                    alt: "A stack of colorful hardcover books",
+                },
+                blurb:
+                    "Habits, Zero to One, something by a Stoic. The summary is on YouTube, the spine goes in the background of every video call.",
+                href: amz("bestseller business bücher"),
+            },
+        ],
+    },
+    {
+        name: "The Boring Index Fund",
+        emoji: "📈",
+        tagline: "Low fees, no drama. The only bundle here with a real Sharpe ratio.",
+        chips: ["4 positions", "risk: none", "expense ratio: 0.07 %"],
+        products: [
+            {
+                name: "Noise-Cancelling Headphones",
+                img: {
+                    src: "/products/headphones.jpg",
+                    alt: "Black over-ear wireless headphones",
+                },
+                blurb:
+                    "Removes the library, the roommate and the guy narrating his own group project. The single best thing money can buy in this shop, no joke attached.",
+                href: amz("noise cancelling kopfhörer over ear"),
+            },
+            {
+                name: "E-Reader",
+                img: {
+                    src: "/products/e-reader.jpg",
+                    alt: "An e-reader with a blank screen on a green patterned background",
+                },
+                blurb:
+                    "Battery lasts a semester, weighs less than one textbook, holds all of them. Reading on it feels like paper, buying books on it feels like nothing.",
+                href: amz("ebook reader"),
+            },
+            {
+                name: "Insulated Water Bottle",
+                img: {
+                    src: "/products/water-bottle.jpg",
+                    alt: "A blue stainless steel insulated water bottle",
+                },
+                blurb:
+                    "Cold for 24 hours, hot for 12, refilled for free. Pays for itself in about a week of not buying the 3 € library water.",
+                href: amz("trinkflasche edelstahl isoliert 1l"),
+            },
+            {
+                name: "A Monstera",
+                img: {
+                    src: "/products/monstera.jpg",
+                    alt: "A Monstera plant in a black pot",
+                },
+                blurb:
+                    "The one position in this shop that compounds. Survives exam season better than you do and makes any room look like someone has their life together.",
+                href: amz("monstera pflanze"),
+            },
+        ],
+    },
 ];
 
 function ProductCard({ p }: { p: Product }) {
@@ -322,7 +517,7 @@ export default function ProductsPage() {
                         📦 The Bro Shop
                     </h1>
                     <p className="mt-1.5 leading-relaxed text-muted">
-                        Three curated bundles, zero due diligence. Pick the portfolio
+                        Seven curated bundles, zero due diligence. Pick the portfolio
                         that matches the person you are pretending to be this semester.
                     </p>
                     {/* Transparency: affiliate links are advertising (§ 5a UWG) */}
