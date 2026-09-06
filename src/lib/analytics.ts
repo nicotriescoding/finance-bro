@@ -42,6 +42,22 @@ export const CONSENT_DECIDED_EVENT = "fb:cookie-consent-decided";
 
 let posthogRef: import("posthog-js").PostHog | null = null;
 
+/**
+ * True once Google's consent dialog (TCF) has proven it is really serving on
+ * this page: it either showed its UI or delivered a consent decision. The
+ * mere existence of `window.__tcfapi` is NOT enough - adsbygoogle.js installs
+ * that stub even when no GDPR message is published in the AdSense account,
+ * and then nobody would ever be asked (2026-09-06: exactly that happened and
+ * PostHog never started for new visitors).
+ */
+let googleDialogActive = false;
+export function markGoogleConsentDialogActive(): void {
+    googleDialogActive = true;
+}
+export function isGoogleConsentDialogActive(): boolean {
+    return googleDialogActive;
+}
+
 export function getStoredConsent(): CookieConsent | null {
     if (typeof window === "undefined") return null;
     try {

@@ -8,6 +8,7 @@ import {
     declineAnalytics,
     getStoredConsent,
     initAnalyticsIfConsented,
+    isGoogleConsentDialogActive,
 } from "@/lib/analytics";
 import { adsEnabled } from "@/lib/ads";
 
@@ -32,11 +33,14 @@ export default function CookieBanner() {
         // (see ConsentBridge). This one only steps in as a FALLBACK when that
         // dialog cannot appear - the GDPR message is not published yet in the
         // AdSense account, or an ad blocker stopped adsbygoogle.js - so
-        // PostHog still never starts without an explicit yes.
+        // PostHog still never starts without an explicit yes. "Cannot appear"
+        // is judged by what Google's dialog DID (see ConsentBridge), not by
+        // whether `__tcfapi` exists: adsbygoogle.js installs that stub even
+        // with no message published.
         let timer: number | undefined;
         if (adsEnabled) {
             timer = window.setTimeout(() => {
-                if (typeof window.__tcfapi !== "function" && getStoredConsent() === null) {
+                if (!isGoogleConsentDialogActive() && getStoredConsent() === null) {
                     setOpen(true);
                 }
             }, 6000);
@@ -46,7 +50,7 @@ export default function CookieBanner() {
 
         // "Cookie settings": Google's dialog when it is there, ours otherwise.
         const reopen = () => {
-            if (adsEnabled && window.googlefc?.callbackQueue) return;
+            if (adsEnabled && isGoogleConsentDialogActive()) return;
             setOpen(true);
         };
         window.addEventListener(CONSENT_EVENT, reopen);

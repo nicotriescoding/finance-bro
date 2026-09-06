@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { CONSENT_EVENT, acceptAnalytics, declineAnalytics, getStoredConsent } from "@/lib/analytics";
+import {
+    CONSENT_EVENT,
+    acceptAnalytics,
+    declineAnalytics,
+    getStoredConsent,
+    isGoogleConsentDialogActive,
+    markGoogleConsentDialogActive,
+} from "@/lib/analytics";
 import { adsEnabled } from "@/lib/ads";
 
 /**
@@ -32,6 +39,11 @@ export default function ConsentBridge() {
         let listenerId: number | undefined;
 
         const apply = (data: TcfData) => {
+            // Any real TCF event (UI shown or a decision) proves the dialog is
+            // live; until then CookieBanner stays the fallback.
+            if (data.eventStatus === "cmpuishown" || data.eventStatus === "tcloaded" || data.eventStatus === "useractioncomplete") {
+                markGoogleConsentDialogActive();
+            }
             if (data.eventStatus !== "tcloaded" && data.eventStatus !== "useractioncomplete") return;
             if (data.gdprApplies === false) {
                 // Outside the GDPR area the dialog never shows; treat as no
@@ -64,7 +76,7 @@ export default function ConsentBridge() {
 
         const reopen = () => {
             const fc = window.googlefc;
-            if (!fc?.callbackQueue) return;
+            if (!isGoogleConsentDialogActive() || !fc?.callbackQueue) return;
             fc.callbackQueue.push({
                 CONSENT_DATA_READY: () => fc.showRevocationMessage?.(),
             });
