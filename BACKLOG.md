@@ -6,6 +6,18 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**AdSense tag moved into the raw `<head>` (2026-09-06, same session).**
+AdSense reported "code not found": `next/script` (afterInteractive)
+injects client-side, so the verification crawler saw no tag in the HTML.
+Now a plain `<script async src=... crossorigin="anonymous">` in the root
+layout's `<head>` - byte-identical to Google's snippet - smoke asserts it
+by regex on `/`. (The other reason was simply that nothing had been pushed
+yet.) 91 smoke green. **Open proof:** PostHog event delivery could not be
+observed in the cloud sandbox (posthog.com blocked by the egress proxy;
+only the attempted `/array` + `/flags` calls were visible) - verify on
+the live site after the push: accept the dialog, then PostHog -> Activity
+should show a `$pageview` for the page you accepted on.
+
 **PostHog + AdSense keys baked in (2026-09-06, same session, after Nico
 sent both snippets).** PostHog EU project token and AdSense publisher id
 `ca-pub-6951760347839431` are defaults in `src/lib/analytics.ts` /

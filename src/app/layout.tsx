@@ -5,7 +5,6 @@ import { Manrope, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import TabBar from "@/components/layout/TabBar";
 import Footer from "@/components/layout/Footer";
-import Script from "next/script";
 import CookieBanner from "@/components/consent/CookieBanner";
 import ConsentBridge from "@/components/consent/ConsentBridge";
 import AnchorAd from "@/components/AnchorAd";
@@ -81,6 +80,20 @@ const jsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
+            {adsEnabled && (
+                <head>
+                    {/* Google's AdSense tag, verbatim and in the static HTML head:
+                        the AdSense site-verification crawler looks for exactly
+                        this tag in the raw HTML (next/script would inject it
+                        client-side and the crawler reports "code not found").
+                        The same script delivers Google's consent dialog. */}
+                    <script
+                        async
+                        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+                        crossOrigin="anonymous"
+                    />
+                </head>
+            )}
             <body
                 className={`${manrope.variable} ${plexMono.variable} bg-field font-sans text-ink antialiased`}
             >
@@ -92,20 +105,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <AnchorAd />
                 <TabBar />
                 <CookieBanner />
-                {/* AdSense loader = ad units + Google's certified consent dialog
-                    (the only cookie banner once this is on); ConsentBridge maps
-                    that decision onto PostHog. Off until the env var exists. */}
-                {adsEnabled && (
-                    <>
-                        <Script
-                            async
-                            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-                            crossOrigin="anonymous"
-                            strategy="afterInteractive"
-                        />
-                        <ConsentBridge />
-                    </>
-                )}
+                {/* maps Google's consent-dialog decision onto PostHog (the tag
+                    itself sits in <head> above) */}
+                {adsEnabled && <ConsentBridge />}
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

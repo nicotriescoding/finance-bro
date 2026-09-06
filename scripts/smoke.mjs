@@ -343,9 +343,13 @@ try {
         "/privacy carries the AdSense section (ads are live in code)",
         privacyHtml.includes("Google AdSense") && privacyHtml.includes("FCCDCF")
     );
+    // Google's verification crawler wants the literal tag in the raw <head>,
+    // not a client-injected script (that was the "code not found" failure).
     check(
-        "/ loads the AdSense tag with the publisher id",
-        homeHtml.includes("adsbygoogle.js?client=ca-pub-6951760347839431")
+        "/ carries the verbatim AdSense tag in the HTML head",
+        /<head>[\s\S]*<script async="" src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-6951760347839431" crossorigin="anonymous">/.test(
+            homeHtml
+        )
     );
     check(
         "/privacy names Amazon PartnerNet and the under-16 rule",
