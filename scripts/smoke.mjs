@@ -237,6 +237,22 @@ try {
         productsHtml.includes("superiority complex")
     );
     check("/products sells the Birkin out", productsHtml.includes("SOLD OUT"));
+    // 2026-09-06 legal pass: every affiliate button carries its own
+    // advertising label (§ 5a UWG), and the ellesse link no longer wears the
+    // Patagonia mark.
+    check(
+        "/products labels each affiliate link as advertising",
+        productsHtml.includes("affiliate link (Amazon)") &&
+            productsHtml.includes("earns from qualifying purchases")
+    );
+    check(
+        "/products no longer sells a 'Patagonia' vest",
+        !productsHtml.includes("Patagonia Vest")
+    );
+    check(
+        "/library labels each affiliate link as advertising",
+        libraryHtml.includes("affiliate link (Amazon)")
+    );
     // The three joke bundles (2026-08-29) and the desktop skyscraper rails.
     check(
         "/products shelves the three bundles",
@@ -303,6 +319,10 @@ try {
     check(
         "/privacy covers consent-gated analytics",
         privacyHtml.includes("PostHog") && privacyHtml.includes("consent")
+    );
+    check(
+        "/privacy names Amazon PartnerNet and the under-16 rule",
+        privacyHtml.includes("PartnerNet") && privacyHtml.includes("under 16")
     );
     check(
         "/ footer links the legal pages from every page",

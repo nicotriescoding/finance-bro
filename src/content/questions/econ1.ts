@@ -175,8 +175,10 @@ export const econ1Questions: Question[] = [
             const yA = rng.int(3, 6) * 100; // Livonia: barrels of oil
             const mult = rng.pick([3, 4, 5]); // Livonia's opportunity cost of oil (sacks of grain)
             const xA = yA * mult; // Livonia: sacks of grain
-            const yB = rng.int(6, 10) * 100; // Carinia: barrels of oil
+            let yB = rng.int(6, 10) * 100; // Carinia: barrels of oil
             const fac = rng.pick([1, 1.5, 2]); // Carinia's opportunity cost of oil
+            // Never reproduce the source exam's own table (2,000/500 vs 1,500/1,000).
+            if (yA === 500 && mult === 4 && yB === 1000 && fac === 1.5) yB = 900;
             const xB = yB * fac; // Carinia: sacks of grain
             return {
                 prompt: `Livonia can produce ${n(xA)} sacks of grain **or** ${n(yA)} barrels of olive oil per year; Carinia can produce ${n(xB)} sacks of grain **or** ${n(yB)} barrels of olive oil. They want to trade oil for grain. What is the **maximum** price of one barrel of oil, measured in sacks of grain, at which both countries still gain from trade?`,
@@ -246,7 +248,9 @@ export const econ1Questions: Question[] = [
             const b = (den - num) / den;
             const p1 = rng.int(2, 5);
             const p1New = 2 * p1; // the price of good 1 doubles
-            const p2 = rng.int(3, 8);
+            let p2 = rng.int(3, 8);
+            // Keep clear of the source exam's parameter set (1/4-3/4, p1 2 -> 4, p2 = 6).
+            if (num === 1 && den === 4 && p1 === 2 && p2 === 6) p2 = 7;
             const k = rng.int(4, 12);
             const m = p1New * den * k; // q1 stays a clean integer at the NEW price
             const q1 = num * k;
@@ -279,7 +283,9 @@ export const econ1Questions: Question[] = [
             const s = rng.int(1, 3); // wage-rental ratio w/r
             const r = rng.pick([5, 10, 20]);
             const w = s * r;
-            const L = rng.int(6, 14);
+            let L = rng.int(6, 14);
+            // The source exam's own draw (2KL - L^2, w = 20, r = 10, L* = 10) stays out.
+            if (a === 2 && w === 20 && r === 10 && L === 10) L = 11;
             const coef = s * a + 1; // Q = (sa + 1) L^2 at the optimum
             const Q = coef * L * L;
             const K = ((s * a + 2) / a) * L;
@@ -312,7 +318,9 @@ export const econ1Questions: Question[] = [
             const q = rng.int(4, 10);
             const p = c1 + 2 * c2 * q; // price such that MC = p at q
             const vp = c2 * q * q; // variable profit (p - AVC) * q area
-            const loss = rng.int(2, 8) * 10;
+            let loss = rng.int(2, 8) * 10;
+            // Never print the source exam's cost function (0.2q^2 + 10q + 45 at p = 12).
+            if (c2 === 0.2 && c1 === 10 && q === 5 && loss === 40) loss = 50;
             const F = vp + loss; // fixed cost chosen so profit = -loss < 0
             return {
                 prompt: String.raw`A price-taking brewery has short-run costs $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$. The market price is ${eur(p)} per crate. What profit does it earn at its optimal short-run output? (A loss is a negative number.)`,
@@ -499,7 +507,9 @@ export const econ1Questions: Question[] = [
             const t = rng.int(2, 5); // per-unit tax
             const pStar = rng.int(15, 30);
             const hi = Math.min(80, s * pStar - 5);
-            const Q0 = rng.int(25, hi);
+            let Q0 = rng.int(25, hi);
+            // The source exam's market (240 - 6p vs 4p - 60, tax 4) must not come out.
+            if (d === 6 && s === 4 && t === 4 && pStar === 30 && Q0 === 60) Q0 = 55;
             const A = Q0 + d * pStar; // demand intercept
             const B = s * pStar - Q0; // supply intercept (>= 5 by construction)
             const dQ = (d * s * t) / (d + s); // drop in quantity
@@ -531,8 +541,10 @@ export const econ1Questions: Question[] = [
         build: (rng) => {
             const beta = rng.pick([2, 4]); // demand slope
             const gamma = rng.pick([1, 2]); // MC slope
-            const Qstar = rng.int(40, 75);
+            let Qstar = rng.int(40, 75);
             const cc = rng.int(1, 2) * 100; // MC intercept
+            // Q = 200 - 0.25P with MC = 2Q + 100 is the source exam's monopoly - skip it.
+            if (beta === 4 && gamma === 2 && cc === 100 && Qstar === 70) Qstar = 65;
             const alpha = cc + Qstar * (2 * beta + gamma); // <= 950 by construction
             const FC = rng.int(1, 5) * 100;
             return {
@@ -558,8 +570,10 @@ export const econ1Questions: Question[] = [
         build: (rng) => {
             const beta = rng.pick([2, 4]);
             const gamma = 2; // keeps the cost function's quadratic term clean
-            const Qstar = 2 * rng.int(20, 39); // even, so alpha is divisible by beta
+            let Qstar = 2 * rng.int(20, 39); // even, so alpha is divisible by beta
             const cc = rng.pick([100, 200]);
+            // Q = 200 - 0.25P with MC = 2Q + 100 is the source exam's monopoly - skip it.
+            if (beta === 4 && cc === 100 && Qstar === 70) Qstar = 66;
             const alpha = cc + Qstar * (2 * beta + gamma);
             const A = alpha / beta; // integer by construction
             const k = 1 / beta;

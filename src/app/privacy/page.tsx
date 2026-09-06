@@ -39,7 +39,7 @@ export default function PrivacyPage() {
                     Privacy Policy · Datenschutzerklärung
                 </h1>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                    Last updated: 1 September 2026
+                    Last updated: 6 September 2026
                 </p>
             </header>
 
@@ -170,10 +170,27 @@ export default function PrivacyPage() {
                     first.
                 </p>
                 <p>
-                    The Library page will contain affiliate links, labelled as
-                    advertising. Clicking one takes you to the merchant (for example
-                    Amazon), which then processes your data under its own privacy
-                    policy; nothing is transmitted by us beforehand.
+                    The Library and Bro Shop pages contain affiliate links to Amazon.de
+                    (Amazon EU S.à r.l., Luxembourg - Amazon PartnerNet), each labelled
+                    as advertising next to the link. The links are plain outbound links:
+                    no Amazon script, pixel or cookie is loaded on this site, and nothing
+                    about you is transmitted by us before you click. Once you click,
+                    Amazon processes your data (including a cookie that attributes a
+                    purchase to this site) under its own privacy policy:{" "}
+                    <a
+                        href="https://www.amazon.de/privacy"
+                        className="font-bold text-brand underline underline-offset-2"
+                    >
+                        amazon.de/privacy
+                    </a>
+                    . We only receive aggregated statistics (number of clicks and
+                    qualifying purchases), never your identity.
+                </p>
+                <p>
+                    This site is made for university students. It is not directed at
+                    children under 16 and we do not knowingly collect their data; if
+                    you believe a child has left data here (for example a leaderboard
+                    name), e-mail the address in section 1 and it will be deleted.
                 </p>
             </Section>
 

@@ -6,6 +6,38 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Legal pass 2 - TUM labels, affiliate labelling, GDPR gaps (2026-09-06).**
+Per Nico's second audit. (1) UrhG/MarkenG: the per-question `source` chip
+is no longer rendered in `QuestionCard` (field stays in the banks as
+provenance for authoring + review; README updated); quiz/career/root
+metadata now say "exam-style ... calculation questions" / "for the courses"
+instead of "exam questions". Spot-check of every econ1 question citing the
+two text-readable exam PDFs (WT22/23, Principles WS20/21; 51 questions):
+scenarios and wording are all original, but 6 seeded builds could emit the
+exam's exact parameter tuple - one-line guards added
+(`e1-ca-trade-price-bound`, `e1-ct-indirect-utility`,
+`e1-pc-cost-minimization`, `e1-pc-shortrun-loss`, `e1-mkt-unit-tax-dwl`,
+`e1-mono-optimal-quantity`, `e1-mono-profit-tax-rate`); reviewer pass
+7/7 PASS. The WS19/20 Klausur is a scan without text layer - not checked.
+(2) UWG: new `AffiliateLabel` chip ("Advertising · affiliate link (Amazon)")
+above every affiliate button on /products and /library, buttons now say
+"... on Amazon", the 9px in-button "AD" is gone, disclosure paragraphs use
+Amazon's own sentence ("As an Amazon Associate ..."). "Patagonia Vest"
+renamed "The Vest" (links an ellesse vest - the mark may not sit on the
+card; blurb untouched). (3) DSGVO: privacy section 6 now names Amazon EU
+S.a r.l./PartnerNet, states no Amazon script/pixel loads pre-click, links
+amazon.de/privacy, and adds an under-16 statement; Vercel + Cloudflare
+already carried DPF (Art. 45) since 09-01; cookie banner decline button
+verified equal size/weight. Smoke +4 (86). Gate green from `$HOME/fb-check`
+copy (typecheck, verify 447 x 200, build, 86 smoke); dark-mode Playwright
+shots of /products, /library, /quiz posting, /privacy in the cloud sandbox.
+Owed: real-Chrome look at /products + /library chips; delete
+`_to_delete/fb-src-0906.tgz`. Still open (Nico: advice only): "The
+Intern's Rolex" (links Casio) and "Birkin Bag" (sold out, no link) use
+famous marks for other goods. Not built, plan only (Nico): Google-certified
+TCF 2.2 CMP for AdSense + privacy-policy AdSense section; server-rendered
+intro text on the quiz pages for AdSense review - see the session chat.
+
 **Bro Shop: four more bundles + BWL Marie moved to #2; leaderboard tabs
 only for subjects with questions (2026-09-05).** Per Nico. Shop order is
 now Starter Pack, BWL Marie, Undercover Broke Student, then the new ones:
@@ -177,11 +209,11 @@ build, 79 smoke.
 - Leaderboard: old-semester D1 rows (`earnings`, and `settled_postings` by
   `created_at`) must be deleted within 12 months of semester end (cron or
   manual - not built yet).
-- Shop brand names still open: "Birkin Bag", "Patagonia Vest" (links ellesse),
-  "The Intern's Rolex" (links Casio) use famous marks for OTHER goods -
-  § 14 II Nr. 2/3 MarkenG / § 5 UWG risk. Nico decided 2026-09-01: advice
-  only for now, rename later. AirPods/Kånken/TI-30 link to the genuine
-  product = nominative use, keep.
+- Shop brand names still open: "Birkin Bag" and "The Intern's Rolex"
+  (links Casio) use famous marks for OTHER goods - § 14 II Nr. 2/3 MarkenG /
+  § 5 UWG risk. Nico decided 2026-09-01: advice only for now, rename later.
+  The Patagonia card was renamed "The Vest" on 2026-09-06.
+  AirPods/Kånken/TI-30 link to the genuine product = nominative use, keep.
 - Visual check owed on Nico's machine: /, /library, /privacy, /impressum in
   dark mode (sandbox cannot screenshot).
 

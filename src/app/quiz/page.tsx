@@ -5,7 +5,7 @@ import QuizClient from "@/components/quiz/QuizClient";
 export const metadata: Metadata = {
     title: "Quiz",
     description:
-        "Practice business-administration exam questions by subject and topic: Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing.",
+        "Practice exam-style business-administration calculation questions by subject and topic: Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing.",
 };
 
 export default function QuizPage() {

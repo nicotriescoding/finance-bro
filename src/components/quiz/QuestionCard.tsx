@@ -220,11 +220,11 @@ export default function QuestionCard({
                 <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-bold text-muted">
                     {`UP TO ${formatMoney(maxPoints(instance.question.difficulty) * payoutFactor + rankBonus)} ${MONEY}${hintUsed ? " · HINT" : tableUsed ? " · TABLE" : ""}`}
                 </span>
-                {instance.question.source && (
-                    <span className="caps-label rounded-full bg-chip px-2.5 py-1 text-[10px] text-muted">
-                        {instance.question.source}
-                    </span>
-                )}
+                {/* `question.source` (the exam a question was redesigned from)
+                    stays internal on purpose - it is provenance for authoring
+                    and review, not a product label. Showing "TUM ... Exam" on
+                    every card read as "derived from TUM's exams" (UrhG / MarkenG
+                    exposure, 2026-09-06); the copy says "exam-style" instead. */}
             </div>
 
             {/* the posting itself */}

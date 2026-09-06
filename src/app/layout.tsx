@@ -23,7 +23,7 @@ const plexMono = IBM_Plex_Mono({
 const SITE_URL = "https://www.finance-bro.de";
 const TITLE = "FinanceBro";
 const DESCRIPTION =
-    "Free exam trainer for business administration, made by a TUM student for TUM students: calculation practice questions on Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing - with instant feedback.";
+    "Free exam trainer for business administration, made by a TUM student for TUM students: exam-style calculation questions for the courses Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing - with instant feedback.";
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),

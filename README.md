@@ -77,7 +77,7 @@ exams are ingested with the `add-exam-questions` skill.
     topic: "provisions",
     difficulty: "medium",
     kind: "choice",
-    source: "TUM Endterm WS24/25, A3",  // rendered as a badge
+    source: "TUM Endterm WS24/25, A3",  // internal provenance only, never rendered
     prompt: "Question …",
     choices: ["correct", "wrong A", "wrong B", "wrong C"],
     correct: 0,                         // index, or [0, 2] for multi-select

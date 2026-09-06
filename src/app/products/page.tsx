@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AdRail from "@/components/AdRail";
 import { amz } from "@/lib/affiliate";
+import AffiliateLabel from "@/components/AffiliateLabel";
 
 export const metadata: Metadata = {
     title: "Bro Shop",
@@ -14,8 +15,8 @@ export const metadata: Metadata = {
  * by the sticky desktop ad rails (AdRail). Order: Starter Pack, BWL Marie,
  * Undercover Broke Student, then the four 2026-09-05 bundles (Excel Monkey,
  * Doomsday Bunker, LinkedIn Thought Leader, Boring Index Fund - the last one
- * is the "would actually buy" bundle, keep it earnest). The Patagonia Vest blurb is original finance-bro canon: do not
- * touch it. (Business School Cigarettes and the Hela Ketchup were removed
+ * is the "would actually buy" bundle, keep it earnest). The vest blurb is original finance-bro canon: do not touch it (card renamed
+ * 2026-09-06 - it links an ellesse vest, so it may not carry the Patagonia mark). (Business School Cigarettes and the Hela Ketchup were removed
  * 2026-08-29 per Nico - do not resurrect without asking him.)
  *
  * Images are Adobe Stock photos, licensed on Nico's Adobe account (all
@@ -69,7 +70,7 @@ const BUNDLES: Bundle[] = [
                 soldOut: "SOLD OUT - restock after the next bonus round",
             },
             {
-                name: "Patagonia Vest",
+                name: "The Vest",
                 img: {
                     src: "/products/vest.jpg",
                     alt: "A black quilted puffer vest",
@@ -77,7 +78,7 @@ const BUNDLES: Bundle[] = [
                 blurb:
                     "For the true business students who don't just study economics but have made the lifestyle their own. Usually comes with an internship arranged by Daddy and a superiority complex.",
                 href: amz("ellesse weste herren"),
-                note: "Patagonia's affiliate desk has not returned our calls - this link is the ellesse one. Same vest energy, fraction of the Daddy.",
+                note: "The famous outdoor brand's affiliate desk has not returned our calls - this link is an ellesse vest. Same vest energy, fraction of the Daddy.",
             },
             {
                 name: "The Intern's Rolex",
@@ -484,17 +485,20 @@ function ProductCard({ p }: { p: Product }) {
                         {p.soldOut}
                     </span>
                 ) : (
-                    <a
-                        href={p.href}
-                        target="_blank"
-                        rel="sponsored nofollow noopener"
-                        className="inline-flex items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
-                    >
-                        See the offer →
-                        <span className="caps-label text-[9px] tracking-[.16em] text-muted-light">
-                            AD
-                        </span>
-                    </a>
+                    <div className="flex flex-col items-start gap-1.5">
+                        {/* § 5a (4) UWG / § 6 DDG: the commercial nature of the link
+                            must be recognisable BEFORE the click, per link - a
+                            generic sentence in the Impressum is not enough. */}
+                        <AffiliateLabel />
+                        <a
+                            href={p.href}
+                            target="_blank"
+                            rel="sponsored nofollow noopener"
+                            className="inline-flex items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
+                        >
+                            See the offer on Amazon →
+                        </a>
+                    </div>
                 )}
                 {p.note && (
                     <p className="mt-2 text-[11px] italic leading-relaxed text-muted-light">
@@ -525,10 +529,12 @@ export default function ProductsPage() {
                         <span className="caps-label text-[9px] tracking-[.14em]">
                             Transparency · advertising:
                         </span>{" "}
-                        the &quot;See the offer&quot; buttons are (or will become){" "}
-                        affiliate links - buy through one and the site earns a small
-                        commission while your price stays exactly the same. As an
-                        Amazon partner, this site earns from qualifying purchases.
+                        every &quot;See the offer on Amazon&quot; button is an affiliate
+                        link (Amazon PartnerNet) - buy through one and the site earns a
+                        small commission while your price stays exactly the same. As an
+                        Amazon Associate, this site earns from qualifying purchases.
+                        Product names are jokes, not brand endorsements: the links go
+                        to Amazon searches for comparable items.
                     </p>
                 </header>
 

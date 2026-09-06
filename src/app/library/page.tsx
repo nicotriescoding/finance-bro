@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { amz } from "@/lib/affiliate";
+import AffiliateLabel from "@/components/AffiliateLabel";
 
 export const metadata: Metadata = {
     title: "Library",
@@ -201,17 +202,17 @@ function BookCard({ book }: { book: Book }) {
                     {book.review ??
                         "The librarian's review is stuck in the approval workflow. It exists, it is opinionated, and it lands with the next release."}
                 </p>
-                <a
-                    href={amz(book.q)}
-                    target="_blank"
-                    rel="sponsored nofollow noopener"
-                    className="inline-flex items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
-                >
-                    Get the book →
-                    <span className="caps-label text-[9px] tracking-[.16em] text-muted-light">
-                        AD
-                    </span>
-                </a>
+                <div className="flex flex-col items-start gap-1.5">
+                    <AffiliateLabel />
+                    <a
+                        href={amz(book.q)}
+                        target="_blank"
+                        rel="sponsored nofollow noopener"
+                        className="inline-flex items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
+                    >
+                        Get the book on Amazon →
+                    </a>
+                </div>
             </div>
         </div>
     );
@@ -284,7 +285,7 @@ export default function LibraryPage() {
                     multiplier ranks favorites, it does not filter duds. The book
                     buttons are affiliate links - that is advertising: buy a book
                     through one and the site earns a small commission while your price
-                    stays exactly the same. As an Amazon partner, this site earns from
+                    stays exactly the same. As an Amazon Associate, this site earns from
                     qualifying purchases. This page carries no other ads. Covers
                     sourced via Open Library, served from this site.
                 </p>
