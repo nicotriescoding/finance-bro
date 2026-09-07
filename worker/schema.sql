@@ -1,6 +1,8 @@
 -- D1 schema for the semester scoreboard.
 -- Apply with:  npx wrangler d1 execute finance-bro-mp --remote --file=schema.sql
 -- (idempotent - safe to re-run after every change to this file)
+-- The worker also applies this itself on first use (SCHEMA in src/scoreboard.ts,
+-- keep both in sync) - running it by hand is optional.
 
 -- BroDollars earned per player, per semester, per subject. "Overall" is the
 -- SUM over subjects at query time. Written by the worker only: solo postings

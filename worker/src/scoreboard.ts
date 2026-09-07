@@ -30,6 +30,51 @@ export type Booking = {
 export const PID_RE = /^[a-f0-9]{8,32}$/;
 
 /**
+ * The D1 schema, mirrored from ../schema.sql. The worker applies it itself
+ * before the first D1 access of every isolate (CREATE ... IF NOT EXISTS is
+ * idempotent and cheap), so a fresh database - or a forgotten
+ * `wrangler d1 execute` - never leaves the board answering 503 and every
+ * solo posting unbooked. Keep both files in sync when the schema changes.
+ */
+const SCHEMA: string[] = [
+    `CREATE TABLE IF NOT EXISTS earnings (
+        semester   TEXT    NOT NULL,
+        player_id  TEXT    NOT NULL,
+        subject    TEXT    NOT NULL,
+        name       TEXT    NOT NULL,
+        amount     INTEGER NOT NULL DEFAULT 0,
+        postings   INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (semester, player_id, subject)
+    )`,
+    `CREATE INDEX IF NOT EXISTS idx_earnings_subject
+        ON earnings (semester, subject, amount DESC)`,
+    `CREATE TABLE IF NOT EXISTS settled_postings (
+        player_id  TEXT    NOT NULL,
+        qid        TEXT    NOT NULL,
+        seed       INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        PRIMARY KEY (player_id, qid, seed)
+    )`,
+];
+
+let schemaReady: Promise<void> | null = null;
+
+/** Apply the schema once per isolate; a failed attempt is retried next call. */
+export function ensureSchema(db: D1Database): Promise<void> {
+    if (!schemaReady) {
+        schemaReady = db.batch(SCHEMA.map((sql) => db.prepare(sql))).then(
+            () => undefined,
+            (err) => {
+                schemaReady = null;
+                throw err;
+            }
+        );
+    }
+    return schemaReady;
+}
+
+/**
  * The name a report carries, or the player's intern name when unclaimed. A
  * name the decency filter rejected counts as unclaimed too.
  */
@@ -79,6 +124,7 @@ export async function bookEarnings(db: D1Database, bookings: Booking[]): Promise
     }
     if (stmts.length === 0) return true;
     try {
+        await ensureSchema(db);
         await db.batch(stmts);
         return true;
     } catch {
@@ -89,6 +135,7 @@ export async function bookEarnings(db: D1Database, bookings: Booking[]): Promise
 /** Rename every row of a player in the running semester. */
 export async function renamePlayer(db: D1Database, pid: string, name: string): Promise<boolean> {
     try {
+        await ensureSchema(db);
         await db
             .prepare(`UPDATE earnings SET name = ? WHERE semester = ? AND player_id = ?`)
             .bind(name, currentSemester(), pid)
@@ -109,6 +156,7 @@ export async function claimPosting(
     qid: string,
     seed: number
 ): Promise<boolean> {
+    await ensureSchema(db);
     const res = await db
         .prepare(
             `INSERT OR IGNORE INTO settled_postings (player_id, qid, seed, created_at)
@@ -131,6 +179,7 @@ export async function readScoreboard(
     scope: ScoreboardScope,
     pid: string | null
 ): Promise<ScoreboardResponse> {
+    await ensureSchema(db);
     const semester = currentSemester();
     // SQLite: a bare column next to MAX() comes from the row holding the max,
     // so `name` is the most recently updated one.

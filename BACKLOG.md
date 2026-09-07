@@ -6,6 +6,30 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**Leaderboard was dead on prod - worker now creates its own D1 schema
+(2026-09-07, latest session).** Nico: BroDollars must count for every
+solved question, solo and duels, on the subject board and the overall
+board. The code for that has been in since 09-02; what was missing was the
+manual `wrangler d1 execute` (owed since then), so `earnings` /
+`settled_postings` never existed: the live worker answered every
+`/api/leaderboard` with 503 `leaderboard_unavailable` ("desk is not
+staffed"), every solo `/api/earnings` report and every closing-bell booking
+failed silently. Fix: `ensureSchema()` in `worker/src/scoreboard.ts`
+(schema mirrored from `schema.sql`, `CREATE ... IF NOT EXISTS`, memoised
+per isolate, retried on failure) runs before every D1 access - read,
+book, rename, replay guard. No manual step remains; `schema.sql` stays
+as documentation/optional. Proof in the cloud clone: worker typecheck
+green; `wrangler dev` against an **empty** local D1 - `GET
+/api/leaderboard` 200 with rows [] - and `worker/test/e2e.ts` ALL GREEN
+(26 checks: Bull Run/Front Running/Rapid + scoreboard overall/subject/
+you/bot-free + solo booked/capped/intern-named/replay-refused/wrong-
+refused/fresh-seed-pays). Site code untouched (no `npm run check`
+needed). **Nico next:** push; Cloudflare redeploys the worker; then
+/leaderboard should show "TOP 0" without the error card and the first
+solved posting appears within seconds (solo reports are fire-and-forget).
+Note: postings solved before the push are gone - the worker never got to
+book them.
+
 **Bro Shop: money-pattern backgrounds, listing-first photos, desk-name
 ideas (2026-09-07, latest session).** Per Nico. (1) Card image area: faint
 $ / € / % glyphs + 💸📈 tiled SVG (`MONEY_PATTERN`) over a pastel gradient
