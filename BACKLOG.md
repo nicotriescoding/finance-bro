@@ -6,8 +6,39 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
-**Bro Shop: After-Exam Party Kit + croc Birkin (2026-09-06, latest
-session).** Per Nico: the Birkin card now shows a gold crocodile-leather
+**Bro Shop: ASIN links, real Birkin, reorder (2026-09-07, latest
+session).** Per Nico. (1) Every product now links one specific amazon.de
+listing via `amzProduct(asin)` in `src/lib/affiliate.ts` (tag applies the
+same way as to search links). Picked in Nico's Chrome from the live search
+results: 4.5+ stars where the category has one, review volume, and the
+listing that looks most like our stock photo. Below 4.5 because the
+category has nothing better: blue-light glasses (Joopin 4.1, matches the
+black frame), interview suit (Jack & Jones 4.2), vertical mouse (Logitech
+Lift 4.4, best photo match), monstera (4.4), shot roulette (4.4), beer
+tower (Goods+Gadgets 4 l, 4.2 - blurb/chip now say 4 liters), beer pong
+(4.6 but 50 cups/12 balls - blurb updated). Beer mortar keeps the search
+link: every mortar listing sits at 1-2 stars; note on the card says so.
+(2) Amazon product images: not allowed. The Associates policy only permits
+images served live through the Creators API (no download/re-host, 24 h
+cache), and API access needs 10 qualifying sales in the trailing 30 days
+(PA-API 5 retired May 2026). Revisit once the account is there; until then
+stock photos stay and the ASIN pick does the matching. (3) Birkin card:
+real orange ostrich Birkin from Wikimedia Commons (CC BY-SA 2.0, Wen-Cheng
+Liu, cropped to ~800x900) - the only license-free non-pink Birkin photo
+found (Commons, Openverse); credit line in the shop footer is a license
+condition. (4) Excel Monkey leads with the glasses, Doomsday with the sleep
+mask. Smoke +3 (95): ASIN links, credit line, ordering; the "no hotlink"
+check now looks at `<img src>` instead of the string "wikimedia". Gate
+green in the device-VM copy `$HOME/fb-check` (typecheck, verify, build, 95
+smoke); dark-mode Playwright shots of /products (top, Excel Monkey,
+Doomsday, footer) checked in the cloud sandbox. Open: real-Chrome look on
+Nico's machine; delete `_to_delete/fb-src-0906b.tgz` + `fb-src-0907.tgz`.
+Other programs, in case Amazon stalls: Awin (Otto, MediaMarkt, Zalando -
+per-merchant approval, EUR 5 signup deposit, product feeds with image
+rights) and eBay Partner Network (instant, images via its API) - neither
+worth registering for a joke shop until PartnerNet is live.
+
+**Bro Shop: After-Exam Party Kit + croc Birkin (2026-09-06).** Per Nico: the Birkin card now shows a gold crocodile-leather
 clutch (Adobe Stock 472404769 - the free tier has exactly two croc bags,
 the other sits on a dark background; 12 candidates compared on a contact
 sheet). New eighth bundle "The After-Exam Party Kit" (6 positions): Aperol
@@ -690,7 +721,8 @@ table, choices, explanations) via `RichText`; `npm run verify` compiles every
 - **Affiliate go-live (Nico):** sign up at partnernet.amazon.de (site
   qualifies: original content, Impressum, privacy page; approval finalizes
   after 3 sales in 180 days), then set `AMAZON_TAG` in `src/lib/affiliate.ts`
-  and push. Decided 2026-08-28 - program is Amazon PartnerNet, links already
+  and push. Later, at 10 sales/30 days: Creators API for live product
+  images (the only compliant way to show Amazon's pictures). Decided 2026-08-28 - program is Amazon PartnerNet, links already
   live untagged on `/products` + `/library`.
 - **Library content (Nico):** ROI multiplier + one-paragraph personal review
   for each of the 8 read books - drop them into the `SECTIONS` array in

@@ -8,8 +8,11 @@
  * AvantLink with a 4-6 week manual review and traffic-stats vetting - not
  * realistic for this site yet.
  *
- * Links are Amazon search links, not ASIN links: they cannot rot when a
- * listing is delisted, and they carry the tag just the same.
+ * Since 2026-09-07 every shop product links a specific amazon.de listing
+ * (`amzProduct`, picked per item: 4.5+ stars where the category has one,
+ * decent review count, and the listing that looks most like our photo).
+ * `amz` (search link) stays for the few items where no listing qualifies
+ * and for /library. Both carry the tag once AMAZON_TAG is set.
  *
  * TODO(Nico): after PartnerNet signup, put your tag here (e.g. "financebro-21")
  * and every link on /products and /library is tagged. Until then the links
@@ -21,4 +24,10 @@ export const AMAZON_TAG = "";
 export function amz(search: string): string {
     const base = `https://www.amazon.de/s?k=${encodeURIComponent(search)}`;
     return AMAZON_TAG ? `${base}&tag=${AMAZON_TAG}` : base;
+}
+
+/** Build an Amazon.de product-page link for one ASIN, tagged once AMAZON_TAG is set. */
+export function amzProduct(asin: string): string {
+    const base = `https://www.amazon.de/dp/${asin}`;
+    return AMAZON_TAG ? `${base}?tag=${AMAZON_TAG}` : base;
 }

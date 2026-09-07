@@ -289,7 +289,27 @@ try {
     check(
         "/products serves local product images",
         productsHtml.includes("/products/birkin.jpg") &&
-            !productsHtml.includes("wikimedia.org")
+            !/<img[^>]+src="https?:\/\//.test(productsHtml)
+    );
+    // 2026-09-07: every product links one amazon.de listing (ASIN); only the
+    // beer mortar keeps a search link. The Birkin photo is CC BY-SA and needs
+    // its credit line in the footer.
+    check(
+        "/products links specific Amazon listings",
+        new Set(productsHtml.match(/amazon\.de\/dp\/[A-Z0-9]+/g)).size >= 35 &&
+            new Set(productsHtml.match(/amazon\.de\/s\?k=[^"\\]+/g)).size === 1
+    );
+    check(
+        "/products credits the CC BY-SA Birkin photo",
+        productsHtml.includes("Wen-Cheng Liu") &&
+            productsHtml.includes("CC BY-SA 2.0")
+    );
+    check(
+        "/products puts the glasses and the sleep mask first",
+        productsHtml.indexOf("Blue-Light Glasses") <
+            productsHtml.indexOf("Mechanical Keyboard, Clicky") &&
+            productsHtml.indexOf("Post-Exam Coma Mask") <
+                productsHtml.indexOf("Energy Drinks, 24-Pack")
     );
     // Removed per Nico 2026-08-29 - keep them gone.
     // After-Exam Party Kit (2026-09-06) and the croc Birkin.
