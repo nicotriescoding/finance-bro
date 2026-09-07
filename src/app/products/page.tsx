@@ -31,7 +31,12 @@ export const metadata: Metadata = {
  * as ~900px optimized JPEGs under public/products/. Every image was scouted
  * against 5+ candidates and picked by eye for professional shop quality.
  * If a product image ever changes: license via the Adobe connector first,
- * then commit the file - never hotlink.
+ * then commit the file - never hotlink. Since 2026-09-07 the order is
+ * listing first, photo second: pick the ASIN, then the photo that looks
+ * like it, shot on white (see MONEY_PATTERN for why). Photos with a
+ * coloured background got their background removed via the Adobe
+ * connector (ring light, tower); the sleep mask is the licensed gold
+ * photo recoloured to black to match the listing.
  *
  * Affiliate links come from src/lib/affiliate.ts (Amazon PartnerNet; the
  * rationale and Nico's tag TODO live there). Since 2026-09-07 each product
@@ -58,6 +63,8 @@ type Product = {
 type Bundle = {
     name: string;
     emoji: string;
+    /** Image-area gradient (from, to) - pastel, one mood per bundle; see MONEY_PATTERN. */
+    tint: [string, string];
     /** One-line joke under the bundle title. */
     tagline: string;
     /** Caps chips in the bundle header, portfolio-style. */
@@ -68,6 +75,7 @@ type Bundle = {
 const BUNDLES: Bundle[] = [
     {
         name: "The FinanceBro Starter Pack",
+        tint: ["#fff3d6", "#e9fbf1"],
         emoji: "💼",
         tagline: "Look the part long before you can price the part.",
         chips: ["6 positions", "risk: daddy-backed", "yield: pure image"],
@@ -94,7 +102,7 @@ const BUNDLES: Bundle[] = [
                 note: "The famous outdoor brand's affiliate desk has not returned our calls - this link is an ellesse vest. Same vest energy, fraction of the Daddy.",
             },
             {
-                name: "The Intern's Rolex",
+                name: "The Intern's Watch",
                 img: {
                     src: "/products/watch.jpg",
                     alt: "A gold retro digital wristwatch",
@@ -137,6 +145,7 @@ const BUNDLES: Bundle[] = [
     },
     {
         name: "BWL Marie",
+        tint: ["#ffe4ef", "#f3e8ff"],
         emoji: "🎀",
         tagline:
             "For the business girlie whose semester runs on matcha, pastel and immaculate vibes.",
@@ -146,7 +155,7 @@ const BUNDLES: Bundle[] = [
                 name: "The Kånken",
                 img: {
                     src: "/products/backpack.jpg",
-                    alt: "A pastel blue backpack on a pink background",
+                    alt: "A navy blue backpack with a brown leather bottom",
                 },
                 blurb:
                     "One backpack, four colorways, every lecture hall in Munich. Contains one iPad, zero printed readings and a small pharmacy of lip balm.",
@@ -216,6 +225,7 @@ const BUNDLES: Bundle[] = [
     },
     {
         name: "The Undercover Broke Student",
+        tint: ["#f1f5f9", "#e9fbf1"],
         emoji: "🥷",
         tagline: "Everything you need to look liquid while being insolvent.",
         chips: ["6 positions", "risk: actual", "burn rate: 4.20 €/day"],
@@ -274,7 +284,7 @@ const BUNDLES: Bundle[] = [
                 name: "20,000 mAh Powerbank",
                 img: {
                     src: "/products/powerbank.jpg",
-                    alt: "A white power bank with cable on a yellow background",
+                    alt: "A black power bank",
                 },
                 blurb:
                     "The only outlets in the library are guarded like board seats. This keeps the laptop alive through exam season and the denial phase after.",
@@ -284,6 +294,7 @@ const BUNDLES: Bundle[] = [
     },
     {
         name: "The Excel Monkey Survival Kit",
+        tint: ["#e6f7ee", "#d9f2ff"],
         emoji: "🐒",
         tagline: "Alt+Tab is not a shortcut. It is a personality.",
         chips: ["4 positions", "risk: carpal tunnel", "yield: 0.3 s per VLOOKUP"],
@@ -302,7 +313,7 @@ const BUNDLES: Bundle[] = [
                 name: "Mechanical Keyboard, Clicky",
                 img: {
                     src: "/products/keyboard.jpg",
-                    alt: "A mechanical keyboard with blue keycaps and loose key switches",
+                    alt: "A black computer keyboard",
                 },
                 blurb:
                     "Every keystroke sounds like a decision. The library will hate you, the model will be done by midnight, and F2 has never felt this important.",
@@ -332,6 +343,7 @@ const BUNDLES: Bundle[] = [
     },
     {
         name: "The Exam Week Doomsday Bunker",
+        tint: ["#ffe8d6", "#fff3d6"],
         emoji: "🧟",
         tagline: "Fourteen chapters, four days, one plan: none.",
         chips: ["4 positions", "risk: caffeine-adjusted", "maturity: Thursday, 8 AM"],
@@ -340,7 +352,7 @@ const BUNDLES: Bundle[] = [
                 name: "Post-Exam Coma Mask",
                 img: {
                     src: "/products/sleep-mask.jpg",
-                    alt: "A gold satin sleep mask",
+                    alt: "A black satin sleep mask",
                 },
                 blurb:
                     "For the 14-hour recovery position right after the exam. Blocks light, roommates and the question of how part 3b went.",
@@ -360,7 +372,7 @@ const BUNDLES: Bundle[] = [
                 name: "Sticky Notes, Industrial Quantity",
                 img: {
                     src: "/products/sticky-notes.jpg",
-                    alt: "Colorful sticky notes covering a wall",
+                    alt: "Colorful sticky notes scattered on a white surface",
                 },
                 blurb:
                     "For the formula wall that turns your room into a crime-scene investigation. Suspect: the lecturer. Motive: § 253 HGB (impairment rules).",
@@ -380,6 +392,7 @@ const BUNDLES: Bundle[] = [
     },
     {
         name: "The LinkedIn Thought Leader Kit",
+        tint: ["#dbeafe", "#eef2ff"],
         emoji: "🧠",
         tagline: "Agree? Repost. Your network needs to hear this.",
         chips: ["4 positions", "risk: cringe", "engagement: your mom"],
@@ -388,7 +401,7 @@ const BUNDLES: Bundle[] = [
                 name: "Ring Light, Founder Mode",
                 img: {
                     src: "/products/ring-light.jpg",
-                    alt: "An LED ring light on a tripod against a blue background",
+                    alt: "An LED ring light on a tripod",
                 },
                 blurb:
                     "Turns a dorm room into a studio and a 20-year-old into a 'serial entrepreneur'. The glow you see in every 'I got rejected 47 times' post.",
@@ -428,6 +441,7 @@ const BUNDLES: Bundle[] = [
     },
     {
         name: "The Boring Index Fund",
+        tint: ["#e9fbf1", "#f0fdf4"],
         emoji: "📈",
         tagline: "Low fees, no drama. The only bundle here with a real Sharpe ratio.",
         chips: ["4 positions", "risk: none", "expense ratio: 0.07 %"],
@@ -446,7 +460,7 @@ const BUNDLES: Bundle[] = [
                 name: "E-Reader",
                 img: {
                     src: "/products/e-reader.jpg",
-                    alt: "An e-reader with a blank screen on a green patterned background",
+                    alt: "An e-reader with a blank screen",
                 },
                 blurb:
                     "Battery lasts a semester, weighs less than one textbook, holds all of them. Reading on it feels like paper, buying books on it feels like nothing.",
@@ -476,6 +490,7 @@ const BUNDLES: Bundle[] = [
     },
     {
         name: "The After-Exam Party Kit",
+        tint: ["#ffe1d0", "#fff0b8"],
         emoji: "🍾",
         tagline: "Grades are lagging indicators. The party is priced in tonight.",
         chips: ["6 positions", "risk: blackout", "liquidity: 4 liters"],
@@ -484,7 +499,7 @@ const BUNDLES: Bundle[] = [
                 name: "The Aperol Tower",
                 img: {
                     src: "/products/aperol-tower.jpg",
-                    alt: "A tall drink dispenser tower filled with an orange drink",
+                    alt: "A drink dispenser tower filled with an orange drink",
                 },
                 blurb:
                     "Four liters of Spritz with its own tap, technically a beer tower with an identity crisis. The only tower in this shop with more liquidity than your bank account.",
@@ -505,7 +520,7 @@ const BUNDLES: Bundle[] = [
                 name: "Beer Pong, Regulation Set",
                 img: {
                     src: "/products/beer-pong.jpg",
-                    alt: "Six red plastic cups in a triangle with a white ball above them",
+                    alt: "Two red plastic party cups",
                 },
                 blurb:
                     "Fifty cups, twelve balls, one table you will owe your flatmate a new one of. The only game where a re-rack is a legitimate risk-management strategy.",
@@ -545,16 +560,43 @@ const BUNDLES: Bundle[] = [
     },
 ];
 
-function ProductCard({ p }: { p: Product }) {
+/**
+ * Image-area background (Nico, 2026-09-07: "the white boxes are boring"). A
+ * tiled SVG of faint $ / € / % glyphs plus a 💸 and a 📈, laid over the
+ * bundle's pastel gradient. The product photo sits on it with
+ * `mix-blend-mode: multiply`, so the white studio background of a stock
+ * photo disappears and the item floats on the pattern - which is also why
+ * every product photo must be shot on white (dark backgrounds turn into a
+ * dark block). Chosen from five candidates (stripes, studio spotlight,
+ * emoji confetti, mint radial, this) by screenshot.
+ */
+const MONEY_PATTERN = `url("data:image/svg+xml,${encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>" +
+        "<g font-family='ui-sans-serif,system-ui' font-weight='800' fill='#1c6b45' fill-opacity='.13'>" +
+        "<text x='8' y='30' font-size='22' transform='rotate(-18 8 30)'>$</text>" +
+        "<text x='70' y='40' font-size='16' transform='rotate(12 70 40)'>%</text>" +
+        "<text x='30' y='90' font-size='18' transform='rotate(8 30 90)'>€</text>" +
+        "<text x='84' y='100' font-size='24' transform='rotate(-10 84 100)'>$</text></g>" +
+        "<g font-size='14' fill-opacity='.4'><text x='50' y='70'>💸</text><text x='100' y='20'>📈</text></g></svg>"
+)}")`;
+
+function ProductCard({ p, tint }: { p: Product; tint: [string, string] }) {
     return (
         <div className="flex flex-col overflow-hidden rounded-[14px] border border-hairline bg-surface shadow-[0_1px_2px_rgba(15,33,55,.05)]">
-            <div className="flex h-44 flex-none items-center justify-center border-b border-hairline-soft bg-white p-4">
+            <div
+                className="flex h-44 flex-none items-center justify-center border-b border-hairline-soft p-4"
+                style={{
+                    backgroundColor: tint[0],
+                    backgroundImage: `${MONEY_PATTERN}, linear-gradient(135deg, ${tint[0]} 0%, ${tint[1]} 100%)`,
+                }}
+            >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src={p.img.src}
                     alt={p.img.alt}
                     loading="lazy"
                     className="max-h-full max-w-full object-contain"
+                    style={{ mixBlendMode: "multiply" }}
                 />
             </div>
             <div className="flex flex-1 flex-col p-4">
@@ -645,7 +687,7 @@ export default function ProductsPage() {
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             {bundle.products.map((p) => (
-                                <ProductCard key={p.name} p={p} />
+                                <ProductCard key={p.name} p={p} tint={bundle.tint} />
                             ))}
                         </div>
                     </section>

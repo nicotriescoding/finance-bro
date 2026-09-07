@@ -6,8 +6,36 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
-**Bro Shop: ASIN links, real Birkin, reorder (2026-09-07, latest
-session).** Per Nico. (1) Every product now links one specific amazon.de
+**Bro Shop: money-pattern backgrounds, listing-first photos, desk-name
+ideas (2026-09-07, latest session).** Per Nico. (1) Card image area: faint
+$ / € / % glyphs + 💸📈 tiled SVG (`MONEY_PATTERN`) over a pastel gradient
+per bundle (`tint`), product photo blended with `mix-blend-mode: multiply`
+so the white studio background vanishes. Picked from five variants
+(stripes, studio spotlight, emoji confetti, mint radial, this) by
+screenshot; the first round showed the white photo boxes clash with any
+tint, multiply fixed that. Consequence: every product photo must be on
+white - a coloured/dark background renders as a block. Still slightly
+grey-boxed: earplugs, energy cans, watch, Birkin (light backgrounds) -
+fine at a glance, swap when convenient. (2) Order is now listing first,
+photo second: nine photos replaced to match the ASINs - backpack (navy,
+Stock 289871883), powerbank (black, 1134198599, GenAI), keyboard (black,
+435158535), sticky notes (304432240), beer pong (211816711), e-reader
+(177650219); ring light + Aperol tower kept but background removed via the
+Adobe connector (`image_remove_background`, white fill); sleep mask is the
+licensed gold photo recoloured to black in PIL to match the black silk
+listing. All free tier, licensed on Nico's account. (3) 🎲 name button:
+`DESK_NAME_IDEAS` (40 finance-bro names without badge number - DCF Daddy,
+WACC Enjoyer, Net Present Valerie, ...) in `src/lib/scoreboard/shared.ts`;
+`nameSuggestions()` = own intern name + 2 intern titles, then the ideas in
+a fresh random order, then the remaining intern titles. Picking an idea
+counts as a real name. Not visually verified (the desk is not staffed in
+the sandbox) - Nico: open /leaderboard or the duels desk and hit 🎲 a few
+times. Gate green in the device-VM copy (typecheck, verify, build, 95
+smoke); dark-mode Playwright shots of /products (all bundles) in the
+cloud sandbox. Open: real-Chrome look; `_to_delete/` again holds a
+tarball the sandbox cannot remove.
+
+**Bro Shop: ASIN links, real Birkin, reorder (2026-09-07).** Per Nico. (1) Every product now links one specific amazon.de
 listing via `amzProduct(asin)` in `src/lib/affiliate.ts` (tag applies the
 same way as to search links). Picked in Nico's Chrome from the live search
 results: 4.5+ stars where the category has one, review volume, and the
@@ -338,10 +366,12 @@ build, 79 smoke.
 - Leaderboard: old-semester D1 rows (`earnings`, and `settled_postings` by
   `created_at`) must be deleted within 12 months of semester end (cron or
   manual - not built yet).
-- Shop brand names still open: "Birkin Bag" and "The Intern's Rolex"
-  (links Casio) use famous marks for OTHER goods - § 14 II Nr. 2/3 MarkenG /
-  § 5 UWG risk. Nico decided 2026-09-01: advice only for now, rename later.
-  The Patagonia card was renamed "The Vest" on 2026-09-06.
+- Shop brand names: "The Intern's Rolex" renamed "The Intern's Watch"
+  (2026-09-07, per Nico; blurb still says "Gold Casio" = nominative, it links
+  the Casio). "Birkin Bag" stays by decision (no link, no sale, parody) -
+  residual § 14 II Nr. 3 MarkenG dilution risk accepted, rename to "The
+  Bag" if the site ever gets traffic or a letter. The Patagonia card was
+  renamed "The Vest" on 2026-09-06.
   AirPods/Kånken/TI-30 link to the genuine product = nominative use, keep.
 - Visual check owed on Nico's machine: /, /library, /privacy, /impressum in
   dark mode (sandbox cannot screenshot).

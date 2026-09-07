@@ -17,6 +17,8 @@ import {
     internName,
     internSuggestions,
     isInternName,
+    DESK_NAME_IDEAS,
+    shuffled,
     type EarningReport,
     type ScoreboardResponse,
     type ScoreboardScope,
@@ -40,9 +42,15 @@ export function deskName(): string {
     return getStoredName() || internName(getPlayerId());
 }
 
-/** intern names to cycle through while the field is empty, own one first */
+/**
+ * Names to cycle through while the field is empty: the player's own intern
+ * name first, then a couple more intern titles, then the desk-name ideas in
+ * a fresh random order so the 🎲 button keeps surprising. The intern
+ * names carry the badge number; the ideas do not (and count as real).
+ */
 export function nameSuggestions(): string[] {
-    return internSuggestions(getPlayerId());
+    const interns = internSuggestions(getPlayerId());
+    return [...interns.slice(0, 3), ...shuffled(DESK_NAME_IDEAS), ...interns.slice(3)];
 }
 
 export function myPlayerId(): string {

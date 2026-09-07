@@ -115,6 +115,64 @@ export function internSuggestions(pid: string): string[] {
     return INTERN_TITLES.map((_, i) => `${INTERN_TITLES[(start + i) % INTERN_TITLES.length]} #${no}`);
 }
 
+/**
+ * Desk names with no badge number - finance-bro canon the 🎲 button offers
+ * after the intern names (Nico, 2026-09-07: suggestions should not all hang
+ * off the intern rank). Picking one counts as a real name. Max 20 chars.
+ */
+export const DESK_NAME_IDEAS = [
+    "DCF Daddy",
+    "WACC Enjoyer",
+    "Pivot Table Prince",
+    "VLOOKUP Victim",
+    "Beta Male",
+    "Alpha Seeker",
+    "Sigma Spreadsheet",
+    "Goodwill Hunter",
+    "Cash Flow Casanova",
+    "Margin Call Mike",
+    "Bond Girl",
+    "Cost of Capital",
+    "Deferred Tax Diva",
+    "Sunk Cost Sally",
+    "Circle Back Chad",
+    "Synergy Steve",
+    "Net Present Valerie",
+    "Depreciation Dan",
+    "Hurdle Rate Hannah",
+    "Balance Sheet Bae",
+    "EBITDA Enjoyer",
+    "Leveraged Larry",
+    "Yield Curve Yannick",
+    "Bull Market Bro",
+    "Bear Market Ben",
+    "Sharpe Ratio Shawty",
+    "Excel Warlord",
+    "Ctrl+Z Champion",
+    "Matcha Margin",
+    "Oat Milk Optimizer",
+    "Bonus Round Bruno",
+    "Insider Info Ines",
+    "Diversified Dennis",
+    "Liquidity Lars",
+    "Moral Hazard Max",
+    "Free Rider Finn",
+    "Opportunity Costa",
+    "Dead Cat Bouncer",
+    "Basis Point Boy",
+    "Mid Cap Mia",
+];
+
+/** Fisher-Yates with the caller's random source - the client shuffles once per page load. */
+export function shuffled<T>(items: readonly T[], rand: () => number = Math.random): T[] {
+    const out = items.slice();
+    for (let i = out.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [out[i], out[j]] = [out[j], out[i]];
+    }
+    return out;
+}
+
 export function isInternName(name: string): boolean {
     return INTERN_TITLES.some((t) => name.startsWith(`${t} #`));
 }
