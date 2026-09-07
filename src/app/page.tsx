@@ -45,7 +45,7 @@ export default function Home() {
                 <p className="mx-auto mt-2 max-w-xl text-[14px] text-muted [text-wrap:pretty]">
                     Solve real exam-style questions against inflation, earn BroDollars (a
                     proud currency with an exchange rate of exactly nothing), and climb the
-                    ladder from Unemployed to FinanceBro.
+                    ladder from Pupil to FinanceBro.
                 </p>
 
                 <AccountStatement />

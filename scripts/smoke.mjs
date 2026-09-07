@@ -127,14 +127,14 @@ try {
     // (SSR puts a comment node between "Salary · " and the rank name, so the
     // pieces are asserted separately.)
     check(
-        "/ shows the current position's payroll (0 € for Unemployed)",
+        "/ shows the current position's payroll (20 € pocket money for Pupil)",
         homeHtml.includes("Salary ·") &&
-            homeHtml.includes("Unemployed") &&
+            homeHtml.includes("Pupil") &&
             homeHtml.includes("Last payroll")
     );
     check(
         "/ balance pill names the rank, not the tier",
-        homeHtml.includes("UNEMPLOYED") && !homeHtml.includes("TIER 1")
+        homeHtml.includes("PUPIL") && !homeHtml.includes("TIER 1")
     );
     // Removed 2026-08-25 per Nico - these lines must stay gone.
     check(

@@ -6,8 +6,49 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
+**PROMOTED flash + seven new rungs on the ladder (2026-09-07, latest
+session).** Per Nico. (1) `PromotionOverlay` (mounted once in the root
+layout) watches the balance and, whenever the rank index climbs - quiz,
+multiplayer, anywhere - takes the whole screen: mint flash, 48 💵💸🤑💰💶🪙
+raining from the top, old emoji greyed → new emoji popping, blinking
+"📣 PROMOTED 📣", title + perk, the new per-posting bonus, auto-dismiss
+after 5.2 s or tap. Nothing fires on page load (previous render vs
+current, never vs storage); reduced-motion drops the rain and the
+pulses. This is the deliberate exception to the "nothing confettis"
+rule in `globals.css`. (2) Ladder is now 21 ranks: Pupil 🎒 (the new bottom, below Unemployed), Volunteer 🧡 (one question each, so the first two promotions flash almost immediately), Unpaid Intern 🧃,
+Excel Monkey 🐒, Subcontractor 🪪, LinkedIn Thought Leader 🎙️, Crypto
+Bro 🪙, Hedge Fund Guy 🦈, Family Office Heir 🎾 (Nico's picks from a
+proposed list). `LEVEL_COSTS` retuned per Nico: **FinanceBro at exactly
+1,000,000 💸**, payouts unchanged, exponential - 18 geometric steps of
+×1.45, 310,700/level past the top. One full Econ 1 marathon ≈ 18,700 💸 +
+rank bonus, so: run 1 ends at Junior Consultant, Consultant/LinkedIn on
+run 2, Investmentbanker 3, Crypto Bro 4, VC Guy 5, MD 7, Hedge Fund 10,
+Unicorn 13, Heir 18, Bezzo 25, FinanceBro 35. (3) **Endgame = the
+leaderboard.** Past FinanceBro the level keeps counting but the TITLE
+comes from the overall semester leaderboard position (`endgameRank` in
+`rankings.ts`, `useRank` hook shared by pill, cards, quiz strip, career
+track, overlay): #1 The Richest Person 👑, #2 🥈 / #3 🥉, #4-#10 Nth Richest
+Person 💎, #11 Almost Made It 🫠, below that FinanceBro #N 💸💪. Position is
+fetched only once the player is a FinanceBro (module-level store, 60 s
+freshness, re-checked 4 s after every credit so a climb flashes the
+PROMOTED overlay too - "Leaderboard #9 · was FinanceBro #12"). Unknown
+position (no worker URL, 503, nothing earned this semester) = plain
+FinanceBro; hard rule 1 holds. The pill truncates long titles below xl.
+Proof: `npm run check` green in the cloud clone; headless dark-mode
+screenshots on /quiz with a mocked leaderboard: title "9th Richest
+Person 💎" in the pill, climb 12 → 9 flashes, pill fits at 1280.
+Observed, pre-existing: at 1024 px the desktop nav overflows and pushes
+the pill off-screen even with a 3-digit balance. `Rank.tier` now maps ranks to the
+landing statement's six spending tiers explicitly (was `index / 2`).
+Consequence: existing balances map to a different level number and a
+title one or two rungs off - joke ladder, accepted. Proof: `npm run
+check` green in the cloud clone (95 smoke checks); headless-Chromium
+dark-mode screenshot of the flash on `/` (rain, card, dismiss clean).
+**Owed on Nico's machine:** see the flash once for real (solve a posting
+near a level boundary, e.g. reset the balance and earn ~100 💸).
+
 **Leaderboard was dead on prod - worker now creates its own D1 schema
-(2026-09-07, latest session).** Nico: BroDollars must count for every
+(2026-09-07).** Nico: BroDollars must count for every
 solved question, solo and duels, on the subject board and the overall
 board. The code for that has been in since 09-02; what was missing was the
 manual `wrangler d1 execute` (owed since then), so `earnings` /
@@ -31,7 +72,7 @@ Note: postings solved before the push are gone - the worker never got to
 book them.
 
 **Bro Shop: money-pattern backgrounds, listing-first photos, desk-name
-ideas (2026-09-07, latest session).** Per Nico. (1) Card image area: faint
+ideas (2026-09-07).** Per Nico. (1) Card image area: faint
 $ / € / % glyphs + 💸📈 tiled SVG (`MONEY_PATTERN`) over a pastel gradient
 per bundle (`tint`), product photo blended with `mix-blend-mode: multiply`
 so the white studio background vanishes. Picked from five variants

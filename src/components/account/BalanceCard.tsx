@@ -1,8 +1,8 @@
 "use client";
 
 import { useCountUp } from "@/hooks/useCountUp";
-import { useLevel } from "@/hooks/useLevel";
-import { getNextRank, getRank } from "@/lib/rankings";
+import { useRank } from "@/hooks/useRank";
+import { getNextRank } from "@/lib/rankings";
 import { formatMoney, MONEY } from "@/lib/money";
 
 type Props = {
@@ -14,8 +14,7 @@ type Props = {
 /** Navy account card: available balance + the long-game tier bar. */
 export default function BalanceCard({ score, recentCredit }: Props) {
     const display = useCountUp(score);
-    const { level, progress, nextRequired } = useLevel(score);
-    const rank = getRank(level);
+    const { level, progress, nextRequired, rank } = useRank(score);
     const next = getNextRank(level);
     const pct = Math.round(progress * 100);
     const remaining = Math.max(0, nextRequired - Math.floor(progress * nextRequired));

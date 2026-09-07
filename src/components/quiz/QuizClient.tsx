@@ -20,10 +20,10 @@ import {
 } from "@/lib/session";
 import { useScore } from "@/hooks/useScore";
 import { reportEarning } from "@/lib/scoreboard/client";
-import { useLevel } from "@/hooks/useLevel";
+import { useRank } from "@/hooks/useRank";
 import { useStopwatch } from "@/hooks/useStopwatch";
 import { difficultyTimes } from "@/lib/scoring";
-import { bonusForScore, getNextRank, getRank } from "@/lib/rankings";
+import { bonusForScore, getNextRank } from "@/lib/rankings";
 import { formatMoney, MONEY } from "@/lib/money";
 
 import QuestionCard from "./QuestionCard";
@@ -301,8 +301,7 @@ function PhoneProgressStack({
 }) {
     const totals = sessionTotals(session);
     const states = segmentStates(session);
-    const { level, progress, nextRequired } = useLevel(score);
-    const rank = getRank(level);
+    const { level, progress, nextRequired, rank } = useRank(score);
     const next = getNextRank(level);
     const remaining = Math.max(0, nextRequired - Math.floor(progress * nextRequired));
     const pct = Math.round(progress * 100);

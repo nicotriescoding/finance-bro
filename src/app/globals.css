@@ -96,7 +96,147 @@
   }
 }
 
+/* PROMOTED - the deliberate exception to the rule above (PromotionOverlay). */
+@keyframes promo-veil {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes promo-flash {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes promo-burst {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes promo-card {
+  0% {
+    transform: translateY(24px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-6px) scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes promo-pop {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.25) rotate(-8deg);
+  }
+  75% {
+    transform: scale(1.25) rotate(8deg);
+  }
+}
+
+@keyframes promo-blink {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes promo-title {
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgba(127, 214, 163, 0);
+  }
+  50% {
+    text-shadow: 0 0 22px rgba(127, 214, 163, 0.9);
+  }
+}
+
+@keyframes bill {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(55vh) translateX(28px) rotate(calc(var(--spin) / 2));
+  }
+  100% {
+    transform: translateY(115vh) translateX(-24px) rotate(var(--spin));
+    opacity: 0.9;
+  }
+}
+
 @layer utilities {
+  .animate-promo-veil {
+    animation: promo-veil 5.2s ease-in-out forwards;
+  }
+  .animate-promo-flash {
+    animation: promo-flash 0.7s ease-out forwards;
+  }
+  .animate-promo-burst {
+    animation: promo-burst 1.6s ease-out forwards;
+  }
+  .animate-promo-card {
+    animation: promo-card 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) 0.15s both;
+  }
+  .animate-promo-pop {
+    animation: promo-pop 0.9s ease-in-out 0.6s 3;
+  }
+  .animate-promo-blink {
+    animation: promo-blink 0.55s ease-in-out infinite;
+  }
+  .animate-promo-title {
+    animation: promo-title 1.2s ease-in-out infinite;
+  }
+  .animate-bill {
+    animation-name: bill;
+    animation-timing-function: ease-in;
+    animation-fill-mode: both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-promo-pop,
+    .animate-promo-blink,
+    .animate-promo-title,
+    .animate-promo-burst {
+      animation: none;
+    }
+  }
   .animate-bdpop {
     animation: bdpop 1.8s ease-out forwards;
   }

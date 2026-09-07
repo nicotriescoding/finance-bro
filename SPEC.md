@@ -49,7 +49,7 @@ its own work:
 | 2 | Seeded question engine — prompt and answer from one draw | done |
 | 3 | Tolerance grading with units; en-US and German number input both parse | done |
 | 4 | Multiple-choice questions with runtime shuffle and multi-select | done |
-| 5 | Score, level and rank system (localStorage) — hand-tuned level costs (`LEVEL_COSTS`), flat per-rank completion bonus on every settled posting | done |
+| 5 | Score, level and rank system (localStorage) — 21-rank ladder Pupil → FinanceBro (1,000,000 💸, geometric `LEVEL_COSTS`); past FinanceBro the title is the overall leaderboard position (The Richest Person … Almost Made It … FinanceBro #N), flat per-rank completion bonus on every settled posting; full-screen PROMOTED flash (money rain, old → new emoji) whenever the rank climbs | done |
 | 6 | Finance bank: 159 numeric questions - TUM IVF formula catalogue + original app data, expanded 2026-09-02 from the actual IVF course material (financial-markets tutorials 1-7 with solutions + corporate-finance chapters 1-6 + exercise catalogue Sep23); new `capital_structure` topic; every topic ≥3 scenario variants | done |
 | 7 | Formulas rendered with KaTeX in lecture notation (prompts, given, explanations, choices) | done |
 | 8 | Empty-bank state for subjects awaiting exam ingest | done |

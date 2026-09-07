@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useCountUp } from "@/hooks/useCountUp";
-import { useLevel } from "@/hooks/useLevel";
+import { useRank } from "@/hooks/useRank";
 import { useScore } from "@/hooks/useScore";
-import { getRank, ranks } from "@/lib/rankings";
 import { formatMoney, MONEY } from "@/lib/money";
 
 /**
@@ -29,12 +28,12 @@ type Expense = {
 };
 
 /**
- * The month's spending, staged by rank: two ranks share a tier, and every
- * promotion upgrades the statement - same bad decisions, bigger numbers.
+ * The month's spending, staged by rank (`Rank.tier`, ~3 ranks per tier), and
+ * every promotion upgrades the statement - same bad decisions, bigger numbers.
  * The 0DTE SPY calls close every tier; they are always a sure thing.
  */
 const EXPENSE_TIERS: Expense[][] = [
-    // tier 0 · Unemployed, Low Earner - survival mode
+    // tier 0 · Pupil, Unemployed, Volunteer, Unpaid Intern, Low Earner - survival mode
     [
         { label: "Instant noodles ×24, bulk", detail: "Today · meal plan Q3", amount: -13.8 },
         { label: "Oat milk flat white, one, shared", detail: "Today · campus coffee cart", amount: -4.65 },
@@ -59,7 +58,7 @@ const EXPENSE_TIERS: Expense[][] = [
             status: "DECLINED",
         },
     ],
-    // tier 1 · Minimum Wage Grunt, Working Student - first payslip energy
+    // tier 1 · Minimum Wage Grunt … Subcontractor - first payslip energy
     [
         { label: "Oat milk flat white ×4", detail: "Today · campus coffee cart", amount: -18.6 },
         { label: "Matcha, ceremonial grade", detail: "Today · limited seasonal drop", amount: -9.4 },
@@ -87,7 +86,7 @@ const EXPENSE_TIERS: Expense[][] = [
             status: "DECLINED",
         },
     ],
-    // tier 2 · Junior Consultant, Consultant - expensed, hopefully
+    // tier 2 · Junior Consultant, Consultant, LinkedIn Thought Leader - expensed, hopefully
     [
         { label: "Patagonia vest", detail: "Today · the uniform", amount: -149 },
         { label: "Rimowa carry-on, polished nightly", detail: "Today · consultant starter pack", amount: -680 },
@@ -123,7 +122,7 @@ const EXPENSE_TIERS: Expense[][] = [
             status: "DECLINED",
         },
     ],
-    // tier 3 · Investmentbanker, VC Guy - the money is other people's
+    // tier 3 · Investmentbanker, Crypto Bro, VC Guy - the money is other people's
     [
         { label: "Rolex Submariner, paid in full", detail: "Today · the financing was beneath me", amount: -9150 },
         { label: "Personal trainer, 05:30 slot", detail: "Today · before the desk, after the cot", amount: -220 },
@@ -152,7 +151,7 @@ const EXPENSE_TIERS: Expense[][] = [
             status: "DECLINED",
         },
     ],
-    // tier 4 · Managing Director, Unicorn Founder - lifestyle as balance sheet
+    // tier 4 · Managing Director, Hedge Fund Guy, Unicorn Founder - lifestyle as balance sheet
     [
         { label: "G-Wagon lease ×2", detail: "Today · one for each mood", amount: -4380 },
         { label: "Leadership retreat, desert, barefoot", detail: "Today · found himself, lost the Q3 numbers", amount: -27900 },
@@ -176,7 +175,7 @@ const EXPENSE_TIERS: Expense[][] = [
             status: "DECLINED",
         },
     ],
-    // tier 5 · Jeff Bezzo's, FinanceBro - the statement of a small nation
+    // tier 5 · Family Office Heir, Jeff Bezzo’s, FinanceBro - the statement of a small nation
     [
         { label: "Rocket fuel, top-up", detail: "Today · Tuesday joyride", amount: -2400000 },
         { label: "Doomsday bunker, New Zealand", detail: "Today · 'a hedge, basically'", amount: -12500000 },
@@ -202,21 +201,16 @@ const EXPENSE_TIERS: Expense[][] = [
     ],
 ];
 
-/** Two ranks share a tier, capped at the last tier. */
-function expensesForRank(rankIndex: number): Expense[] {
-    const tier = Math.min(
-        EXPENSE_TIERS.length - 1,
-        Math.floor(Math.max(0, rankIndex) / 2)
-    );
-    return EXPENSE_TIERS[tier];
+/** `Rank.tier`, clamped to the tiers that exist. */
+function expensesForTier(tier: number): Expense[] {
+    return EXPENSE_TIERS[Math.min(EXPENSE_TIERS.length - 1, Math.max(0, tier))];
 }
 
 export default function AccountStatement() {
     const { score } = useScore();
-    const { level } = useLevel(score);
-    const rank = getRank(level);
+    const { rank } = useRank(score);
     const display = useCountUp(score);
-    const expenses = expensesForRank(ranks.indexOf(rank));
+    const expenses = expensesForTier(rank.tier);
 
     return (
         <div className="mx-auto mt-6 flex max-w-xl flex-col gap-3 text-left md:max-w-3xl">

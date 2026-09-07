@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import CookieBanner from "@/components/consent/CookieBanner";
 import ConsentBridge from "@/components/consent/ConsentBridge";
 import AnchorAd from "@/components/AnchorAd";
+import PromotionOverlay from "@/components/account/PromotionOverlay";
 import { ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
 
 const manrope = Manrope({
@@ -104,6 +105,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* phone-only 320×50 anchor ad, fixed above the tab bar (not on /library) */}
                 <AnchorAd />
                 <TabBar />
+                {/* full-screen PROMOTED flash whenever the rank climbs */}
+                <PromotionOverlay />
                 <CookieBanner />
                 {/* maps Google's consent-dialog decision onto PostHog (the tag
                     itself sits in <head> above) */}
