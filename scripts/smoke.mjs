@@ -241,6 +241,16 @@ try {
     );
     // Nico's rule: the Library is ad-free. "Sponsored" is AdSlot's label.
     check("/library carries no ad slots", !libraryHtml.includes("Sponsored"));
+    // 2026-09-08 legal audit: no publisher cover art (generated CoverCard
+    // instead) and the PartnerNet disclosure sentence visible on the page.
+    check(
+        "/library ships no cover images",
+        !/<img[^>]+src="[^"]*covers\//.test(libraryHtml) && !libraryHtml.includes("openlibrary")
+    );
+    check(
+        "/library states the Amazon Associates disclosure",
+        libraryHtml.includes("As an Amazon Associate, this site earns from qualifying purchases")
+    );
     // Real shop since 2026-08-28: Amazon links live, the dead placeholder is gone.
     check("/library links Amazon", libraryHtml.includes("amazon.de"));
     check("/library rates by ROI multiplier", libraryHtml.includes("ROI"));
@@ -402,6 +412,11 @@ try {
     const mpHtml = await mp.text();
     check("/multiplayer returns 200", mp.status === 200, `got ${mp.status}`);
     check("/multiplayer ships no em dashes", !mpHtml.includes(EM_DASH));
+    // Art. 13 notice at the point of entry (NameField, shared with /leaderboard).
+    check(
+        "/multiplayer name field says the name is public and links the rules",
+        mpHtml.includes("Shown publicly on the leaderboard") && mpHtml.includes('href="/terms"')
+    );
 
     // The unlinked Language page was deleted 2026-09-08 - it must stay gone.
     const language = await fetch(`${BASE}/language`);
@@ -451,6 +466,25 @@ try {
         /pauseAdRequests=1[\s\S]*adsbygoogle\.js\?client=/.test(homeHtml) &&
             homeHtml.includes("ad_storage:'denied'") &&
             homeHtml.indexOf("pauseAdRequests=1") < homeHtml.indexOf("adsbygoogle.js?client=")
+    );
+    // DSA (2026-09-08): terms page with name rules, the Art. 16 report
+    // mailto and the Arts. 11/12 point of contact, linked from every footer
+    // and listed in the sitemap.
+    const terms = await fetch(`${BASE}/terms`);
+    const termsHtml = await terms.text();
+    check("/terms returns 200", terms.status === 200, `got ${terms.status}`);
+    check(
+        "/terms carries the DSA contact and the report-a-name mailto",
+        termsHtml.includes("nicolas.dumpe@gmx.de") &&
+            termsHtml.includes("mailto:nicolas.dumpe@gmx.de?subject=Report") &&
+            termsHtml.includes("Name rules") &&
+            termsHtml.includes("Point of contact")
+    );
+    check("/terms ships no em dashes", !termsHtml.includes(EM_DASH));
+    check("/ footer links the terms page", homeHtml.includes('href="/terms"'));
+    check(
+        "/privacy links the terms and names Art. 6 (1) (f) for the leaderboard",
+        privacyHtml.includes('href="/terms"') && privacyHtml.includes("legitimate interest in running the game")
     );
     check(
         "/privacy names Amazon PartnerNet and the under-16 rule",
@@ -506,6 +540,7 @@ try {
     const sitemap = await fetch(`${BASE}/sitemap.xml`);
     const sitemapXml = await sitemap.text();
     check("/sitemap.xml returns 200", sitemap.status === 200);
+    check("/sitemap.xml lists the terms page", sitemapXml.includes("/terms"));
     check(
         "/sitemap.xml lists every subject",
         ["finance", "econ1", "econ2", "financial_accounting", "cost_accounting", "entrepreneurship", "marketing"]

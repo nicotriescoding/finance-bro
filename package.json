@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "verify": "tsx scripts/verify-questions.ts",
+    "verify": "tsx scripts/verify-questions.ts && tsx scripts/verify-names.ts",
     "smoke": "node scripts/smoke.mjs",
     "check": "npm run typecheck && npm run verify && npm run build:check && npm run smoke"
   },

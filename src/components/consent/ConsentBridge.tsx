@@ -48,9 +48,11 @@ export default function ConsentBridge() {
             }
             if (data.eventStatus !== "tcloaded" && data.eventStatus !== "useractioncomplete") return;
             if (data.gdprApplies === false) {
-                // Outside the GDPR area the dialog never shows; treat as no
-                // analytics consent rather than assuming one.
-                if (getStoredConsent() === null) void saveConsent({ analytics: false, ads: false });
+                // Outside the GDPR area the dialog never shows and nobody
+                // declined anything: analytics stays off (never assume a
+                // yes), ads are simply released - Google's normal serving
+                // applies there, not the EEA limited-ads fallback.
+                if (getStoredConsent() === null) void saveConsent({ analytics: false, ads: true });
                 return;
             }
             const c = data.purpose?.consents ?? {};

@@ -119,7 +119,7 @@ questions is the `add-exam-questions` skill.
    never a precondition for the page rendering.
 2. **Only TUM-derived content.** Every question traces to real TUM course
    material; exam questions carry `source` (internal, never rendered, and
-  stripped from every bundle by the loader in `next.config.ts`). Never
+  stripped from every site bundle by the loader in `next.config.ts`; the worker bundle keeps it server-side). Never
    invent questions from a syllabus - the invented seed banks were removed on
    2026-08-21 for good. The exam's own numbers and wording never enter the
    repo, not even as guards or comments.

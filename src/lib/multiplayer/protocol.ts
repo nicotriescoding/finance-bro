@@ -196,18 +196,18 @@ export const MAX_PLAYERS = 8;
  * their name; a miss is fixed by a report. Deliberately NOT on the list
  * because real names or study terms contain them: "nazi" (Nazim), "isis",
  * "kike" (Enrique), "mongo" (MongoDB), "pedo" (torpedo), "slut" (Slutsky
- * equation), "fagot" (Fagott).
+ * equation), "fagot" (Fagott), "rapist" (Therapist), "cunt" (Cuntz),
+ * "retard" (retardant), "chink" (Chinkara), "kanak" (Kanaka). Substring
+ * matching after the space collapse cannot tell them apart, so they are
+ * left to the report path. `scripts/verify-names.ts` pins both lists.
  */
 const BLOCKED = [
     // slurs / hate
     "nigg",
     "faggot",
-    "kanak",
-    "retard",
     "tranny",
     "spastik",
     "spasti",
-    "chink",
     "wetback",
     "raghead",
     "zigeuner",
@@ -226,9 +226,7 @@ const BLOCKED = [
     "wichser",
     "fotze",
     "schlampe",
-    "cunt",
     "whore",
-    "rapist",
     "vergewaltig",
     "paedo",
     "pedophil",
