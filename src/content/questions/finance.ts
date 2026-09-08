@@ -6,6 +6,225 @@ import { eur, n, n2, pct, normCdf, npv, irr, macaulayDuration } from "./_helpers
  * Every question builds its prompt AND its answer from the same seeded draw,
  * so the numbers a student reads are always the numbers that are graded.
  */
+
+// ---- story lines added 2026-09-08 ----
+// Every question that tells a story (a named investor, firm, project or asset)
+// draws one of these scenarios FIRST inside `build`, so the same concept is
+// dressed differently from seed to seed. Scenarios hold strings only - every
+// number still comes from the rng. Pure-formula questions (bonds, options,
+// CAPM with given betas, ratios from bare figures) have no scenario array.
+
+/** "her" -> "Her" for a scenario word at the start of a sentence. */
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const FIN_ANN_SOLVE_PAYMENT_SCENARIOS = [
+    { who: "A young couple", goal: "for the down payment on a flat" },
+    { who: "A nurse", goal: "for a sabbatical year" },
+    { who: "A carpenter", goal: "for his own workshop" },
+    { who: "A climbing club", goal: "for a new hut roof" },
+] as const;
+
+const FIN_ANN_PAYOUT_TERM_SCENARIOS = [
+    { who: "A retiree", saved: "has saved", pay: "pension" },
+    { who: "A lottery winner", saved: "has banked", pay: "stipend" },
+    { who: "A former footballer", saved: "has put aside", pay: "payout" },
+    { who: "A foundation", saved: "holds an endowment of", pay: "grant" },
+] as const;
+
+const FIN_ANN_TWO_PHASE_SCENARIOS = [
+    { who: "An employee", pay: "a pension", Pay: "Pension" },
+    { who: "A freelance translator", pay: "a pension", Pay: "Pension" },
+    { who: "A dentist", pay: "a retirement income", Pay: "Retirement income" },
+    { who: "A sailor", pay: "an annuity", Pay: "Annuity" },
+] as const;
+
+const FIN_ANN_INTRA_FV_SCENARIOS = [
+    { who: "A student" },
+    { who: "An apprentice" },
+    { who: "A barista" },
+    { who: "A taxi driver" },
+] as const;
+
+const FIN_ANN_GEOM_TERM_SCENARIOS = [
+    { who: "A craftswoman", biz: "her business", pron: "she" },
+    { who: "A pharmacist", biz: "his pharmacy", pron: "he" },
+    { who: "A farmer", biz: "her farm", pron: "she" },
+    { who: "A restaurateur", biz: "his restaurant", pron: "he" },
+] as const;
+
+const FIN_REP_MAX_LOAN_SCENARIOS = [
+    { who: "A young couple buying a flat", they: "the couple" },
+    { who: "A dentist setting up a practice", they: "the dentist" },
+    { who: "A farmer financing a new tractor", they: "the farmer" },
+    { who: "A brewery expanding its cellar", they: "the brewery" },
+] as const;
+
+const FIN_BOND_FINAL_WEALTH_SCENARIOS = [
+    { who: "An investor", Pron: "She", poss: "her" },
+    { who: "A retired teacher", Pron: "He", poss: "his" },
+    { who: "A family office", Pron: "It", poss: "its" },
+    { who: "A dentist", Pron: "She", poss: "her" },
+] as const;
+
+const FIN_BOND_PRICE_FROM_FORWARDS_SCENARIOS = [
+    { issuer: "A utility" },
+    { issuer: "An airline" },
+    { issuer: "A port authority" },
+    { issuer: "A telecom operator" },
+] as const;
+
+const FIN_BOND_IMMUNIZE_SCENARIOS = [
+    { who: "A pension fund", obl: "an obligation" },
+    { who: "An insurer", obl: "a large claims payout" },
+    { who: "A university endowment", obl: "a building payment" },
+    { who: "A shipping company", obl: "a balloon repayment on a ship loan" },
+] as const;
+
+const FIN_BOND_HPR_1Y_SCENARIOS = [
+    { who: "An investor", pron: "she" },
+    { who: "A fund manager", pron: "he" },
+    { who: "A corporate treasurer", pron: "she" },
+] as const;
+
+const FIN_EQ_ONE_YEAR_PRICE_SCENARIOS = [
+    { who: "An investor", stock: "a pharmaceutical stock", Pron: "She", pron: "she" },
+    { who: "A fund manager", stock: "an airline stock", Pron: "He", pron: "he" },
+    { who: "A student", stock: "a software stock", Pron: "She", pron: "she" },
+    { who: "A retired engineer", stock: "a mining stock", Pron: "He", pron: "he" },
+] as const;
+
+const FIN_EQ_IMPLIED_GROWTH_SCENARIOS = [
+    { firm: "A regional bank's" },
+    { firm: "An insurance company's" },
+    { firm: "A toll-road operator's" },
+    { firm: "A food retailer's" },
+] as const;
+
+const FIN_EQ_RETENTION_PRICE_SCENARIOS = [
+    { firm: "A sporting-goods chain", units: "new stores" },
+    { firm: "A coffee-bar chain", units: "new coffee bars" },
+    { firm: "A fitness-studio chain", units: "new studios" },
+    { firm: "A bakery chain", units: "new branches" },
+] as const;
+
+const FIN_EQ_PVGO_SCENARIOS = [
+    { firm: "A logistics company's" },
+    { firm: "A software company's" },
+    { firm: "A shipping line's" },
+    { firm: "A packaging maker's" },
+] as const;
+
+const FIN_EQ_DIV_YIELD_SCENARIOS = [
+    { firm: "a telecom group" },
+    { firm: "an electricity utility" },
+    { firm: "an insurance group" },
+    { firm: "an airline" },
+] as const;
+
+const FIN_EQ_MULTIPLE_SCENARIOS = [
+    { firm: "A chemicals company" },
+    { firm: "A machine-tool maker" },
+    { firm: "A regional brewer" },
+    { firm: "A packaging group" },
+] as const;
+
+const FIN_RATIO_AP_DAYS_SCENARIOS = [
+    { firm: "A wholesaler" },
+    { firm: "A building-supplies retailer" },
+    { firm: "A restaurant chain" },
+    { firm: "An electronics distributor" },
+] as const;
+
+const FIN_INV_NPV_PERPETUAL_SCENARIOS = [
+    { who: "A grid operator", asset: "a substation" },
+    { who: "A water utility", asset: "a pumping station" },
+    { who: "A toll-road company", asset: "a bridge concession" },
+    { who: "A port authority", asset: "a quay" },
+] as const;
+
+const FIN_INV_IRR_LUMP_SCENARIOS = [
+    { project: "A forestry project" },
+    { project: "A whisky-cask investment" },
+    { project: "A vineyard-land investment" },
+    { project: "A vintage-car restoration" },
+] as const;
+
+const FIN_INV_IRR_PERP_GROWTH_SCENARIOS = [
+    { venture: "a bookshop" },
+    { venture: "a bicycle repair shop" },
+    { venture: "a laundromat" },
+    { venture: "a dance school" },
+    { venture: "a climbing gym" },
+] as const;
+
+const FIN_CB_UNI_SCENARIOS = [
+    { asset: "A new production line" },
+    { asset: "A new bottling plant" },
+    { asset: "A new paint shop" },
+    { asset: "A new packaging line" },
+] as const;
+
+const FIN_CB_REPL_INITIAL_SCENARIOS = [
+    { who: "A bakery", firm: "the bakery", item: "oven" },
+    { who: "A print shop", firm: "the print shop", item: "press" },
+    { who: "A sawmill", firm: "the sawmill", item: "band saw" },
+    { who: "A dental practice", firm: "the practice", item: "scanner" },
+    { who: "A farm", firm: "the farm", item: "tractor" },
+] as const;
+
+const FIN_CB_REPL_ANNUAL_SCENARIOS = [
+    { who: "A print shop", machine: "press" },
+    { who: "A laundry", machine: "washing line" },
+    { who: "A car wash", machine: "wash system" },
+] as const;
+
+const FIN_COC_DEBT_RETURN_SCENARIOS = [
+    { firm: "A mining company's" },
+    { firm: "A shipping line's" },
+    { firm: "An airline's" },
+    { firm: "A steelmaker's" },
+] as const;
+
+const FIN_COC_SUM_OF_PARTS_SCENARIOS = [
+    { group: "A family-owned group" },
+    { group: "A listed conglomerate" },
+    { group: "An industrial holding" },
+] as const;
+
+const FIN_COC_RE_DDM_SCENARIOS = [
+    { firm: "a listed brewery's" },
+    { firm: "a cement maker's" },
+    { firm: "a port operator's" },
+    { firm: "a listed insurer's" },
+] as const;
+
+const FIN_CS_TAX_SHIELD_ANNUAL_SCENARIOS = [
+    { firm: "A retailer" },
+    { firm: "A hotel chain" },
+    { firm: "A car-rental firm" },
+    { firm: "A shipping line" },
+] as const;
+
+const FIN_CS_PV_SHIELD_GROWTH_SCENARIOS = [
+    { firm: "A media group" },
+    { firm: "A software publisher" },
+    { firm: "A packaging group" },
+    { firm: "A hotel group" },
+] as const;
+
+const FIN_CI_NEED_SCENARIOS = [
+    { firm: "A supermarket chain" },
+    { firm: "An airline" },
+    { firm: "A fashion retailer" },
+    { firm: "A steel producer" },
+] as const;
+
+const FIN_CI_BLANCHE_SCENARIOS = [
+    { who: "A shareholder", poss: "her", pron: "she" },
+    { who: "A retired teacher", poss: "his", pron: "he" },
+    { who: "A student who inherited the shares", poss: "her", pron: "she" },
+] as const;
+
 export const financeQuestions: NumericQuestion[] = [
     // ---------------------------------------------------------------- interest
     {
@@ -2501,13 +2720,14 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 2.1.1",
         build: (rng) => {
+            const s = rng.pick(FIN_ANN_SOLVE_PAYMENT_SCENARIOS);
             const FV = rng.int(50, 400) * 1000;
             const r = rng.int(2, 7);
             const N = rng.int(8, 35);
             const q = 1 + r / 100;
             const answer = FV * ((q - 1) / (q ** N - 1));
             return {
-                prompt: `A savings plan should reach a balance of ${eur(FV)} after ${N} years. Payments are made **at the end of each year** into an account earning ${pct(r)} p.a. What constant annual payment C is required?`,
+                prompt: `${s.who} wants to have ${eur(FV)} ${s.goal} in ${N} years. Payments are made **at the end of each year** into an account earning ${pct(r)} p.a. What constant annual payment C is required?`,
                 given: {
                     "Target balance FV": eur(FV),
                     "Interest rate r": pct(r),
@@ -2555,6 +2775,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "years",
         source: "TUM IVF FM catalogue Oct23, 2.1.10",
         build: (rng) => {
+            const s = rng.pick(FIN_ANN_PAYOUT_TERM_SCENARIOS);
             const PV = rng.int(100, 800) * 1000;
             const r = rng.int(2, 6);
             const i = r / 100;
@@ -2562,7 +2783,7 @@ export const financeQuestions: NumericQuestion[] = [
             const C = Math.round(PV * i * rng.float(1.25, 2.4, 3));
             const answer = (Math.log(C) - Math.log(C - PV * i)) / Math.log(q);
             return {
-                prompt: `A retiree has saved ${eur(PV)}. The capital stays invested at ${pct(r)} p.a. and a pension of ${eur(C)} is withdrawn **at the end of each year**. For how many years N can the pension be paid before the capital is used up? Give the exact N.`,
+                prompt: `${s.who} ${s.saved} ${eur(PV)}. The capital stays invested at ${pct(r)} p.a. and a ${s.pay} of ${eur(C)} is withdrawn **at the end of each year**. For how many years N can the ${s.pay} be paid before the capital is used up? Give the exact N.`,
                 given: {
                     "Initial capital PV": eur(PV),
                     "Interest rate r": pct(r),
@@ -2583,6 +2804,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 2.1.13",
         build: (rng) => {
+            const s = rng.pick(FIN_ANN_TWO_PHASE_SCENARIOS);
             const C2 = rng.int(12, 40) * 1000;
             const N1 = rng.int(10, 30);
             const N2 = rng.int(10, 25);
@@ -2591,10 +2813,10 @@ export const financeQuestions: NumericQuestion[] = [
             const pvPayout = C2 * ((q ** N2 - 1) / (q ** N2 * (q - 1)));
             const answer = pvPayout * ((q - 1) / (q ** N1 - 1));
             return {
-                prompt: `An employee saves a constant amount **at the end of each year for ${N1} years**. Immediately afterwards the accumulated capital finances a pension of ${eur(C2)}, paid **at the end of each of the following ${N2} years**, after which nothing is left. The interest rate is ${pct(r)} throughout. How much must be saved each year?`,
+                prompt: `${s.who} saves a constant amount **at the end of each year for ${N1} years**. Immediately afterwards the accumulated capital finances ${s.pay} of ${eur(C2)}, paid **at the end of each of the following ${N2} years**, after which nothing is left. The interest rate is ${pct(r)} throughout. How much must be saved each year?`,
                 given: {
                     "Saving phase": `${N1} years, in arrears`,
-                    "Pension C": eur(C2),
+                    [`${s.Pay} C`]: eur(C2),
                     "Payout phase": `${N2} years, in arrears`,
                     "Interest rate r": pct(r),
                 },
@@ -2612,6 +2834,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 2.1.17",
         build: (rng) => {
+            const s = rng.pick(FIN_ANN_INTRA_FV_SCENARIOS);
             const C = rng.int(1, 10) * 25;
             const m = rng.pick([4, 12]);
             const r = rng.int(2, 7);
@@ -2622,7 +2845,7 @@ export const financeQuestions: NumericQuestion[] = [
             const Cp = C * (m + (i * (m + 1)) / 2);
             const answer = Cp * ((q ** N - 1) / (q - 1));
             return {
-                prompt: `A student pays ${eur(C)} into a savings plan **at the beginning of each ${label}** (m = ${m} payments per year). Interest of ${pct(r)} p.a. is credited **once a year at year-end**; within the year the payments earn simple (linear) interest. What is the balance after ${N} years?`,
+                prompt: `${s.who} pays ${eur(C)} into a savings plan **at the beginning of each ${label}** (m = ${m} payments per year). Interest of ${pct(r)} p.a. is credited **once a year at year-end**; within the year the payments earn simple (linear) interest. What is the balance after ${N} years?`,
                 given: {
                     "Payment per sub-period C": eur(C),
                     "Payments per year m": String(m),
@@ -2644,6 +2867,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "years",
         source: "TUM IVF FM catalogue Oct23, 2.1.23",
         build: (rng) => {
+            const s = rng.pick(FIN_ANN_GEOM_TERM_SCENARIOS);
             const PV = rng.int(100, 600) * 1000;
             const w = rng.int(1, 4);
             const r = w + rng.int(1, 3);
@@ -2652,7 +2876,7 @@ export const financeQuestions: NumericQuestion[] = [
             const C = Math.round(PV * ((r - w) / 100) * rng.float(3, 9, 2));
             const answer = Math.log(1 + (PV * (g - q)) / C) / Math.log(g / q);
             return {
-                prompt: `A craftswoman sells her business for ${eur(PV)}. Instead of cash she receives an annual pension, paid **at the end of each year**: the first payment is ${eur(C)} and every following payment grows by ${pct(w)}. The capital earns ${pct(r)} p.a. For how many years N can this growing pension be paid? Give the exact N.`,
+                prompt: `${s.who} sells ${s.biz} for ${eur(PV)}. Instead of cash ${s.pron} receives an annual pension, paid **at the end of each year**: the first payment is ${eur(C)} and every following payment grows by ${pct(w)}. The capital earns ${pct(r)} p.a. For how many years N can this growing pension be paid? Give the exact N.`,
                 given: {
                     "Sale price PV": eur(PV),
                     "First payment C": eur(C),
@@ -2754,13 +2978,14 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 3.1.5",
         build: (rng) => {
+            const s = rng.pick(FIN_REP_MAX_LOAN_SCENARIOS);
             const A = rng.int(4, 30) * 500;
             const r = rng.int(2, 8);
             const N = rng.int(5, 25);
             const q = 1 + r / 100;
             const answer = A * ((q ** N - 1) / (q ** N * (q - 1)));
             return {
-                prompt: `A borrower can afford annuity payments of ${eur(A)} at the end of each year for ${N} years. The bank charges ${pct(r)} p.a. What is the **maximum loan amount** the borrower can take out?`,
+                prompt: `${s.who} can afford annuity payments of ${eur(A)} at the end of each year for ${N} years. The bank charges ${pct(r)} p.a. What is the **maximum loan amount** ${s.they} can take out?`,
                 given: { "Affordable annuity A": eur(A), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
                 explanation: String.raw`The loan equals the present value of the annuities: $D_0 = A \cdot \frac{q^N - 1}{q^N (q - 1)}$ (present-value annuity factor) with $q = ${n(q)}$: the factor is ${n2((q ** N - 1) / (q ** N * (q - 1)))}, so $D_0$ = ${eur(A)} · ${n2((q ** N - 1) / (q ** N * (q - 1)))} = ${eur(answer)}`,
@@ -2860,6 +3085,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 4.1.6",
         build: (rng) => {
+            const s = rng.pick(FIN_BOND_FINAL_WEALTH_SCENARIOS);
             const F = 1000;
             const c = rng.int(3, 9);
             const C = F * (c / 100);
@@ -2870,7 +3096,7 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = red + C * ((q ** N - 1) / (q - 1));
             return {
-                prompt: `An investor buys a corporate bond today: face value ${eur(F)}, annual coupon ${pct(c)}, remaining term ${N} years, redemption at ${eur(red)}${prem > 0 ? ` (${eur(prem)} premium over face value)` : ""}. She holds the bond to maturity and **reinvests every coupon at the market rate of ${pct(r)}**. What is her total wealth at maturity?`,
+                prompt: `${s.who} buys a corporate bond today: face value ${eur(F)}, annual coupon ${pct(c)}, remaining term ${N} years, redemption at ${eur(red)}${prem > 0 ? ` (${eur(prem)} premium over face value)` : ""}. ${s.Pron} holds the bond to maturity and **reinvests every coupon at the market rate of ${pct(r)}**. What is ${s.poss} total wealth at maturity?`,
                 given: {
                     "Face value": eur(F),
                     "Coupon p.a.": eur(C),
@@ -2937,6 +3163,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF Tutorial Bonds II, A.3",
         build: (rng) => {
+            const s = rng.pick(FIN_BOND_PRICE_FROM_FORWARDS_SCENARIOS);
             const F = 1000;
             const c = rng.int(2, 7);
             const C = F * (c / 100);
@@ -2948,7 +3175,7 @@ export const financeQuestions: NumericQuestion[] = [
             const q3 = 1 + r3 / 100;
             const answer = C / q1 + C / (q1 * q2) + (C + F) / (q1 * q2 * q3);
             return {
-                prompt: `A utility issues a three-year coupon bond: face value ${eur(F)}, annual coupon ${pct(c)}, redemption at par. The market's **forward rates** are $r_1$ = ${pct(r1)} for year 1, $r_2$ = ${pct(r2)} for year 2 and $r_3$ = ${pct(r3)} for year 3. What is the fair price of the bond?`,
+                prompt: `${s.issuer} issues a three-year coupon bond: face value ${eur(F)}, annual coupon ${pct(c)}, redemption at par. The market's **forward rates** are $r_1$ = ${pct(r1)} for year 1, $r_2$ = ${pct(r2)} for year 2 and $r_3$ = ${pct(r3)} for year 3. What is the fair price of the bond?`,
                 given: {
                     "Face value": eur(F),
                     "Coupon p.a.": eur(C),
@@ -2970,12 +3197,13 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF FM catalogue Oct23, 4.1.15",
         build: (rng) => {
+            const s = rng.pick(FIN_BOND_IMMUNIZE_SCENARIOS);
             const dA = rng.float(1.5, 3.5, 2);
             const dB = dA + rng.float(1.5, 4, 2);
             const target = Math.round((dA + (dB - dA) * rng.float(0.3, 0.7, 2)) * 100) / 100;
             const answer = ((dB - target) / (dB - dA)) * 100;
             return {
-                prompt: `A pension fund must meet an obligation in exactly ${n(target)} years and wants its bond portfolio **immunized** against interest-rate changes at that horizon. Two bonds are available: bond A with a duration of ${n2(dA)} years and bond B with a duration of ${n2(dB)} years. What **fraction of the portfolio value must be invested in bond A**?`,
+                prompt: `${s.who} must meet ${s.obl} in exactly ${n(target)} years and wants its bond portfolio **immunized** against interest-rate changes at that horizon. Two bonds are available: bond A with a duration of ${n2(dA)} years and bond B with a duration of ${n2(dB)} years. What **fraction of the portfolio value must be invested in bond A**?`,
                 given: {
                     "Duration bond A": `${n2(dA)} years`,
                     "Duration bond B": `${n2(dB)} years`,
@@ -3017,6 +3245,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF FM catalogue Oct23, 4.2.7",
         build: (rng) => {
+            const s = rng.pick(FIN_BOND_HPR_1Y_SCENARIOS);
             const F = 1000;
             const c = rng.int(3, 9);
             const C = F * (c / 100);
@@ -3028,7 +3257,7 @@ export const financeQuestions: NumericQuestion[] = [
             const { price: B1 } = macaulayDuration(C, F, r1 / 100, N - 1);
             const answer = ((B1 + C) / B0 - 1) * 100;
             return {
-                prompt: `An investor buys a coupon bond (face value ${eur(F)}, coupon ${pct(c)}, remaining term ${N} years) when the market rate is ${pct(r0)}. One year later, immediately after the first coupon is paid, the market rate stands at ${pct(r1)} and she sells the bond. What **total return** did she earn over the year?`,
+                prompt: `${s.who} buys a coupon bond (face value ${eur(F)}, coupon ${pct(c)}, remaining term ${N} years) when the market rate is ${pct(r0)}. One year later, immediately after the first coupon is paid, the market rate stands at ${pct(r1)} and ${s.pron} sells the bond. What **total return** did ${s.pron} earn over the year?`,
                 given: {
                     "Face value": eur(F),
                     "Coupon p.a.": eur(C),
@@ -3052,12 +3281,13 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 5.1.1",
         build: (rng) => {
+            const s = rng.pick(FIN_EQ_ONE_YEAR_PRICE_SCENARIOS);
             const D1 = rng.float(0.5, 5, 2);
             const P1 = rng.int(20, 150);
             const rE = rng.float(5, 12, 1);
             const answer = (D1 + P1) / (1 + rE / 100);
             return {
-                prompt: `An investor plans to hold a pharmaceutical stock for exactly one year. She expects a dividend of ${eur(D1)} and a selling price of ${eur(P1)} at the end of the year. Comparable investments with the same risk return ${pct(rE)}. What is the **maximum price** she should pay today?`,
+                prompt: `${s.who} plans to hold ${s.stock} for exactly one year. ${s.Pron} expects a dividend of ${eur(D1)} and a selling price of ${eur(P1)} at the end of the year. Comparable investments with the same risk return ${pct(rE)}. What is the **maximum price** ${s.pron} should pay today?`,
                 given: { "Expected dividend $D_1$": eur(D1), "Expected price $P_1$": eur(P1), "$r_E$": pct(rE) },
                 answer,
                 explanation: String.raw`$P_0 = \frac{D_1 + P_1}{1 + r_E}$ = (${eur(D1)} + ${eur(P1)}) / ${n(1 + rE / 100)} = ${eur(answer)}. At this price the investment earns exactly the required return; any higher price makes the NPV negative.`,
@@ -3073,13 +3303,14 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF FM catalogue Oct23, 5.1.3",
         build: (rng) => {
+            const s = rng.pick(FIN_EQ_IMPLIED_GROWTH_SCENARIOS);
             const D1 = rng.float(1, 8, 2);
             const wT = rng.int(1, 5);
             const rE = wT + rng.int(3, 7);
             const P0 = Math.round(D1 / ((rE - wT) / 100));
             const answer = rE - (D1 / P0) * 100;
             return {
-                prompt: `A regional bank's share trades at ${eur(P0)}. The dividend expected for next year is ${eur(D1)} and the cost of equity is ${pct(rE)}. Which **constant perpetual dividend growth rate w** justifies the current share price (Gordon growth model)?`,
+                prompt: `${s.firm} share trades at ${eur(P0)}. The dividend expected for next year is ${eur(D1)} and the cost of equity is ${pct(rE)}. Which **constant perpetual dividend growth rate w** justifies the current share price (Gordon growth model)?`,
                 given: { "Share price $P_0$": eur(P0), "$D_1$": eur(D1), "$r_E$": pct(rE) },
                 answer,
                 explanation: String.raw`Invert the Gordon growth model $P_0 = \frac{D_1}{r_E - w}$: $w = r_E - \frac{D_1}{P_0}$ = ${pct(rE)} − ${eur(D1)} / ${eur(P0)} = ${pct(rE)} − ${pct((D1 / P0) * 100)} = ${pct(answer)}`,
@@ -3095,6 +3326,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 5.1.6",
         build: (rng) => {
+            const s = rng.pick(FIN_EQ_RETENTION_PRICE_SCENARIOS);
             const P0 = rng.int(30, 90);
             const rE = rng.int(8, 14);
             const EPS1 = (P0 * rE) / 100;
@@ -3105,12 +3337,12 @@ export const financeQuestions: NumericQuestion[] = [
             const D1 = p * EPS1;
             const answer = D1 / ((rE - w) / 100);
             return {
-                prompt: `A sporting-goods chain expects earnings per share of ${eur(EPS1)} next year and so far pays out **all** earnings as dividends; under this zero-growth policy its share trades at ${eur(P0)}. Management now proposes to cut the payout ratio to ${pct(p * 100)} and invest the retained earnings in new stores earning a permanent return on equity of ${pct(ROE)}. What would the share price be under the new policy?`,
+                prompt: `${s.firm} expects earnings per share of ${eur(EPS1)} next year and so far pays out **all** earnings as dividends; under this zero-growth policy its share trades at ${eur(P0)}. Management now proposes to cut the payout ratio to ${pct(p * 100)} and invest the retained earnings in ${s.units} earning a permanent return on equity of ${pct(ROE)}. What would the share price be under the new policy?`,
                 given: {
                     "$EPS_1$": eur(EPS1),
                     "Price under full payout": eur(P0),
                     "New payout ratio p": pct(p * 100),
-                    "ROE on new stores": pct(ROE),
+                    [`ROE on ${s.units}`]: pct(ROE),
                 },
                 answer,
                 explanation: String.raw`From the zero-growth price the cost of equity is $r_E = \frac{EPS_1}{P_0}$ = ${pct(rE)}. The new dividend is $D_1 = p \cdot EPS_1$ = ${eur(D1)} and retention creates growth $w = (1 - p) \cdot ROE$ = ${pct(w)}. Gordon: $P_0' = \frac{D_1}{r_E - w}$ = ${eur(D1)} / ${n((rE - w) / 100)} = ${eur(answer)}. Retention ${ROE > rE ? "creates" : ROE < rE ? "destroys" : "neither creates nor destroys"} value because ROE ${ROE > rE ? ">" : ROE < rE ? "<" : "="} $r_E$.`,
@@ -3126,12 +3358,13 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF FM catalogue Oct23, 5.1.8",
         build: (rng) => {
+            const s = rng.pick(FIN_EQ_PVGO_SCENARIOS);
             const P0 = rng.int(20, 120);
             const EPS1 = rng.float(1.5, 9, 2);
             const rE = rng.int(8, 14);
             const answer = P0 - EPS1 / (rE / 100);
             return {
-                prompt: `A logistics company's share trades at ${eur(P0)}. Expected earnings per share for next year are ${eur(EPS1)} and the cost of equity is ${pct(rE)}. What is the **present value of growth opportunities (PVGO)** priced into the share? A negative value means the market prices the firm's reinvestment policy as value-destroying.`,
+                prompt: `${s.firm} share trades at ${eur(P0)}. Expected earnings per share for next year are ${eur(EPS1)} and the cost of equity is ${pct(rE)}. What is the **present value of growth opportunities (PVGO)** priced into the share? A negative value means the market prices the firm's reinvestment policy as value-destroying.`,
                 given: { "Share price $P_0$": eur(P0), "$EPS_1$": eur(EPS1), "$r_E$": pct(rE) },
                 answer,
                 explanation: String.raw`The zero-growth value (all earnings paid out forever) is $P_0^* = \frac{EPS_1}{r_E}$ = ${eur(EPS1)} / ${n(rE / 100)} = ${eur(EPS1 / (rE / 100))}. Everything above it is growth value: $PVGO = P_0 - \frac{EPS_1}{r_E}$ = ${eur(P0)} − ${eur(EPS1 / (rE / 100))} = ${eur(answer)}`,
@@ -3147,6 +3380,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF Tutorial Stocks, A.1",
         build: (rng) => {
+            const s = rng.pick(FIN_EQ_DIV_YIELD_SCENARIOS);
             const issued = rng.int(100, 900) * 1000000;
             const treasury = rng.int(2, 30) * 1000000;
             const outstanding = issued - treasury;
@@ -3155,7 +3389,7 @@ export const financeQuestions: NumericQuestion[] = [
             const total = Math.round(outstanding * dps);
             const answer = (total / outstanding / P) * 100;
             return {
-                prompt: `For the past fiscal year a telecom group distributes total dividends of ${eur(total)}. It has issued ${n(issued)} shares, of which ${n(treasury)} are held by the company itself (treasury shares receive no dividend). The share trades at ${eur(P)}. What is the **dividend yield**?`,
+                prompt: `For the past fiscal year ${s.firm} distributes total dividends of ${eur(total)}. It has issued ${n(issued)} shares, of which ${n(treasury)} are held by the company itself (treasury shares receive no dividend). The share trades at ${eur(P)}. What is the **dividend yield**?`,
                 given: {
                     "Total dividend payment": eur(total),
                     "Shares issued": n(issued),
@@ -3176,6 +3410,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF Tutorial Stocks, A.13",
         build: (rng) => {
+            const s = rng.pick(FIN_EQ_MULTIPLE_SCENARIOS);
             const pe1 = rng.float(6, 20, 1);
             const pe2 = rng.float(6, 20, 1);
             const pe3 = rng.float(6, 20, 1);
@@ -3183,7 +3418,7 @@ export const financeQuestions: NumericQuestion[] = [
             const avg = (pe1 + pe2 + pe3) / 3;
             const answer = avg * EPS;
             return {
-                prompt: `A chemicals company is to be valued with the **multiple approach**. Its three closest listed peers trade at price-earnings ratios of ${n(pe1)}, ${n(pe2)} and ${n(pe3)}. The company's expected earnings per share are ${eur(EPS)}. What share price does the average peer multiple imply?`,
+                prompt: `${s.firm} is to be valued with the **multiple approach**. Its three closest listed peers trade at price-earnings ratios of ${n(pe1)}, ${n(pe2)} and ${n(pe3)}. The company's expected earnings per share are ${eur(EPS)}. What share price does the average peer multiple imply?`,
                 given: { "Peer P/E ratios": `${n(pe1)}, ${n(pe2)}, ${n(pe3)}`, "EPS of the company": eur(EPS) },
                 answer,
                 explanation: String.raw`Average peer multiple: $\overline{P/E} = \frac{${n(pe1)} + ${n(pe2)} + ${n(pe3)}}{3}$ = ${n2(avg)}. Then $P_0 = \overline{P/E} \cdot EPS$ = ${n2(avg)} · ${eur(EPS)} = ${eur(answer)}`,
@@ -3221,13 +3456,14 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "number",
         source: "TUM IVF CF catalogue Sep23, 1.5",
         build: (rng) => {
+            const s = rng.pick(FIN_RATIO_AP_DAYS_SCENARIOS);
             const sales = rng.int(500, 3000) * 1000;
             const gross = Math.round(sales * rng.float(0.15, 0.4, 3));
             const AP = rng.int(30, 200) * 1000;
             const cos = sales - gross;
             const answer = AP / (cos / 365);
             return {
-                prompt: `A wholesaler reports total sales of ${eur(sales)}, a gross profit of ${eur(gross)} and accounts payable of ${eur(AP)}. For how many **days** of purchases do the accounts payable stand (accounts payable days, 365-day year)?`,
+                prompt: `${s.firm} reports total sales of ${eur(sales)}, a gross profit of ${eur(gross)} and accounts payable of ${eur(AP)}. For how many **days** of purchases do the accounts payable stand (accounts payable days, 365-day year)?`,
                 given: { "Total sales": eur(sales), "Gross profit": eur(gross), "Accounts payable": eur(AP) },
                 answer,
                 explanation: String.raw`Cost of sales = sales − gross profit = ${eur(cos)}, so average daily cost of sales = ${eur(cos)} / 365 = ${eur(cos / 365)}. Then $\text{AP days} = \frac{\text{accounts payable}}{\text{daily cost of sales}}$ = ${eur(AP)} / ${eur(cos / 365)} = ${n2(answer)} days`,
@@ -3289,12 +3525,13 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF CF catalogue Sep23, 2.33",
         build: (rng) => {
+            const s = rng.pick(FIN_INV_NPV_PERPETUAL_SCENARIOS);
             const I0 = rng.int(50, 400) * 1000;
             const r = rng.int(5, 12);
             const cf = Math.round((I0 * (r / 100) * rng.float(0.75, 1.7, 3)) / 100) * 100;
             const answer = -I0 + cf / (r / 100);
             return {
-                prompt: `A grid operator can buy a substation for ${eur(I0)} that produces a constant cash flow of ${eur(cf)} at the end of every year **forever**. The cost of capital is ${pct(r)}. What is the **NPV** of the project? A negative answer means the project destroys value.`,
+                prompt: `${s.who} can buy ${s.asset} for ${eur(I0)} that produces a constant cash flow of ${eur(cf)} at the end of every year **forever**. The cost of capital is ${pct(r)}. What is the **NPV** of the project? A negative answer means the project destroys value.`,
                 given: { "Investment $I_0$": eur(I0), "Perpetual CF p.a.": eur(cf), "r": pct(r) },
                 answer,
                 explanation: String.raw`The inflows form a perpetuity: $NPV = -I_0 + \frac{CF}{i}$ = −${eur(I0)} + ${eur(cf)} / ${n(r / 100)} = −${eur(I0)} + ${eur(cf / (r / 100))} = ${eur(answer)}`,
@@ -3310,12 +3547,13 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF CF catalogue Sep23, 2.31",
         build: (rng) => {
+            const s = rng.pick(FIN_INV_IRR_LUMP_SCENARIOS);
             const I0 = rng.int(10, 200) * 100;
             const T = rng.int(1, 4);
             const cf = Math.round(I0 * rng.float(1.15, 2.2, 3));
             const answer = ((cf / I0) ** (1 / T) - 1) * 100;
             return {
-                prompt: `A forestry project requires ${eur(I0)} today and pays back a **single** cash flow of ${eur(cf)} after ${T} year${T > 1 ? "s" : ""} - nothing in between. What is the project's internal rate of return (IRR)?`,
+                prompt: `${s.project} requires ${eur(I0)} today and pays back a **single** cash flow of ${eur(cf)} after ${T} year${T > 1 ? "s" : ""} - nothing in between. What is the project's internal rate of return (IRR)?`,
                 given: { "Investment $I_0$": eur(I0), [`Payoff in year ${T}`]: eur(cf) },
                 answer,
                 explanation: String.raw`Set the NPV to zero: $-I_0 + \frac{CF_T}{(1 + IRR)^T} = 0$, so $IRR = \sqrt[T]{\frac{CF_T}{I_0}} - 1$ = $\sqrt[${T}]{${n2(cf / I0)}} - 1$ = ${pct(answer)}`,
@@ -3331,12 +3569,13 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF CF chapter 02 (Berk/DeMarzo bookstore example)",
         build: (rng) => {
+            const s = rng.pick(FIN_INV_IRR_PERP_GROWTH_SCENARIOS);
             const I0 = rng.int(100, 600) * 1000;
             const g = rng.int(1, 4);
             const cf1 = Math.round(I0 * rng.float(0.06, 0.2, 4));
             const answer = (cf1 / I0) * 100 + g;
             return {
-                prompt: `Opening a bookshop costs ${eur(I0)}. It generates a first-year cash flow of ${eur(cf1)}, which then grows at a constant ${pct(g)} p.a. **forever**. What is the **IRR** of this investment?`,
+                prompt: `Opening ${s.venture} costs ${eur(I0)}. It generates a first-year cash flow of ${eur(cf1)}, which then grows at a constant ${pct(g)} p.a. **forever**. What is the **IRR** of this investment?`,
                 given: { "Investment $I_0$": eur(I0), "$CF_1$": eur(cf1), "Growth g": pct(g) },
                 answer,
                 explanation: String.raw`For a growing perpetuity $I_0 = \frac{CF_1}{IRR - g}$, so $IRR = \frac{CF_1}{I_0} + g$ = ${eur(cf1)} / ${eur(I0)} + ${pct(g)} = ${pct((cf1 / I0) * 100)} + ${pct(g)} = ${pct(answer)}`,
@@ -3389,6 +3628,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF CF catalogue Sep23, 3.5",
         build: (rng) => {
+            const s = rng.pick(FIN_CB_UNI_SCENARIOS);
             const rev = rng.int(200, 900) * 1000;
             const costs = Math.round(rev * rng.float(0.4, 0.7, 2));
             const depr = Math.round(((rev - costs) * rng.float(0.15, 0.5, 2)) / 1000) * 1000;
@@ -3396,7 +3636,7 @@ export const financeQuestions: NumericQuestion[] = [
             const ebit = rev - costs - depr;
             const answer = ebit * (1 - tau);
             return {
-                prompt: `A new production line generates revenues of ${eur(rev)} in its first year, cash operating costs of ${eur(costs)} and depreciation of ${eur(depr)}. The corporate tax rate is ${pct(tau * 100)}. What is the project's **incremental unlevered net income** in year 1?`,
+                prompt: `${s.asset} generates revenues of ${eur(rev)} in its first year, cash operating costs of ${eur(costs)} and depreciation of ${eur(depr)}. The corporate tax rate is ${pct(tau * 100)}. What is the project's **incremental unlevered net income** in year 1?`,
                 given: {
                     "Revenues": eur(rev),
                     "Operating costs": eur(costs),
@@ -3505,17 +3745,18 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF CF catalogue Sep23, 3.8",
         build: (rng) => {
+            const s = rng.pick(FIN_CB_REPL_INITIAL_SCENARIOS);
             const pNew = rng.int(60, 200) * 1000;
             const book = rng.int(20, 80) * 1000;
             const salvage = Math.round((book * rng.float(0.4, 0.9, 2)) / 1000) * 1000;
             const tau = rng.pick([0.25, 0.3, 0.35]);
             const answer = -pNew + salvage + tau * (book - salvage);
             return {
-                prompt: `A bakery replaces its old oven. The new oven costs ${eur(pNew)}. The old oven has a remaining book value of ${eur(book)} but can only be sold for ${eur(salvage)} today - the difference is a tax-deductible book loss, and the bakery is profitable, so the tax saving arrives immediately at the tax rate of ${pct(tau * 100)}. What is the **incremental cash flow in year 0** of the replacement? Give a signed number - a net outflow is negative.`,
+                prompt: `${s.who} replaces its old ${s.item}. The new ${s.item} costs ${eur(pNew)}. The old ${s.item} has a remaining book value of ${eur(book)} but can only be sold for ${eur(salvage)} today - the difference is a tax-deductible book loss, and ${s.firm} is profitable, so the tax saving arrives immediately at the tax rate of ${pct(tau * 100)}. What is the **incremental cash flow in year 0** of the replacement? Give a signed number - a net outflow is negative.`,
                 given: {
-                    "Price new oven": eur(pNew),
-                    "Book value old oven": eur(book),
-                    "Sale price old oven": eur(salvage),
+                    [`Price new ${s.item}`]: eur(pNew),
+                    [`Book value old ${s.item}`]: eur(book),
+                    [`Sale price old ${s.item}`]: eur(salvage),
                     "$τ_C$": pct(tau * 100),
                 },
                 answer,
@@ -3532,6 +3773,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF CF catalogue Sep23, 3.9",
         build: (rng) => {
+            const s = rng.pick(FIN_CB_REPL_ANNUAL_SCENARIOS);
             const newEbitda = rng.int(40, 120) * 1000;
             const oldEbitda = Math.round((newEbitda * rng.float(0.5, 0.85, 2)) / 1000) * 1000;
             const newDepr = rng.int(8, 25) * 1000;
@@ -3541,7 +3783,7 @@ export const financeQuestions: NumericQuestion[] = [
             const dDepr = newDepr - oldDepr;
             const answer = (dEbitda - dDepr) * (1 - tau) + dDepr;
             return {
-                prompt: `A print shop weighs replacing a machine. The new machine would produce EBITDA of ${eur(newEbitda)} per year with annual depreciation of ${eur(newDepr)}; the old machine produces EBITDA of ${eur(oldEbitda)} with annual depreciation of ${eur(oldDepr)}. All other items are identical, the firm is profitable, and the tax rate is ${pct(tau * 100)}. What is the **incremental annual free cash flow** of the replacement?`,
+                prompt: `${s.who} weighs replacing a ${s.machine}. The new ${s.machine} would produce EBITDA of ${eur(newEbitda)} per year with annual depreciation of ${eur(newDepr)}; the old ${s.machine} produces EBITDA of ${eur(oldEbitda)} with annual depreciation of ${eur(oldDepr)}. All other items are identical, the firm is profitable, and the tax rate is ${pct(tau * 100)}. What is the **incremental annual free cash flow** of the replacement?`,
                 given: {
                     "EBITDA new": eur(newEbitda),
                     "EBITDA old": eur(oldEbitda),
@@ -3565,13 +3807,14 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF CF catalogue Sep23, 4.6",
         build: (rng) => {
+            const s = rng.pick(FIN_COC_DEBT_RETURN_SCENARIOS);
             const p = rng.int(1, 10);
             const L = rng.int(30, 70);
             const el = (p * L) / 100;
             const ytm = Math.round((el + rng.float(0.5, 5, 1)) * 10) / 10;
             const answer = ytm - el;
             return {
-                prompt: `A mining company's bond has a yield to maturity of ${pct(ytm)}. Rating statistics put its annual default probability at ${pct(p)}, and in default bondholders expect to lose ${pct(L)} of their investment. What is the **expected return** on this bond?`,
+                prompt: `${s.firm} bond has a yield to maturity of ${pct(ytm)}. Rating statistics put its annual default probability at ${pct(p)}, and in default bondholders expect to lose ${pct(L)} of their investment. What is the **expected return** on this bond?`,
                 given: {
                     "Yield to maturity y": pct(ytm),
                     "Default probability p": pct(p),
@@ -3621,6 +3864,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF CF catalogue Sep23, 4.9",
         build: (rng) => {
+            const s = rng.pick(FIN_COC_SUM_OF_PARTS_SCENARIOS);
             const rf = rng.int(2, 4);
             const mrp = rng.int(4, 7);
             const g1 = rng.int(1, 3);
@@ -3637,7 +3881,7 @@ export const financeQuestions: NumericQuestion[] = [
             const v2 = fcf2 / ((r2 - g2) / 100);
             const answer = (v1 * r1 + v2 * r2) / (v1 + v2);
             return {
-                prompt: `A family-owned group runs two divisions. Division A has an asset beta of ${n2(beta1)} and expects a free cash flow of ${eur(fcf1)} next year, growing at ${pct(g1)} forever; division B has an asset beta of ${n2(beta2)}, an expected free cash flow of ${eur(fcf2)} and perpetual growth of ${pct(g2)}. The risk-free rate is ${pct(rf)} and the market risk premium ${pct(mrp)}. What is the **cost of capital of the group as a whole** - the value-weighted average of the divisional costs of capital?`,
+                prompt: `${s.group} runs two divisions. Division A has an asset beta of ${n2(beta1)} and expects a free cash flow of ${eur(fcf1)} next year, growing at ${pct(g1)} forever; division B has an asset beta of ${n2(beta2)}, an expected free cash flow of ${eur(fcf2)} and perpetual growth of ${pct(g2)}. The risk-free rate is ${pct(rf)} and the market risk premium ${pct(mrp)}. What is the **cost of capital of the group as a whole** - the value-weighted average of the divisional costs of capital?`,
                 given: {
                     "Division A": `β = ${n2(beta1)}, $FCF_1$ = ${eur(fcf1)}, g = ${pct(g1)}`,
                     "Division B": `β = ${n2(beta2)}, $FCF_1$ = ${eur(fcf2)}, g = ${pct(g2)}`,
@@ -3658,6 +3902,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "percent",
         source: "TUM IVF CF catalogue Sep23, 5.25",
         build: (rng) => {
+            const s = rng.pick(FIN_COC_RE_DDM_SCENARIOS);
             const D0 = rng.float(0.8, 4, 2);
             const w = rng.int(2, 9);
             const dy = rng.float(2, 6, 2);
@@ -3665,7 +3910,7 @@ export const financeQuestions: NumericQuestion[] = [
             const D1 = D0 * (1 + w / 100);
             const answer = (D1 / P0) * 100 + w;
             return {
-                prompt: `Estimate a listed brewery's **cost of equity with the dividend discount model**: the dividend just paid was ${eur(D0)} per share, the market expects dividends to grow at a constant ${pct(w)} p.a., and the share trades at ${eur(P0)}.`,
+                prompt: `Estimate ${s.firm} **cost of equity with the dividend discount model**: the dividend just paid was ${eur(D0)} per share, the market expects dividends to grow at a constant ${pct(w)} p.a., and the share trades at ${eur(P0)}.`,
                 given: { "Dividend just paid $D_0$": eur(D0), "Growth w": pct(w), "Share price $P_0$": eur(P0) },
                 answer,
                 explanation: String.raw`Invert the Gordon growth model: $r_E = \frac{D_1}{P_0} + w$ with $D_1 = D_0 \cdot (1 + w)$ = ${eur(D1)}: ${eur(D1)} / ${eur(P0)} + ${pct(w)} = ${pct((D1 / P0) * 100)} + ${pct(w)} = ${pct(answer)}`,
@@ -3778,12 +4023,13 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF CF catalogue Sep23, 6.1",
         build: (rng) => {
+            const s = rng.pick(FIN_CS_TAX_SHIELD_ANNUAL_SCENARIOS);
             const D = rng.int(100, 800) * 1000;
             const rD = rng.int(3, 8);
             const tau = rng.pick([0.25, 0.3, 0.35]);
             const answer = tau * (rD / 100) * D;
             return {
-                prompt: `A retailer carries ${eur(D)} of debt at an interest rate of ${pct(rD)}. Its corporate tax rate is ${pct(tau * 100)}. How large is the **annual interest tax shield** - the taxes saved each year because interest is deductible?`,
+                prompt: `${s.firm} carries ${eur(D)} of debt at an interest rate of ${pct(rD)}. Its corporate tax rate is ${pct(tau * 100)}. How large is the **annual interest tax shield** - the taxes saved each year because interest is deductible?`,
                 given: { "Debt D": eur(D), "$r_D$": pct(rD), "$τ_C$": pct(tau * 100) },
                 answer,
                 explanation: String.raw`$ITS = \tau_C \cdot \text{Interest} = \tau_C \cdot r_D \cdot D$ - the interest bill is ${eur((rD / 100) * D)}, of which the tax office effectively pays ${pct(tau * 100)}: ${n(tau)} · ${eur((rD / 100) * D)} = ${eur(answer)}`,
@@ -3799,6 +4045,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF CF catalogue Sep23, 6.7",
         build: (rng) => {
+            const s = rng.pick(FIN_CS_PV_SHIELD_GROWTH_SCENARIOS);
             const fcf = rng.int(200, 900) * 1000;
             const g = rng.int(2, 3);
             const rE = rng.int(11, 15);
@@ -3813,7 +4060,7 @@ export const financeQuestions: NumericQuestion[] = [
             const vL = fcf / ((after - g) / 100);
             const answer = vL - vU;
             return {
-                prompt: `A media group expects a free cash flow of ${eur(fcf)} next year, growing at ${pct(g)} p.a. forever. Its cost of equity is ${pct(rE)}, its cost of debt ${pct(rD)}, the tax rate is ${pct(tau * 100)}, and it permanently maintains a debt-to-equity ratio of ${n(de)}. What is the **value of its interest tax shield** - the difference between the levered firm value (discounted at the after-tax WACC) and the unlevered value (discounted at the pre-tax WACC)?`,
+                prompt: `${s.firm} expects a free cash flow of ${eur(fcf)} next year, growing at ${pct(g)} p.a. forever. Its cost of equity is ${pct(rE)}, its cost of debt ${pct(rD)}, the tax rate is ${pct(tau * 100)}, and it permanently maintains a debt-to-equity ratio of ${n(de)}. What is the **value of its interest tax shield** - the difference between the levered firm value (discounted at the after-tax WACC) and the unlevered value (discounted at the pre-tax WACC)?`,
                 given: {
                     "$FCF_1$": eur(fcf),
                     "Growth g": pct(g),
@@ -3858,6 +4105,7 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "EUR",
         source: "TUM IVF CF catalogue Sep23, 5.36",
         build: (rng) => {
+            const s = rng.pick(FIN_CI_NEED_SCENARIOS);
             const nNew = rng.int(1, 20) * 100000;
             // Ratio capped at 25:1 - at 600:1 the right was worth fractions of
             // a cent, below the EUR grading tolerance floor.
@@ -3868,7 +4116,7 @@ export const financeQuestions: NumericQuestion[] = [
             const K = nNew * IP;
             const answer = (Pcum - IP) / (b + 1);
             return {
-                prompt: `A supermarket chain with ${n(a)} shares outstanding needs ${eur(K)} of fresh equity and sets the subscription price of the new shares at ${eur(IP)}. After the announcement the share trades at ${eur(Pcum)}. What is the theoretical value of one **subscription right**?`,
+                prompt: `${s.firm} with ${n(a)} shares outstanding needs ${eur(K)} of fresh equity and sets the subscription price of the new shares at ${eur(IP)}. After the announcement the share trades at ${eur(Pcum)}. What is the theoretical value of one **subscription right**?`,
                 given: {
                     "Shares outstanding a": n(a),
                     "Capital needed K": eur(K),
@@ -3889,13 +4137,14 @@ export const financeQuestions: NumericQuestion[] = [
         unit: "number",
         source: "TUM IVF CF catalogue Sep23, 5.38",
         build: (rng) => {
+            const s = rng.pick(FIN_CI_BLANCHE_SCENARIOS);
             const S = rng.int(40, 400);
             const b = rng.int(2, 8);
             const IP = rng.int(20, 60);
             const SR = rng.float(2, 15, 2);
             const answer = (S * IP) / (b * SR + IP);
             return {
-                prompt: `In a rights issue with a subscription ratio of ${b}:1 and a subscription price of ${eur(IP)}, one subscription right is worth ${eur(SR)}. A shareholder owns ${n(S)} shares and holds no cash. How many of her ${n(S)} subscription rights must she **sell** so that the proceeds exactly pay for exercising the remaining rights (operation blanche)? Assume rights and shares are arbitrarily divisible.`,
+                prompt: `In a rights issue with a subscription ratio of ${b}:1 and a subscription price of ${eur(IP)}, one subscription right is worth ${eur(SR)}. ${s.who} owns ${n(S)} shares and holds no cash. How many of ${s.poss} ${n(S)} subscription rights must ${s.pron} **sell** so that the proceeds exactly pay for exercising the remaining rights (operation blanche)? Assume rights and shares are arbitrarily divisible.`,
                 given: {
                     "Shares held (= rights) S": n(S),
                     "Subscription ratio": `${b}:1`,
@@ -3903,7 +4152,7 @@ export const financeQuestions: NumericQuestion[] = [
                     "Value of one right SR": eur(SR),
                 },
                 answer,
-                explanation: String.raw`Selling $x$ rights raises $x \cdot SR$; the remaining $S - x$ rights buy $\frac{S - x}{BV}$ new shares costing $\frac{S - x}{BV} \cdot IP$. Setting proceeds equal to cost and solving: $x = \frac{S \cdot IP}{BV \cdot SR + IP}$ = (${n(S)} · ${eur(IP)}) / (${b} · ${eur(SR)} + ${eur(IP)}) = ${n2(answer)} rights. Her total wealth is unchanged - the operation only converts rights into shares.`,
+                explanation: String.raw`Selling $x$ rights raises $x \cdot SR$; the remaining $S - x$ rights buy $\frac{S - x}{BV}$ new shares costing $\frac{S - x}{BV} \cdot IP$. Setting proceeds equal to cost and solving: $x = \frac{S \cdot IP}{BV \cdot SR + IP}$ = (${n(S)} · ${eur(IP)}) / (${b} · ${eur(SR)} + ${eur(IP)}) = ${n2(answer)} rights. ${cap(s.poss)} total wealth is unchanged - the operation only converts rights into shares.`,
             };
         },
     },

@@ -20,7 +20,7 @@ import { eur, n, n2, pct } from "./_helpers";
 // Derivation: e(w) = a·√w − b with b = a·rt/2 makes the Solow condition
 // e'(w)·w = e(w) solve to √w* = 2b/a = rt, so w* = rt² and e* = b.
 // Labor demand from max p·√(e·L) − w·L gives L = p²e/(4w²); with p = 2·rt²·s
-// this is L = s²·b — an integer below the labor supply Ls in every entry.
+// this is L = s²·b - an integer below the labor supply Ls in every entry.
 const EW_CONFIGS = [
     // Curated so every entry solves in integers.
     { a: 4, rt: 2, s: 2, Ls: 20 },  // w*=4, e*=4, p=16, L=16, u=20 %
@@ -139,6 +139,385 @@ function gm2Given(d: ReturnType<typeof drawGM2>) {
 const TECH_WAGES = [8, 12, 14, 16, 18] as const;
 const TECH_ENERGY_PRICES = [4, 6, 9, 11] as const;
 
+// ---------------------------------------------------------------------------
+// Story-line variants (2026-09). Every question that tells a story draws one
+// scenario FIRST inside build, so the same concept shows up dressed
+// differently from seed to seed. Scenarios hold strings only - every number
+// still comes from the rng. Pure-formula questions and the ones that already
+// rotate a real country have no scenario array.
+
+/** "she" -> "She" for a scenario word at the start of a sentence. */
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const E2_GR_TOTAL_GROWTH_SCENARIOS = [
+    { place: "The kingdom of Solmara" },
+    { place: "The island state of Kirrova" },
+    { place: "The federation of Ostmere" },
+] as const;
+
+const E2_GR_GDP_PC_GROWTH_SCENARIOS = [
+    { office: "The statistics office of Veldaria" },
+    { office: "The central bank of Brannock" },
+    { office: "The finance ministry of Ilmara" },
+] as const;
+
+const E2_GDP_VALUE_ADDED_SCENARIOS = [
+    { place: "Listrana", art1: "An", s1: "olive grower", L1: "Grower", subj1: "she", sale1: "her entire harvest", imp1: "fertilizer", s2: "oil mill", L2: "Mill", imp2: "glass bottles", prod2: "bottled oil", s3: "delicatessen maker", L3: "Delicatessen maker", make3: "turns the oil it bought into antipasti" },
+    { place: "Varnholm", art1: "A", s1: "sheep farmer", L1: "Farmer", subj1: "he", sale1: "his entire wool clip", imp1: "feed", s2: "spinning mill", L2: "Mill", imp2: "dye", prod2: "dyed yarn", s3: "knitwear maker", L3: "Knitwear maker", make3: "turns the yarn it bought into sweaters" },
+    { place: "Cazorra", art1: "A", s1: "cocoa farmer", L1: "Farmer", subj1: "she", sale1: "her entire bean harvest", imp1: "fertilizer", s2: "chocolate factory", L2: "Factory", imp2: "sugar", prod2: "chocolate", s3: "confectioner", L3: "Confectioner", make3: "turns the chocolate it bought into pralines" },
+    { place: "Rendale", art1: "A", s1: "wheat farmer", L1: "Farmer", subj1: "he", sale1: "his entire grain harvest", imp1: "seed", s2: "flour mill", L2: "Mill", imp2: "paper sacks", prod2: "flour", s3: "pastry bakery", L3: "Bakery", make3: "turns the flour it bought into pastries" },
+] as const;
+
+const E2_TECH_SWITCH_RENT_SCENARIOS = [
+    { firm: "A ceramics workshop in Tavia", batch: "fire one kiln batch", energy: "gas" },
+    { firm: "A bakery in Rulmond", batch: "bake one batch of loaves", energy: "gas" },
+    { firm: "A dye-house in Amberly", batch: "dye one batch of cloth", energy: "steam" },
+    { firm: "A foundry in Kestrin", batch: "cast one batch of fittings", energy: "coke" },
+] as const;
+
+const E2_TECH_MPL_SCENARIOS = [
+    { firm: "A bicycle-frame manufacturer" },
+    { firm: "A furniture workshop" },
+    { firm: "A solar-panel assembler" },
+] as const;
+
+const E2_RD_PRIVATE_OPTIMUM_SCENARIOS = [
+    { labs: "Two rival battery labs, Voltra and Cellix", items: "patentable cell designs", plural: "designs", item: "design", Items: "Designs" },
+    { labs: "Two rival drone makers, Aerix and Skylon", items: "patentable flight-controller designs", plural: "designs", item: "design", Items: "Designs" },
+    { labs: "Two rival materials labs, Ferrox and Alumet", items: "patentable alloys", plural: "alloys", item: "alloy", Items: "Alloys" },
+] as const;
+
+const E2_RD_SUBSIDY_SCENARIOS = [
+    { labs: "Two rival vaccine labs", items: "candidate compounds", item: "compound", Items: "Compounds" },
+    { labs: "Two rival chip-design labs", items: "patentable chip layouts", item: "layout", Items: "Layouts" },
+    { labs: "Two rival enzyme labs", items: "patentable enzymes", item: "enzyme", Items: "Enzymes" },
+] as const;
+
+const E2_RD_MERGER_SCENARIOS = [
+    { labs: "Two agri-tech labs", items: "patentable seed varieties", item: "variety", Items: "Varieties" },
+    { labs: "Two robotics labs", items: "patentable gripper designs", item: "design", Items: "Designs" },
+    { labs: "Two pharma labs", items: "patentable molecules", item: "molecule", Items: "Molecules" },
+] as const;
+
+const E2_GM_EQUILIBRIUM_OUTPUT_SCENARIOS = [
+    { place: "the open economy of Orvania" },
+    { place: "the open economy of Marrowin" },
+    { place: "the trading nation of Selvane" },
+] as const;
+
+const E2_GM_CONSUMPTION_SCENARIOS = [
+    { place: "The republic of Quenavia" },
+    { place: "The duchy of Ferrant" },
+    { place: "The island nation of Tolmere" },
+] as const;
+
+const E2_GM_MULTIPLIER_SCENARIOS = [
+    { place: "Bellmark", stimulus: "Parliament passes a stimulus that raises government purchases by" },
+    { place: "Corvath", stimulus: "The government launches a road-building programme that raises its purchases by" },
+    { place: "Ilsmere", stimulus: "A hospital-building plan raises government purchases by" },
+] as const;
+
+const E2_GM_BUDGET_BALANCE_SCENARIOS = [
+    { placePoss: "Novaria's" },
+    { placePoss: "Estrel's" },
+    { placePoss: "Wendmark's" },
+] as const;
+
+const E2_GM_BALANCED_BUDGET_TAX_SCENARIOS = [
+    { placePoss: "Caldonia's" },
+    { placePoss: "Lorimar's" },
+    { placePoss: "Tessvane's" },
+] as const;
+
+const E2_LM_EFFICIENCY_WAGE_SCENARIOS = [
+    { firm: "A fish cannery on the island of Skarvoy" },
+    { firm: "A call centre in the town of Brennholm" },
+    { firm: "A textile mill in Varduna" },
+    { firm: "A fruit-packing plant near Lomera" },
+] as const;
+
+const E2_LM_UNEMPLOYMENT_SCENARIOS = [
+    { town: "Halvora", firm: "the cannery", units: "crates", unit: "crate" },
+    { town: "Norrhaven", firm: "the quarry", units: "pallets of stone", unit: "pallet" },
+    { town: "Ashmoor", firm: "the brickworks", units: "pallets of bricks", unit: "pallet" },
+    { town: "Kellmere", firm: "the dairy", units: "wheels of cheese", unit: "wheel" },
+] as const;
+
+const E2_LM_PROFIT_SCENARIOS = [
+    { firm: "The only sawmill in the valley of Drenn", short: "the mill", units: "pallets of timber" },
+    { firm: "The only paper mill in the valley of Lisk", short: "the mill", units: "rolls of paper" },
+    { firm: "The only bottling plant in the valley of Orra", short: "the plant", units: "crates of mineral water" },
+    { firm: "The only tannery in the valley of Vell", short: "the tannery", units: "bundles of leather" },
+] as const;
+
+const E2_LM_MINIMUM_WAGE_SCENARIOS = [
+    { firm: "The mining company", town: "Corvane", units: "tons of ore" },
+    { firm: "The salt works", town: "Halvane", units: "tons of salt" },
+    { firm: "The peat company", town: "Moorkirk", units: "tons of peat" },
+] as const;
+
+const E2_LM_RENT_HOURLY_SCENARIOS = [
+    { who: "A crane operator in the port of Vestre", subj: "she", obj: "her", poss: "her" },
+    { who: "A tram driver in Aldbury", subj: "he", obj: "him", poss: "his" },
+    { who: "A welder at the shipyard of Norrvik", subj: "she", obj: "her", poss: "her" },
+    { who: "A night-shift baker in Carrow", subj: "he", obj: "him", poss: "his" },
+] as const;
+
+const E2_LM_RENT_TOTAL_SCENARIOS = [
+    { who: "A machinist in Ostbro", subj: "he", obj: "him", poss: "his" },
+    { who: "A lab technician in Welmond", subj: "she", obj: "her", poss: "her" },
+    { who: "A forklift driver in Tarn", subj: "he", obj: "him", poss: "his" },
+    { who: "A pastry chef in Selmar", subj: "she", obj: "her", poss: "her" },
+] as const;
+
+const E2_IT_INTEREST_RATE_SCENARIOS = [
+    { name: "Marisol", subj: "she", poss: "her" },
+    { name: "Rafael", subj: "he", poss: "his" },
+    { name: "Yuki", subj: "she", poss: "her" },
+] as const;
+
+const E2_IT_AFFORDABLE_SCENARIOS = [
+    { name: "Tobias", subj: "he" },
+    { name: "Amara", subj: "she" },
+    { name: "Niklas", subj: "he" },
+] as const;
+
+const E2_FX_CROSS_RATE_SCENARIOS = [
+    { a: "taler", as: "talers", aC: "Aldunia", A: "T", b: "rupel", bs: "rupels", bC: "Brevia", B: "R", c: "denar", C: "D" },
+    { a: "florin", as: "florins", aC: "Marovia", A: "F", b: "pell", bs: "pells", bC: "Selunia", B: "P", c: "ducat", C: "D" },
+    { a: "crona", as: "cronas", aC: "Ithria", A: "C", b: "ryal", bs: "ryals", bC: "Ombra", B: "R", c: "lumen", C: "L" },
+] as const;
+
+// Currency names whose plural equals the singular ("norn per kess").
+const E2_FX_CHANGE_PCT_SCENARIOS = [
+    { a: "norn", aC: "Norvia", b: "kess", bC: "Kessland" },
+    { a: "vell", aC: "Vellia", b: "tor", bC: "Torland" },
+    { a: "quin", aC: "Quinar", b: "orm", bC: "Ormsk" },
+] as const;
+
+// Two-good economy shared by the three original real/nominal questions (the
+// same economy appears in all three, as in the source design). Good A takes
+// the low price draw (2-6), good B the high one (8-15).
+const E2_RN_REAL_GROWTH_SCENARIOS = [
+    { place: "Miravel", gA: "rye bread", uA: "loaves", uA1: "loaf", lA: "bread", LA: "Bread", gB: "olive oil", uB: "liters", uB1: "liter", lB: "oil", LB: "Oil" },
+    { place: "Tarvenna", gA: "goat cheese", uA: "wheels", uA1: "wheel", lA: "cheese", LA: "Cheese", gB: "cider", uB: "casks", uB1: "cask", lB: "cider", LB: "Cider" },
+    { place: "Lorsk", gA: "honey", uA: "jars", uA1: "jar", lA: "honey", LA: "Honey", gB: "wool", uB: "bales", uB1: "bale", lB: "wool", LB: "Wool" },
+] as const;
+const E2_RN_DEFLATOR_SCENARIOS = E2_RN_REAL_GROWTH_SCENARIOS;
+const E2_RN_CPI_INFLATION_SCENARIOS = E2_RN_REAL_GROWTH_SCENARIOS;
+
+const E2_II_NOMINAL_WAGE_SCENARIOS = [
+    { union: "The dockworkers' union of Port Havelin" },
+    { union: "The nurses' union of Brennmark" },
+    { union: "The metalworkers' union of Ostvale" },
+] as const;
+
+const E2_II_REAL_RATE_SCENARIOS = [
+    { product: "A one-year savings deposit in Meridia", noun: "deposit" },
+    { product: "A one-year government bond issued by Meridia", noun: "bond" },
+    { product: "A one-year fixed-term account at a bank in Calvera", noun: "account" },
+] as const;
+
+const E2_GDP_VA_TWO_STAGE_SCENARIOS = [
+    { f1: "roastery", F1: "Roastery", imp: "green coffee beans from Brazil", impShort: "beans", prod1: "roasted coffee", prod1Short: "coffee", f2: "café chain", F2: "Café chain", prod2: "drinks" },
+    { f1: "tannery", F1: "Tannery", imp: "raw hides from Argentina", impShort: "hides", prod1: "finished leather", prod1Short: "leather", f2: "shoemaker", F2: "Shoemaker", prod2: "shoes" },
+    { f1: "cotton mill", F1: "Cotton mill", imp: "raw cotton bales from Egypt", impShort: "cotton bales", prod1: "cloth", prod1Short: "cloth", f2: "tailoring workshop", F2: "Tailoring workshop", prod2: "garments" },
+] as const;
+
+const E2_GDP_VA_FIRM_SCENARIOS = [
+    { firm: "A furniture maker in Poland", dom: "timber from domestic sawmills", imp: "fittings", adj: "Polish" },
+    { firm: "A bicycle assembler in Portugal", dom: "frames from domestic welders", imp: "gear sets", adj: "Portuguese" },
+    { firm: "A winery in Spain", dom: "grapes from domestic growers", imp: "oak barrels", adj: "Spanish" },
+] as const;
+
+const E2_RN_NOMINAL_GROWTH_SCENARIOS = [
+    { place: "The economy of a Japanese island", gA: "rice", uA: "sacks", LA: "Rice", gB: "fish", uB: "crates", LB: "Fish" },
+    { place: "The economy of a Norwegian fjord", gA: "potatoes", uA: "sacks", LA: "Potatoes", gB: "salmon", uB: "crates", LB: "Salmon" },
+    { place: "The economy of a Canadian island", gA: "apples", uA: "baskets", LA: "Apples", gB: "lobster", uB: "crates", LB: "Lobster" },
+] as const;
+
+const E2_RN_REAL_LEVEL_SCENARIOS = [
+    { place: "A Danish coastal economy", gA: "butter", uA: "kg", uA1: "kg", gB: "herring", uB: "barrels", uB1: "barrel" },
+    { place: "A Swedish lakeside economy", gA: "flour", uA: "kg", uA1: "kg", gB: "crayfish", uB: "crates", uB1: "crate" },
+    { place: "A Portuguese coastal economy", gA: "salt", uA: "kg", uA1: "kg", gB: "sardines", uB: "barrels", uB1: "barrel" },
+] as const;
+
+const E2_RN_DEFLATOR_INFLATION_SCENARIOS = [
+    { place: "A Portuguese island economy", gA: "olives", uA: "crates", uA1: "crate", gB: "cork", uB: "bales", uB1: "bale" },
+    { place: "A Spanish highland economy", gA: "almonds", uA: "sacks", uA1: "sack", gB: "wool", uB: "bales", uB1: "bale" },
+    { place: "An Italian island economy", gA: "lemons", uA: "crates", uA1: "crate", gB: "wine", uB: "casks", uB1: "cask" },
+] as const;
+
+const E2_RN_CPI_LEVEL_SCENARIOS = [
+    { place: "an Austrian valley", gA: "bread", uA: "loaves", uA1: "loaf", lA: "bread", gB: "mountain cheese", uB: "wheels", uB1: "wheel", lB: "cheese" },
+    { place: "a Belgian town", gA: "beer", uA: "bottles", uA1: "bottle", lA: "beer", gB: "chocolate", uB: "boxes", uB1: "box", lB: "chocolate" },
+    { place: "a Polish village", gA: "milk", uA: "liters", uA1: "liter", lA: "milk", gB: "smoked sausage", uB: "rings", uB1: "ring", lB: "sausage" },
+] as const;
+
+const E2_II_BORROWER_REAL_SCENARIOS = [
+    { name: "Mateus", country: "Brazil" },
+    { name: "Ingrid", country: "Norway" },
+    { name: "Hana", country: "Japan" },
+] as const;
+
+const E2_II_REQUIRED_NOMINAL_SCENARIOS = [
+    { investor: "A pension fund in the Netherlands" },
+    { investor: "An insurance company in Austria" },
+    { investor: "A university endowment in Sweden" },
+] as const;
+
+const E2_II_REAL_VALUE_SCENARIOS = [
+    { who: "A retiree in Italy", how: "in cash" },
+    { who: "A student in Spain", how: "in a drawer" },
+    { who: "A shopkeeper in Poland", how: "in the shop safe" },
+] as const;
+
+const E2_GM_IMPORT_MULTIPLIER_SCENARIOS = [
+    { place: "the open economy of Belgium" },
+    { place: "the small open economy of Denmark" },
+    { place: "the open economy of Portugal" },
+] as const;
+
+const E2_GM_INVESTMENT_SHOCK_SCENARIOS = [
+    { shock: "Business confidence in Spain collapses and firms cut investment by" },
+    { shock: "A credit crunch in Italy forces firms to cut investment by" },
+    { shock: "After a stock-market crash in Sweden, firms cut investment by" },
+] as const;
+
+const E2_GM_C0_SHOCK_SCENARIOS = [
+    { cause: "After a fall in house prices, households in the Netherlands" },
+    { cause: "Alarmed by news of an approaching recession, households in Austria" },
+    { cause: "After a wave of layoffs, households in Denmark" },
+] as const;
+
+const E2_GM_NEW_EQUILIBRIUM_SCENARIOS = [
+    { place: "Portville", cause: "a recession abroad makes investment fall to" },
+    { place: "Kestwick", cause: "a banking crisis makes investment fall to" },
+    { place: "Sundmar", cause: "a surge in energy prices makes investment fall to" },
+] as const;
+
+const E2_GM_TAX_REVENUE_SCENARIOS = [
+    { placePoss: "Aldermoor's" },
+    { placePoss: "Brightmere's" },
+    { placePoss: "Vennock's" },
+] as const;
+
+const E2_LM_EFFORT_COST_SCENARIOS = [
+    { firm: "A logistics warehouse in Poland", workers: "packers", worker: "packer" },
+    { firm: "A call centre in Portugal", workers: "agents", worker: "agent" },
+    { firm: "A fruit farm in Spain", workers: "pickers", worker: "picker" },
+    { firm: "A hotel in Austria", workers: "cleaners", worker: "cleaner" },
+] as const;
+
+const E2_LM_PRICE_SETTING_SCENARIOS = [
+    { sector: "the French manufacturing sector" },
+    { sector: "the Italian textile sector" },
+    { sector: "the Dutch food-processing sector" },
+] as const;
+
+const E2_LM_PROFIT_PER_WORKER_SCENARIOS = [
+    { sector: "the Italian food industry" },
+    { sector: "the Polish furniture industry" },
+    { sector: "the Spanish car-parts industry" },
+] as const;
+
+const E2_LM_RENT_BENEFIT_CHANGE_SCENARIOS = [
+    { who: "A warehouse worker in Austria", subj: "she", poss: "her" },
+    { who: "A bus driver in Portugal", subj: "he", poss: "his" },
+    { who: "A lab assistant in Denmark", subj: "she", poss: "her" },
+] as const;
+
+const E2_IT_SMOOTHING_SCENARIOS = [
+    { name: "Élodie", country: "France", subj: "she", poss: "her" },
+    { name: "Marco", country: "Italy", subj: "he", poss: "his" },
+    { name: "Aiko", country: "Japan", subj: "she", poss: "her" },
+] as const;
+
+const E2_IT_MRS_SCENARIOS = [
+    { name: "Jonas", poss: "his" },
+    { name: "Leila", poss: "her" },
+    { name: "Oskar", poss: "his" },
+] as const;
+
+const E2_IT_RETURN_SCENARIOS = [
+    { name: "Ana", country: "Portugal", subj: "she", obj: "her", poss: "her", venture: "workshop" },
+    { name: "Piet", country: "the Netherlands", subj: "he", obj: "him", poss: "his", venture: "fishing boat" },
+    { name: "Sanna", country: "Sweden", subj: "she", obj: "her", poss: "her", venture: "farm" },
+] as const;
+
+const E2_IT_PV_MAX_SCENARIOS = [
+    { name: "Bram", country: "Belgium", subj: "he", obj: "him", poss: "his" },
+    { name: "Chiara", country: "Italy", subj: "she", obj: "her", poss: "her" },
+    { name: "Emil", country: "Denmark", subj: "he", obj: "him", poss: "his" },
+] as const;
+
+const E2_IT_REPAYMENT_SCENARIOS = [
+    { name: "Lena", country: "Germany", subj: "she", poss: "her" },
+    { name: "Karim", country: "France", subj: "he", poss: "his" },
+    { name: "Zofia", country: "Poland", subj: "she", poss: "her" },
+] as const;
+
+const E2_TECH_COST_SCENARIOS = [
+    { firm: "A brick kiln in Brazil", action: "fires one batch of bricks" },
+    { firm: "A bakery in Canada", action: "bakes one batch of bread" },
+    { firm: "A paper mill in Sweden", action: "produces one batch of pulp" },
+] as const;
+
+const E2_TECH_CHEAPEST_GAP_SCENARIOS = [
+    { firm: "A Spanish tile factory", action: "fire one batch" },
+    { firm: "A Polish glass factory", action: "melt one batch" },
+    { firm: "A Canadian sawmill", action: "dry one batch of timber" },
+] as const;
+
+const E2_TECH_PROCESS_INNOVATION_SCENARIOS = [
+    { firm: "A glassworks in the Netherlands", action: "melts one batch", energy: "gas", Energy: "Gas" },
+    { firm: "A steel forge in Austria", action: "heats one batch of billets", energy: "gas", Energy: "Gas" },
+    { firm: "A cold-storage plant in Norway", action: "freezes one batch of fish", energy: "electricity", Energy: "Electricity" },
+] as const;
+
+const E2_TECH_FIRST_MOVER_RENT_SCENARIOS = [
+    { firms: "breweries", firm: "brewery", town: "a Danish town", verb: "brew" },
+    { firms: "bakeries", firm: "bakery", town: "a Belgian town", verb: "bake" },
+    { firms: "dairies", firm: "dairy", town: "a Dutch town", verb: "make cheese" },
+] as const;
+
+const E2_FX_EXPORT_PRICE_SCENARIOS = [
+    { item: "A camera made in Japan", noun: "camera" },
+    { item: "A pair of headphones made in Japan", noun: "headphones" },
+    { item: "A mechanical keyboard made in Japan", noun: "keyboard" },
+    { item: "A ceramic tea set made in Japan", noun: "tea set" },
+] as const;
+
+const E2_MB_NETWORTH_SCENARIOS = [
+    { bank: "A commercial bank in Spain" },
+    { bank: "A savings bank in Austria" },
+    { bank: "A cooperative bank in the Netherlands" },
+] as const;
+
+const E2_MB_LEVERAGE_SCENARIOS = [
+    { bank: "A bank headquartered in France" },
+    { bank: "A bank headquartered in Germany" },
+    { bank: "An investment bank based in Sweden" },
+] as const;
+
+const E2_MB_INSOLVENCY_DROP_SCENARIOS = [
+    { bank: "A bank in Italy" },
+    { bank: "A mortgage bank in Denmark" },
+    { bank: "A regional bank in Poland" },
+] as const;
+
+const E2_MB_SPREAD_SCENARIOS = [
+    { bank: "A regional bank in Austria" },
+    { bank: "A savings bank in Portugal" },
+    { bank: "A cooperative bank in Belgium" },
+] as const;
+
+const E2_MB_MONEY_CREATION_SCENARIOS = [
+    { saver: "A saver", poss: "her", bank: "a Portuguese bank", borrower: "a firm", borrowerPoss: "the firm's" },
+    { saver: "A pensioner", poss: "his", bank: "a Dutch bank", borrower: "a bakery", borrowerPoss: "the bakery's" },
+    { saver: "A student", poss: "her", bank: "a Polish bank", borrower: "a start-up", borrowerPoss: "the start-up's" },
+] as const;
+
 export const econ2Questions: Question[] = [
     // ------------------------------------------------------------ growth rates
     {
@@ -150,6 +529,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2018 Q3; SS2019 Q3",
         build: (rng) => {
+            const s = rng.pick(E2_GR_TOTAL_GROWTH_SCENARIOS);
             const gdp0 = rng.int(150, 950);
             const c = rng.int(1, 9) * rng.pick([1, -1]);
             const gdp1 = Math.round(gdp0 * (1 + c / 100));
@@ -157,7 +537,7 @@ export const econ2Questions: Question[] = [
             const pop1 = pop0 + rng.int(-15, 15) / 10;
             const answer = (gdp1 / gdp0 - 1) * 100;
             return {
-                prompt: `The kingdom of Solmara reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2. Its population grows from ${n(pop0)} million to ${n(pop1)} million. What is the growth rate of **total** GDP from year 1 to year 2?`,
+                prompt: `${s.place} reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2. Its population grows from ${n(pop0)} million to ${n(pop1)} million. What is the growth rate of **total** GDP from year 1 to year 2?`,
                 given: {
                     "GDP year 1": `${n(gdp0)} billion`,
                     "GDP year 2": `${n(gdp1)} billion`,
@@ -178,6 +558,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2018 Q3; SS2019 Q3; SS2017 Q2",
         build: (rng) => {
+            const s = rng.pick(E2_GR_GDP_PC_GROWTH_SCENARIOS);
             const gdp0 = rng.int(150, 950);
             const gdp1 = gdp0 + rng.int(-Math.floor(gdp0 * 0.08), Math.floor(gdp0 * 0.08));
             const pop0 = rng.int(200, 1200) / 10;
@@ -186,7 +567,7 @@ export const econ2Questions: Question[] = [
             const pc1 = gdp1 / pop1;
             const answer = (pc1 / pc0 - 1) * 100;
             return {
-                prompt: `The statistics office of Veldaria reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2, with a population of ${n(pop0)} million in year 1 and ${n(pop1)} million in year 2. What is the growth rate of GDP **per capita**?`,
+                prompt: `${s.office} reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2, with a population of ${n(pop0)} million in year 1 and ${n(pop1)} million in year 2. What is the growth rate of GDP **per capita**?`,
                 given: {
                     "GDP year 1": `${n(gdp0)} billion`,
                     "GDP year 2": `${n(gdp1)} billion`,
@@ -209,6 +590,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2018 Q4; SS2019 Q2; SS2017 Q16",
         build: (rng) => {
+            const s = rng.pick(E2_GDP_VALUE_ADDED_SCENARIOS);
             const m1 = rng.int(1, 4) * 5000;
             const s1 = m1 + rng.int(4, 12) * 5000;
             const m2 = rng.int(1, 3) * 5000;
@@ -224,17 +606,17 @@ export const econ2Questions: Question[] = [
             const va3 = s3 - buy3;
             const answer = va1 + va2 + va3;
             return {
-                prompt: `The economy of Listrana has exactly three producers. An **olive grower** imports fertilizer for ${eur(m1)} and sells her entire harvest to the oil mill for ${eur(s1)}; she pays ${eur(w1)} in wages. The **oil mill** additionally imports glass bottles for ${eur(m2)} and sells bottled oil worth ${eur(s2)} - ${pct(frac * 100)} of it to the delicatessen maker, the rest directly to households; it pays ${eur(w2)} in wages and ${eur(k2)} in capital costs. The **delicatessen maker** turns the oil it bought into antipasti sold for ${eur(s3)}, half of them exported. What is Listrana's GDP?`,
+                prompt: `The economy of ${s.place} has exactly three producers. ${s.art1} **${s.s1}** imports ${s.imp1} for ${eur(m1)} and sells ${s.sale1} to the ${s.s2} for ${eur(s1)}; ${s.subj1} pays ${eur(w1)} in wages. The **${s.s2}** additionally imports ${s.imp2} for ${eur(m2)} and sells ${s.prod2} worth ${eur(s2)} - ${pct(frac * 100)} of it to the ${s.s3}, the rest directly to households; it pays ${eur(w2)} in wages and ${eur(k2)} in capital costs. The **${s.s3}** ${s.make3} sold for ${eur(s3)}, half of them exported. What is ${s.place}'s GDP?`,
                 given: {
-                    "Grower: imported fertilizer": eur(m1),
-                    "Grower: sales to mill": eur(s1),
-                    "Mill: imported bottles": eur(m2),
-                    "Mill: total sales": eur(s2),
-                    "Share of mill output sold to delicatessen maker": pct(frac * 100),
-                    "Delicatessen maker: sales": eur(s3),
+                    [`${s.L1}: imported ${s.imp1}`]: eur(m1),
+                    [`${s.L1}: sales to ${s.s2}`]: eur(s1),
+                    [`${s.L2}: imported ${s.imp2}`]: eur(m2),
+                    [`${s.L2}: total sales`]: eur(s2),
+                    [`Share of ${s.s2} output sold to ${s.s3}`]: pct(frac * 100),
+                    [`${s.L3}: sales`]: eur(s3),
                 },
                 answer,
-                explanation: String.raw`$GDP = \sum_i VA_i = \sum_i \left( \text{sales}_i - \text{intermediate inputs}_i \right)$ - imported inputs are subtracted at the stage that buys them, and wages or capital costs only distribute the value added, they never enter the sum. Grower: ${eur(s1)} − ${eur(m1)} = ${eur(va1)}. Mill: ${eur(s2)} − ${eur(s1)} − ${eur(m2)} = ${eur(va2)}. Delicatessen maker: it bought ${pct(frac * 100)} of the mill's output, i.e. ${eur(buy3)}, so ${eur(s3)} − ${eur(buy3)} = ${eur(va3)}. GDP = ${eur(answer)}. Whether output goes to households, downstream firms or exports does not change any firm's value added.`,
+                explanation: String.raw`$GDP = \sum_i VA_i = \sum_i \left( \text{sales}_i - \text{intermediate inputs}_i \right)$ - imported inputs are subtracted at the stage that buys them, and wages or capital costs only distribute the value added, they never enter the sum. ${s.L1}: ${eur(s1)} − ${eur(m1)} = ${eur(va1)}. ${s.L2}: ${eur(s2)} − ${eur(s1)} − ${eur(m2)} = ${eur(va2)}. ${s.L3}: it bought ${pct(frac * 100)} of the ${s.s2}'s output, i.e. ${eur(buy3)}, so ${eur(s3)} − ${eur(buy3)} = ${eur(va3)}. GDP = ${eur(answer)}. Whether output goes to households, downstream firms or exports does not change any firm's value added.`,
             };
         },
     },
@@ -249,6 +631,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2018 Q8; SS2019 Q6; SS2017 Q4",
         build: (rng) => {
+            const s = rng.pick(E2_TECH_SWITCH_RENT_SCENARIOS);
             const lA = rng.int(1, 3);
             const dl = rng.int(2, 4);
             const lB = lA + dl;
@@ -266,16 +649,16 @@ export const econ2Questions: Question[] = [
             const costBNew = eB * pLow + lB * w;
             const answer = costBNew - costANew;
             return {
-                prompt: `A ceramics workshop in Tavia can fire one kiln batch with technique **A** (${n(eA)} units of gas, ${n(lA)} worker-days) or technique **B** (${n(eB)} units of gas, ${n(lB)} worker-days). A worker-day costs ${eur(w)}. At the old gas price of ${eur(pHigh)} per unit the workshop correctly chose technique B. The gas price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A, i.e. by how much is A now cheaper than B?`,
+                prompt: `${s.firm} can ${s.batch} with technique **A** (${n(eA)} units of ${s.energy}, ${n(lA)} worker-days) or technique **B** (${n(eB)} units of ${s.energy}, ${n(lB)} worker-days). A worker-day costs ${eur(w)}. At the old ${s.energy} price of ${eur(pHigh)} per unit the firm correctly chose technique B. The ${s.energy} price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A, i.e. by how much is A now cheaper than B?`,
                 given: {
-                    "Technique A": `${n(eA)} gas + ${n(lA)} worker-days`,
-                    "Technique B": `${n(eB)} gas + ${n(lB)} worker-days`,
+                    "Technique A": `${n(eA)} ${s.energy} + ${n(lA)} worker-days`,
+                    "Technique B": `${n(eB)} ${s.energy} + ${n(lB)} worker-days`,
                     "Wage per worker-day": eur(w),
-                    "Old gas price": eur(pHigh),
-                    "New gas price": eur(pLow),
+                    [`Old ${s.energy} price`]: eur(pHigh),
+                    [`New ${s.energy} price`]: eur(pLow),
                 },
                 answer,
-                explanation: String.raw`$c_T = e_T \cdot p_{gas} + l_T \cdot w$ per technique, and the switching rent is the cost difference at the **new** prices. Old price: A costs ${eur(costAOld)}, B costs ${eur(costBOld)} - B was the right choice. New price: A costs ${eur(costANew)}, B costs ${eur(costBNew)}. Switching to the gas-intensive technique A now saves ${eur(costBNew)} − ${eur(costANew)} = ${eur(answer)} per batch.`,
+                explanation: String.raw`$c_T = e_T \cdot p_{${s.energy}} + l_T \cdot w$ per technique, and the switching rent is the cost difference at the **new** prices. Old price: A costs ${eur(costAOld)}, B costs ${eur(costBOld)} - B was the right choice. New price: A costs ${eur(costANew)}, B costs ${eur(costBNew)}. Switching to the ${s.energy}-intensive technique A now saves ${eur(costBNew)} − ${eur(costANew)} = ${eur(answer)} per batch.`,
             };
         },
     },
@@ -288,6 +671,7 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2019, Q4",
         build: (rng) => {
+            const s = rng.pick(E2_TECH_MPL_SCENARIOS);
             const a = rng.int(2, 5);
             const aL = rng.int(2, 3);
             const aK = rng.int(2, 3);
@@ -296,7 +680,7 @@ export const econ2Questions: Question[] = [
             const answer = a * aL * L0 ** (aL - 1) * K0 ** aK;
             const lTerm = aL - 1 === 1 ? "L" : `L^{${aL - 1}}`;
             return {
-                prompt: String.raw`A bicycle-frame manufacturer produces with $Y = ${a} L^{${aL}} K^{${aK}}$, where $L$ is labor and $K$ is capital. What is the **marginal product of labor** at $L = ${L0}$ and $K = ${K0}$?`,
+                prompt: String.raw`${s.firm} produces with $Y = ${a} L^{${aL}} K^{${aK}}$, where $L$ is labor and $K$ is capital. What is the **marginal product of labor** at $L = ${L0}$ and $K = ${K0}$?`,
                 given: {
                     "Production function": String.raw`$Y = ${a} L^{${aL}} K^{${aK}}$`,
                     "Labor input L": n(L0),
@@ -316,19 +700,20 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2017, Q10",
         build: (rng) => {
+            const s = rng.pick(E2_RD_PRIVATE_OPTIMUM_SCENARIOS);
             const h = rng.int(3, 7);
             const m = 2 * h;
             const answer = h * h; // (m/2)²
             const dTotal = m * (1.5 * h); // output at the symmetric optimum
             return {
-                prompt: String.raw`Two rival battery labs, Voltra and Cellix, each choose research spending $C_i$ (in million €, at a cost of 1 per unit). Research spills over: lab $i$ obtains $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ patentable cell designs, and each design earns a profit of 1 million €. Each lab maximizes its own profit, taking the rival's spending as given. What research spending $C_i$ does each lab choose?`,
+                prompt: String.raw`${s.labs}, each choose research spending $C_i$ (in million €, at a cost of 1 per unit). Research spills over: lab $i$ obtains $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, and each ${s.item} earns a profit of 1 million €. Each lab maximizes its own profit, taking the rival's spending as given. What research spending $C_i$ does each lab choose?`,
                 given: {
-                    "Designs of lab i": String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
-                    "Profit per design": `${n(1)} million €`,
+                    [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
+                    [`Profit per ${s.item}`]: `${n(1)} million €`,
                     "Cost per unit of research": `${n(1)} million €`,
                 },
                 answer,
-                explanation: String.raw`$\frac{\partial D_i}{\partial C_i} = \frac{m}{2\sqrt{C_i}} = 1$ - each lab spends until its **own** marginal design output equals the marginal research cost; the spillover onto the rival is ignored. With $m = ${m}$: $\sqrt{C_i^*} = ${n(m)}/2 = ${n(h)}$, so $C_i^* = ${n(answer)}$. Each lab then produces ${n(dTotal)} designs.`,
+                explanation: String.raw`$\frac{\partial D_i}{\partial C_i} = \frac{m}{2\sqrt{C_i}} = 1$ - each lab spends until its **own** marginal ${s.item} output equals the marginal research cost; the spillover onto the rival is ignored. With $m = ${m}$: $\sqrt{C_i^*} = ${n(m)}/2 = ${n(h)}$, so $C_i^* = ${n(answer)}$. Each lab then produces ${n(dTotal)} ${s.plural}.`,
             };
         },
     },
@@ -341,6 +726,7 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2017, Q11",
         build: (rng) => {
+            const s = rng.pick(E2_RD_SUBSIDY_SCENARIOS);
             const sPct = rng.pick([20, 50] as const);
             const m = sPct === 20 ? rng.pick([8, 24] as const) : 2 * rng.int(2, 6);
             const netCost = 1 - sPct / 100;
@@ -348,10 +734,10 @@ export const econ2Questions: Question[] = [
             const answer = sqrtC * sqrtC;
             const cPrivate = (m / 2) ** 2;
             return {
-                prompt: String.raw`Two rival vaccine labs each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ candidate compounds, each worth a profit of 1 million €. To correct the underinvestment caused by the spillover, the government now covers ${pct(sPct)} of every euro spent on research. What research spending $C_i$ does each lab choose **with** the subsidy?`,
+                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. To correct the underinvestment caused by the spillover, the government now covers ${pct(sPct)} of every euro spent on research. What research spending $C_i$ does each lab choose **with** the subsidy?`,
                 given: {
-                    "Compounds of lab i": String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
-                    "Profit per compound": `${n(1)} million €`,
+                    [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
+                    [`Profit per ${s.item}`]: `${n(1)} million €`,
                     "Research subsidy": pct(sPct),
                 },
                 answer,
@@ -368,15 +754,16 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2017, Q12",
         build: (rng) => {
+            const s = rng.pick(E2_RD_MERGER_SCENARIOS);
             const h = rng.pick([2, 3, 5] as const);
             const m = 4 * h;
             const answer = 9 * h * h; // (3m/4)²
             const cPrivate = (m / 2) ** 2;
             return {
-                prompt: String.raw`Two agri-tech labs each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ patentable seed varieties, each worth a profit of 1 million €. The labs now **merge** and choose both research budgets to maximize joint profit, internalizing the spillover. What spending $C_i$ does the merged firm pick for each lab?`,
+                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. The labs now **merge** and choose both research budgets to maximize joint profit, internalizing the spillover. What spending $C_i$ does the merged firm pick for each lab?`,
                 given: {
-                    "Varieties of lab i": String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
-                    "Profit per variety": `${n(1)} million €`,
+                    [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
+                    [`Profit per ${s.item}`]: `${n(1)} million €`,
                 },
                 answer,
                 explanation: String.raw`$\frac{\partial (D_i + D_j)}{\partial C_i} = \frac{m}{2\sqrt{C_i}} + \frac{m}{4\sqrt{C_i}} = \frac{3m}{4\sqrt{C_i}} = 1$ - after the merger, a euro spent in lab $i$ also raises lab $j$'s output, and that extra benefit is counted. With $m = ${m}$: $\sqrt{C_i} = 3 \cdot ${n(m)} / 4 = ${n(3 * h)}$, so $C_i = ${n(answer)}$ per lab, versus ${n(cPrivate)} before the merger. Total output rises by ${pct(50)}.`,
@@ -394,10 +781,11 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2018 Q10; SS2019 Q7; SS2017 Q19",
         build: (rng) => {
+            const s = rng.pick(E2_GM_EQUILIBRIUM_OUTPUT_SCENARIOS);
             const d = drawGoodsMarket(rng);
             const autonomous = d.c0 + d.I + d.G + d.X - d.M;
             return {
-                prompt: String.raw`In the open economy of Orvania, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$ and $c_1 = ${n(d.c1)}$; the income tax rate is ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases are ${n(d.G)}, exports are ${n(d.X)} and imports are ${n(d.M)} (all exogenous). What is the equilibrium output $Y$?`,
+                prompt: String.raw`In ${s.place}, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$ and $c_1 = ${n(d.c1)}$; the income tax rate is ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases are ${n(d.G)}, exports are ${n(d.X)} and imports are ${n(d.M)} (all exogenous). What is the equilibrium output $Y$?`,
                 given: goodsMarketGiven(d),
                 answer: d.Y,
                 explanation: String.raw`$Y = \frac{c_0 + I + G + X - M}{1 - c_1 (1 - t)}$ - collect the $Y$ terms of $Y = C + I + G + X - M$ on one side. Autonomous demand is ${n(d.c0)} + ${n(d.I)} + ${n(d.G)} + ${n(d.X)} − ${n(d.M)} = ${n(autonomous)}, the multiplier denominator is 1 − ${n(d.c1)} · ${n(1 - d.t)} = ${n(d.D)}, so Y = ${n(autonomous)} / ${n(d.D)} = ${n(d.Y)}.`,
@@ -413,10 +801,11 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2018 Q10; SS2017 Q19",
         build: (rng) => {
+            const s = rng.pick(E2_GM_CONSUMPTION_SCENARIOS);
             const d = drawGoodsMarket(rng);
             const answer = d.c0 + d.c1 * (1 - d.t) * d.Y;
             return {
-                prompt: String.raw`The republic of Quenavia has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and an income tax rate of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is **consumption** in the goods-market equilibrium?`,
+                prompt: String.raw`${s.place} has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and an income tax rate of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is **consumption** in the goods-market equilibrium?`,
                 given: goodsMarketGiven(d),
                 answer,
                 explanation: String.raw`$C = c_0 + c_1 (1 - t) \cdot Y^*$ - first solve for equilibrium output, then feed it into the consumption function. $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.c0 + d.I + d.G + d.X - d.M)} / ${n(d.D)} = ${n(d.Y)}. Then C = ${n(d.c0)} + ${n(d.c1)} · ${n(1 - d.t)} · ${n(d.Y)} = ${n(answer)}.`,
@@ -432,6 +821,7 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2018 Q11; SS2019 Q8",
         build: (rng) => {
+            const s = rng.pick(E2_GM_MULTIPLIER_SCENARIOS);
             const c1 = rng.pick([0.4, 0.5, 0.6, 0.75, 0.8] as const);
             const t = rng.pick([0.2, 0.25, 0.5] as const);
             const dG = 25 * rng.int(2, 12);
@@ -439,7 +829,7 @@ export const econ2Questions: Question[] = [
             const mult = 1 / D;
             const answer = dG * mult;
             return {
-                prompt: String.raw`In Bellmark, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. Parliament passes a stimulus that raises government purchases by ${n(dG)}. By how much does equilibrium output rise?`,
+                prompt: String.raw`In ${s.place}, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. ${s.stimulus} ${n(dG)}. By how much does equilibrium output rise?`,
                 given: {
                     "Marginal propensity to consume $c_1$": n(c1),
                     "Income tax rate t": pct(t * 100),
@@ -459,10 +849,11 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2018 Q11; SS2019 Q7",
         build: (rng) => {
+            const s = rng.pick(E2_GM_BUDGET_BALANCE_SCENARIOS);
             const d = drawGoodsMarket(rng);
             const answer = d.t * d.Y - d.G;
             return {
-                prompt: String.raw`Novaria's consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **budget balance** $BB = tY - G$ in equilibrium? (Negative = deficit.)`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **budget balance** $BB = tY - G$ in equilibrium? (Negative = deficit.)`,
                 given: goodsMarketGiven(d),
                 answer,
                 explanation: String.raw`$BB = t \cdot Y^* - G$ - tax revenue at equilibrium output minus purchases. First $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.c0 + d.I + d.G + d.X - d.M)} / ${n(d.D)} = ${n(d.Y)}. Then BB = ${n(d.t)} · ${n(d.Y)} − ${n(d.G)} = ${n(answer)}.`,
@@ -478,6 +869,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2018 Q12; SS2019 Q9; SS2017 Q20",
         build: (rng) => {
+            const s = rng.pick(E2_GM_BALANCED_BUDGET_TAX_SCENARIOS);
             const c1 = rng.pick([0.4, 0.5, 0.6, 0.75] as const);
             const tPct = rng.pick([20, 25, 30, 40] as const);
             const Y = 400 * rng.int(5, 15);
@@ -487,7 +879,7 @@ export const econ2Questions: Question[] = [
             const I = A - c0 - NX;
             const G = (tPct / 100) * Y;
             return {
-                prompt: String.raw`Caldonia's consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(c0)}$ and $c_1 = ${n(c1)}$. Investment is ${n(I)} and net exports are ${n(NX)}. The government must run a strictly **balanced budget**, so its purchases equal its tax revenue: $G = t \cdot Y$. Which tax rate $t$ makes the equilibrium output come out at exactly ${n(Y)}?`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(c0)}$ and $c_1 = ${n(c1)}$. Investment is ${n(I)} and net exports are ${n(NX)}. The government must run a strictly **balanced budget**, so its purchases equal its tax revenue: $G = t \cdot Y$. Which tax rate $t$ makes the equilibrium output come out at exactly ${n(Y)}?`,
                 given: {
                     "Autonomous consumption $c_0$": n(c0),
                     "Marginal propensity to consume $c_1$": n(c1),
@@ -512,6 +904,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2018 Q16; SS2019 Q15",
         build: (rng) => {
+            const s = rng.pick(E2_LM_EFFICIENCY_WAGE_SCENARIOS);
             // Explicit (a, rt) allowlist keeps w*, e* and p integer.
             const [a, rt] = rng.pick([
                 [2, 1], [2, 2], [2, 3],
@@ -523,7 +916,7 @@ export const econ2Questions: Question[] = [
             const answer = rt * rt;
             const eStar = a * rt - b; // = b
             return {
-                prompt: String.raw`A fish cannery on the island of Skarvoy observes that its workers' effort depends on the hourly wage $w$ (in €): $e(w) = ${n(a)}\sqrt{w} - ${n(b)}$. Output is proportional to effort, so the firm picks the wage that **minimizes the wage cost per unit of effort**. What is this efficiency wage?`,
+                prompt: String.raw`${s.firm} observes that its workers' effort depends on the hourly wage $w$ (in €): $e(w) = ${n(a)}\sqrt{w} - ${n(b)}$. Output is proportional to effort, so the firm picks the wage that **minimizes the wage cost per unit of effort**. What is this efficiency wage?`,
                 given: {
                     "Effort function": String.raw`$e(w) = ${n(a)}\sqrt{w} - ${n(b)}$`,
                 },
@@ -541,11 +934,12 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2018 Q17; SS2019 Q16",
         build: (rng) => {
+            const s = rng.pick(E2_LM_UNEMPLOYMENT_SCENARIOS);
             const cfg = rng.pick(EW_CONFIGS);
             const { b, w, e, p, L } = ewDerived(cfg);
             const answer = ((cfg.Ls - L) / cfg.Ls) * 100;
             return {
-                prompt: String.raw`Halvora is a company town: the cannery is the only employer, and ${n(cfg.Ls)} people supply labor. Production is $Y = \sqrt{e \cdot L}$ (crates), sold at ${eur(p)} per crate. Worker effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The cannery freely chooses the wage and the number of workers to maximize profit. What is the unemployment rate in Halvora?`,
+                prompt: String.raw`${s.town} is a company town: ${s.firm} is the only employer, and ${n(cfg.Ls)} people supply labor. Production is $Y = \sqrt{e \cdot L}$ (${s.units}), sold at ${eur(p)} per ${s.unit}. Worker effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. ${cap(s.firm)} freely chooses the wage and the number of workers to maximize profit. What is the unemployment rate in ${s.town}?`,
                 given: {
                     "Labor supply": `${n(cfg.Ls)} workers`,
                     "Production function": String.raw`$Y = \sqrt{e \cdot L}$`,
@@ -566,12 +960,13 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2018 Q18; SS2019 Q17",
         build: (rng) => {
+            const s = rng.pick(E2_LM_PROFIT_SCENARIOS);
             const cfg = rng.pick(EW_CONFIGS);
             const { b, w, e, p, L } = ewDerived(cfg);
             const revenue = p * Math.sqrt(e * L);
             const answer = revenue - w * L;
             return {
-                prompt: String.raw`The only sawmill in the valley of Drenn faces a labor supply of ${n(cfg.Ls)} workers. It produces $Y = \sqrt{e \cdot L}$ pallets of timber, sold at ${eur(p)} each, and worker effort follows $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The mill sets the wage and employment to maximize profit. What is the mill's **profit**?`,
+                prompt: String.raw`${s.firm} faces a labor supply of ${n(cfg.Ls)} workers. It produces $Y = \sqrt{e \cdot L}$ ${s.units}, sold at ${eur(p)} each, and worker effort follows $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. ${cap(s.short)} sets the wage and employment to maximize profit. What is ${s.short}'s **profit**?`,
                 given: {
                     "Labor supply": `${n(cfg.Ls)} workers`,
                     "Production function": String.raw`$Y = \sqrt{e \cdot L}$`,
@@ -592,6 +987,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2018, Q20",
         build: (rng) => {
+            const s = rng.pick(E2_LM_MINIMUM_WAGE_SCENARIOS);
             const cfg = rng.pick(EW_CONFIGS);
             const { b, p } = ewDerived(cfg);
             const j = rng.int(1, 2);
@@ -600,7 +996,7 @@ export const econ2Questions: Question[] = [
             const LMin = (p * p * eMin) / (4 * wMin * wMin);
             const answer = ((cfg.Ls - LMin) / cfg.Ls) * 100;
             return {
-                prompt: String.raw`The mining company is the only employer of the ${n(cfg.Ls)} workers of Corvane. It produces $Y = \sqrt{e \cdot L}$ tons of ore at a price of ${eur(p)} per ton; effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The government now imposes a **minimum wage** of ${eur(wMin)} per hour, which lies above the firm's efficiency wage, and the firm pays exactly this minimum wage. What is the unemployment rate under the minimum wage?`,
+                prompt: String.raw`${s.firm} is the only employer of the ${n(cfg.Ls)} workers of ${s.town}. It produces $Y = \sqrt{e \cdot L}$ ${s.units} at a price of ${eur(p)} per ton; effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The government now imposes a **minimum wage** of ${eur(wMin)} per hour, which lies above the firm's efficiency wage, and the firm pays exactly this minimum wage. What is the unemployment rate under the minimum wage?`,
                 given: {
                     "Labor supply": `${n(cfg.Ls)} workers`,
                     "Production function": String.raw`$Y = \sqrt{e \cdot L}$`,
@@ -622,6 +1018,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019, Q12",
         build: (rng) => {
+            const s = rng.pick(E2_LM_RENT_HOURLY_SCENARIOS);
             const w = rng.int(12, 30);
             const d = rng.int(3, 8);
             const im = rng.int(1, 3);
@@ -631,7 +1028,7 @@ export const econ2Questions: Question[] = [
             const B = bh * H;
             const answer = w - d + im + ps - bh;
             return {
-                prompt: `A crane operator in the port of Vestre earns ${eur(w)} per hour for ${n(H)} hours a week. Working costs her the equivalent of ${eur(d)} per hour in effort, but she genuinely enjoys the job - worth ${eur(im)} per hour to her - and being unemployed would additionally burden her psychologically by ${eur(ps)} per hour of lost work. If she lost the job, unemployment benefits would pay her ${eur(B)} per week. What is her **employment rent per hour** worked?`,
+                prompt: `${s.who} earns ${eur(w)} per hour for ${n(H)} hours a week. Working costs ${s.obj} the equivalent of ${eur(d)} per hour in effort, but ${s.subj} genuinely enjoys the job - worth ${eur(im)} per hour to ${s.obj} - and being unemployed would additionally burden ${s.obj} psychologically by ${eur(ps)} per hour of lost work. If ${s.subj} lost the job, unemployment benefits would pay ${s.obj} ${eur(B)} per week. What is ${s.poss} **employment rent per hour** worked?`,
                 given: {
                     "Hourly wage": eur(w),
                     "Hours per week": n(H),
@@ -641,7 +1038,7 @@ export const econ2Questions: Question[] = [
                     "Unemployment benefit (per week)": eur(B),
                 },
                 answer,
-                explanation: String.raw`$R_h = w - d + i + \psi - \frac{B}{H}$ - what an hour of this job is worth beyond her next-best alternative: the wage, minus effort disutility, plus intrinsic enjoyment, plus the avoided psychological cost, minus the benefits she forgoes per hour. The benefit is worth ${eur(B)} / ${n(H)} = ${eur(bh)} per hour, so $R_h$ = ${eur(w)} − ${eur(d)} + ${eur(im)} + ${eur(ps)} − ${eur(bh)} = ${eur(answer)}.`,
+                explanation: String.raw`$R_h = w - d + i + \psi - \frac{B}{H}$ - what an hour of this job is worth beyond ${s.poss} next-best alternative: the wage, minus effort disutility, plus intrinsic enjoyment, plus the avoided psychological cost, minus the benefits ${s.subj} forgoes per hour. The benefit is worth ${eur(B)} / ${n(H)} = ${eur(bh)} per hour, so $R_h$ = ${eur(w)} − ${eur(d)} + ${eur(im)} + ${eur(ps)} − ${eur(bh)} = ${eur(answer)}.`,
             };
         },
     },
@@ -654,6 +1051,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2018 Q21; SS2019 Q13",
         build: (rng) => {
+            const s = rng.pick(E2_LM_RENT_TOTAL_SCENARIOS);
             const w = rng.int(12, 30);
             const d = rng.int(3, 8);
             const H = rng.pick([35, 38, 40] as const);
@@ -663,7 +1061,7 @@ export const econ2Questions: Question[] = [
             const rentH = w - d - bh;
             const answer = rentH * H * weeks;
             return {
-                prompt: `A machinist in Ostbro earns ${eur(w)} per hour and works ${n(H)} hours a week; the effort costs him the equivalent of ${eur(d)} per hour. If he were dismissed, benefits would pay ${eur(B)} per week, and he would expect to stay unemployed for ${n(weeks)} weeks before finding an equivalent job. What is his **total employment rent**, i.e. the value of keeping this job rather than losing it today?`,
+                prompt: `${s.who} earns ${eur(w)} per hour and works ${n(H)} hours a week; the effort costs ${s.obj} the equivalent of ${eur(d)} per hour. If ${s.subj} were dismissed, benefits would pay ${eur(B)} per week, and ${s.subj} would expect to stay unemployed for ${n(weeks)} weeks before finding an equivalent job. What is ${s.poss} **total employment rent**, i.e. the value of keeping this job rather than losing it today?`,
                 given: {
                     "Hourly wage": eur(w),
                     "Hours per week": n(H),
@@ -687,11 +1085,12 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2018 Q23; SS2017 Q13",
         build: (rng) => {
+            const s = rng.pick(E2_IT_INTEREST_RATE_SCENARIOS);
             const c1max = rng.int(2, 6) * 20;
             const r = rng.int(1, 8) * 5;
             const c2max = c1max * (1 + r / 100);
             return {
-                prompt: `Marisol plans her consumption over this year and next year and can borrow or save freely at her bank. If she consumed everything **this year**, she could consume at most ${n(c1max)} thousand €; if she consumed everything **next year**, at most ${n(c2max)} thousand €. What interest rate is she facing?`,
+                prompt: `${s.name} plans ${s.poss} consumption over this year and next year and can borrow or save freely at ${s.poss} bank. If ${s.subj} consumed everything **this year**, ${s.subj} could consume at most ${n(c1max)} thousand €; if ${s.subj} consumed everything **next year**, at most ${n(c2max)} thousand €. What interest rate is ${s.subj} facing?`,
                 given: {
                     "Maximum consumption this year": `${n(c1max)} thousand €`,
                     "Maximum consumption next year": `${n(c2max)} thousand €`,
@@ -710,13 +1109,14 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2017 Q13; SS2019 Q26",
         build: (rng) => {
+            const s = rng.pick(E2_IT_AFFORDABLE_SCENARIOS);
             const c1max = rng.int(2, 6) * 20;
             const r = rng.int(1, 8) * 5;
             const c2max = c1max * (1 + r / 100);
             const x = 10 * rng.int(1, c1max / 10 - 1);
             const answer = c2max - (1 + r / 100) * x;
             return {
-                prompt: `Tobias faces an intertemporal budget line with intercepts ${n(c1max)} thousand € (consume everything this year) and ${n(c2max)} thousand € (consume everything next year). He decides to consume ${n(x)} thousand € this year. What is the **maximum** he can consume next year (in thousand €)?`,
+                prompt: `${s.name} faces an intertemporal budget line with intercepts ${n(c1max)} thousand € (consume everything this year) and ${n(c2max)} thousand € (consume everything next year). ${cap(s.subj)} decides to consume ${n(x)} thousand € this year. What is the **maximum** ${s.subj} can consume next year (in thousand €)?`,
                 given: {
                     "Maximum consumption this year": `${n(c1max)} thousand €`,
                     "Maximum consumption next year": `${n(c2max)} thousand €`,
@@ -738,17 +1138,18 @@ export const econ2Questions: Question[] = [
         unit: "ratio",
         source: "TUM Economics II SS2017, Q24",
         build: (rng) => {
+            const s = rng.pick(E2_FX_CROSS_RATE_SCENARIOS);
             const T = rng.int(400, 1200) / 100;
             const R = rng.int(150, 600) / 100;
             const answer = T / R;
             return {
-                prompt: `The taler (currency of Aldunia) and the rupel (currency of Brevia) are both quoted against the denar: one denar costs ${n2(T)} talers, and one denar costs ${n2(R)} rupels. What is the cross rate in **talers per rupel**?`,
+                prompt: `The ${s.a} (currency of ${s.aC}) and the ${s.b} (currency of ${s.bC}) are both quoted against the ${s.c}: one ${s.c} costs ${n2(T)} ${s.as}, and one ${s.c} costs ${n2(R)} ${s.bs}. What is the cross rate in **${s.as} per ${s.b}**?`,
                 given: {
-                    "Talers per denar": n2(T),
-                    "Rupels per denar": n2(R),
+                    [`${cap(s.as)} per ${s.c}`]: n2(T),
+                    [`${cap(s.bs)} per ${s.c}`]: n2(R),
                 },
                 answer,
-                explanation: String.raw`$E_{T/R} = \frac{E_{T/D}}{E_{R/D}}$ - both quotes share the denar, so dividing them cancels it: ${n2(T)} / ${n2(R)} = ${n2(answer)} talers per rupel. Multiplying instead of dividing, or flipping the ratio, are the classic traps.`,
+                explanation: String.raw`$E_{${s.A}/${s.B}} = \frac{E_{${s.A}/${s.C}}}{E_{${s.B}/${s.C}}}$ - both quotes share the ${s.c}, so dividing them cancels it: ${n2(T)} / ${n2(R)} = ${n2(answer)} ${s.as} per ${s.b}. Multiplying instead of dividing, or flipping the ratio, are the classic traps.`,
             };
         },
     },
@@ -761,18 +1162,19 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2018 Q28; SS2019 Q32",
         build: (rng) => {
+            const s = rng.pick(E2_FX_CHANGE_PCT_SCENARIOS);
             const e0 = rng.int(150, 900) / 100;
             const c = rng.int(2, 12) * rng.pick([1, -1]);
             const e1 = Math.round(e0 * (1 + c / 100) * 100) / 100;
             const answer = (e1 / e0 - 1) * 100;
             return {
-                prompt: `The exchange rate between the norn (Norvia) and the kess (Kessland) moves from ${n2(e0)} norn per kess in year 1 to ${n2(e1)} norn per kess in year 2. What is the **percentage change** of the exchange rate (norn per kess)? A negative number means the rate fell.`,
+                prompt: `The exchange rate between the ${s.a} (${s.aC}) and the ${s.b} (${s.bC}) moves from ${n2(e0)} ${s.a} per ${s.b} in year 1 to ${n2(e1)} ${s.a} per ${s.b} in year 2. What is the **percentage change** of the exchange rate (${s.a} per ${s.b})? A negative number means the rate fell.`,
                 given: {
-                    "Rate year 1 (norn per kess)": n2(e0),
-                    "Rate year 2 (norn per kess)": n2(e1),
+                    [`Rate year 1 (${s.a} per ${s.b})`]: n2(e0),
+                    [`Rate year 2 (${s.a} per ${s.b})`]: n2(e1),
                 },
                 answer,
-                explanation: String.raw`$\Delta E \, [\%] = \left( \frac{E_1}{E_0} - 1 \right) \cdot 100$: ${n2(e1)} / ${n2(e0)} − 1 = ${pct(answer)}. ${answer > 0 ? "A rising rate means the kess appreciated (each kess buys more norn) and the norn depreciated." : "A falling rate means the kess depreciated (each kess buys fewer norn) and the norn appreciated."}`,
+                explanation: String.raw`$\Delta E \, [\%] = \left( \frac{E_1}{E_0} - 1 \right) \cdot 100$: ${n2(e1)} / ${n2(e0)} − 1 = ${pct(answer)}. ${answer > 0 ? `A rising rate means the ${s.b} appreciated (each ${s.b} buys more ${s.a}) and the ${s.a} depreciated.` : `A falling rate means the ${s.b} depreciated (each ${s.b} buys fewer ${s.a}) and the ${s.a} appreciated.`}`,
             };
         },
     },
@@ -787,6 +1189,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2019 Q30; SS2017 Q17",
         build: (rng) => {
+            const s = rng.pick(E2_RN_REAL_GROWTH_SCENARIOS);
             const p1 = rng.int(2, 6);
             const p2 = rng.int(8, 15);
             const p1b = p1 + rng.int(1, 3);
@@ -799,12 +1202,12 @@ export const econ2Questions: Question[] = [
             const real2 = p1 * q12 + p2 * q22;
             const answer = (real2 / real1 - 1) * 100;
             return {
-                prompt: `The economy of Miravel produces only rye bread and olive oil. In year 1 (the **base year**) it produces ${n(q11)} loaves at ${eur(p1)} each and ${n(q21)} liters at ${eur(p2)} each; in year 2 it produces ${n(q12)} loaves at ${eur(p1b)} each and ${n(q22)} liters at ${eur(p2b)} each. What is the growth rate of **real GDP** from year 1 to year 2?`,
+                prompt: `The economy of ${s.place} produces only ${s.gA} and ${s.gB}. In year 1 (the **base year**) it produces ${n(q11)} ${s.uA} at ${eur(p1)} each and ${n(q21)} ${s.uB} at ${eur(p2)} each; in year 2 it produces ${n(q12)} ${s.uA} at ${eur(p1b)} each and ${n(q22)} ${s.uB} at ${eur(p2b)} each. What is the growth rate of **real GDP** from year 1 to year 2?`,
                 given: {
-                    "Bread year 1": `${n(q11)} loaves at ${eur(p1)}`,
-                    "Oil year 1": `${n(q21)} liters at ${eur(p2)}`,
-                    "Bread year 2": `${n(q12)} loaves at ${eur(p1b)}`,
-                    "Oil year 2": `${n(q22)} liters at ${eur(p2b)}`,
+                    [`${s.LA} year 1`]: `${n(q11)} ${s.uA} at ${eur(p1)}`,
+                    [`${s.LB} year 1`]: `${n(q21)} ${s.uB} at ${eur(p2)}`,
+                    [`${s.LA} year 2`]: `${n(q12)} ${s.uA} at ${eur(p1b)}`,
+                    [`${s.LB} year 2`]: `${n(q22)} ${s.uB} at ${eur(p2b)}`,
                     "Base year": "year 1",
                 },
                 answer,
@@ -821,6 +1224,7 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2019, Q31",
         build: (rng) => {
+            const s = rng.pick(E2_RN_DEFLATOR_SCENARIOS);
             const p1 = rng.int(2, 6);
             const p2 = rng.int(8, 15);
             const p1b = p1 + rng.int(1, 3);
@@ -833,12 +1237,12 @@ export const econ2Questions: Question[] = [
             const nom2 = p1b * q12 + p2b * q22;
             const answer = (100 * nom2) / real2;
             return {
-                prompt: `Miravel produces only rye bread and olive oil. Year 1 is the base year with prices ${eur(p1)} per loaf and ${eur(p2)} per liter (quantities: ${n(q11)} loaves, ${n(q21)} liters). In year 2 it produces ${n(q12)} loaves at ${eur(p1b)} and ${n(q22)} liters at ${eur(p2b)}. What is the **GDP deflator** of year 2, on a scale where the base year equals 100?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year with prices ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1} (quantities: ${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}). In year 2 it produces ${n(q12)} ${s.uA} at ${eur(p1b)} and ${n(q22)} ${s.uB} at ${eur(p2b)}. What is the **GDP deflator** of year 2, on a scale where the base year equals 100?`,
                 given: {
-                    "Prices year 1 (base)": `bread ${eur(p1)}, oil ${eur(p2)}`,
-                    "Quantities year 1": `${n(q11)} loaves, ${n(q21)} liters`,
-                    "Prices year 2": `bread ${eur(p1b)}, oil ${eur(p2b)}`,
-                    "Quantities year 2": `${n(q12)} loaves, ${n(q22)} liters`,
+                    "Prices year 1 (base)": `${s.lA} ${eur(p1)}, ${s.lB} ${eur(p2)}`,
+                    "Quantities year 1": `${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}`,
+                    "Prices year 2": `${s.lA} ${eur(p1b)}, ${s.lB} ${eur(p2b)}`,
+                    "Quantities year 2": `${n(q12)} ${s.uA}, ${n(q22)} ${s.uB}`,
                 },
                 answer,
                 explanation: String.raw`$P_t = \frac{Y_t^{nominal}}{Y_t^{real}} \cdot 100$ - both valued with **year-2 quantities**. Nominal year 2: ${eur(p1b)} · ${n(q12)} + ${eur(p2b)} · ${n(q22)} = ${eur(nom2)}. Real year 2 (base-year prices): ${eur(p1)} · ${n(q12)} + ${eur(p2)} · ${n(q22)} = ${eur(real2)}. Deflator: 100 · ${eur(nom2)} / ${eur(real2)} = ${n2(answer)}.`,
@@ -854,6 +1258,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2017, Q18",
         build: (rng) => {
+            const s = rng.pick(E2_RN_CPI_INFLATION_SCENARIOS);
             const p1 = rng.int(2, 6);
             const p2 = rng.int(8, 15);
             const p1b = p1 + rng.int(1, 3);
@@ -866,12 +1271,12 @@ export const econ2Questions: Question[] = [
             const now = p1b * q11 + p2b * q21;
             const answer = (now / base - 1) * 100;
             return {
-                prompt: `Consumers in Miravel buy only rye bread and olive oil. In year 1, prices were ${eur(p1)} per loaf and ${eur(p2)} per liter, and the consumption basket was ${n(q11)} loaves and ${n(q21)} liters. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and quantities happen to shift to ${n(q12)} loaves and ${n(q22)} liters. What is the **CPI inflation rate**, using the year-1 basket as the fixed consumer basket?`,
+                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. In year 1, prices were ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1}, and the consumption basket was ${n(q11)} ${s.uA} and ${n(q21)} ${s.uB}. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and quantities happen to shift to ${n(q12)} ${s.uA} and ${n(q22)} ${s.uB}. What is the **CPI inflation rate**, using the year-1 basket as the fixed consumer basket?`,
                 given: {
-                    "Prices year 1": `bread ${eur(p1)}, oil ${eur(p2)}`,
-                    "Basket (year 1)": `${n(q11)} loaves, ${n(q21)} liters`,
-                    "Prices year 2": `bread ${eur(p1b)}, oil ${eur(p2b)}`,
-                    "Quantities year 2": `${n(q12)} loaves, ${n(q22)} liters`,
+                    "Prices year 1": `${s.lA} ${eur(p1)}, ${s.lB} ${eur(p2)}`,
+                    "Basket (year 1)": `${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}`,
+                    "Prices year 2": `${s.lA} ${eur(p1b)}, ${s.lB} ${eur(p2b)}`,
+                    "Quantities year 2": `${n(q12)} ${s.uA}, ${n(q22)} ${s.uB}`,
                 },
                 answer,
                 explanation: String.raw`$\pi^{CPI} = \frac{\sum p_2 \, q^{base}}{\sum p_1 \, q^{base}} - 1$ - the CPI prices the **fixed base-year basket** at both years' prices, so the year-2 quantities are pure distractor data (they would matter for the GDP deflator, which uses current quantities). Basket at year-1 prices: ${eur(base)}; at year-2 prices: ${eur(p1b)} · ${n(q11)} + ${eur(p2b)} · ${n(q21)} = ${eur(now)}. Inflation: ${eur(now)} / ${eur(base)} − 1 = ${pct(answer)}.`,
@@ -889,11 +1294,12 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2019, Q27",
         build: (rng) => {
+            const s = rng.pick(E2_II_NOMINAL_WAGE_SCENARIOS);
             const rw = rng.int(0, 30) / 10;
             const piInfl = rng.int(5, 40) / 10;
             const answer = rw + piInfl;
             return {
-                prompt: `The dockworkers' union of Port Havelin negotiates wages for next year. It targets **real** wage growth of ${pct(rw)}, and inflation is expected to be ${pct(piInfl)}. What nominal wage growth must the union demand?`,
+                prompt: `${s.union} negotiates wages for next year. It targets **real** wage growth of ${pct(rw)}, and inflation is expected to be ${pct(piInfl)}. What nominal wage growth must the union demand?`,
                 given: {
                     "Target real wage growth": pct(rw),
                     "Expected inflation": pct(piInfl),
@@ -912,11 +1318,12 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2017, Q23",
         build: (rng) => {
+            const s = rng.pick(E2_II_REAL_RATE_SCENARIOS);
             const i = rng.int(0, 60) / 10;
             const piInfl = (rng.int(5, 30) / 10) * rng.pick([1, -1]);
             const answer = i - piInfl;
             return {
-                prompt: `A one-year savings deposit in Meridia pays a nominal interest rate of ${pct(i)}. Inflation over the same year is ${pct(piInfl)}. What is the **real** interest rate on the deposit (Fisher approximation)?`,
+                prompt: `${s.product} pays a nominal interest rate of ${pct(i)}. Inflation over the same year is ${pct(piInfl)}. What is the **real** interest rate on the ${s.noun} (Fisher approximation)?`,
                 given: {
                     "Nominal interest rate i": pct(i),
                     "Inflation π": pct(piInfl),
@@ -1304,6 +1711,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019 Q2; SS2018 Q4",
         build: (rng) => {
+            const s = rng.pick(E2_GDP_VA_TWO_STAGE_SCENARIOS);
             const m1 = 1000 * rng.int(2, 8);
             const s2 = m1 + 1000 * rng.int(5, 15);
             const frac = rng.pick([0.4, 0.6, 0.8] as const);
@@ -1315,16 +1723,16 @@ export const econ2Questions: Question[] = [
             const va3 = s3 - buy;
             const answer = va2 + va3;
             return {
-                prompt: `A small economy has exactly two producers. A **roastery** imports green coffee beans from Brazil for ${eur(m1)} and sells roasted coffee worth ${eur(s2)} in total - ${pct(frac * 100)} of it to a domestic café chain, the rest directly to households. It pays ${eur(w2)} in wages. The **café chain** turns the coffee it bought into drinks sold for ${eur(s3)} and pays ${eur(w3)} in wages. What is the GDP of this economy?`,
+                prompt: `A small economy has exactly two producers. A **${s.f1}** imports ${s.imp} for ${eur(m1)} and sells ${s.prod1} worth ${eur(s2)} in total - ${pct(frac * 100)} of it to a domestic ${s.f2}, the rest directly to households. It pays ${eur(w2)} in wages. The **${s.f2}** turns the ${s.prod1Short} it bought into ${s.prod2} sold for ${eur(s3)} and pays ${eur(w3)} in wages. What is the GDP of this economy?`,
                 given: {
-                    "Roastery: imported beans": eur(m1),
-                    "Roastery: total sales": eur(s2),
-                    "Share sold to café chain": pct(frac * 100),
-                    "Café chain: sales": eur(s3),
-                    "Wages roastery / café chain": `${eur(w2)} / ${eur(w3)}`,
+                    [`${s.F1}: imported ${s.impShort}`]: eur(m1),
+                    [`${s.F1}: total sales`]: eur(s2),
+                    [`Share sold to ${s.f2}`]: pct(frac * 100),
+                    [`${s.F2}: sales`]: eur(s3),
+                    [`Wages ${s.f1} / ${s.f2}`]: `${eur(w2)} / ${eur(w3)}`,
                 },
                 answer,
-                explanation: String.raw`$GDP = \sum_i VA_i = \sum_i \left( \text{sales}_i - \text{intermediate inputs}_i \right)$ - the imported beans are subtracted at the roastery, and only the coffee actually bought by the café chain is its intermediate input. Roastery: ${eur(s2)} − ${eur(m1)} = ${eur(va2)}. Café chain: it bought ${pct(frac * 100)} of ${eur(s2)}, i.e. ${eur(buy)}, so ${eur(s3)} − ${eur(buy)} = ${eur(va3)}. GDP = ${eur(answer)}. Wages only distribute the value added - they never enter the sum.`,
+                explanation: String.raw`$GDP = \sum_i VA_i = \sum_i \left( \text{sales}_i - \text{intermediate inputs}_i \right)$ - the imported ${s.impShort} are subtracted at the ${s.f1}, and only the ${s.prod1Short} actually bought by the ${s.f2} is its intermediate input. ${s.F1}: ${eur(s2)} − ${eur(m1)} = ${eur(va2)}. ${s.F2}: it bought ${pct(frac * 100)} of ${eur(s2)}, i.e. ${eur(buy)}, so ${eur(s3)} − ${eur(buy)} = ${eur(va3)}. GDP = ${eur(answer)}. Wages only distribute the value added - they never enter the sum.`,
             };
         },
     },
@@ -1337,6 +1745,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019 Q2 (value added of one stage)",
         build: (rng) => {
+            const sc = rng.pick(E2_GDP_VA_FIRM_SCENARIOS);
             const s = 1000 * rng.int(20, 90);
             const d = 1000 * rng.int(3, 12);
             const m = 1000 * rng.int(2, 7);
@@ -1344,7 +1753,7 @@ export const econ2Questions: Question[] = [
             const k = 1000 * rng.int(1, 5);
             const answer = s - d - m;
             return {
-                prompt: `A furniture maker in Poland sells output worth ${eur(s)} in one year. To produce it, the firm buys timber from domestic sawmills for ${eur(d)} and imports fittings from abroad for ${eur(m)}. It pays ${eur(w)} in wages and ${eur(k)} in capital costs. What is the firm's **value added**, i.e. its contribution to Polish GDP?`,
+                prompt: `${sc.firm} sells output worth ${eur(s)} in one year. To produce it, the firm buys ${sc.dom} for ${eur(d)} and imports ${sc.imp} from abroad for ${eur(m)}. It pays ${eur(w)} in wages and ${eur(k)} in capital costs. What is the firm's **value added**, i.e. its contribution to ${sc.adj} GDP?`,
                 given: {
                     "Sales": eur(s),
                     "Domestic intermediate inputs": eur(d),
@@ -1368,6 +1777,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2019, Q30",
         build: (rng) => {
+            const s = rng.pick(E2_RN_NOMINAL_GROWTH_SCENARIOS);
             const pa1 = rng.int(2, 7);
             const pb1 = rng.int(12, 20);
             const pa2 = pa1 + rng.int(1, 3);
@@ -1380,12 +1790,12 @@ export const econ2Questions: Question[] = [
             const nom2 = pa2 * qa2 + pb2 * qb2;
             const answer = (nom2 / nom1 - 1) * 100;
             return {
-                prompt: `The economy of a Japanese island produces only rice and fish. In year 1 it produces ${n(qa1)} sacks of rice at ${eur(pa1)} each and ${n(qb1)} crates of fish at ${eur(pb1)} each; in year 2 it produces ${n(qa2)} sacks at ${eur(pa2)} and ${n(qb2)} crates at ${eur(pb2)}. What is the growth rate of **nominal** GDP from year 1 to year 2?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. In year 1 it produces ${n(qa1)} ${s.uA} of ${s.gA} at ${eur(pa1)} each and ${n(qb1)} ${s.uB} of ${s.gB} at ${eur(pb1)} each; in year 2 it produces ${n(qa2)} ${s.uA} at ${eur(pa2)} and ${n(qb2)} ${s.uB} at ${eur(pb2)}. What is the growth rate of **nominal** GDP from year 1 to year 2?`,
                 given: {
-                    "Rice year 1": `${n(qa1)} sacks at ${eur(pa1)}`,
-                    "Fish year 1": `${n(qb1)} crates at ${eur(pb1)}`,
-                    "Rice year 2": `${n(qa2)} sacks at ${eur(pa2)}`,
-                    "Fish year 2": `${n(qb2)} crates at ${eur(pb2)}`,
+                    [`${s.LA} year 1`]: `${n(qa1)} ${s.uA} at ${eur(pa1)}`,
+                    [`${s.LB} year 1`]: `${n(qb1)} ${s.uB} at ${eur(pb1)}`,
+                    [`${s.LA} year 2`]: `${n(qa2)} ${s.uA} at ${eur(pa2)}`,
+                    [`${s.LB} year 2`]: `${n(qb2)} ${s.uB} at ${eur(pb2)}`,
                 },
                 answer,
                 explanation: String.raw`$g^{nom} = \frac{\sum p_2 \, q_2}{\sum p_1 \, q_1} - 1$ - nominal GDP values each year's quantities at that same year's prices. Year 1: ${eur(nom1)}. Year 2: ${eur(pa2)} · ${n(qa2)} + ${eur(pb2)} · ${n(qb2)} = ${eur(nom2)}. Growth: ${eur(nom2)} / ${eur(nom1)} − 1 = ${pct(answer)}. Mixing in base-year prices would give real growth instead.`,
@@ -1401,6 +1811,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019, Q30 (real GDP at base-year prices)",
         build: (rng) => {
+            const s = rng.pick(E2_RN_REAL_LEVEL_SCENARIOS);
             const pa1 = rng.int(2, 7);
             const pb1 = rng.int(12, 20);
             const pa2 = pa1 + rng.int(1, 3);
@@ -1409,11 +1820,11 @@ export const econ2Questions: Question[] = [
             const qb2 = rng.int(60, 400);
             const answer = pa1 * qa2 + pb1 * qb2;
             return {
-                prompt: `A Danish coastal economy produces only butter and herring. Year 1 is the base year, with prices of ${eur(pa1)} per kg of butter and ${eur(pb1)} per barrel of herring. In year 2 it produces ${n(qa2)} kg of butter (price now ${eur(pa2)}) and ${n(qb2)} barrels of herring (price now ${eur(pb2)}). What is **real** GDP of year 2, measured in base-year prices?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year, with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 it produces ${n(qa2)} ${s.uA} of ${s.gA} (price now ${eur(pa2)}) and ${n(qb2)} ${s.uB} of ${s.gB} (price now ${eur(pb2)}). What is **real** GDP of year 2, measured in base-year prices?`,
                 given: {
-                    "Base-year prices": `butter ${eur(pa1)}, herring ${eur(pb1)}`,
-                    "Year-2 quantities": `${n(qa2)} kg butter, ${n(qb2)} barrels herring`,
-                    "Year-2 prices": `butter ${eur(pa2)}, herring ${eur(pb2)}`,
+                    "Base-year prices": `${s.gA} ${eur(pa1)}, ${s.gB} ${eur(pb1)}`,
+                    "Year-2 quantities": `${n(qa2)} ${s.uA} ${s.gA}, ${n(qb2)} ${s.uB} ${s.gB}`,
+                    "Year-2 prices": `${s.gA} ${eur(pa2)}, ${s.gB} ${eur(pb2)}`,
                 },
                 answer,
                 explanation: String.raw`$Y_2^{real} = \sum p^{base} \, q_2$ - real GDP values current quantities at **base-year** prices, so only quantities matter: ${eur(pa1)} · ${n(qa2)} + ${eur(pb1)} · ${n(qb2)} = ${eur(answer)}. The year-2 prices are needed for nominal GDP, not here.`,
@@ -1429,6 +1840,7 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2019, Q31",
         build: (rng) => {
+            const s = rng.pick(E2_RN_DEFLATOR_INFLATION_SCENARIOS);
             const pa1 = rng.int(2, 7);
             const pb1 = rng.int(12, 20);
             const pa2 = pa1 + rng.int(1, 3);
@@ -1439,11 +1851,11 @@ export const econ2Questions: Question[] = [
             const real2 = pa1 * qa2 + pb1 * qb2;
             const answer = (nom2 / real2 - 1) * 100;
             return {
-                prompt: `A Portuguese island economy produces only olives and cork. Year 1 is the base year with prices of ${eur(pa1)} per crate of olives and ${eur(pb1)} per bale of cork. In year 2 the economy produces ${n(qa2)} crates of olives at ${eur(pa2)} and ${n(qb2)} bales of cork at ${eur(pb2)}. Measured by the **GDP deflator**, what is the inflation rate between year 1 and year 2?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 the economy produces ${n(qa2)} ${s.uA} of ${s.gA} at ${eur(pa2)} and ${n(qb2)} ${s.uB} of ${s.gB} at ${eur(pb2)}. Measured by the **GDP deflator**, what is the inflation rate between year 1 and year 2?`,
                 given: {
-                    "Base-year prices": `olives ${eur(pa1)}, cork ${eur(pb1)}`,
-                    "Year-2 quantities": `${n(qa2)} crates, ${n(qb2)} bales`,
-                    "Year-2 prices": `olives ${eur(pa2)}, cork ${eur(pb2)}`,
+                    "Base-year prices": `${s.gA} ${eur(pa1)}, ${s.gB} ${eur(pb1)}`,
+                    "Year-2 quantities": `${n(qa2)} ${s.uA}, ${n(qb2)} ${s.uB}`,
+                    "Year-2 prices": `${s.gA} ${eur(pa2)}, ${s.gB} ${eur(pb2)}`,
                 },
                 answer,
                 explanation: String.raw`$\pi = \frac{P_2}{P_1} - 1$ with $P_t = \frac{Y_t^{nominal}}{Y_t^{real}} \cdot 100$ and $P_1 = 100$ in the base year, so $\pi = \frac{Y_2^{nominal}}{Y_2^{real}} - 1$, both valued with **year-2 quantities**. Nominal: ${eur(pa2)} · ${n(qa2)} + ${eur(pb2)} · ${n(qb2)} = ${eur(nom2)}. Real: ${eur(pa1)} · ${n(qa2)} + ${eur(pb1)} · ${n(qb2)} = ${eur(real2)}. Inflation: ${eur(nom2)} / ${eur(real2)} − 1 = ${pct(answer)}.`,
@@ -1459,6 +1871,7 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2019 Q31; SS2017 Q18",
         build: (rng) => {
+            const s = rng.pick(E2_RN_CPI_LEVEL_SCENARIOS);
             const pa1 = rng.int(2, 7);
             const pb1 = rng.int(12, 20);
             const pa2 = pa1 + rng.int(1, 3);
@@ -1469,11 +1882,11 @@ export const econ2Questions: Question[] = [
             const now = pa2 * qa1 + pb2 * qb1;
             const answer = (100 * now) / base;
             return {
-                prompt: `Consumers in an Austrian valley buy only bread and mountain cheese. The base-year basket is ${n(qa1)} loaves of bread and ${n(qb1)} wheels of cheese, at base-year prices of ${eur(pa1)} per loaf and ${eur(pb1)} per wheel. This year, prices are ${eur(pa2)} per loaf and ${eur(pb2)} per wheel. What is this year's **Consumer Price Index (CPI)**, on a scale where the base year equals 100?`,
+                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. The base-year basket is ${n(qa1)} ${s.uA} of ${s.lA} and ${n(qb1)} ${s.uB} of ${s.lB}, at base-year prices of ${eur(pa1)} per ${s.uA1} and ${eur(pb1)} per ${s.uB1}. This year, prices are ${eur(pa2)} per ${s.uA1} and ${eur(pb2)} per ${s.uB1}. What is this year's **Consumer Price Index (CPI)**, on a scale where the base year equals 100?`,
                 given: {
-                    "Basket (base year)": `${n(qa1)} loaves, ${n(qb1)} wheels`,
-                    "Base-year prices": `bread ${eur(pa1)}, cheese ${eur(pb1)}`,
-                    "Current prices": `bread ${eur(pa2)}, cheese ${eur(pb2)}`,
+                    "Basket (base year)": `${n(qa1)} ${s.uA}, ${n(qb1)} ${s.uB}`,
+                    "Base-year prices": `${s.lA} ${eur(pa1)}, ${s.lB} ${eur(pb1)}`,
+                    "Current prices": `${s.lA} ${eur(pa2)}, ${s.lB} ${eur(pb2)}`,
                 },
                 answer,
                 explanation: String.raw`$CPI_t = \frac{\sum p_t \, q^{base}}{\sum p^{base} \, q^{base}} \cdot 100$ - the **fixed base-year basket** is priced at both years' prices. At base prices the basket costs ${eur(base)}; at current prices ${eur(pa2)} · ${n(qa1)} + ${eur(pb2)} · ${n(qb1)} = ${eur(now)}. CPI = 100 · ${eur(now)} / ${eur(base)} = ${n2(answer)}.`,
@@ -1565,20 +1978,21 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II lecture, Unit VIII slide 6 (Fisher equation example)",
         build: (rng) => {
+            const s = rng.pick(E2_II_BORROWER_REAL_SCENARIOS);
             const P = 100 * rng.int(2, 20);
             const i = rng.int(3, 12);
             const R = P * (1 + i / 100);
             const piInfl = rng.int(5, Math.max(6, 10 * i - 5)) / 10;
             const answer = i - piInfl;
             return {
-                prompt: `Mateus lends ${eur(P)} to a friend in Brazil for one year and receives a repayment of ${eur(R)}. Over that year, inflation turns out to be ${pct(piInfl)}. What **real** interest rate did Mateus earn (Fisher approximation)?`,
+                prompt: `${s.name} lends ${eur(P)} to a friend in ${s.country} for one year and receives a repayment of ${eur(R)}. Over that year, inflation turns out to be ${pct(piInfl)}. What **real** interest rate did ${s.name} earn (Fisher approximation)?`,
                 given: {
                     "Amount lent": eur(P),
                     "Repayment after one year": eur(R),
                     "Inflation": pct(piInfl),
                 },
                 answer,
-                explanation: String.raw`$r = i - \pi$ - first recover the nominal rate from the repayment: $i = \frac{${n(R)}}{${n(P)}} - 1$ = ${pct(i)}. Then subtract inflation: ${pct(i)} − ${pct(piInfl)} = ${pct(answer)}. In real terms Mateus can buy ${pct(answer)} more than a year ago, not ${pct(i)}.`,
+                explanation: String.raw`$r = i - \pi$ - first recover the nominal rate from the repayment: $i = \frac{${n(R)}}{${n(P)}} - 1$ = ${pct(i)}. Then subtract inflation: ${pct(i)} − ${pct(piInfl)} = ${pct(answer)}. In real terms ${s.name} can buy ${pct(answer)} more than a year ago, not ${pct(i)}.`,
             };
         },
     },
@@ -1591,11 +2005,12 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2017 Q23; lecture Unit VIII slide 6",
         build: (rng) => {
+            const s = rng.pick(E2_II_REQUIRED_NOMINAL_SCENARIOS);
             const r = rng.int(5, 40) / 10;
             const piInfl = rng.int(8, 45) / 10;
             const answer = r + piInfl;
             return {
-                prompt: `A pension fund in the Netherlands wants its one-year bond investments to earn a **real** return of ${pct(r)}. It expects inflation of ${pct(piInfl)} over the year. What nominal interest rate must the bonds pay (Fisher approximation)?`,
+                prompt: `${s.investor} wants its one-year bond investments to earn a **real** return of ${pct(r)}. It expects inflation of ${pct(piInfl)} over the year. What nominal interest rate must the bonds pay (Fisher approximation)?`,
                 given: {
                     "Target real return r": pct(r),
                     "Expected inflation π": pct(piInfl),
@@ -1614,11 +2029,12 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II lecture, Unit VIII slide 7 (inflation and fixed nominal income)",
         build: (rng) => {
+            const s = rng.pick(E2_II_REAL_VALUE_SCENARIOS);
             const X = 100 * rng.int(8, 30);
             const piInfl = rng.int(2, 9);
             const answer = X / (1 + piInfl / 100);
             return {
-                prompt: `A retiree in Italy keeps ${eur(X)} in cash for exactly one year, during which prices rise by ${pct(piInfl)}. What is the **real value** of the cash at the end of the year, i.e. its purchasing power expressed in start-of-year euros?`,
+                prompt: `${s.who} keeps ${eur(X)} ${s.how} for exactly one year, during which prices rise by ${pct(piInfl)}. What is the **real value** of the cash at the end of the year, i.e. its purchasing power expressed in start-of-year euros?`,
                 given: {
                     "Nominal amount": eur(X),
                     "Inflation over the year": pct(piInfl),
@@ -1639,6 +2055,7 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II lecture, Unit IV slides 26/36 (multiplier with imports)",
         build: (rng) => {
+            const s = rng.pick(E2_GM_IMPORT_MULTIPLIER_SCENARIOS);
             const c1 = rng.pick([0.6, 0.75, 0.8] as const);
             const t = rng.pick([0.2, 0.25, 0.3] as const);
             const m = rng.pick([0.1, 0.15, 0.2] as const);
@@ -1647,7 +2064,7 @@ export const econ2Questions: Question[] = [
             const mult = 1 / D;
             const answer = dG * mult;
             return {
-                prompt: String.raw`In the open economy of Belgium's model region, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. In addition, households spend a fraction $m = ${n(m)}$ of every extra unit of income on **imports** (the marginal propensity to import). The government raises its purchases by ${n(dG)}. By how much does equilibrium output rise?`,
+                prompt: String.raw`In ${s.place}, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. In addition, households spend a fraction $m = ${n(m)}$ of every extra unit of income on **imports** (the marginal propensity to import). The government raises its purchases by ${n(dG)}. By how much does equilibrium output rise?`,
                 given: {
                     "Marginal propensity to consume $c_1$": n(c1),
                     "Income tax rate t": pct(t * 100),
@@ -1668,13 +2085,14 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II lecture, Unit IV slides 9-10 (negative investment shock)",
         build: (rng) => {
+            const s = rng.pick(E2_GM_INVESTMENT_SHOCK_SCENARIOS);
             const c1 = rng.pick([0.6, 0.75, 0.8] as const);
             const t = rng.pick([0.2, 0.25, 0.3] as const);
             const dI = 25 * rng.int(2, 10);
             const D = 1 - c1 * (1 - t);
             const answer = dI / D;
             return {
-                prompt: String.raw`Business confidence in Spain collapses and firms cut investment by ${n(dI)}. Consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and an income tax rate of ${pct(t * 100)}; all other demand components are unchanged. By how much does equilibrium output **fall**? (Give the fall as a positive number.)`,
+                prompt: String.raw`${s.shock} ${n(dI)}. Consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and an income tax rate of ${pct(t * 100)}; all other demand components are unchanged. By how much does equilibrium output **fall**? (Give the fall as a positive number.)`,
                 given: {
                     "Fall in investment": n(dI),
                     "Marginal propensity to consume $c_1$": n(c1),
@@ -1694,13 +2112,14 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II lecture, Unit IV slides 13/18 (precautionary saving shifts AD)",
         build: (rng) => {
+            const s = rng.pick(E2_GM_C0_SHOCK_SCENARIOS);
             const c1 = rng.pick([0.6, 0.75, 0.8] as const);
             const t = rng.pick([0.2, 0.25, 0.3] as const);
             const dc0 = 25 * rng.int(2, 8);
             const D = 1 - c1 * (1 - t);
             const answer = dc0 / D;
             return {
-                prompt: String.raw`After a fall in house prices, households in the Netherlands engage in precautionary saving: autonomous consumption $c_0$ drops by ${n(dc0)}. Consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. By how much does equilibrium output fall? (Positive number.)`,
+                prompt: String.raw`${s.cause} engage in precautionary saving: autonomous consumption $c_0$ drops by ${n(dc0)}. Consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. By how much does equilibrium output fall? (Positive number.)`,
                 given: {
                     "Fall in autonomous consumption": n(dc0),
                     "Marginal propensity to consume $c_1$": n(c1),
@@ -1720,13 +2139,14 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2018, Q11-12 (new equilibrium after ΔI and ΔG)",
         build: (rng) => {
+            const s = rng.pick(E2_GM_NEW_EQUILIBRIUM_SCENARIOS);
             const d = drawGM2(rng);
             const dI = 25 * rng.int(2, 8);
             const dG = 25 * rng.int(1, Math.max(1, Math.min(6, d.G / 25 - 1)));
             const I0 = d.I + dI;
             const G0 = d.G - dG;
             return {
-                prompt: String.raw`The economy of Portville has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a tax rate of ${pct(d.t * 100)}; exports are ${n(d.X)} and imports ${n(d.M)}. Initially, investment is ${n(I0)} and government purchases are ${n(G0)}. Then a recession abroad makes investment fall to ${n(d.I)}, and the government responds by raising its purchases to ${n(d.G)}. What is the **new** equilibrium output?`,
+                prompt: String.raw`The economy of ${s.place} has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a tax rate of ${pct(d.t * 100)}; exports are ${n(d.X)} and imports ${n(d.M)}. Initially, investment is ${n(I0)} and government purchases are ${n(G0)}. Then ${s.cause} ${n(d.I)}, and the government responds by raising its purchases to ${n(d.G)}. What is the **new** equilibrium output?`,
                 given: {
                     "Autonomous consumption $c_0$": n(d.c0),
                     "Marginal propensity to consume $c_1$": n(d.c1),
@@ -1749,10 +2169,11 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2019 Q7; SS2018 Q11 (BB = tY − G components)",
         build: (rng) => {
+            const s = rng.pick(E2_GM_TAX_REVENUE_SCENARIOS);
             const d = drawGM2(rng);
             const answer = d.t * d.Y;
             return {
-                prompt: String.raw`Aldermoor's consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **tax revenue** $T = t \cdot Y$ in the goods-market equilibrium?`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **tax revenue** $T = t \cdot Y$ in the goods-market equilibrium?`,
                 given: gm2Given(d),
                 answer,
                 explanation: String.raw`$T = t \cdot Y^*$ - first solve for equilibrium output: $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.A)} / ${n(d.D)} = ${n(d.Y)}. Then tax revenue is ${n(d.t)} · ${n(d.Y)} = ${n(answer)}. The budget balance would additionally subtract G (${n(d.G)}), giving ${n(answer - d.G)}.`,
@@ -1770,11 +2191,12 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II lecture, Unit V slide 22 (cost per unit of effort)",
         build: (rng) => {
+            const s = rng.pick(E2_LM_EFFORT_COST_SCENARIOS);
             const w = rng.int(9, 24);
             const e = rng.pick([0.4, 0.5, 0.6, 0.75, 0.8] as const);
             const answer = w / e;
             return {
-                prompt: `A logistics warehouse in Poland pays its packers a wage of ${eur(w)} per hour. At that wage, a packer provides ${n(e)} units of effort per hour. What is the firm's **cost per unit of effort**?`,
+                prompt: `${s.firm} pays its ${s.workers} a wage of ${eur(w)} per hour. At that wage, one ${s.worker} provides ${n(e)} units of effort per hour. What is the firm's **cost per unit of effort**?`,
                 given: {
                     "Hourly wage w": eur(w),
                     "Effort per hour e": n(e),
@@ -1793,11 +2215,12 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II lecture, Unit V slide 42 (price-setting curve w = λ(1 − μ))",
         build: (rng) => {
+            const s = rng.pick(E2_LM_PRICE_SETTING_SCENARIOS);
             const lam = rng.int(40, 120);
             const mu = rng.pick([0.1, 0.15, 0.2, 0.25] as const);
             const answer = lam * (1 - mu);
             return {
-                prompt: `In the French manufacturing sector, output per worker is ${eur(lam)} per day. Competition in the product market pins the firms' markup at ${pct(mu * 100)}. According to the price-setting curve, what **real wage** per worker and day results when all firms set their profit-maximizing prices?`,
+                prompt: `In ${s.sector}, output per worker is ${eur(lam)} per day. Competition in the product market pins the firms' markup at ${pct(mu * 100)}. According to the price-setting curve, what **real wage** per worker and day results when all firms set their profit-maximizing prices?`,
                 given: {
                     "Output per worker λ": eur(lam),
                     "Markup μ": pct(mu * 100),
@@ -1816,11 +2239,12 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II lecture, Unit V slide 39 (division of output per worker)",
         build: (rng) => {
+            const s = rng.pick(E2_LM_PROFIT_PER_WORKER_SCENARIOS);
             const lam = rng.int(40, 120);
             const mu = rng.pick([0.1, 0.15, 0.2, 0.25] as const);
             const answer = lam * mu;
             return {
-                prompt: `Firms in the Italian food industry produce output worth ${eur(lam)} per worker and day and, given the intensity of competition, charge a markup of ${pct(mu * 100)}. What is the **real profit per worker** and day that accrues to the owners?`,
+                prompt: `Firms in ${s.sector} produce output worth ${eur(lam)} per worker and day and, given the intensity of competition, charge a markup of ${pct(mu * 100)}. What is the **real profit per worker** and day that accrues to the owners?`,
                 given: {
                     "Output per worker λ": eur(lam),
                     "Markup μ": pct(mu * 100),
@@ -1839,6 +2263,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019, Q13 (rent after a change in benefits)",
         build: (rng) => {
+            const s = rng.pick(E2_LM_RENT_BENEFIT_CHANGE_SCENARIOS);
             const w = rng.int(14, 32);
             const dis = rng.int(3, 8);
             const H = rng.pick([36, 38, 42] as const);
@@ -1848,7 +2273,7 @@ export const econ2Questions: Question[] = [
             const weeks = rng.int(20, 45);
             const answer = dB * weeks;
             return {
-                prompt: `A warehouse worker in Austria earns ${eur(w)} per hour for ${n(H)} hours a week; her disutility of effort is ${eur(dis)} per hour. If dismissed, she would expect ${n(weeks)} weeks of unemployment with a weekly benefit of ${eur(B)}. The government now **raises** the weekly unemployment benefit by ${eur(dB)}. By how much does her **total employment rent** for the expected unemployment spell **fall**?`,
+                prompt: `${s.who} earns ${eur(w)} per hour for ${n(H)} hours a week; ${s.poss} disutility of effort is ${eur(dis)} per hour. If dismissed, ${s.subj} would expect ${n(weeks)} weeks of unemployment with a weekly benefit of ${eur(B)}. The government now **raises** the weekly unemployment benefit by ${eur(dB)}. By how much does ${s.poss} **total employment rent** for the expected unemployment spell **fall**?`,
                 given: {
                     "Hourly wage": eur(w),
                     "Hours per week": n(H),
@@ -1977,12 +2402,13 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2018, Q23-24 (Cobb-Douglas consumption smoothing)",
         build: (rng) => {
+            const s = rng.pick(E2_IT_SMOOTHING_SCENARIOS);
             const y1 = 10 * rng.int(4, 16);
             const r = 3 * rng.int(1, 10);
             const c1 = y1 / 2;
             const answer = (1 + r / 100) * c1;
             return {
-                prompt: String.raw`Élodie in France earns ${n(y1)} thousand € this year and nothing next year. She can save any part of it at an interest rate of ${pct(r)} and has the utility function $U = C_1^{0.5} \cdot C_2^{0.5}$ over consumption this year ($C_1$) and next year ($C_2$). How much does she optimally consume **next year**, in thousand €?`,
+                prompt: String.raw`${s.name} in ${s.country} earns ${n(y1)} thousand € this year and nothing next year. ${cap(s.subj)} can save any part of it at an interest rate of ${pct(r)} and has the utility function $U = C_1^{0.5} \cdot C_2^{0.5}$ over consumption this year ($C_1$) and next year ($C_2$). How much does ${s.subj} optimally consume **next year**, in thousand €?`,
                 given: {
                     "Income this year": `${n(y1)} thousand €`,
                     "Income next year": "0",
@@ -1990,7 +2416,7 @@ export const econ2Questions: Question[] = [
                     "Utility": String.raw`$U = C_1^{0.5} \cdot C_2^{0.5}$`,
                 },
                 answer,
-                explanation: String.raw`$MRS = \frac{C_2}{C_1} = 1 + r = MRT$ - at the optimum the indifference curve is tangent to the budget line $C_2 = (1+r)(y_1 - C_1)$. Substituting $C_2 = (1+r) C_1$ into the budget line gives $C_1 = \frac{y_1}{2}$ = ${n(c1)}: with equal exponents she splits her endowment half-half. So $C_2 = (1+r) \cdot \frac{y_1}{2}$ = ${n(1 + r / 100)} · ${n(c1)} = ${n(answer)} thousand €.`,
+                explanation: String.raw`$MRS = \frac{C_2}{C_1} = 1 + r = MRT$ - at the optimum the indifference curve is tangent to the budget line $C_2 = (1+r)(y_1 - C_1)$. Substituting $C_2 = (1+r) C_1$ into the budget line gives $C_1 = \frac{y_1}{2}$ = ${n(c1)}: with equal exponents ${s.subj} splits ${s.poss} endowment half-half. So $C_2 = (1+r) \cdot \frac{y_1}{2}$ = ${n(1 + r / 100)} · ${n(c1)} = ${n(answer)} thousand €.`,
             };
         },
     },
@@ -2003,19 +2429,20 @@ export const econ2Questions: Question[] = [
         unit: "ratio",
         source: "TUM Economics II SS2017 (MRS problem); lecture Unit VII slide 11",
         build: (rng) => {
+            const s = rng.pick(E2_IT_MRS_SCENARIOS);
             const a = rng.int(1, 3);
             const b = rng.int(1, 3);
             const C1 = rng.int(2, 12);
             const C2 = rng.int(2, 12);
             const answer = (a * C2) / (b * C1);
             return {
-                prompt: String.raw`Jonas evaluates consumption this year ($C_1$) and next year ($C_2$) with the utility function $U = C_1^{${a}} \cdot C_2^{${b}}$. What is his marginal rate of substitution $MRS_{C_1, C_2}$ at the bundle $C_1 = ${C1}$, $C_2 = ${C2}$?`,
+                prompt: String.raw`${s.name} evaluates consumption this year ($C_1$) and next year ($C_2$) with the utility function $U = C_1^{${a}} \cdot C_2^{${b}}$. What is ${s.poss} marginal rate of substitution $MRS_{C_1, C_2}$ at the bundle $C_1 = ${C1}$, $C_2 = ${C2}$?`,
                 given: {
                     "Utility": String.raw`$U = C_1^{${a}} \cdot C_2^{${b}}$`,
                     "Bundle": String.raw`$C_1 = ${C1}$, $C_2 = ${C2}$`,
                 },
                 answer,
-                explanation: String.raw`$MRS = \frac{\partial U / \partial C_1}{\partial U / \partial C_2} = \frac{${a} \, C_2}{${b} \, C_1}$ - the exponents come down when differentiating, and the remaining powers cancel: ${n(a)} · ${n(C2)} / (${n(b)} · ${n(C1)}) = ${n2(answer)}. This is how many units of next year's consumption Jonas will give up for one more unit this year.`,
+                explanation: String.raw`$MRS = \frac{\partial U / \partial C_1}{\partial U / \partial C_2} = \frac{${a} \, C_2}{${b} \, C_1}$ - the exponents come down when differentiating, and the remaining powers cancel: ${n(a)} · ${n(C2)} / (${n(b)} · ${n(C1)}) = ${n2(answer)}. This is how many units of next year's consumption ${s.name} will give up for one more unit this year.`,
             };
         },
     },
@@ -2028,17 +2455,18 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II SS2019, Q26",
         build: (rng) => {
+            const s = rng.pick(E2_IT_RETURN_SCENARIOS);
             const y1 = 20 * rng.int(2, 6);
             const r = 3 * rng.int(1, 10) * rng.pick([1, -1]);
             const F = y1 * (1 + r / 100);
             return {
-                prompt: `Ana in Portugal earns ${n(y1)} thousand € this year and nothing next year. If she invests her entire income in her workshop, she can consume at most ${n(F)} thousand € next year (there is no other way to transfer income between the years). What rate of return does her investment yield? A negative number means the investment loses value.`,
+                prompt: `${s.name} in ${s.country} earns ${n(y1)} thousand € this year and nothing next year. If ${s.subj} invests ${s.poss} entire income in ${s.poss} ${s.venture}, ${s.subj} can consume at most ${n(F)} thousand € next year (there is no other way to transfer income between the years). What rate of return does ${s.poss} investment yield? A negative number means the investment loses value.`,
                 given: {
                     "Maximum consumption this year": `${n(y1)} thousand €`,
                     "Maximum consumption next year": `${n(F)} thousand €`,
                 },
                 answer: r,
-                explanation: String.raw`$1 + r = \frac{C_2^{max}}{C_1^{max}}$ - the two intercepts of the feasible frontier differ exactly by the return factor: ${n(F)} / ${n(y1)} = ${n(1 + r / 100)}, so r = ${pct(r)}. ${r < 0 ? "The frontier is flatter than the 45° line: storage-like investment that loses value still lets her move some consumption to next year." : "The frontier is steeper than the 45° line, so shifting consumption to next year earns a premium."}`,
+                explanation: String.raw`$1 + r = \frac{C_2^{max}}{C_1^{max}}$ - the two intercepts of the feasible frontier differ exactly by the return factor: ${n(F)} / ${n(y1)} = ${n(1 + r / 100)}, so r = ${pct(r)}. ${r < 0 ? `The frontier is flatter than the 45° line: storage-like investment that loses value still lets ${s.obj} move some consumption to next year.` : "The frontier is steeper than the 45° line, so shifting consumption to next year earns a premium."}`,
             };
         },
     },
@@ -2051,6 +2479,7 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II SS2017 Q13; lecture Unit VII slide 9 (borrowing against future income)",
         build: (rng) => {
+            const s = rng.pick(E2_IT_PV_MAX_SCENARIOS);
             const r = rng.pick([5, 10, 20, 25, 50] as const);
             const k = rng.int(1, 5);
             const y2 = ((100 + r) * k) / 10;
@@ -2058,14 +2487,14 @@ export const econ2Questions: Question[] = [
             const y1 = 10 * rng.int(2, 10);
             const answer = y1 + pv2;
             return {
-                prompt: `Bram in Belgium earns ${n(y1)} thousand € this year and will earn ${n(y2)} thousand € next year. His bank lets him borrow freely against next year's income at an interest rate of ${pct(r)}. What is the **maximum** he could consume this year, in thousand €?`,
+                prompt: `${s.name} in ${s.country} earns ${n(y1)} thousand € this year and will earn ${n(y2)} thousand € next year. ${cap(s.poss)} bank lets ${s.obj} borrow freely against next year's income at an interest rate of ${pct(r)}. What is the **maximum** ${s.subj} could consume this year, in thousand €?`,
                 given: {
                     "Income this year": `${n(y1)} thousand €`,
                     "Income next year": `${n(y2)} thousand €`,
                     "Interest rate r": pct(r),
                 },
                 answer,
-                explanation: String.raw`$C_1^{max} = y_1 + \frac{y_2}{1 + r}$ - he can consume his current income plus the **present value** of next year's income, because a loan of $\frac{y_2}{1+r}$ today is exactly repaid by $y_2$ next year: ${n(y1)} + ${n(y2)} / ${n(1 + r / 100)} = ${n(y1)} + ${n(pv2)} = ${n(answer)} thousand €. Adding the two incomes without discounting is the classic trap.`,
+                explanation: String.raw`$C_1^{max} = y_1 + \frac{y_2}{1 + r}$ - ${s.subj} can consume ${s.poss} current income plus the **present value** of next year's income, because a loan of $\frac{y_2}{1+r}$ today is exactly repaid by $y_2$ next year: ${n(y1)} + ${n(y2)} / ${n(1 + r / 100)} = ${n(y1)} + ${n(pv2)} = ${n(answer)} thousand €. Adding the two incomes without discounting is the classic trap.`,
             };
         },
     },
@@ -2078,11 +2507,12 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II lecture, Unit VII slide 9 (repayment = principal + interest)",
         build: (rng) => {
+            const s = rng.pick(E2_IT_REPAYMENT_SCENARIOS);
             const P = 100 * rng.int(2, 20);
             const r = rng.int(3, 12);
             const answer = P * (1 + r / 100);
             return {
-                prompt: `Lena borrows ${eur(P)} from her bank in Germany for one year at an interest rate of ${pct(r)}. How much does she have to repay at the end of the year?`,
+                prompt: `${s.name} borrows ${eur(P)} from ${s.poss} bank in ${s.country} for one year at an interest rate of ${pct(r)}. How much does ${s.subj} have to repay at the end of the year?`,
                 given: {
                     "Principal": eur(P),
                     "Interest rate r": pct(r),
@@ -2103,13 +2533,14 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019 Q6; lecture Unit II slide 19 (c = wL + pR)",
         build: (rng) => {
+            const s = rng.pick(E2_TECH_COST_SCENARIOS);
             const w = rng.pick(TECH_WAGES);
             const p = rng.pick(TECH_ENERGY_PRICES);
             const L = rng.int(1, 8);
             const R = rng.int(1, 8);
             const answer = w * L + p * R;
             return {
-                prompt: `A brick kiln in Brazil fires one batch of bricks with a technology that uses ${n(L)} workers and ${n(R)} MWh of energy. The wage per worker is ${eur(w)} and energy costs ${eur(p)} per MWh. What are the total costs of one batch?`,
+                prompt: `${s.firm} ${s.action} with a technology that uses ${n(L)} workers and ${n(R)} MWh of energy. The wage per worker is ${eur(w)} and energy costs ${eur(p)} per MWh. What are the total costs of one batch?`,
                 given: {
                     "Workers L": n(L),
                     "Energy R": `${n(R)} MWh`,
@@ -2130,6 +2561,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019, Q6 (cheapest vs. most expensive technology)",
         build: (rng) => {
+            const s = rng.pick(E2_TECH_CHEAPEST_GAP_SCENARIOS);
             const w = rng.pick(TECH_WAGES);
             const p = rng.pick(TECH_ENERGY_PRICES);
             const L1 = rng.int(1, 3);
@@ -2141,7 +2573,7 @@ export const econ2Questions: Question[] = [
             const costs = [w * L1 + p * R1, w * L2 + p * R2, w * L3 + p * R3];
             const answer = Math.max(...costs) - Math.min(...costs);
             return {
-                prompt: `A Spanish tile factory can fire one batch with technology **A** (${n(L1)} workers, ${n(R1)} MWh), **B** (${n(L2)} workers, ${n(R2)} MWh) or **C** (${n(L3)} workers, ${n(R3)} MWh). The wage is ${eur(w)} per worker and energy costs ${eur(p)} per MWh. By how much do the total costs of the **most expensive** and the **cheapest** technology differ?`,
+                prompt: `${s.firm} can ${s.action} with technology **A** (${n(L1)} workers, ${n(R1)} MWh), **B** (${n(L2)} workers, ${n(R2)} MWh) or **C** (${n(L3)} workers, ${n(R3)} MWh). The wage is ${eur(w)} per worker and energy costs ${eur(p)} per MWh. By how much do the total costs of the **most expensive** and the **cheapest** technology differ?`,
                 given: {
                     "Technology A": `${n(L1)} workers + ${n(R1)} MWh`,
                     "Technology B": `${n(L2)} workers + ${n(R2)} MWh`,
@@ -2163,6 +2595,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II lecture, Unit II slide 31 (process innovation)",
         build: (rng) => {
+            const s = rng.pick(E2_TECH_PROCESS_INNOVATION_SCENARIOS);
             const w = rng.pick(TECH_WAGES);
             const p = rng.pick(TECH_ENERGY_PRICES);
             const L = rng.int(1, 5);
@@ -2172,12 +2605,12 @@ export const econ2Questions: Question[] = [
             const cNew = w * L + p * (R - dR);
             const answer = cOld - cNew;
             return {
-                prompt: `A glassworks in the Netherlands melts one batch with ${n(L)} workers and ${n(R)} MWh of gas (wage ${eur(w)}, gas ${eur(p)} per MWh). A process innovation cuts the gas requirement to ${n(R - dR)} MWh with the same number of workers. What is the innovation rent per batch, i.e. the cost saving from adopting the improved process?`,
+                prompt: `${s.firm} ${s.action} with ${n(L)} workers and ${n(R)} MWh of ${s.energy} (wage ${eur(w)}, ${s.energy} ${eur(p)} per MWh). A process innovation cuts the ${s.energy} requirement to ${n(R - dR)} MWh with the same number of workers. What is the innovation rent per batch, i.e. the cost saving from adopting the improved process?`,
                 given: {
                     "Old process": `${n(L)} workers + ${n(R)} MWh`,
                     "New process": `${n(L)} workers + ${n(R - dR)} MWh`,
                     "Wage w": eur(w),
-                    "Gas price p": eur(p),
+                    [`${s.Energy} price p`]: eur(p),
                 },
                 answer,
                 explanation: String.raw`$IR = c_{old} - c_{new}$ - with the labor input unchanged, only the energy saving matters: $c_{old}$ = ${eur(cOld)}, $c_{new}$ = ${eur(cNew)}, so the rent is $p \cdot \Delta R$ = ${eur(p)} · ${n(dR)} = ${eur(answer)} per batch. First adopters pocket this Schumpeterian rent until competitors catch up.`,
@@ -2193,6 +2626,7 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II lecture, Unit II slide 22 (innovation rents); SS2019 Q6",
         build: (rng) => {
+            const s = rng.pick(E2_TECH_FIRST_MOVER_RENT_SCENARIOS);
             const w = rng.pick(TECH_WAGES);
             const dL = rng.int(2, 4);
             const dR = rng.int(2, 3);
@@ -2207,7 +2641,7 @@ export const econ2Questions: Question[] = [
             const q = 50 * rng.int(2, 10);
             const answer = (cB - cA) * q;
             return {
-                prompt: `All breweries in a Danish town brew with technique **B** (${n(LB)} workers, ${n(RB)} MWh per batch). One brewery pioneers the energy-intensive technique **A** (${n(LA)} workers, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the brewery produces ${n(q)} batches per year. What **annual innovation rent** does the first mover earn, i.e. its yearly cost saving over technique B?`,
+                prompt: `All ${s.firms} in ${s.town} ${s.verb} with technique **B** (${n(LB)} workers, ${n(RB)} MWh per batch). One ${s.firm} pioneers the energy-intensive technique **A** (${n(LA)} workers, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the ${s.firm} produces ${n(q)} batches per year. What **annual innovation rent** does the first mover earn, i.e. its yearly cost saving over technique B?`,
                 given: {
                     "Technique A": `${n(LA)} workers + ${n(RA)} MWh`,
                     "Technique B": `${n(LB)} workers + ${n(RB)} MWh`,
@@ -2259,11 +2693,12 @@ export const econ2Questions: Question[] = [
         unit: "EUR",
         source: "TUM Economics II SS2019, Q32 (prices across currencies)",
         build: (rng) => {
+            const s = rng.pick(E2_FX_EXPORT_PRICE_SCENARIOS);
             const Y = 1000 * rng.int(20, 90);
             const E = rng.int(130, 178);
             const answer = Y / E;
             return {
-                prompt: `A camera made in Japan costs ${n(Y)} yen. The exchange rate is ${n(E)} yen per euro. What is the price of the camera in euros?`,
+                prompt: `${s.item} costs ${n(Y)} yen. The exchange rate is ${n(E)} yen per euro. What is the price of the ${s.noun} in euros?`,
                 given: {
                     "Price in yen": n(Y),
                     "Exchange rate": `${n(E)} yen per euro`,
@@ -2513,11 +2948,12 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II lecture, Unit VII slide 15 (net worth = assets − liabilities)",
         build: (rng) => {
+            const s = rng.pick(E2_MB_NETWORTH_SCENARIOS);
             const nw = 10 * rng.int(2, 15);
             const assets = 10 * rng.int(30, 120);
             const liab = assets - nw;
             return {
-                prompt: `A commercial bank in Spain holds total assets (base money, loans to customers, financial assets and buildings) of ${n(assets)} billion € and total liabilities (deposits and borrowing) of ${n(liab)} billion €. What is the bank's **net worth** (equity), in billion €?`,
+                prompt: `${s.bank} holds total assets (base money, loans to customers, financial assets and buildings) of ${n(assets)} billion € and total liabilities (deposits and borrowing) of ${n(liab)} billion €. What is the bank's **net worth** (equity), in billion €?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Total liabilities": `${n(liab)} billion €`,
@@ -2536,11 +2972,12 @@ export const econ2Questions: Question[] = [
         unit: "ratio",
         source: "TUM Economics II lecture, Unit VII slides 31-34 (leverage ratio)",
         build: (rng) => {
+            const s = rng.pick(E2_MB_LEVERAGE_SCENARIOS);
             const E = rng.int(2, 9);
             const mult = rng.int(8, 30);
             const assets = E * mult;
             return {
-                prompt: `A bank headquartered in France has total assets of ${n(assets)} billion € and a net worth (equity) of ${n(E)} billion €. What is its **leverage ratio**, defined as assets divided by net worth?`,
+                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth (equity) of ${n(E)} billion €. What is its **leverage ratio**, defined as assets divided by net worth?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Net worth (equity)": `${n(E)} billion €`,
@@ -2559,11 +2996,12 @@ export const econ2Questions: Question[] = [
         unit: "percent",
         source: "TUM Economics II lecture, Unit VII slide 34 (asset fall that wipes out equity)",
         build: (rng) => {
+            const s = rng.pick(E2_MB_INSOLVENCY_DROP_SCENARIOS);
             const assets = 100 * rng.int(4, 12);
             const E = rng.int(8, 60);
             const answer = (E / assets) * 100;
             return {
-                prompt: `A bank in Italy has total assets of ${n(assets)} billion € and a net worth of ${n(E)} billion €. By what **percentage** would the value of its assets have to fall to wipe out the bank's net worth entirely, i.e. to make it insolvent?`,
+                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth of ${n(E)} billion €. By what **percentage** would the value of its assets have to fall to wipe out the bank's net worth entirely, i.e. to make it insolvent?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Net worth (equity)": `${n(E)} billion €`,
@@ -2582,13 +3020,14 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II lecture, Unit VII slides 19/30 (banks profit from the interest spread)",
         build: (rng) => {
+            const s = rng.pick(E2_MB_SPREAD_SCENARIOS);
             const iL = rng.int(4, 9);
             const iD = rng.int(1, iL - 2);
             const L = 10 * rng.int(20, 80);
             const D = L - 10 * rng.int(0, 15); // D <= L keeps net interest income positive
             const answer = (L * iL) / 100 - (D * iD) / 100;
             return {
-                prompt: `A regional bank in Austria has extended loans of ${n(L)} million € on which it charges an average lending rate of ${pct(iL)}. It funds itself with deposits of ${n(D)} million € on which it pays ${pct(iD)}. What is the bank's annual **net interest income**, in million €?`,
+                prompt: `${s.bank} has extended loans of ${n(L)} million € on which it charges an average lending rate of ${pct(iL)}. It funds itself with deposits of ${n(D)} million € on which it pays ${pct(iD)}. What is the bank's annual **net interest income**, in million €?`,
                 given: {
                     "Loans outstanding": `${n(L)} million €`,
                     "Lending rate": pct(iL),
@@ -2609,17 +3048,18 @@ export const econ2Questions: Question[] = [
         unit: "number",
         source: "TUM Economics II lecture, Unit VII slides 21-23 (money creation by lending)",
         build: (rng) => {
+            const s = rng.pick(E2_MB_MONEY_CREATION_SCENARIOS);
             const X = 50 * rng.int(1, 8);
             const Y = 50 * rng.int(1, 8) + 25;
             const answer = X + Y;
             return {
-                prompt: `A saver deposits ${n(X)} € of cash at a Portuguese bank, which credits her account with ${n(X)} €. The bank then grants a firm a loan of ${n(Y)} € by crediting the firm's account - no cash changes hands. How much **broad money** (total account balances payable on demand) now exists in this small banking system, in €?`,
+                prompt: `${s.saver} deposits ${n(X)} € of cash at ${s.bank}, which credits ${s.poss} account with ${n(X)} €. The bank then grants ${s.borrower} a loan of ${n(Y)} € by crediting ${s.borrowerPoss} account - no cash changes hands. How much **broad money** (total account balances payable on demand) now exists in this small banking system, in €?`,
                 given: {
                     "Cash deposited": `${n(X)} €`,
                     "Loan granted by account credit": `${n(Y)} €`,
                 },
                 answer,
-                explanation: String.raw`$\text{broad money} = \text{deposits from base money} + \text{deposits created by lending}$ - the saver's account holds ${n(X)} € and the firm's account holds ${n(Y)} €, so ${n(X)} + ${n(Y)} = ${n(answer)} € is payable on demand, although only ${n(X)} € of base money exists. The loan created new bank money: it is a liability of the bank, matched by the loan contract on its asset side.`,
+                explanation: String.raw`$\text{broad money} = \text{deposits from base money} + \text{deposits created by lending}$ - the saver's account holds ${n(X)} € and ${s.borrowerPoss} account holds ${n(Y)} €, so ${n(X)} + ${n(Y)} = ${n(answer)} € is payable on demand, although only ${n(X)} € of base money exists. The loan created new bank money: it is a liability of the bank, matched by the loan contract on its asset side.`,
             };
         },
     },

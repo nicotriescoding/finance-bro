@@ -8,7 +8,8 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 ## Current state (2026-09-08)
 
 - **Code:** 447 numeric questions (Finance 159, Econ 1 107, Econ 2 90, Cost
-  Accounting 91; Financial Accounting, Entrepreneurship, Marketing empty until
+  Accounting 91; since 2026-09-08 281 of them rotate a seed-picked story
+  line - see the session note below; Financial Accounting, Entrepreneurship, Marketing empty until
   their exams arrive). Gate = typecheck + verify (447 × 200 seeds) + build +
   104 smoke checks; `worker/test/e2e.ts` 26 checks. `npm run lint` is clean
   (0 errors, 17 warnings from the React Compiler rules - see Known gaps).
@@ -42,6 +43,14 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   aligned with `ranks`, build fails if the counts differ).
 
 ## Owed on Nico's machine (real Chrome, dark mode)
+
+- `/products`: the nine new cards (Starter Pack 9, BWL Marie 10, Doomsday
+  5, LinkedIn kit 6) - seen only in headless dark-mode Chromium, where the
+  lazy images below the fold had not loaded when the shot was taken. Look
+  at the engraved-plate text size and the pink matcha tint in particular.
+- A quiz run through Econ 1 / Cost Accounting: read a few rotated
+  prompts for grammar the reviewers missed (they rendered ~300 variants
+  each, but not every seed).
 
 - **Legal audit follow-ups (dashboards, not code):** AdSense → publish the
   GDPR message AND accept the Google Ads Data Processing Terms; PostHog
@@ -149,8 +158,47 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Last three sessions (kept verbatim, older ones are in `git log`)
 
+**Story-line rotation in all four banks + nine Bro Shop cards
+(2026-09-08, latest session).** Per Nico. (1) Questions: 281 of 447
+questions now draw a scenario FIRST in `build` (`const s =
+rng.pick(<BANK>_<ID>_SCENARIOS)`, string-only objects in one module-scope
+block above each bank's export; `cap()`/`poss()` helpers for sentence
+starts and possessives) so the same concept shows up as concert / bungee
+jump / cinema / pottery class / football match etc. Pure-formula
+questions were left alone: Econ 1 99 of 107 rotate, Econ 2 61 of 90
+(Solow + the real-country items already rotate countries), Finance 30 of
+159 (bonds/options/CAPM/formula annuities untouched), Cost Accounting 91
+of 91. Maths, ranges, ids, units, `source` lines unchanged - the econ1
+reviewer diffed answers old vs new over 200 seeds: identical. Drawing the
+scenario first shifts every seed's numbers for the touched questions, so
+a stored run shows different numbers after deploy (prompt and answer
+still one seed - hard rule 3 holds). Four question-reviewer passes (one
+per bank) found 9 wording defects, all fixed (a "press presses",
+"buys that grapes", "a agent", "a allowance", a perpetual "concession",
+firm possessives ending in -s, bare department names needing "the",
+"olives movements"). Side effects: ~100 plain-text em dashes in the
+banks replaced by `-`; a comment in econ1 that quoted source-exam
+parameters was removed (rule). Pre-existing, not fixed: "1 tonnes" /
+"1 hours" / "1 workers" when a draw hits 1 in ~10 questions
+(`e1-ca-*`, `ca-prog-*`, `ec2-tech-first-mover-rent`) - a `plural(n,
+word)` helper in `_helpers.ts` would clear them all. (2) Bro Shop: Pink
+Matcha Set, Vintage Notebook, thin-frame yellow glasses -> BWL Marie;
+Tony Stark glasses, Decanter, Whiskey Smoker Kit -> Starter Pack;
+Engraved Name Plate (five engraving suggestions in the blurb) + Bookends
+-> LinkedIn kit; Flip Clock -> Doomsday Bunker. All amazon.de ASINs
+checked live in Chrome; Nico's pink matcha (B0H1WCY4GF) is out of stock
+on .de, so the card links the ZENS pink set (B0F138W228, 4.8) - swap
+back if it restocks. Photos: free-tier Adobe Stock (162932600,
+452828545, 340403421, 92710388, 539675490, 526487337, 944423957,
+620387923, 355191591), three edited locally because the free tier had
+no match: matcha hue-shifted green -> pink, aviator lenses tinted amber,
+name plate composited from a brushed-metal texture with our own text.
+Gate green in the cloud clone (typecheck, verify 447 x 200, build, 117
+smoke). Party Kit still has its lone fifth card.
+
+
 **Bro Shop: pattern behind the photo, exam-legal calculator, nine
-listings/photos re-picked (2026-09-08, latest session).** Per Nico.
+listings/photos re-picked (2026-09-08).** Per Nico.
 (1) The money pattern was showing *through* the products (multiply blend);
 the photo now sits in a white rounded tile (68 % wide) on top of the
 pattern - side effect: dark-background photos (matcha, highlighters) are
@@ -224,27 +272,3 @@ check` green in the cloud clone (95 smoke checks); headless-Chromium
 dark-mode screenshot of the flash on `/` (rain, card, dismiss clean).
 **Owed on Nico's machine:** see the flash once for real (solve a posting
 near a level boundary, e.g. reset the balance and earn ~100 💸).
-
-**Leaderboard was dead on prod - worker now creates its own D1 schema
-(2026-09-07).** Nico: BroDollars must count for every
-solved question, solo and duels, on the subject board and the overall
-board. The code for that has been in since 09-02; what was missing was the
-manual `wrangler d1 execute` (owed since then), so `earnings` /
-`settled_postings` never existed: the live worker answered every
-`/api/leaderboard` with 503 `leaderboard_unavailable` ("desk is not
-staffed"), every solo `/api/earnings` report and every closing-bell booking
-failed silently. Fix: `ensureSchema()` in `worker/src/scoreboard.ts`
-(schema mirrored from `schema.sql`, `CREATE ... IF NOT EXISTS`, memoised
-per isolate, retried on failure) runs before every D1 access - read,
-book, rename, replay guard. No manual step remains; `schema.sql` stays
-as documentation/optional. Proof in the cloud clone: worker typecheck
-green; `wrangler dev` against an **empty** local D1 - `GET
-/api/leaderboard` 200 with rows [] - and `worker/test/e2e.ts` ALL GREEN
-(26 checks: Bull Run/Front Running/Rapid + scoreboard overall/subject/
-you/bot-free + solo booked/capped/intern-named/replay-refused/wrong-
-refused/fresh-seed-pays). Site code untouched (no `npm run check`
-needed). **Nico next (done 2026-09-08 - pushed):** Cloudflare redeploys the worker; then
-/leaderboard should show "TOP 0" without the error card and the first
-solved posting appears within seconds (solo reports are fire-and-forget).
-Note: postings solved before the push are gone - the worker never got to
-book them.

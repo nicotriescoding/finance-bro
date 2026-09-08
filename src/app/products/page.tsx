@@ -47,6 +47,19 @@ export const metadata: Metadata = {
  * Their credit lines in the footer are a license condition - keep them, and
  * keep the Birkin one.
  *
+ * Nine more cards on 2026-09-08 (Nico's picks, sorted by him): pink matcha
+ * set, vintage notebook and the thin-frame yellow glasses went to BWL
+ * Marie; the gold "Tony Stark" glasses, decanter and whiskey smoker to the
+ * Starter Pack; the engraved name plate and the bookends to the LinkedIn
+ * kit; the flip clock to the Doomsday Bunker. Photos are free-tier Adobe
+ * Stock again, three of them edited locally because the free tier had no
+ * match: the matcha photo is a green set hue-shifted to pink (Stock has
+ * no pink set), the aviators had their black lenses tinted amber, and the
+ * name plate is a brushed-metal texture (Stock 355191591) cropped to a
+ * plate with our own engraving text rendered on it. The pink matcha set
+ * Nico linked (B0H1WCY4GF) is out of stock on amazon.de, so the card
+ * links the ZENS pink set (B0F138W228) instead.
+ *
  * The calculator is the Casio FX-85MS because that is one of the two
  * models the TUM Chair of Financial Management explicitly names in its
  * calculator policy (non-programmable, no SOLVE/CALC, no graphing):
@@ -93,7 +106,7 @@ const BUNDLES: Bundle[] = [
         tint: ["#fff3d6", "#e9fbf1"],
         emoji: "💼",
         tagline: "Look the part long before you can price the part.",
-        chips: ["6 positions", "risk: daddy-backed", "yield: pure image"],
+        chips: ["9 positions", "risk: daddy-backed", "yield: pure image"],
         products: [
             {
                 name: "Birkin Bag",
@@ -157,6 +170,36 @@ const BUNDLES: Bundle[] = [
                 href: amzProduct("B000120516"),
                 note: "Exam-legal per the chair's calculator policy; check your own course's rules before you rely on it.",
             },
+            {
+                name: "The Tony Stark Glasses",
+                img: {
+                    src: "/products/glasses-tony.jpg",
+                    alt: "Gold-framed aviator sunglasses with amber-tinted lenses",
+                },
+                blurb:
+                    "Gold frame, amber lens, 19 €. Worn indoors, in the lecture hall, in the elevator. Through these every chart is bullish and every reflection is a billionaire. Reactor not included - the ego is.",
+                href: amzProduct("B0FP4VVNTS"),
+            },
+            {
+                name: "The Decanter",
+                img: {
+                    src: "/products/decanter.jpg",
+                    alt: "A crystal wine decanter with a splash of white wine in it",
+                },
+                blurb:
+                    "Crystal, long-stemmed glasses included. Lets a 6 € Rioja breathe until it tastes like a story about Bordeaux. You do not know what decanting does either - that is the point. Nobody asks a man with a decanter.",
+                href: amzProduct("B0DX24FYF8"),
+            },
+            {
+                name: "Whiskey Smoker Kit",
+                img: {
+                    src: "/products/whiskey-smoker.jpg",
+                    alt: "A crystal tumbler of whiskey with smoke rising from it",
+                },
+                blurb:
+                    "Torch, wood chips, two glasses. Sets a single malt on fire in front of guests so nobody notices the flat. Six flavours of smoke, all of which taste like 'I closed a deal today'. The smoke alarm is your first investor.",
+                href: amzProduct("B0BJV68C17"),
+            },
         ],
     },
     {
@@ -165,7 +208,7 @@ const BUNDLES: Bundle[] = [
         emoji: "🎀",
         tagline:
             "For the business girlie whose semester runs on matcha, pastel and immaculate vibes.",
-        chips: ["7 positions", "risk: aesthetic", "dividend: content"],
+        chips: ["10 positions", "risk: aesthetic", "dividend: content"],
         products: [
             {
                 name: "The Kånken",
@@ -237,6 +280,37 @@ const BUNDLES: Bundle[] = [
                 blurb:
                     "Black, because pink photographs badly at 6 AM. Where the 'movement is my meditation' LinkedIn posts are produced. Returns arrive as core strength and content.",
                 href: amzProduct("B0CJJNSM9V"),
+            },
+            {
+                name: "Pink Matcha Set",
+                img: {
+                    src: "/products/matcha-pink.jpg",
+                    alt: "A pink matcha set: bowl, whisk and a heap of pink matcha powder, seen from above",
+                },
+                blurb:
+                    "The green set was for drinking. The pink set is for the story. Bowl, whisk, whisk holder, strainer - every piece photographs, none of them gets used after week two. Matcha is not the product; the morning is.",
+                href: amzProduct("B0F138W228"),
+                note: "Links the ZENS pink set - the one that is actually in stock on amazon.de.",
+            },
+            {
+                name: "The Vintage Notebook",
+                img: {
+                    src: "/products/notebook-vintage.jpg",
+                    alt: "A brown pebbled faux-leather refillable notebook with a snap strap, closed",
+                },
+                blurb:
+                    "Refillable faux leather, snap strap, 10 €. Page one: a colour-coded semester plan. Page two: a to-do list. Pages three to 180: pristine, because the plan moved to Notion, then to the iPad, then to vibes.",
+                href: amzProduct("B0BZH3Z25R"),
+            },
+            {
+                name: "Yellow Lens Glasses, Thin Frame",
+                img: {
+                    src: "/products/glasses-thin-yellow.jpg",
+                    alt: "Slim rectangular sunglasses with a thin gold frame and yellow lenses",
+                },
+                blurb:
+                    "Slim rectangle, thin gold frame, yellow lens. Zero UV protection needed, the library has no windows. Makes every lecture look like a 2004 music video and every group project like it might actually happen.",
+                href: amzProduct("B0CRNXH7GP"),
             },
         ],
     },
@@ -363,7 +437,7 @@ const BUNDLES: Bundle[] = [
         tint: ["#ffe8d6", "#fff3d6"],
         emoji: "🧟",
         tagline: "Fourteen chapters, four days, one plan: none.",
-        chips: ["4 positions", "risk: caffeine-adjusted", "maturity: Thursday, 8 AM"],
+        chips: ["5 positions", "risk: caffeine-adjusted", "maturity: Thursday, 8 AM"],
         products: [
             {
                 name: "Post-Exam Coma Mask",
@@ -405,6 +479,16 @@ const BUNDLES: Bundle[] = [
                     "The only light on the whole floor at 3 AM. Bends further than your study plan and, unlike the plan, actually switches on.",
                 href: amzProduct("B0DXZ6HR1C"),
             },
+            {
+                name: "The Flip Clock",
+                img: {
+                    src: "/products/flip-clock.jpg",
+                    alt: "A black retro flip clock showing 2:00 AM",
+                },
+                blurb:
+                    "Retro flip digits, silent movement, no snooze. Every flap is one fewer hour until the exam, and it flaps loud enough to hear over the panic. 2:00 AM is not a time, it is a chapter you have not started.",
+                href: amzProduct("B0D6GH3P3M"),
+            },
         ],
     },
     {
@@ -412,7 +496,7 @@ const BUNDLES: Bundle[] = [
         tint: ["#dbeafe", "#eef2ff"],
         emoji: "🧠",
         tagline: "Agree? Repost. Your network needs to hear this.",
-        chips: ["4 positions", "risk: cringe", "engagement: your mom"],
+        chips: ["6 positions", "risk: cringe", "engagement: your mom"],
         products: [
             {
                 name: "Ring Light, Founder Mode",
@@ -453,6 +537,27 @@ const BUNDLES: Bundle[] = [
                 blurb:
                     "Habits, Zero to One, something by a Stoic. The summary is on YouTube, the spine goes in the background of every video call.",
                 href: amzProduct("1847941834"),
+            },
+            {
+                name: "The Engraved Name Plate",
+                img: {
+                    src: "/products/engraved-plate.jpg",
+                    alt: "A brushed aluminium name plate engraved with 'SENIOR ANALYST (unpaid, self-appointed)'",
+                },
+                blurb:
+                    "Brushed aluminium, laser-engraved, self-adhesive, 6 €. Up to three lines of your own choosing. Our suggestions: 'SENIOR ANALYST (unpaid, self-appointed)'. 'DO NOT DISTURB - BUILDING IN PUBLIC'. 'FOUNDER. OF THIS DESK.' 'OPEN TO WORK (since 2023)'. 'CEO - Chief Excel Officer'. Sticks to a dorm door, a library carrel or the fridge you share with four flatmates.",
+                href: amzProduct("B0DHZL2QGP"),
+                note: "The listing is meant for Italian holiday-rental codes. The workshop does not read what it engraves.",
+            },
+            {
+                name: "Bookends, Load-Bearing",
+                img: {
+                    src: "/products/bookends.jpg",
+                    alt: "Black metal A and Z bookends holding a row of books on a desk",
+                },
+                blurb:
+                    "Black metal, heavy enough to hold up five books and one personal brand. The bookends face the camera; the spines face the camera; the pages face nobody. A to Z, exactly the range you plan to read.",
+                href: amzProduct("B0FWRJ6Y19"),
             },
         ],
     },
