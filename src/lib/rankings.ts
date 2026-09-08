@@ -17,35 +17,33 @@ export type Rank = {
      * it does not multiply.
      */
     bonus: number;
-    /** Spending tier of the landing statement (EXPENSE_TIERS index). */
-    tier: number;
 };
 
 // Level → rank. The ladder (titles + emoji) is original finance-bro canon -
 // do not rename or reorder it. Nine in-between ranks were added 2026-09-07
 // (Nico's picks). The perk lines are 3a microcopy.
 export const ranks: Rank[] = [
-    { minLevel: 1, title: "Pupil", emoji: "🎒", perk: "Pocket money. Homework due Monday.", salary: 20, bonus: 0, tier: 0 },
-    { minLevel: 2, title: "Unemployed", emoji: "🛋️", perk: "Overdraft approved. Nothing else is.", salary: 0, bonus: 0, tier: 0 },
-    { minLevel: 3, title: "Volunteer", emoji: "🧡", perk: "Paid in gratitude. Gratitude is not legal tender.", salary: 0, bonus: 1, tier: 0 },
-    { minLevel: 4, title: "Unpaid Intern", emoji: "🧃", perk: "Experience is the compensation.", salary: 0, bonus: 2, tier: 0 },
-    { minLevel: 5, title: "Low Earner", emoji: "🥲", perk: "Paid monthly, spent weekly.", salary: 1204, bonus: 5, tier: 0 },
-    { minLevel: 6, title: "Minimum Wage Grunt", emoji: "🛠️", perk: "Every hour documented, none of them yours.", salary: 1872, bonus: 10, tier: 1 },
-    { minLevel: 7, title: "Working Student", emoji: "📚", perk: "12 €/h, printer access.", salary: 1038, bonus: 15, tier: 1 },
-    { minLevel: 8, title: "Excel Monkey", emoji: "🐒", perk: "VLOOKUP is a personality.", salary: 2450, bonus: 18, tier: 1 },
-    { minLevel: 9, title: "Subcontractor", emoji: "🪪", perk: "Invoices monthly, paid quarterly.", salary: 3100, bonus: 20, tier: 1 },
-    { minLevel: 10, title: "Junior Consultant", emoji: "🧑‍💼", perk: "Slide decks at 02:00.", salary: 3741, bonus: 25, tier: 2 },
-    { minLevel: 11, title: "Consultant", emoji: "💼", perk: "Same decks, higher day rate.", salary: 5983, bonus: 35, tier: 2 },
-    { minLevel: 12, title: "LinkedIn Thought Leader", emoji: "🎙️", perk: "Agree? Repost. 👇", salary: 7400, bonus: 40, tier: 2 },
-    { minLevel: 13, title: "Investmentbanker", emoji: "🏦", perk: "The desk has a cot now.", salary: 11250, bonus: 50, tier: 3 },
-    { minLevel: 14, title: "Crypto Bro", emoji: "🪙", perk: "Net worth depends on the hour.", salary: 13370, bonus: 55, tier: 3 },
-    { minLevel: 15, title: "VC Guy", emoji: "🚀", perk: "Loses other people's money, confidently.", salary: 14801, bonus: 65, tier: 3 },
-    { minLevel: 16, title: "Managing Director", emoji: "📈", perk: "Reads one number per meeting.", salary: 33333, bonus: 80, tier: 4 },
-    { minLevel: 17, title: "Hedge Fund Guy", emoji: "🦈", perk: "2 and 20. Mostly the 2.", salary: 41667, bonus: 90, tier: 4 },
-    { minLevel: 18, title: "Unicorn Founder", emoji: "🦄", perk: "Profitable at some point, allegedly.", salary: 1, bonus: 100, tier: 4 },
-    { minLevel: 19, title: "Family Office Heir", emoji: "🎾", perk: "Worked hard. Chose the right parents.", salary: 250000, bonus: 110, tier: 5 },
-    { minLevel: 20, title: "Jeff Bezzo’s", emoji: "🚀🛸", perk: "Owns the warehouse. And the weekend.", salary: 12700416, bonus: 120, tier: 5 },
-    { minLevel: 21, title: "FinanceBro", emoji: "💸💪", perk: "The market fears you. So does HR.", salary: 2147483647, bonus: 150, tier: 5 },
+    { minLevel: 1, title: "Pupil", emoji: "🎒", perk: "Pocket money. Homework due Monday.", salary: 20, bonus: 0 },
+    { minLevel: 2, title: "Unemployed", emoji: "🛋️", perk: "Overdraft approved. Nothing else is.", salary: 0, bonus: 0 },
+    { minLevel: 3, title: "Volunteer", emoji: "🧡", perk: "Paid in gratitude. Gratitude is not legal tender.", salary: 0, bonus: 1 },
+    { minLevel: 4, title: "Unpaid Intern", emoji: "🧃", perk: "Experience is the compensation.", salary: 0, bonus: 2 },
+    { minLevel: 5, title: "Low Earner", emoji: "🥲", perk: "Paid monthly, spent weekly.", salary: 1204, bonus: 5 },
+    { minLevel: 6, title: "Minimum Wage Grunt", emoji: "🛠️", perk: "Every hour documented, none of them yours.", salary: 1872, bonus: 10 },
+    { minLevel: 7, title: "Working Student", emoji: "📚", perk: "12 €/h, printer access.", salary: 1038, bonus: 15 },
+    { minLevel: 8, title: "Excel Monkey", emoji: "🐒", perk: "VLOOKUP is a personality.", salary: 2450, bonus: 18 },
+    { minLevel: 9, title: "Subcontractor", emoji: "🪪", perk: "Invoices monthly, paid quarterly.", salary: 3100, bonus: 20 },
+    { minLevel: 10, title: "Junior Consultant", emoji: "🧑‍💼", perk: "Slide decks at 02:00.", salary: 3741, bonus: 25 },
+    { minLevel: 11, title: "Consultant", emoji: "💼", perk: "Same decks, higher day rate.", salary: 5983, bonus: 35 },
+    { minLevel: 12, title: "LinkedIn Thought Leader", emoji: "🎙️", perk: "Agree? Repost. 👇", salary: 7400, bonus: 40 },
+    { minLevel: 13, title: "Investmentbanker", emoji: "🏦", perk: "The desk has a cot now.", salary: 11250, bonus: 50 },
+    { minLevel: 14, title: "Crypto Bro", emoji: "🪙", perk: "Net worth depends on the hour.", salary: 13370, bonus: 55 },
+    { minLevel: 15, title: "VC Guy", emoji: "🚀", perk: "Loses other people's money, confidently.", salary: 14801, bonus: 65 },
+    { minLevel: 16, title: "Managing Director", emoji: "📈", perk: "Reads one number per meeting.", salary: 33333, bonus: 80 },
+    { minLevel: 17, title: "Hedge Fund Guy", emoji: "🦈", perk: "2 and 20. Mostly the 2.", salary: 41667, bonus: 90 },
+    { minLevel: 18, title: "Unicorn Founder", emoji: "🦄", perk: "Profitable at some point, allegedly.", salary: 1, bonus: 100 },
+    { minLevel: 19, title: "Family Office Heir", emoji: "🎾", perk: "Worked hard. Chose the right parents.", salary: 250000, bonus: 110 },
+    { minLevel: 20, title: "Jeff Bezzo’s", emoji: "🚀🛸", perk: "Owns the warehouse. And the weekend.", salary: 12700416, bonus: 120 },
+    { minLevel: 21, title: "FinanceBro", emoji: "💸💪", perk: "The market fears you. So does HR.", salary: 2147483647, bonus: 150 },
 ];
 
 /**
@@ -118,6 +116,18 @@ export function getNextRank(level: number): Rank | null {
     return i >= 0 && i + 1 < ranks.length ? ranks[i + 1] : null;
 }
 
+/** Cumulative BroDollars needed to sit at `level` (level 1 = 0). */
+export function scoreForLevel(level: number): number {
+    let total = 0;
+    for (let l = 1; l < level; l++) total += levelCost(l);
+    return total;
+}
+
+/** The ladder rank a balance has reached (endgame titles aside). */
+export function rankForScore(score: number): Rank {
+    return getRank(levelFromScore(score).level);
+}
+
 /** Flat completion bonus for the rank a given score has reached. */
 export function bonusForScore(score: number): number {
     return getRank(levelFromScore(score).level).bonus;
@@ -158,7 +168,7 @@ function ordinal(n: number): string {
 export function endgameRank(position: number | null): Rank {
     const top = ranks[ranks.length - 1];
     if (position === null || position < 1) return top;
-    const base = { minLevel: top.minLevel, salary: top.salary, bonus: top.bonus, tier: top.tier };
+    const base = { minLevel: top.minLevel, salary: top.salary, bonus: top.bonus };
     if (position === 1)
         return { ...base, title: "The Richest Person", emoji: "👑", perk: "Forbes has your number. So does the tax office." };
     if (position === 2)

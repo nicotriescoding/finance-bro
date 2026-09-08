@@ -1,10 +1,128 @@
 # Backlog
 
-Open work and decisions, most useful first. Keep this current — it is how a new
-session picks up where the last one stopped. The durable product shape and
-feature status live in `SPEC.md`.
+Handoff file for the next session: what is true right now, what is owed on
+Nico's machine, what is next, what is undecided, what is known to be weak.
+Not a changelog - the session log is `git log`; feature status is the table
+in `SPEC.md`. Keep every section short enough to read at session start.
 
-## Where things stand
+## Current state (2026-09-08)
+
+- **Code:** 447 numeric questions (Finance 159, Econ 1 107, Econ 2 90, Cost
+  Accounting 91; Financial Accounting, Entrepreneurship, Marketing empty until
+  their exams arrive). Gate = typecheck + verify (447 × 200 seeds) + build +
+  104 smoke checks; `worker/test/e2e.ts` 26 checks. `npm run lint` is clean
+  (0 errors, 17 warnings from the React Compiler rules - see Known gaps).
+- **Live:** multiplayer + semester leaderboard on the Cloudflare worker
+  (`finance-bro`, D1 `finance-bro-mp`, schema self-created via
+  `ensureSchema()`), AdSense (client id + six slot ids in `src/lib/ads.ts`,
+  tag in `<head>`, Google's consent dialog with the own banner as fallback),
+  PostHog EU (token baked into `src/lib/analytics.ts`).
+- **Harness (2026-09-08 audit):** three evaluator subagents in
+  `.claude/agents/` - `question-reviewer` (question diffs),
+  `functionality-reviewer` (any other code diff), `design-reviewer`
+  (anything visible, wants screenshots). Docs were de-drifted the same day:
+  CLAUDE.md, README, SPEC, rules, skill, worker README, adsense doc; the
+  stale DESIGN-BRIEF.md, `docs/design/3a/`, `/language`, `useProfile`,
+  `buildSession`, `worker/test/shots.mjs`, scaffold SVGs and `.idea/` were
+  deleted; the last exam-tuple guards in econ1/econ2 were replaced by
+  ranges; `eslint-config-next` bumped to 16 (flat config, no FlatCompat).
+- **2026-09-08 features:** `/leaderboard` shows the full corporate ladder
+  (`CorporateLadder`, local balance, endgame rungs on top) and the net-worth
+  top 10 with your own position (`NetWorthTop`, overall board); the landing
+  statement has one transaction list per rung (`src/content/statements.ts`,
+  aligned with `ranks`, build fails if the counts differ).
+
+## Owed on Nico's machine (real Chrome, dark mode)
+
+- `/leaderboard`: ladder + net-worth panel with the live worker (sandbox saw
+  it with a mocked board only), the 🎲 name suggestions, per-subject tabs.
+- `/`: a few statements up the ladder (set `bwr_score_v1` in localStorage to
+  e.g. 25000, 120000, 1000000 and reload) - check nothing wraps into the
+  amount column.
+- `/products`: the pattern tile behind the photos, the Party Kit's lone fifth
+  card, the CC BY-SA credit lines.
+- The PROMOTED flash once for real (earn ~100 💸 from a fresh balance).
+- PostHog: a `$pageview` after accepting consent; AdSense: the site review
+  status and whether the GDPR message is published (`docs/adsense-setup.md`).
+- Housekeeping: delete `_to_delete/*.tgz` if present; `git rm
+  public/products/prosecco.jpg public/products/bottle-opener.jpg` if they
+  still exist locally.
+
+## Next up
+
+- **Amazon PartnerNet:** once approved, set `AMAZON_TAG` in
+  `src/lib/affiliate.ts`; product images stay stock photos (Associates only
+  allows API-served images, which needs 10 sales in 30 days).
+- **AdSense:** site review + publish the GDPR consent message
+  (`docs/adsense-setup.md`, steps still open). **PostHog:** retention ≤ 24
+  months in the project settings (privacy policy promises it).
+- **D1 hygiene:** old-semester rows in `earnings` / `settled_postings` must be
+  purged within 12 months (privacy policy) - nothing built yet; a scheduled
+  worker cron or a manual `DELETE ... WHERE semester <> ?` at semester start.
+- **Rate limit `/api/earnings`** - nothing stops a script from posting
+  settled seeds in a loop beyond the per-seed replay guard.
+- **Exam ingest:** Financial Accounting, Entrepreneurship, Marketing wait on
+  their exam files; Finance `source` tags for questions matching real exam
+  tasks (SPEC #12).
+- **Nav overflow at 1024 px:** the desktop nav pushes the balance pill
+  off-screen with a 3-digit balance (seen 2026-09-07).
+- **Party Kit sixth card** so the last row is not a lone card, if it bothers
+  Nico.
+- **Impressum email is temporary.** nicolas.dumpe@gmx.de is public on
+  `/impressum` + `/privacy`; swap to a finance-bro.de address once mail exists.
+- **Cowork project description** in Claude Desktop still says
+  "Oberflaeche und alle Aufgaben auf Deutsch" - Nico confirmed 2026-09-08
+  that English is canon; replace it with the text in
+  `.claude/cowork-project-instructions.md`.
+- **Multiplayer icebox:** matchmaking queue, rematch keeps the room,
+  friends/accounts, BroDollar nickname market - parked until real use.
+
+## Open decisions
+
+- **German edition.** Planned as a **second locale**, not a revert. The
+  question formatters share `LOCALE` in `_helpers.ts`; `grading.ts`,
+  `money.ts`, `AccountStatement.tsx`, `CorporateLadder.tsx` and
+  `library/page.tsx` still hardcode en-US and would move to one shared
+  formatter first. Then the question text (parallel bank vs. translation
+  layer), routing (`/de/…` vs. subdomain) and `hreflang`.
+- **SEO after the language switch.** finance-bro.de serves English metadata
+  to an audience that searches in German. Watch Search Console; the German
+  locale above is the fix, not reverting.
+
+## Known gaps
+
+- **Hint quality varies.** The hint is the FIRST `$…$` segment of the
+  explanation; for a handful of special-case annuities that is a given, not
+  the formula. Never wrong, never leaking (verify guards that). Fix if it
+  bothers anyone: optional explicit `hint` field, preferred in
+  `src/lib/hints.ts`.
+- `fin-bond-modified-duration` asks for a signed percentage price change, so
+  `7.19` instead of `-7.19` fails. Reword to "by how much does it fall" or
+  say "state the sign".
+- **Net worth ≠ balance.** The rich list ranks BroDollars the worker booked
+  this semester; the navy balance is local and lifetime. The ladder titles on
+  the rich list are estimated from the booked amount and can sit a rung or
+  two below the player's real title. Footnoted on the page; accepted.
+- **No visual regression test.** The cloud sandbox takes headless dark-mode
+  Chromium screenshots (Playwright at `/opt/pw-browsers`), but not with
+  Nico's fonts or his real Chrome - hence the "owed" list above.
+- **Lint warnings (17):** `react-hooks/set-state-in-effect` on the
+  read-localStorage-in-an-effect pattern and `react-hooks/refs` in
+  `useCountUp` / `usePrevious`. Deliberate patterns, downgraded to warnings
+  in `eslint.config.mjs`; rewrite the hooks if the React Compiler is ever
+  turned on.
+- The smoke test's German check is five words on `/`; question text is only
+  guarded by the reviewers.
+- **Hydration mismatch by design:** `usePersistentState` reads localStorage
+  in the `useState` initialiser, so a non-zero balance makes the first
+  client render differ from the SSR HTML (pill, navy card, ladder). React
+  recovers by re-rendering; no visible flash so far. The clean fix is
+  initialising to the default and syncing in an effect (also clears the
+  lint warnings above).
+- The sandbox cannot delete files under the mount; if git refuses to run:
+  `rm -f .git/index.lock .git/HEAD.lock .git/objects/maintenance.lock`.
+
+## Last three sessions (kept verbatim, older ones are in `git log`)
 
 **Bro Shop: pattern behind the photo, exam-legal calculator, nine
 listings/photos re-picked (2026-09-08, latest session).** Per Nico.
@@ -54,8 +172,8 @@ rule in `globals.css`. (2) Ladder is now 21 ranks: Pupil 🎒 (the new bottom, b
 Excel Monkey 🐒, Subcontractor 🪪, LinkedIn Thought Leader 🎙️, Crypto
 Bro 🪙, Hedge Fund Guy 🦈, Family Office Heir 🎾 (Nico's picks from a
 proposed list). `LEVEL_COSTS` retuned per Nico: **FinanceBro at exactly
-1,000,000 💸**, payouts unchanged, exponential - 18 geometric steps of
-×1.45, 310,700/level past the top. One full Econ 1 marathon ≈ 18,700 💸 +
+1,000,000 💸**, payouts unchanged, exponential - 20 steps (two warm-ups,
+then ×1.45), 310,550/level past the top. One full Econ 1 marathon ≈ 18,700 💸 +
 rank bonus, so: run 1 ends at Junior Consultant, Consultant/LinkedIn on
 run 2, Investmentbanker 3, Crypto Bro 4, VC Guy 5, MD 7, Hedge Fund 10,
 Unicorn 13, Heir 18, Bezzo 25, FinanceBro 35. (3) **Endgame = the
@@ -100,877 +218,8 @@ green; `wrangler dev` against an **empty** local D1 - `GET
 (26 checks: Bull Run/Front Running/Rapid + scoreboard overall/subject/
 you/bot-free + solo booked/capped/intern-named/replay-refused/wrong-
 refused/fresh-seed-pays). Site code untouched (no `npm run check`
-needed). **Nico next:** push; Cloudflare redeploys the worker; then
+needed). **Nico next (done 2026-09-08 - pushed):** Cloudflare redeploys the worker; then
 /leaderboard should show "TOP 0" without the error card and the first
 solved posting appears within seconds (solo reports are fire-and-forget).
 Note: postings solved before the push are gone - the worker never got to
 book them.
-
-**Bro Shop: money-pattern backgrounds, listing-first photos, desk-name
-ideas (2026-09-07).** Per Nico. (1) Card image area: faint
-$ / € / % glyphs + 💸📈 tiled SVG (`MONEY_PATTERN`) over a pastel gradient
-per bundle (`tint`), product photo blended with `mix-blend-mode: multiply`
-so the white studio background vanishes. Picked from five variants
-(stripes, studio spotlight, emoji confetti, mint radial, this) by
-screenshot; the first round showed the white photo boxes clash with any
-tint, multiply fixed that. Consequence: every product photo must be on
-white - a coloured/dark background renders as a block. Still slightly
-grey-boxed: earplugs, energy cans, watch, Birkin (light backgrounds) -
-fine at a glance, swap when convenient. (2) Order is now listing first,
-photo second: nine photos replaced to match the ASINs - backpack (navy,
-Stock 289871883), powerbank (black, 1134198599, GenAI), keyboard (black,
-435158535), sticky notes (304432240), beer pong (211816711), e-reader
-(177650219); ring light + Aperol tower kept but background removed via the
-Adobe connector (`image_remove_background`, white fill); sleep mask is the
-licensed gold photo recoloured to black in PIL to match the black silk
-listing. All free tier, licensed on Nico's account. (3) 🎲 name button:
-`DESK_NAME_IDEAS` (40 finance-bro names without badge number - DCF Daddy,
-WACC Enjoyer, Net Present Valerie, ...) in `src/lib/scoreboard/shared.ts`;
-`nameSuggestions()` = own intern name + 2 intern titles, then the ideas in
-a fresh random order, then the remaining intern titles. Picking an idea
-counts as a real name. Not visually verified (the desk is not staffed in
-the sandbox) - Nico: open /leaderboard or the duels desk and hit 🎲 a few
-times. Gate green in the device-VM copy (typecheck, verify, build, 95
-smoke); dark-mode Playwright shots of /products (all bundles) in the
-cloud sandbox. Open: real-Chrome look; `_to_delete/` again holds a
-tarball the sandbox cannot remove.
-
-**Bro Shop: ASIN links, real Birkin, reorder (2026-09-07).** Per Nico. (1) Every product now links one specific amazon.de
-listing via `amzProduct(asin)` in `src/lib/affiliate.ts` (tag applies the
-same way as to search links). Picked in Nico's Chrome from the live search
-results: 4.5+ stars where the category has one, review volume, and the
-listing that looks most like our stock photo. Below 4.5 because the
-category has nothing better: blue-light glasses (Joopin 4.1, matches the
-black frame), interview suit (Jack & Jones 4.2), vertical mouse (Logitech
-Lift 4.4, best photo match), monstera (4.4), shot roulette (4.4), beer
-tower (Goods+Gadgets 4 l, 4.2 - blurb/chip now say 4 liters), beer pong
-(4.6 but 50 cups/12 balls - blurb updated). Beer mortar keeps the search
-link: every mortar listing sits at 1-2 stars; note on the card says so.
-(2) Amazon product images: not allowed. The Associates policy only permits
-images served live through the Creators API (no download/re-host, 24 h
-cache), and API access needs 10 qualifying sales in the trailing 30 days
-(PA-API 5 retired May 2026). Revisit once the account is there; until then
-stock photos stay and the ASIN pick does the matching. (3) Birkin card:
-real orange ostrich Birkin from Wikimedia Commons (CC BY-SA 2.0, Wen-Cheng
-Liu, cropped to ~800x900) - the only license-free non-pink Birkin photo
-found (Commons, Openverse); credit line in the shop footer is a license
-condition. (4) Excel Monkey leads with the glasses, Doomsday with the sleep
-mask. Smoke +3 (95): ASIN links, credit line, ordering; the "no hotlink"
-check now looks at `<img src>` instead of the string "wikimedia". Gate
-green in the device-VM copy `$HOME/fb-check` (typecheck, verify, build, 95
-smoke); dark-mode Playwright shots of /products (top, Excel Monkey,
-Doomsday, footer) checked in the cloud sandbox. Open: real-Chrome look on
-Nico's machine; delete `_to_delete/fb-src-0906b.tgz` + `fb-src-0907.tgz`.
-Other programs, in case Amazon stalls: Awin (Otto, MediaMarkt, Zalando -
-per-merchant approval, EUR 5 signup deposit, product feeds with image
-rights) and eBay Partner Network (instant, images via its API) - neither
-worth registering for a joke shop until PartnerNet is live.
-
-**Bro Shop: After-Exam Party Kit + croc Birkin (2026-09-06).** Per Nico: the Birkin card now shows a gold crocodile-leather
-clutch (Adobe Stock 472404769 - the free tier has exactly two croc bags,
-the other sits on a dark background; 12 candidates compared on a contact
-sheet). New eighth bundle "The After-Exam Party Kit" (6 positions): Aperol
-Tower (a 3 l beer tower - only free-tier photo of an actual tower, dark
-background, kept because it is literally an orange tower), Beer Mortar
-opener (Nico's Amazon link, search term "bierflaschenöffner mörser"; photo
-is a plain opener, the card's note says so), Beer Pong set, Shot Roulette,
-oversized Spritz glasses, party speaker. Six Stock photos licensed on
-Nico's account (free tier, `just_purchased`, zero cost), 5+ candidates
-each, ~900px JPEGs under `public/products/`; beer pong cropped tighter.
-Smoke +1 (92): party kit present, tower image local, mortar link. Gate
-green in the device-VM copy `$HOME/fb-check` (typecheck, verify 447 x 200,
-build, 92 smoke); dark-mode Playwright shots of /products (Starter Pack top,
-Party Kit both rows) checked in the cloud sandbox. Open: real-Chrome look
-on Nico's machine; delete `_to_delete/fb-src-0906b.tgz` (build tarball the
-sandbox cannot remove). Brand-name note unchanged: "Birkin Bag" and
-"The Intern's Rolex" still use famous marks (advice only, per Nico).
-
-**Consent fallback fixed - PostHog was never starting for new visitors
-(2026-09-06, commit 0cde8ef).** Live check in a fresh browser profile:
-AdSense's GDPR message is not served yet (`googlefc.getConsentStatus()` =
-UNKNOWN, no TCF `tcloaded`/`cmpuishown` ever fires), but `adsbygoogle.js`
-still installs a `window.__tcfapi` stub. `CookieBanner` treated the stub
-as proof Google would ask, so nobody was asked, consent never stored,
-PostHog never booted - hence "$pageview missing" in Installation Health
-(the one passing `$pageleave` came from Nico's own profile with consent
-stored earlier). Now `ConsentBridge` marks the dialog active only on a
-real TCF event and `CookieBanner` opens after 6 s otherwise; "Cookie
-settings" follows the same flag. Gate green on a clean clone (typecheck,
-verify, build, 91 smoke). **Nico next:** push, then in a private window
-wait ~6 s, accept the banner, confirm `$pageview` in PostHog -> Activity
-and Installation Health goes 6/6. Publishing the AdSense GDPR message
-remains open.
-
-**AdSense tag moved into the raw `<head>` (2026-09-06, same session).**
-AdSense reported "code not found": `next/script` (afterInteractive)
-injects client-side, so the verification crawler saw no tag in the HTML.
-Now a plain `<script async src=... crossorigin="anonymous">` in the root
-layout's `<head>` - byte-identical to Google's snippet - smoke asserts it
-by regex on `/`. (The other reason was simply that nothing had been pushed
-yet.) 91 smoke green. **Open proof:** PostHog event delivery could not be
-observed in the cloud sandbox (posthog.com blocked by the egress proxy;
-only the attempted `/array` + `/flags` calls were visible) - verify on
-the live site after the push: accept the dialog, then PostHog -> Activity
-should show a `$pageview` for the page you accepted on.
-
-**PostHog + AdSense keys baked in (2026-09-06, same session, after Nico
-sent both snippets).** PostHog EU project token and AdSense publisher id
-`ca-pub-6951760347839431` are defaults in `src/lib/analytics.ts` /
-`src/lib/ads.ts` (both public client ids; env vars override, AdSense
-`off` disables). PostHog's HTML snippet was NOT pasted - it would capture
-before consent; posthog-js init now uses the snippet's options
-(`defaults: "2026-05-30"`, `person_profiles: "identified_only"`, session
-replay off). Because AdSense is on but the GDPR message is not published
-yet, `CookieBanner` acts as a fallback: it opens 6 s after load only if
-Google's `__tcfapi` never appeared and nothing is stored (also covers ad
-blockers); "Cookie settings" opens ours when `googlefc` is absent. Cloud
-proof: zero PostHog requests before consent, fallback banner at ~6 s,
-PostHog `/array` + `/flags` requests after accept; 91 smoke (+2: AdSense
-tag on /, AdSense section on /privacy). **Nico next:** AdSense site
-review, then Privacy & messaging message (copy in `docs/adsense-setup.md`)
-and the six slot ids; PostHog retention <= 24 months.
-
-**AdSense wiring + single consent dialog + crawlable quiz + bank cleanup
-(2026-09-06, later session).** Per Nico. (1) `src/lib/ads.ts` +
-`AdUnit`: with `NEXT_PUBLIC_ADSENSE_CLIENT` set, `layout.tsx` loads
-adsbygoogle.js (which also delivers Google's certified TCF 2.2 consent
-dialog from AdSense "Privacy & messaging"), `AdSlot`/`AnchorAd` render real
-`<ins>` units per slot id in `AD_SLOTS` (empty id = placeholder stays),
-and the in-flow quiz units get `refreshKey={instance.key}` - a new ad per
-posting, never on a timer, never the rails (AdSense placement policy).
-(2) One banner: `ConsentBridge` maps the TCF decision (purposes 1 + 8) onto
-`acceptAnalytics()`/`declineAnalytics()`, so PostHog and the anchor ad
-keep working off our consent store; `CookieBanner` stays closed in AdSense
-mode; footer/privacy "Cookie settings" reopen Google's revocation dialog.
-Nico's funny copy goes into Google's message editor - text + all account
-steps (PostHog EU key, AdSense review, message, ad units, PartnerNet tag)
-in `docs/adsense-setup.md`. (3) `/privacy`: section 6 renders the full
-AdSense text (Google Ireland, cookie names, DPF, opt-out links, FCCDCF
-consent cookie) when `adsEnabled`, the placeholder text otherwise; short
-version + section 5 say "consent dialog". (4) `/quiz?subject=<id>` is now
-a server component: real h1, per-subject intro (`src/content/
-subject-intros.ts`, 7 entries), live question count + topic list,
-per-subject metadata; hidden via `body[data-quiz-run]` while a run is
-open. No per-subject routes (Nico: no more subpages). (5) Question banks:
-every exam-tuple guard and every comment quoting exam numbers removed
-from econ1/econ2/cost_accounting - ranges and value sets now avoid the
-sources silently (12 generators re-ranged); rule written into
-`.claude/rules/questions.md` and the reviewer definition. Reviewer pass
-12/12 PASS (2,000 seeds each). Gate green (`$HOME/fb-check` copy):
-typecheck, verify 447 x 200, build, **89 smoke** (+3 quiz SSR checks);
-cloud build with a dummy `ca-pub` id: privacy AdSense section, script
-tag, no own banner, intro hidden during a run, zero console errors.
-Owed: real-Chrome look; delete `_to_delete/fb-src-0906*.tgz`; the
-account steps in `docs/adsense-setup.md`.
-
-**Legal pass 2 - TUM labels, affiliate labelling, GDPR gaps (2026-09-06).**
-Per Nico's second audit. (1) UrhG/MarkenG: the per-question `source` chip
-is no longer rendered in `QuestionCard` (field stays in the banks as
-provenance for authoring + review; README updated); quiz/career/root
-metadata now say "exam-style ... calculation questions" / "for the courses"
-instead of "exam questions". Spot-check of every econ1 question citing the
-two text-readable exam PDFs (WT22/23, Principles WS20/21; 51 questions):
-scenarios and wording are all original, but 6 seeded builds could emit the
-exam's exact parameter tuple - one-line guards added
-(`e1-ca-trade-price-bound`, `e1-ct-indirect-utility`,
-`e1-pc-cost-minimization`, `e1-pc-shortrun-loss`, `e1-mkt-unit-tax-dwl`,
-`e1-mono-optimal-quantity`, `e1-mono-profit-tax-rate`); reviewer pass
-7/7 PASS. The WS19/20 Klausur is a scan without text layer - not checked.
-(2) UWG: new `AffiliateLabel` chip ("Advertising · affiliate link (Amazon)")
-above every affiliate button on /products and /library, buttons now say
-"... on Amazon", the 9px in-button "AD" is gone, disclosure paragraphs use
-Amazon's own sentence ("As an Amazon Associate ..."). "Patagonia Vest"
-renamed "The Vest" (links an ellesse vest - the mark may not sit on the
-card; blurb untouched). (3) DSGVO: privacy section 6 now names Amazon EU
-S.a r.l./PartnerNet, states no Amazon script/pixel loads pre-click, links
-amazon.de/privacy, and adds an under-16 statement; Vercel + Cloudflare
-already carried DPF (Art. 45) since 09-01; cookie banner decline button
-verified equal size/weight. Smoke +4 (86). Gate green from `$HOME/fb-check`
-copy (typecheck, verify 447 x 200, build, 86 smoke); dark-mode Playwright
-shots of /products, /library, /quiz posting, /privacy in the cloud sandbox.
-Owed: real-Chrome look at /products + /library chips; delete
-`_to_delete/fb-src-0906.tgz`. Still open (Nico: advice only): "The
-Intern's Rolex" (links Casio) and "Birkin Bag" (sold out, no link) use
-famous marks for other goods. Not built, plan only (Nico): Google-certified
-TCF 2.2 CMP for AdSense + privacy-policy AdSense section; server-rendered
-intro text on the quiz pages for AdSense review - see the session chat.
-
-**Bro Shop: four more bundles + BWL Marie moved to #2; leaderboard tabs
-only for subjects with questions (2026-09-05).** Per Nico. Shop order is
-now Starter Pack, BWL Marie, Undercover Broke Student, then the new ones:
-Excel Monkey Survival Kit (keyboard, vertical mouse, second monitor,
-blue-light glasses), Exam Week Doomsday Bunker (energy drinks, sticky
-notes, desk lamp, sleep mask), LinkedIn Thought Leader Kit (ring light,
-podcast mic, ideas notebook, books) and The Boring Index Fund - the
-"would actually buy" bundle (noise-cancelling headphones, e-reader,
-insulated bottle, a Monstera), keep it earnest. 16 new Adobe Stock photos,
-each picked from 5+ candidates on contact sheets, all free-tier standard
-license (`just_purchased`, no cost), committed ~900px under
-`public/products/`. Amazon search terms stay generic (no new brand-name
-risk). Leaderboard: `leaderboard/page.tsx` now computes the subjects with
-`countForSubject > 0` on the server and passes them to `ScoreboardClient`
-- the four empty banks (Financial Accounting, Entrepreneurship, Marketing,
-plus anything else empty) get no tab until their first questions land,
-then appear automatically. Gate: typecheck + verify (447 questions) on the
-mount, build + smoke (82 checks) in a copy under `$HOME` because the mount
-still cannot unlink `.next`; dark-mode Playwright shots of /products and
-/leaderboard checked in the cloud sandbox. Open: (1) real-Chrome look on
-Nico's machine, (2) the `_to_delete/fb-src.tgz` build tarball the sandbox
-could not remove - delete it.
-
-**Semester leaderboard rebuilt around BroDollars (2026-09-02, latest
-session).** Per Nico: the board shows who earned the most BroDollars this
-semester, once overall and once per subject; multiplayer shows a ranking
-per round at the closing bell instead of feeding a wins table, but its
-BroDollars still count. Shipped: `/leaderboard` page (tabs Overall + 7
-subjects, medals, your own rank/amount card even outside the top 50, ads +
-rails), nav + tab bar link ("Board" on phones), landing teaser now "live"
-with a link, compact overall top-10 on the duels desk linking to the full
-board, closing bell = "Payroll · this round" sorted by 💸 earned (winner
-keeps 🏆 + 250 bell bonus, footnote says the winnings were booked per
-subject). Worker: `earnings(semester, player_id, subject)` + replay guard
-`settled_postings`; `GET /api/leaderboard?subject=all|<id>&pid=` returns
-rows + `you`; `POST /api/earnings` re-grades every solo posting with the
-shared engine (wrong -> not booked, amount capped at base points + 150 max
-rank bonus, one payout per (player, qid, seed)); `POST /api/players/name`
-renames every row of the semester; the Lobby DO tracks `bySubject` per
-player and books humans at game end (bell bonus goes to the subject that
-paid the winner most). Names per Nico: unclaimed players are numbered
-interns derived from the player id (`Brainrot/Unpaid/Excel/Oat Milk/
-PowerPoint/LinkedIn/Overtime/Matcha/Reply-All/Circle-Back Intern #NNNN`,
-same hash on client and worker), the board nudges them to claim a name
-once they are on it, the name field is always there, and the claimed name
-auto-loads at the duels desk. Second pass (Nico): the name field
-(`NameField`, shared by duels desk + board) starts **empty**, its
-placeholder cycles through the player's intern names (same badge number,
-every title, 2.2 s), 🎲 drops the shown one in; submitting empty adopts the
-shown intern name - an intern name kept by choice still counts as "no real
-name", so the board keeps nudging. Replay guard clarified: it is keyed on
-(player, question, seed) and every run / write-off re-queue draws a fresh
-random seed, so practising the same topic again always pays - e2e now
-proves "same question, fresh seed pays again". Multiplayer winnings count
-for both the Overall tab and the subject tabs (Nico, 2nd pass). Solo reports are fire-and-forget (`keepalive`), never awaited.
-Privacy policy section 4 updated for the per-posting reports. Proof: gate
-green in the cloud clone (typecheck, verify 447 x 200, build, **82 smoke**
-incl. new /leaderboard checks; the mount cannot delete `.next`), worker
-typecheck green, `worker/test/e2e.ts` extended and **ALL GREEN** against a
-local wrangler (Bull Run/Front Running/Rapid + scoreboard overall/subject/
-you/bot-free + solo booked/capped/intern-named/replay-refused/wrong-refused),
-Playwright dark-mode shots of /leaderboard (desktop, Finance tab, claim
-field, phone), /multiplayer desk and / against a mock worker. **Owed:**
-(1) Nico applies the schema: `cd worker && npx wrangler d1 execute
-finance-bro-mp --remote --file=schema.sql` (idempotent; the old
-`leaderboard` table can be dropped afterwards); (2) real-Chrome check of
-/leaderboard + a real closing bell (could not be screenshotted without a
-live game). Known gap: a scripted client could still post correct answers
-it computed from the bundled engine - the cap + replay guard bound the
-damage, no rate limit yet (joke ranking, revisit if it ever matters).
-
-**Econ 1 tripled from the four uploaded Econ 1 papers (2026-09-02, later
-session).** Sources: Economics I exam WS19/20 (Kurschilgen, scanned with
-model solution - read page by page), eTest W20/21 (Moodle review with answer
-key), Principles of Economics exercise exams WS17/18 and WS20/21 (identical
-paper; only the micro blocks 1-5 were used - Nico decided the macro blocks
-6-8 stay out, Econ 2 is untouched), plus the WT22/23 exercise exam re-mined
-for the calculation items it still had (Q19-Q21, Q26, Q33). **Econ 1 36 ->
-107**, all seeded numeric; two new topics `price_controls` (ceilings incl.
-the non-binding trap, floors) and `public_goods` (Samuelson condition, two
-groups, free-riding gap). New families: minutes-table comparative advantage
-(OC, hourly output, three-producer joint PPF, lower ToT bound), two-country
-trade consumption with the partner-capacity trap, Pareto threshold, sunk
-cost, Cobb-Douglas with coefficient (post-change bundle, indirect utility,
-hypothetical income), labour-leisure choice (F*, L*, q*, compensated bundle,
-hypothetical time budget), Leontief, substitutes utility, cross/own-price
-elasticity, MRTS/AP at a point, returns to scale, bilinear + Cobb-Douglas
-cost minimisation (inputs, cost, budget -> output, zero-profit price, MC from
-technology, CRS unit cost), shutdown price, long-run exit branch, free-entry
-price/n/PS(= n·F trap)/TS, market supply with n firms, PS trapezoid + verbal
-supply schedule, elasticity at equilibrium, unit-tax consumer price/revenue,
-TS, quadratic-cost monopoly (price, CS, profit, perfect discrimination
-quantity + profit), linear-cost monopoly price + unit-tax profit,
-externality DWL (negative + positive), rising Pigou tax. Loop ran in full:
-4 opus authoring agents (each reproduced every official answer from the
-source numbers) -> gate -> 3 opus `question-reviewer` agents (independent
-recomputation, brute-force optimisers, 2,000-5,000 seeds/question) found 2
-FAILs (threshold-price draw could reproduce the source's 10q²+1,000 -> 200;
-linear-cost monopoly could draw a loss-making F) - both fixed and swept
-20,000 seeds clean - plus cosmetic nits (unit coefficients printed as "1 q",
-plural/verb glitches, rationing clause) all fixed. Gate green in the
-sandbox after fixes: typecheck, verify 447 x 200 seeds, build, 79 smoke.
-Solved without a printed key (flag for Nico): the binding-cap/floor
-variants, positive-externality and two-type public-good questions are
-lecture-concept extensions of diagram/concept items (WT22/23 Q28/29, eTest
-Q17/18, WS19/20 P34, Principles P24) - formulas standard, no official
-number to compare against. **Visual check owed on Nico's machine:** one
-posting each in the new topics (Price Ceilings & Floors, Public Goods),
-/career Econ 1 topic list (10 topics now), and the folded given table on a
-labour-leisure question. Housekeeping: the Cowork sandbox cannot delete on
-the mount - the copy of `Klausur_WS_1920_mit_Musterlosung.pdf` was only
-staged from ~/Downloads, nothing was written there.
-
-**Question banks tripled from Nico's exam/exercise uploads (2026-09-02).** Per
-Nico: min 90 calculation questions per mode, every topic in >=3 phrasings,
-real countries/examples, data table only on request. Shipped: **Cost
-Accounting 39 -> 91** (all seven Friedl exam papers SS15-WS18/19 + Mock now
-fully covered, incl. previously missing families: credits & debits with levy,
-reciprocal variants, equivalence numbers, multi-stage with rejects,
-after-tax CVP, price floors with opportunity costs), **Econ 2 32 -> 90**
-(SS17/18/19 exams re-mined + lecture units II-IX; new topics `labor_stats`,
-`money_banking`), **Finance 97 -> 159** (actual IVF course material: tutorials
-1-7 interests/annuities/redemptions/bonds/stocks/options + corporate-finance
-chapters 1-6; new topic `capital_structure`). 376 questions total, all seeded
-numeric. UI: the given-values table is now **folded by default**, and per Nico
-(2026-09-02, second pass) hints are tiered: 📋 Table = given-values table for
--30% of the payout, 💡 Hint = table + lecture formula for -50% (never stacking
-past 50%; table shows free once the posting settles). Multiplayer keeps a
-free fold - its payouts are graded in the worker and were left untouched.
-Every new prompt is self-contained in prose. Loop ran in full: 3 authoring
-agents (each reproduced the official solution numbers from the source PDFs
-before shipping - 63/38/84 original-number assertions green) -> gate -> 3
-opus `question-reviewer` agents (independent prompt-only recomputation, 800+
-seeds/question) found 10 FAILs (5 seeded draws that could reproduce exam
-tuples, 3 zero-branch/convention wordings, 2 range bugs: binomial u/d
-rounding, subscription right below grading tolerance) - all fixed and
-re-verified PASS. Gate green after fixes: typecheck, verify 376 x 200 seeds,
-build, 79 smoke. Sandbox Playwright shots (dark-mode OS): career shows
-159/90/91, collapsed table, SHOW TABLE opens it, KaTeX hint renders.
-Flagged for Nico: the WS16/17, SS17, WS17/18, SS18, WS18/19 cost-accounting
-answer marks were lost in extraction - the ~34 questions from them were
-solved independently (each matches exactly one printed option; list in the
-authoring report); a handful of econ2/finance generators come from lecture
-examples without a printed key (ids in the session reports). **Visual check
-owed on Nico's machine:** play one posting each in finance/econ2/cost
-accounting (SHOW TABLE fold, hint, KaTeX), /career topic lists for the three
-grown subjects, multiplayer card fold.
-
-**Legal de-risking pass (2026-09-01).** Per Nico's audit (MarkenG/UWG/DSGVO):
-(1) TUM affiliation copy replaced everywhere with "Made by a TUM student, for
-TUM students" + calculation-only disclaimer; empty-bank/locked strings now say
-"questions in the works" with no TUM. (2) SEO: meta-keywords array deleted
-(Impuls I risk, Google ignores it anyway), TUM removed from /quiz, /career,
-/multiplayer meta descriptions; root description keeps ONE truthful
-"made by a TUM student for TUM students" mention. Footer + Impressum got an
-explicit "independent student project, not affiliated with TUM or any brand"
-disclaimer. (3) Library covers self-hosted under `public/covers/` (8 JPEGs,
-downloaded once from Open Library) - kills the Google-Fonts-style pre-consent
-IP transfer to a US host. (4) Privacy policy: new Cloudflare multiplayer
-section (display name, player ID, game state, leaderboard, Art. 6 (1) (b),
-DPF), Vercel transfer basis corrected SCC -> Art. 45 DPF, localStorage "we
-cannot read it" wording fixed, PostHog retention promised at max 24 months,
-short-version updated for multiplayer. Gate green from $HOME/fb-check copy
-(mount can't delete .next): typecheck, verify 204 questions x 200 seeds,
-build, 79 smoke.
-
-**Duties the new policy creates (do before/at go-live):**
-- PostHog: configure data retention/deletion to honor the 24-month promise.
-- Leaderboard: old-semester D1 rows (`earnings`, and `settled_postings` by
-  `created_at`) must be deleted within 12 months of semester end (cron or
-  manual - not built yet).
-- Shop brand names: "The Intern's Rolex" renamed "The Intern's Watch"
-  (2026-09-07, per Nico; blurb still says "Gold Casio" = nominative, it links
-  the Casio). "Birkin Bag" stays by decision (no link, no sale, parody) -
-  residual § 14 II Nr. 3 MarkenG dilution risk accepted, rename to "The
-  Bag" if the site ever gets traffic or a letter. The Patagonia card was
-  renamed "The Vest" on 2026-09-06.
-  AirPods/Kånken/TI-30 link to the genuine product = nominative use, keep.
-- Visual check owed on Nico's machine: /, /library, /privacy, /impressum in
-  dark mode (sandbox cannot screenshot).
-
-**Shop images go Adobe Stock, ketchup + cigarettes delisted (2026-08-29,
-same day).** Per Nico: professional-shop image quality, scout 5+ options
-per picture, replace them all. Done via the Adobe connector: 19 Stock
-searches (free tier only), candidates compared by eye on browser contact
-sheets, 19 winners licensed on Nico's Adobe account (all free-tier,
-standard license, `just_purchased`, zero credits/cost) and committed as
-~900px optimized JPEGs (12-123 KB) under `public/products/` - no more
-hotlinks, no attribution owed (Wikimedia credits card replaced by a
-one-line "licensed via Adobe Stock" note). Hela Curry Ketchup and the
-Business School Cigarettes removed per Nico (comment in the page says not
-to resurrect them); Starter Pack is 6 positions now. Smoke +2: local
-images + no wikimedia hotlinks, ketchup/cigarettes stay gone - gate green,
-79 checks (typecheck, verify 204 × 200 seeds, build, smoke, from
-/tmp/fb3). Sandbox Chromium screenshot of /products looked like an actual
-shop. Visual check owed on Nico's machine: /products image quality at
-real retina sizes.
-
-**Shop bundles + library portfolio + sticky ad rails (2026-08-29).** Nico's
-punch list, all shipped: (1) `/products` rebuilt as three bundles - The
-FinanceBro Starter Pack (8), The Undercover Broke Student (6), BWL Marie (7) -
-in a 2-col card grid with portfolio-style header chips; 15 new products
-(gold Casio "Intern's Rolex", AirPods, protein shaker, bulk ramen, cup
-noodles, moka pot, 89 € interview suit, earplugs, powerbank, Kånken, iPad
-pencil, pastel highlighters, claw clip, Prosecco, pilates mat) with new
-jokes; every image re-searched on Wikimedia Commons and **verified by eye**
-(the old ones showed wrong crops - candy-shop shelf, whisk bristles), all
-render `object-contain` in a white image box so nothing zooms; photo credits
-rebuilt from the files' actual extmetadata. Matcha moved to BWL Marie.
-(2) New `AdRail` (sticky 160×600 skyscraper + 200×200): both sides of
-`/products` and `/language`, around the multiplayer desk/lobby/closing-bell
-views; the existing quiz + multiplayer game rails made sticky. Per Nico's
-answer, legal pages stay rail-free. Format note in `AdRail`: 300×600 half
-page is the higher-earning sidebar unit - widen the rail, don't add slots.
-(3) `/library` v2: 2-col book grid, fund-overview chips (8 positions, avg
-ROI, top holding), Lean Startup corrected to **×67** (Nico: "that's the
-point"; legend jokes it is under investigation), Carnegie cover fixed to
-the English edition (ISBN URL - the cover ID served the French one), and
-the two disclaimer cards merged into one compact "small print" card at the
-bottom (Nico: less dominant). ROI/top-holding chips render via template
-literals so SSR does not split the strings with HTML comments. Gate green
-from /tmp/fb3 copy: typecheck, verify 204 × 200 seeds, build, **77 smoke**
-(4 new: bundles, products skyscraper, ROI ×67, small print). Sandbox
-Playwright-Chromium screenshots of products (desktop 2-col + rails, phone
-stack), library (desktop) looked right. **Visual check owed on Nico's
-machine:** /products all three bundles + image crops, /library grid +
-chips, sticky rails on quiz//multiplayer//products while scrolling, phone
-anchor ad still clear of the tab bar. No question banks touched, so no
-question-reviewer pass this session.
-
-**Choice questions removed - banks are numeric-only for now (2026-08-28,
-late).** Per Nico: no multiple-choice questions for now. All 25 `kind:
-"choice"` questions deleted from the new banks (econ1 16, econ2 8,
-cost_accounting 1; finance was already pure numeric). Banks now: finance 97,
-econ1 36, econ2 32, cost_accounting 39 = **204 questions, all seeded
-numeric**. The econ1 `game_theory` topic went with them (all four of its
-questions were choice) - a comment in `subjects.ts` marks the spot. The
-engine/UI keeps full choice support (types, shuffle, grading, multi-select) -
-nothing was removed from code, only from content. Recovery when Nico wants
-them back: the deleted questions live in commits `ed4eb4f` and `560c0a0`
-(ids listed in this entry's session log). Gate green: typecheck, verify
-204 × 200 seeds, build, 73 smoke.
-
-**Econ 1 grew to 52 from the W22/23 problem sets (2026-08-28, night).** Nico
-zipped the full TUM Economics I W22/23 course (13 problem sets with official
-solutions + 12 lecture decks + the already-ingested exercise exam). 28 new
-questions authored from problem sets 2-13 (20 numeric generators, 8 choice),
-capped deliberately below Nico's 100-question ceiling - only exam-plausible
-calculations; graph-sketching, page-long symbolic derivations and edge-case
-tasks were left out on purpose (list in the session log). Two new topics:
-`opportunity_cost`, `externalities`. New coverage: elasticities (point,
-unit-elastic, cross-price, supply), externalities/Pigou, two-part tariff,
-VAT revenue, MP/AP mechanics, returns to scale, factor demand, number of
-firms, monopoly DWL + tax neutrality, three 2×2 game-theory classics.
-Reviewer pass (opus, 600-seed independent recomputation): 1 FAIL (a draw
-could reproduce the PS7 table row) + 3 tightenings - all fixed (ranges
-shifted, [0.08,25] pair dropped, source-tuple guard, source labels
-normalized). Gate green after fixes: typecheck, verify 229 × 200 seeds,
-build, 73 smoke (from /tmp/fb2 copy). The uploaded course zip stays out of
-the repo per the copyright policy. Same visual check owed as below: /career
-econ1 now shows 9 topics.
-
-**Calculation banks shipped: Econ 1 + Econ 2 + Cost Accounting (2026-08-28,
-evening).** 104 new questions from 16 real TUM exam PDFs (project knowledge):
-econ1 24 (Exercise Exam WT22/23), econ2 40 (SS2017 OCR'd + SS2018 + SS2019,
-58 catalog entries merged into 40 generators), cost_accounting 40 (SS2015,
-WS16/17, SS2017, WS17/18, SS2018, WS18/19, Mock + 2021 answer-key deck — 7
-papers deduped into 40 variant families). 87 numeric seeded generators + 17
-choice; all topics added to `subjects.ts` (7 econ1, 10 econ2, 9
-cost_accounting). Everything redesigned per the copyright policy: new
-scenarios/names, numbers drawn per seed, and draws explicitly exclude the
-source exams' own parameter sets. Loop ran in full: three authoring agents →
-gate → three `question-reviewer` agents (opus, independent recomputation, up
-to 5,000 seeds/question) found 13 FAILs (6 seeded draws that could reproduce
-exam numbers, 5 wrong/misplaced `source` citations, 2 notation slips) — all
-fixed, plus reviewer nice-to-haves (dead rng draw removed, plural fix,
-negative-wage clamp, thinnest redesign hardened). Gate green after fixes:
-typecheck, verify 201 questions × 200 seeds, build, 73 smoke checks (run from
-/tmp copy as usual). Solo + multiplayer both deal from these banks
-automatically. Not done on purpose: the ingested exams' pure concept/MC
-questions (Nico: calculations only for now); Nico's other MC-exam list
-(Marketing, Financial Accounting, IVF, ML, Entrepreneurial & Ethical
-Business, Strategic & Intl. Management) waits for exam files. **Visual check
-owed on Nico's machine:** /career shows the three new subjects with topic
-ticks; play one econ1, one econ2, one cost_accounting posting each (KaTeX in
-prompt/given/explanation, hint = first formula segment, units).
-
-**Copyright-safe exam redesign policy (2026-08-28).** Nico wants calculation
-modules built from real MC/SC exams of the two bachelor/master programs
-(calculation questions first — the 9-subject MC list lives in this session's
-chat and SPEC #11). Web research confirmed the approach: German copyright
-(§ 2 UrhG) can protect an exam task's *wording and invented scenario*
-(Schöpfungshöhe), but never the tested method, formula, or concept — so
-questions are redesigned (own wording, new scenario/names, fresh numbers via
-seeded `build`), not translated copies. Policy written into the
-`add-exam-questions` skill (step 3) and `.claude/rules/questions.md`
-(Provenance). Source exam PDFs never enter the repo. The exam files turned
-out to live in the Claude project knowledge (not uploads) — found and
-ingested the same day, see the entry above. The `question-reviewer`
-definition's criterion 2 was rewritten to match (competency fidelity instead
-of wording fidelity).
-
-**Shop + Library go real, ladder gets rungs (2026-08-28).** (1) The
-multiplayer corporate-ladder scoreboard now draws an actual ladder behind the
-climbers - two SVG rails + one rung per posting (capped at 20), aligned to
-the same 6..84% climb band as the player chips. (2) **Affiliate decision:
-Amazon PartnerNet** - rationale + Nico's tag TODO live in
-`src/lib/affiliate.ts`; every link is an amazon.de *search* link (rot-proof,
-tag drops in with one constant). Patagonia (AvantLink, 4-6 week manual
-review, traffic vetting) judged unrealistic for now. (3) `/products` rebuilt:
-Birkin Bag ("something small for forgetting her birthday", SOLD OUT chip),
-canon Patagonia Vest copy with a real ellesse search link + "Patagonia would
-not return our calls" note, canon Business School Cigarettes copy linking
-bubble cigarettes, Hela Curry Gewürz Ketchup, TI-30 calculator, Matcha
-starter set (Munich Matcha Alert tie-in). Images hotlinked from Wikimedia
-Commons (PD/CC0 where possible; CC-BY images credited in a photo-credits
-card - keep it). § 5a UWG disclosure card + Amazon's "earns from qualifying
-purchases" sentence added. (4) `/library` rebuilt: sections Startup /
-Personal Investing / Social Understanding & Negotiation / Psychology; shelf =
-Lean Startup, SPIN Selling, Psychology of Money, What Every BODY Is Saying
-(the English "Menschen lesen"), Never Split the Difference, How to Win
-Friends, Atomic Habits, The Child in You (the English "Das Kind in dir muss
-Heimat finden"); $100M Money Models (Hormozi) sits in "on order" (unread =
-unrated). **ROI-multiplier rating system** (ROI ×N per reading hour, legend
-card); `roi`+`review` are null until Nico delivers HIS numbers/words
-(rendered as "pending audit" - do not invent them; his two one-liners for
-Lean Startup and SPIN are in). Covers via Open Library covers API. Amazon
-buttons live (untagged until the tag exists). (5) Smoke grew 7 checks
-(products 200/amazon/no-dead-links/canon-copy/SOLD OUT, library
-amazon + ROI): 73 green, build from the /tmp/fb copy as usual. Visual check
-on Nico's machine still owed: /multiplayer ladder, /products, /library.
-
-**Library reviews landed (2026-08-28, same day).** Nico dictated ROI + opinion
-for all 8 books (Lean Startup ×7, SPIN ×21, Psychology of Money ×13, What
-Every BODY ×9, Never Split ×7, How to Win Friends ×8, Atomic Habits ×6, The
-Child in You ×11); texts edited for brevity/jokes but the substance is his.
-Legend card gained his disclaimer: anything above ×1 is worth a read - the
-shelf is favorites out of ~100 read books, the multiplier ranks favorites.
-More books will come later per Nico.
-
-**Waiting on Nico:** PartnerNet signup -> tag into `src/lib/affiliate.ts`.
-
-
-**Multiplayer v1.1 (2026-08-26, night) - live-feedback round.** Nico played on
-prod and reported drops + wishes; all shipped: (1) **disconnect fix** - the
-edge kills WebSockets silent for ~100s (idle lobby or a hard question both
-qualify); client now heartbeats "ping" every 25s, the DO answers via
-`setWebSocketAutoResponse` (no wake), plus silent auto-reconnect with backoff
-(1-2-4-8-8s) and a "reconnecting to the floor" banner; empty rooms get a 5-min
-grace before reaping so reconnects and locked phones survive, and an explicit
-`leave` message distinguishes walking out from a dropped line. (2) **Challenge
-Inflation** now opens the lobby with the bot pre-seated instead of
-auto-starting - mode/subjects/pace stay pickable. (3) **⚡ Rapid mode** toggle:
-pool filtered to very_easy+easy (38 in Finance), Front Running bell drops to
-45s. (4) **Game view redesign**: MARKET OPEN header chips, xl ad rail
-(160×600 + 200×200), 728×90 under the card (md+) / 320×100 feed (phone),
-**corporate-ladder scoreboard** - players climb an office tower from Mailroom
-to Corner office 🏆, one settled posting per floor, with per-player 💸 and 📉
-fine print; phone gets a thin scrollable race strip that never blocks play;
-compact semester leaderboard in the desktop game rail; duels desk also got
-728×90/320×100. (5) Landing statement jokes now wrap on phones
-(`sm:truncate` instead of `truncate`). Verified: root check green (66),
-worker tsc green, e2e now 14/14 incl. a rapid-only-deals-easy case,
-headless shots desktop+phone (game, lobby with rapid, landing). Deploys on
-push: Cloudflare rebuilds the worker, Vercel the site - protocol added
-optional-ish `rapid`/`leave`, old clients stay compatible during rollout.
-
-**Multiplayer v1 built (2026-08-26, evening) - awaiting Nico's Cloudflare
-setup.** SPEC #26: `/multiplayer` is now the real duels desk, `worker/` holds a
-Cloudflare worker (free tier, never paused for inactivity - the anti-Supabase
-choice). One Durable Object per lobby: 5-char room codes (no 0/O/1/I) +
-copyable invite link (`/multiplayer?room=CODE`), up to 8 humans, self-chosen
-names (localStorage, slur filter -> "Intern"), host picks mode / posting count
-(5/10/15) / any mix of subjects with per-topic ticks (nothing ticked = whole
-bank). Two modes: **Front Running 🏃** (shared posting, first correct settles
-it for everyone, 120s deadline then reveal, 3s wrong-answer lockout) and
-**Bull Run 🐂** (own pace, write-offs re-queue with fresh seeds, first
-finished statement ends the game). **Inflation 📈** bot on DO alarms with
-per-difficulty delay/accuracy; "Quick duel" = room + bot + start in one tap.
-Server sends only (question id, seed); clients build postings with the shared
-engine; the DO grades with `isWithinTolerance` - scoreboards cannot be faked
-from devtools. Duels pay real BroDollars: every settled/won posting pays its
-difficulty's base points, the winner adds a flat +250 💸 closing-bell bonus
-(server-computed, credited to the `bwr_score_v1` balance once on the end
-message - the navbar pill picks it up live). Game ends upsert a D1 semester
-leaderboard (SS/WS key, top 10
-on the duels desk, resets by keying on the semester). Without
-`NEXT_PUBLIC_MP_URL` the page renders the canon placeholder verbatim (hard
-rule 1; canon copy preserved inside `MultiplayerClient`). Verified: root
-`npm run check` green (66 smoke checks, from the /tmp/fb rsync copy as usual),
-`worker` tsc green, and a real e2e - wrangler dev + two WebSocket players +
-bot played both modes to the closing bell, 12/12 PASS (`worker/test/e2e.ts`,
-run from repo root: `npx tsx worker/test/e2e.ts`). Headless-Chromium
-screenshots of home/lobby/game (dark-mode OS, page stays light) looked right;
-fonts/emoji tofu remain sandbox artifacts. Not built yet (deliberate):
-matchmaking queue, rapid mode (needs difficulty curation), friend system,
-nickname market, anti-LLM prompt injection (cut - seeded numbers + the
-frontrun clock already do the work; injection is lost cat-and-mouse).
-
-**Landing polish + rank economy shipped (2026-08-26).** Nico's punch list:
-(1) hero de-emphasized - h1 down to text-2xl/3xl, tagline to 14px, the
-account view leads the page; (2) the statement is wider on desktop
-(`md:max-w-3xl`, phone unchanged); (3) the fake € expenses now scale with
-rank - six tiers, two ranks each, from instant noodles / "Netflix, with ads"
-(Unemployed) through Rimowa + minibar (Consultant), vibes-based angel checks
-(VC Guy), divorce-lawyer retainers (MD/Founder) up to rocket fuel, a
-−44,000,000,000 € social-media impulse buy and the 0DTE SPY calls closing
-every tier at ever-sillier size (the top one dies at the int limit);
-(4) `/career` CTA is on the first screen everywhere - desktop: Step 2 column
-is sticky and "Start earning 💸" moved above the topic list; phone/tablet:
-a fixed CTA bar rides above the anchor ad (it mirrors AnchorAd's consent
-logic to stack at 120px/62px) and above the tab bar; nothing ticked now
-starts the whole bank instead of a disabled button ("Nothing ticked = the
-whole bank"); (5) rank economy: `LEVEL_COSTS` in `rankings.ts` replaces the
-old base-100 ×1.5 curve - hand-tuned steps 100 → 3,100 (~12,300 total to
-FinanceBro, ~1.3-1.4× per step, +3,500/level past the top), and every rank
-carries a small flat `bonus` (0 → 150 💸) added to each settled posting -
-completion pay, not scaled by time or the hint (hint still halves the base).
-The "UP TO" chip includes the bonus so it never understates the payout.
-`npm run check` green - 66 smoke checks. Verified via sandbox
-headless-Chromium screenshots (landing desktop/phone at rank 1 and at a
-seeded 20,000 💸 FinanceBro statement, career desktop + phone first screen
-with the CTA above ad + tab bar); build again ran from an rsync copy
-(`/sessions/…/fb`) because of the FUSE EPERM-on-delete mount issue - the
-committed tree is what was checked.
-
-**Landing v3 "banking app" + quiz hint/skip shipped (2026-08-25).** Per Nico's
-punch list: the landing now IS the account view - navy card with the real 💸
-balance, current position + its last payroll (`salary` added per rank, 0 € for
-Unemployed, 1 € for the Unicorn Founder), an IBAN gag, the CTA renamed
-**"Make some money 🤑"**, and a fake € statement underneath (oat-milk flat
-whites, the Patagonia vest, a DECLINED Rolex financing rate, P1 bottle
-service, "Powder, white · 'for the protein shakes'" UNDER REVIEW, 0DTE SPY
-calls) with a 💸/€ exchange-rate footnote so the two currencies never mix.
-Removed per Nico: the "97 questions · works fully offline · tuition: 0 €"
-chip, the "The exam trainer … at TUM" sentence, and the on-page
-"Ad rail · kept away from the maths" label (slots stay); "against the clock"
-is now "against inflation"; the brand is recased **FinanceBro** everywhere
-(h1, navbar, footer, metadata/OG - domain unchanged); the balance pill says
-UNEMPLOYED 🛋️ instead of TIER 1. In the quiz, every open posting has
-**💡 Hint · −50%** (numeric: the symbolic lecture formula = first `$…$`
-segment of the explanation, `verify` fails the build if it would leak the
-answer and warns if missing; MC: half the wrong options get written off) and
-**Skip ⏭ · 0 💸** (posting leaves the run - no re-queue, streak untouched,
-"SKIPPED" in the ledger, "Forwarded to the tax advisor" row + own joke line
-on the session statement, grey segment in the progress strip; session gets an
-optional `skipped` array, old stored sessions default it). `npm run check`
-green - 66 smoke checks (10 new/changed, incl. brand title, statement
-markers, removed-copy guards). Verified via sandbox headless-Chromium
-screenshots (landing desktop+phone in dark-mode OS, quiz open/hint/after-skip
-desktop + phone); emoji tofu remains a sandbox-font artifact. NOTE: the
-sandbox now cannot build under the mount at all (FUSE EPERM on every
-delete, even of files the build itself just wrote) - this session ran
-`npm run check` from an rsync copy at `/tmp/fb` and re-synced edited files;
-the committed tree is identical to what was checked.
-
-**Landing v2 + career v2 + ad standardization shipped (2026-08-22).** The
-homepage is now a joke landing that points at `/career` ("Start your career
-🪦" CTA, coming-soon teasers incl. the **Munich Matcha Alert**, compact
-subject strip kept for SEO/smoke). `/career` is a stepped setup: Step 1 pick
-a career, Step 2 topics + session; topics start **unselected** with a
-"Select all" tick row (replacing the text toggle); on stacked layouts
-(< lg) picking a career auto-scrolls to Step 2 and tapping the selected
-career again starts the run immediately (ticked topics, else all - the card
-says "TAP AGAIN TO START"). Ad slots moved to IAB-standard sizes (200×200,
-728×90, 320×100, 468×60; 160×600 stays) so a network drops in later, and a
-new phone-only **320×50 anchor ad** (`AnchorAd`) sits fixed above the tab
-bar on every page except the ad-free `/library` - it renders only after a
-cookie-consent decision and hides while the banner is open, with an in-flow
-spacer so it never covers content. The footer lost its Library link (nav +
-tab bar keep it). All em dashes in `src/` + `scripts/` were replaced with
-`-` per Nico's rule (question files: punctuation-only diff, `verify`
-round-trips green); smoke now guards `/` and `/career` against em dashes.
-`npm run check` green - 59 smoke checks (5 new). Verified via sandbox
-headless-Chromium screenshots (phone + desktop, incl. the tap-again flow
-clicking through to `/quiz`); emoji tofu + fallback font remain
-sandbox-only artifacts.
-
-**Legal + Library shipped (2026-08-21, evening).** The nav's Language slot is
-now Library 📚 — `/library` has SPIN Selling + The Lean Startup as placeholder
-cards ("AD · link coming soon" buttons, advertising-transparency card,
-deliberately **no AdSlot**; smoke asserts "Sponsored" never appears there).
-`/language` stays alive but unlinked (canon page). A new site-wide footer
-links `/impressum` (§ 5 DDG for a private operator; **no** EU-ODR link — the
-platform shut down 2025-07-20 and the old mandatory reference must stay gone,
-smoke-guarded), `/privacy` (GDPR/TDDDG, English like the site) and "Cookie
-settings". The cookie banner ("We'd like to steal your cookies 🍪") has
-equal-weight accept/decline buttons and a plain-language consent sentence.
-PostHog is fully wired but **inert**: `src/lib/analytics.ts` only imports
-posthog-js when `NEXT_PUBLIC_POSTHOG_KEY` exists AND the visitor accepted;
-EU endpoint (Frankfurt) is the default. `npm run check` green — 54 smoke
-checks (12 new). Verified via sandbox headless Chromium screenshots: banner
-above the phone tab bar, footer + privacy-page "Cookie settings" reopen the
-banner after a decline; emoji are tofu only in the sandbox's font stack.
-
-**Design 3a shipped (2026-08-21).** The whole site now wears the "Statement"
-private-bank shell from Nico's design handoff (`docs/design/3a/`): navy chrome
-with balance pill and credit float, Manrope + IBM Plex Mono, three-column quiz
-(ad rail | posting card | account rail with ledger + career track), phone
-bottom tab bar with the full progress stack, `/career` as the setup page
-(subject cards as "dead-end careers", topic tickboxes, one Semester-Marathon
-mode), sessions persisted in localStorage so Quiz resumes and Career restarts.
-Write-offs re-queue with fresh numbers until every posting settles. Nico's
-original jokes (rank ladder incl. "Jeff Bezzo's", Multiplayer/Language/Bro-Shop
-copy, BroDollar) are verbatim; the design's German gags were translated by
-meaning per the English-only rule. The Bro Shop keeps its own catalogue layout,
-restyled only. `npm run check` green (42 smoke checks, incl. new `/career`
-assertions).
-
-97 questions, all Finance, all built from Nico's TUM course material (IVF
-formula catalogue + the original app's data). The six non-Finance banks are
-**intentionally empty** since 2026-08-21: their syllabus-invented seed questions
-(78) were removed — per Nico, only content based on real TUM exams may ship.
-Their invented topic lists went too; topics come back with the exams. Empty
-subjects show a "being rebuilt from real TUM exams" state, guarded by smoke.
-
-Formulas now render as KaTeX in lecture notation everywhere (prompts, given
-table, choices, explanations) via `RichText`; `npm run verify` compiles every
-`$…$` segment. The plain-text formula dumps (`C·((g/q)^N−1)/(g−q)`) are gone.
-
-`npm run check` is green and runs in CI. **Nico has not pushed yet** — local
-`main` is ahead of origin (this session's commit plus `b63216f`, `87fbeb6`,
-`9fe74a0`, `9bc1525`).
-
-## Next up
-
-- **Multiplayer go-live (Nico, ~10 min, `worker/README.md` has the details).**
-  Cloudflare account exists (nicolas.dumpe@gmx.de). (1) Dashboard -> D1 ->
-  create `finance-bro-mp`, paste its Database ID into `worker/wrangler.jsonc`,
-  run `schema.sql` in the D1 console; (2) Workers & Pages -> Import repository
-  -> `nicotriescoding/finance-bro`, root directory `worker` - every push to
-  main then auto-deploys the worker (same flow as Vercel); (3) Vercel env var
-  `NEXT_PUBLIC_MP_URL` = the worker URL, redeploy. Then a two-tab test duel
-  (`npm run dev` also works: `NEXT_PUBLIC_MP_URL=http://localhost:8787` +
-  `cd worker && npm run dev`).
-- **Multiplayer visual check on Nico's machine** (sandbox screenshots looked
-  right, real Chrome still owed): duels desk, lobby with topic ticks, both
-  modes, the settled-by banner in Front Running, closing bell payroll
-  ranking, and the canon placeholder when the env var is absent.
-- **Leaderboard go-live (2026-09-02):** apply `worker/schema.sql` to the
-  remote D1 (see the entry above), then check /leaderboard in real Chrome -
-  intern name + claim flow, per-subject tabs, your-rank card.
-- **Multiplayer icebox:** matchmaking queue (a special always-open room),
-  rapid mode (filter on `difficulty` once curated), rematch keeps the room -
-  friends/accounts and the BroDollar nickname market stay parked until the
-  base sees real use.
-- **PostHog go-live** (whenever Nico wants analytics): create the project on
-  PostHog Cloud **EU** (eu.posthog.com — the privacy policy promises Frankfurt
-  hosting), set `NEXT_PUBLIC_POSTHOG_KEY` in Vercel per `.env.example`,
-  redeploy. Consent flow is already live; nothing else to build.
-- **Impressum email is temporary.** nicolas.dumpe@gmx.de is public on
-  `/impressum` + `/privacy`; swap to a finance-bro.de address once mail
-  exists (per Nico: "we will have to change that later").
-- **Affiliate go-live (Nico):** sign up at partnernet.amazon.de (site
-  qualifies: original content, Impressum, privacy page; approval finalizes
-  after 3 sales in 180 days), then set `AMAZON_TAG` in `src/lib/affiliate.ts`
-  and push. Later, at 10 sales/30 days: Creators API for live product
-  images (the only compliant way to show Amazon's pictures). Decided 2026-08-28 - program is Amazon PartnerNet, links already
-  live untagged on `/products` + `/library`.
-- **Library content (Nico):** ROI multiplier + one-paragraph personal review
-  for each of the 8 read books - drop them into the `SECTIONS` array in
-  `src/app/library/page.tsx` (`roi` / `review`, currently null = "pending
-  audit").
-- **Ingest TUM MC past exams.** Nico has them and uploads them after the
-  styling setup. Use the `add-exam-questions` skill (translates as it goes,
-  KaTeX per the rules, every question gets `source`). This refills Econ 1,
-  Econ 2, Financial Accounting, Cost Accounting, Entrepreneurship, Marketing —
-  and can add `source` tags to Finance questions that match real exam tasks.
-- **Visual check on Nico's machine.** New since 2026-08-25: the banking-app
-  landing (desktop + phone, dark-mode OS - page must stay light; the fake
-  statement rows, DECLINED/UNDER REVIEW chips, "Make some money 🤑"), the
-  quiz's Hint (formula renders as KaTeX, payout chip halves) and Skip
-  (ledger "SKIPPED" row, grey progress segment, statement row) and the
-  UNEMPLOYED-style rank pill in the chrome. Older items below still open.
-  Sandbox screenshots verified layout,
-  palette, KaTeX and all states (write-off, resume banner, empty bank, phone),
-  but with a fallback text font — the sandbox's headless Chromium would not
-  apply the Manrope webfont even though the woff2 files serve 200. First
-  `npm run dev` in real Chrome: confirm Manrope/Plex Mono render, check
-  `/quiz` + `/career` in dark-mode OS (page must stay light), and the balance
-  count-up + credit float on a correct answer. Add to the tour: `/library`,
-  `/impressum`, `/privacy`, the cookie banner (accept once, decline once —
-  wiped via localStorage key `fb-cookie-consent`) and the footer. New since
-  2026-08-22: the landing page (phone + desktop), the stepped `/career` on a
-  real phone (auto-scroll + tap-again-to-start with the ticked-topics
-  variants), and the anchor ad (appears only after a cookie choice, gone on
-  `/library`, never overlaps the tab bar or cookie banner).
-- **Cleanup on Nico's machine** (the sandbox cannot delete files):
-  `rm -rf .next_stale_sandbox .next_stale_sandbox2 .next_stale_sandbox3
-  .next_stale_sandbox4` (sandbox4 is from 2026-08-25 and contains a dangling
-  `.next → /tmp/fb-next` symlink from a failed workaround - after removal a
-  fresh `npm run dev`/`build` recreates `.next` normally)
-  (stale `.next` dirs renamed aside so builds could run), then
-  `rm -f .git/index.lock .git/HEAD.lock .git/refs/heads/main.lock .git/objects/maintenance.lock .git/*.lock.stale-* .git/objects/*.lock.stale-* && git reset`
-  (the `.stale-*` files are locks the 2026-08-25 session could only rename,
-  not delete)
-  (this session committed via an alternate index because the sandbox cannot
-  delete its own `index.lock`; the reset refreshes the stale on-disk index —
-  it does not touch the worktree), and the now-unused legacy components
-  `src/components/Scoreboard/` (Scoreboard, RankBadge, LevelUpAnimation) and
-  `src/components/ui/` (Button, Card, Input, ProgressBar, StatBadge) — nothing
-  imports them since the redesign.
-- **Update the Cowork project instructions.** Nico's Claude project settings
-  still carry the old German paste; the current English text lives in
-  `.claude/cowork-project-instructions.md` and should replace it.
-
-## Open decisions
-
-- **German edition.** Planned as a **second locale**, not a revert. Display
-  formatting is one constant (`LOCALE` in `_helpers.ts`); the real work is the
-  question text (parallel bank vs. translation layer) plus routing (`/de/…` vs.
-  subdomain) and `hreflang`.
-- **SEO after the language switch.** finance-bro.de serves English metadata to
-  an audience that searches in German. Watch Search Console; the German locale
-  above is the fix, not reverting.
-- **Where highscores live - resolved 2026-08-26.** Solo balance stays in
-  `localStorage`; multiplayer results live in Cloudflare D1 keyed by semester,
-  written only by the Durable Object. Off the read path per CLAUDE.md rule 1.
-
-## Known gaps
-
-- KaTeX rendering **has now been seen** (sandbox headless-Chromium
-  screenshots, 2026-08-21): prompts, given-table symbols and worked solutions
-  render correctly in the new posting card. Still confirm once in real Chrome
-  with the production fonts (see Next up).
-- `/multiplayer` and `/language` are placeholder joke pages from the original
-  build; `/language` is no longer linked anywhere (Library took its nav slot)
-  but stays deployed as canon. `/products` still has `via.placeholder.com`
-  images and dead affiliate links (SPEC #16).
-- `AdSlot` renders striped placeholders on IAB-standard sizes since
-  2026-08-22 (160×600 wide skyscraper, 200×200 small square, 728×90
-  leaderboard, 320×100 large mobile banner, 468×60 sponsored-career) plus
-  the fixed 320×50 mobile anchor in `AnchorAd`; still no ad network wired.
-  The standard sizes mean AdSense/etc. can drop in without moving layout —
-  keep it that way. Revenue optimization (which slots, which pages, ad
-  density) is deliberately deferred per Nico: ads must never interfere with
-  functionality.
-- **Hint quality varies.** The hint is always the FIRST `$…$` segment of the
-  explanation. For most questions that is the pure lecture formula; for a
-  handful (the "$g = q = …$" special-case annuities) the first segment is a
-  given, not the formula. Never wrong, never leaking (verify guards that),
-  just occasionally weak. If it bothers anyone: add an optional explicit
-  `hint` field to the question schema and prefer it in `src/lib/hints.ts`.
-- `fin-bond-modified-duration` asks for a signed percentage price change, so a
-  student typing `7.19` instead of `-7.19` fails. Either reword to "by how much
-  does it fall" or say "state the sign".
-- No automated visual regression test. A Cowork session **cannot** take the
-  screenshot itself (aarch64 sandbox, no Chrome, dev server not reachable from
-  Nico's browser). Visual checks happen on Nico's machine.
-- The sandbox cannot delete files under the mount; if git refuses to run:
-  `rm -f .git/index.lock .git/HEAD.lock .git/objects/maintenance.lock`.
-
-## Done
-
-- **TUM-only content policy enforced** (2026-08-21): 78 syllabus-invented
-  questions across 6 subjects removed, banks stubbed with provenance comments,
-  invented topics stripped, empty-state UI added, policy written into
-  CLAUDE.md hard rule 2 and `.claude/rules/questions.md`.
-- **KaTeX everywhere** (2026-08-21): `RichText` renders `$…$` + `**bold**`;
-  all 97 Finance explanations rewritten to symbolic lecture formula →
-  substituted values → result; symbol tokens in prompts/given wrapped as math;
-  `verify` compiles every segment and strips math before the placeholder check.
-- **Harness alignment** (2026-08-21): `SPEC.md` added as the session-handoff
-  artifact (product, loop, feature table); `question-reviewer` sharpened into
-  a skeptical PASS/FAIL evaluator; loop documented in CLAUDE.md.
-- **Site is English end to end** — UI, questions, subject names, metadata,
-  docs, agent context; jokes carried over by meaning (rank ladder, placeholder
-  pages). Only glossed statutory terms and `source` values stay German.
-  `npm run smoke` fails the build on stray German.
-- **Number parsing** accepts both conventions and U+2212; `npm run verify`
-  round-trips every displayed answer through the grader.
-- **Formula-sheet ingest**: 54 questions seeded from the TUM IVF formula
-  catalogue (`ivfall_rows.csv`), including the corrected
-  `geom_growing_PV_immediate_neq` row (the sheet's trailing `· q` belongs to
-  the annuity-due variant; verified against a brute-force cash-flow sum).
-- **CI** runs `npm run check` on every push and PR to `main`.
-- Question bank moved off Supabase into typed TypeScript; seeded engine;
-  tolerance grading with units; taxonomy with per-topic filters; rebrand plus
-  search/social metadata; dark-mode contrast bug fixed with a smoke guard.

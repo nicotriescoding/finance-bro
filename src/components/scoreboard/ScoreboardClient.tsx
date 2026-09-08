@@ -6,6 +6,8 @@
  * list, see leaderboard/page.tsx). Your own standing rides on top even when
  * you are not in the visible rows, and an intern still on the board without
  * a name gets nudged to claim one (the name is shared with the duels desk).
+ * Below the board: the corporate ladder with your position and the net-worth
+ * top 10 (2026-09-08).
  *
  * Hard rule 1: optional extra. No worker configured or unreachable -> the
  * "desk not staffed" card, never a blank page.
@@ -26,7 +28,9 @@ import {
 } from "@/lib/scoreboard/client";
 import type { ScoreboardResponse, ScoreboardScope } from "@/lib/scoreboard/shared";
 import AdSlot from "@/components/AdSlot";
+import CorporateLadder from "./CorporateLadder";
 import NameField from "./NameField";
+import NetWorthTop from "./NetWorthTop";
 
 const CARD =
     "rounded-[14px] border border-hairline bg-surface shadow-[0_1px_2px_rgba(15,33,55,.05)]";
@@ -103,7 +107,10 @@ export default function ScoreboardClient({ subjects }: { subjects: BoardSubject[
             </header>
 
             {!scoreboardEnabled ? (
-                <DeskClosed />
+                <>
+                    <DeskClosed />
+                    <CorporateLadder />
+                </>
             ) : (
                 <>
                     <Tabs tabs={TABS} scope={scope} onPick={setScope} />
@@ -193,6 +200,10 @@ export default function ScoreboardClient({ subjects }: { subjects: BoardSubject[
                         Solo postings count once the desk has re-graded them; duel winnings are
                         booked at the closing bell, per subject. Both go to the same balance.
                     </p>
+
+                    {/* the corporate ladder + the rich list (2026-09-08) */}
+                    <CorporateLadder />
+                    <NetWorthTop reloadKey={reloadKey} />
                 </>
             )}
 

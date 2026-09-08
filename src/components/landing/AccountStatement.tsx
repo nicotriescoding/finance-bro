@@ -5,212 +5,37 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { useRank } from "@/hooks/useRank";
 import { useScore } from "@/hooks/useScore";
 import { formatMoney, MONEY } from "@/lib/money";
+import { statementFor } from "@/content/statements";
 
 /**
  * The landing page as a banking app: account overview on navy (real balance,
  * current position, last payroll) and a statement of the month's spending.
  *
- * The transactions are decorative satire in €; the balance is real BroDollars
- * from localStorage. The exchange-rate footnote settles any confusion.
+ * The transactions are decorative satire in €, one list per rung of the
+ * ladder (`src/content/statements.ts`); the balance is real BroDollars from
+ * localStorage. The exchange-rate footnote settles any confusion.
  */
 
 const EUR_FMT = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
 });
-const eur = (v: number) => `${EUR_FMT.format(v)} €`;
-
-type Expense = {
-    label: string;
-    detail: string;
-    amount: number;
-    status?: "DECLINED" | "UNDER REVIEW";
-};
-
 /**
- * The month's spending, staged by rank (`Rank.tier`, ~3 ranks per tier), and
- * every promotion upgrades the statement - same bad decisions, bigger numbers.
- * The 0DTE SPY calls close every tier; they are always a sure thing.
+ * € with cents up to six digits; millions and billions compact ("2.4 m €",
+ * "44.0 bn €") so the upper statements stay in one line on a phone.
  */
-const EXPENSE_TIERS: Expense[][] = [
-    // tier 0 · Pupil, Unemployed, Volunteer, Unpaid Intern, Low Earner - survival mode
-    [
-        { label: "Instant noodles ×24, bulk", detail: "Today · meal plan Q3", amount: -13.8 },
-        { label: "Oat milk flat white, one, shared", detail: "Today · campus coffee cart", amount: -4.65 },
-        { label: "Supermarket own-brand matcha", detail: "Yesterday · almost tastes real", amount: -6.99 },
-        { label: "Netflix, with ads", detail: "Yesterday · the password crackdown got Mom too", amount: -4.99 },
-        { label: "LinkedIn Premium, free trial", detail: "3 days ago · will forget to cancel", amount: -0.0 },
-        {
-            label: "Gym membership, unused",
-            detail: "3 days ago · month 14 of going 'next week'",
-            amount: -9.9,
-        },
-        {
-            label: "Bottle deposit refund, reversed",
-            detail: "Last Friday · the machine rejected the crate",
-            amount: -3.75,
-            status: "UNDER REVIEW",
-        },
-        {
-            label: "0DTE SPY calls",
-            detail: "Last Friday · it was a sure thing",
-            amount: -12.4,
-            status: "DECLINED",
-        },
-    ],
-    // tier 1 · Minimum Wage Grunt … Subcontractor - first payslip energy
-    [
-        { label: "Oat milk flat white ×4", detail: "Today · campus coffee cart", amount: -18.6 },
-        { label: "Matcha, ceremonial grade", detail: "Today · limited seasonal drop", amount: -9.4 },
-        {
-            label: "LinkedIn Premium",
-            detail: "Yesterday · 'an investment in my network'",
-            amount: -39.99,
-        },
-        {
-            label: "Blue-light glasses, no prescription",
-            detail: "Yesterday · for the grind aesthetic",
-            amount: -34.99,
-        },
-        { label: "Used textbook, previous owner cried in it", detail: "3 days ago · campus bookstore", amount: -24.9 },
-        { label: "Aperol Spritz ×3, 'networking'", detail: "Last Friday · nobody networked", amount: -25.2 },
-        {
-            label: "Patagonia vest, outlet version",
-            detail: "Last Friday · the uniform, entry level",
-            amount: -49.9,
-        },
-        {
-            label: "0DTE SPY calls",
-            detail: "Last Friday · it was a sure thing",
-            amount: -240.69,
-            status: "DECLINED",
-        },
-    ],
-    // tier 2 · Junior Consultant, Consultant, LinkedIn Thought Leader - expensed, hopefully
-    [
-        { label: "Patagonia vest", detail: "Today · the uniform", amount: -149 },
-        { label: "Rimowa carry-on, polished nightly", detail: "Today · consultant starter pack", amount: -680 },
-        {
-            label: "Hotel minibar, all of it",
-            detail: "Yesterday · 'client engagement expense'",
-            amount: -64.2,
-            status: "UNDER REVIEW",
-        },
-        { label: "14 productivity apps, one used", detail: "Yesterday · the stack", amount: -87.32 },
-        {
-            label: "Rolex Submariner, financing",
-            detail: "3 days ago · month 1 of 96",
-            amount: -312.5,
-            status: "DECLINED",
-        },
-        {
-            label: "Bottle service, table by the DJ",
-            detail: "Last Friday · P1 Munich",
-            amount: -840,
-            status: "DECLINED",
-        },
-        {
-            label: "Powder, white",
-            detail: "Last Friday · 'for the protein shakes'",
-            amount: -90,
-            status: "UNDER REVIEW",
-        },
-        {
-            label: "0DTE SPY calls",
-            detail: "Last Friday · it was a sure thing",
-            amount: -2406.9,
-            status: "DECLINED",
-        },
-    ],
-    // tier 3 · Investmentbanker, Crypto Bro, VC Guy - the money is other people's
-    [
-        { label: "Rolex Submariner, paid in full", detail: "Today · the financing was beneath me", amount: -9150 },
-        { label: "Personal trainer, 05:30 slot", detail: "Today · before the desk, after the cot", amount: -220 },
-        {
-            label: "Omakase, 'business development'",
-            detail: "Yesterday · no business was developed",
-            amount: -780,
-            status: "UNDER REVIEW",
-        },
-        { label: "Maximilianstraße apartment, rent", detail: "Yesterday · 41 m² of location", amount: -4850 },
-        {
-            label: "Champagne tower, table by the DJ",
-            detail: "Last Friday · P1 Munich, both floors",
-            amount: -3200,
-        },
-        {
-            label: "Angel check, vibes-based due diligence",
-            detail: "Last Friday · 'the founder has great energy'",
-            amount: -25000,
-            status: "UNDER REVIEW",
-        },
-        {
-            label: "0DTE SPY calls",
-            detail: "Last Friday · it was a sure thing",
-            amount: -48000,
-            status: "DECLINED",
-        },
-    ],
-    // tier 4 · Managing Director, Hedge Fund Guy, Unicorn Founder - lifestyle as balance sheet
-    [
-        { label: "G-Wagon lease ×2", detail: "Today · one for each mood", amount: -4380 },
-        { label: "Leadership retreat, desert, barefoot", detail: "Today · found himself, lost the Q3 numbers", amount: -27900 },
-        {
-            label: "Contemporary art, uninspected",
-            detail: "Yesterday · 'for the office' · never shipped",
-            amount: -95000,
-            status: "UNDER REVIEW",
-        },
-        { label: "Boarding school fees, twins", detail: "Yesterday · they email him quarterly", amount: -18400 },
-        { label: "Yacht, fractional, back half", detail: "3 days ago · 1/8th of the part that doesn't steer", amount: -62500 },
-        {
-            label: "Divorce lawyer, retainer",
-            detail: "Last Friday · she found the second G-Wagon",
-            amount: -50000,
-        },
-        {
-            label: "0DTE SPY calls",
-            detail: "Last Friday · it was a sure thing",
-            amount: -850000,
-            status: "DECLINED",
-        },
-    ],
-    // tier 5 · Family Office Heir, Jeff Bezzo’s, FinanceBro - the statement of a small nation
-    [
-        { label: "Rocket fuel, top-up", detail: "Today · Tuesday joyride", amount: -2400000 },
-        { label: "Doomsday bunker, New Zealand", detail: "Today · 'a hedge, basically'", amount: -12500000 },
-        {
-            label: "Mona Lisa, replica, told everyone it's real",
-            detail: "Yesterday · the Louvre wouldn't pick up",
-            amount: -450000,
-        },
-        { label: "Senate hearing prep, consultants", detail: "Yesterday · 'I'll just be myself' · overruled", amount: -1200000 },
-        { label: "Small coastal island, impulse", detail: "3 days ago · it was next to the other one", amount: -380000000 },
-        {
-            label: "Social media platform, impulse",
-            detail: "Last Friday · renamed it by Monday",
-            amount: -44000000000,
-            status: "UNDER REVIEW",
-        },
-        {
-            label: "0DTE SPY calls",
-            detail: "Last Friday · it was a sure thing",
-            amount: -2147483647,
-            status: "DECLINED",
-        },
-    ],
-];
-
-/** `Rank.tier`, clamped to the tiers that exist. */
-function expensesForTier(tier: number): Expense[] {
-    return EXPENSE_TIERS[Math.min(EXPENSE_TIERS.length - 1, Math.max(0, tier))];
-}
+const eur = (v: number) => {
+    const abs = Math.abs(v);
+    if (abs >= 1e9) return `${(v / 1e9).toFixed(1)} bn €`;
+    if (abs >= 1e6) return `${(v / 1e6).toFixed(1)} m €`;
+    return `${EUR_FMT.format(v)} €`;
+};
 
 export default function AccountStatement() {
     const { score } = useScore();
-    const { rank } = useRank(score);
+    const { rank, ladderIndex } = useRank(score);
     const display = useCountUp(score);
-    const expenses = expensesForTier(rank.tier);
+    const expenses = statementFor(ladderIndex);
 
     return (
         <div className="mx-auto mt-6 flex max-w-xl flex-col gap-3 text-left md:max-w-3xl">

@@ -96,8 +96,8 @@ try {
         "/ renders server-side (no empty loading shell)",
         homeHtml.includes("questions") && !/^\s*Loading\.\.\.\s*$/m.test(homeHtml)
     );
-    // The six non-Finance banks are empty until their TUM past exams are
-    // ingested; their cards must say so instead of advertising "0 questions".
+    // Banks without an ingested exam yet (Financial Accounting, Entrepreneurship,
+    // Marketing) must say so instead of advertising "0 questions".
     check(
         "/ shows the exam-ingest empty state for rebuilt banks",
         homeHtml.includes("Exam questions coming soon")
@@ -272,9 +272,9 @@ try {
         "/library labels each affiliate link as advertising",
         libraryHtml.includes("affiliate link (Amazon)")
     );
-    // The three joke bundles (2026-08-29) and the desktop skyscraper rails.
+    // The joke bundles (eight since 2026-09-06) and the desktop skyscraper rails.
     check(
-        "/products shelves the three bundles",
+        "/products shelves the founding bundles",
         productsHtml.includes("FinanceBro Starter Pack") &&
             productsHtml.includes("Undercover Broke Student") &&
             productsHtml.includes("BWL Marie")
@@ -349,7 +349,12 @@ try {
     check("/ no longer links the Language page", !homeHtml.includes("Language 🎤"));
 
     // --- semester leaderboard (2026-09-02) ---------------------------------
-    // Optional extra (hard rule 1): the page must render without the worker.
+    // Optional extra (hard rule 1). `npm run check` builds with a dummy
+    // NEXT_PUBLIC_MP_URL (`build:check`) so the enabled branch - the one
+    // production runs - is what gets smoked: tabs, your-desk card, net-worth
+    // card, all server-rendered before any worker call; the worker itself is
+    // unreachable, so the client lands in the error states, never a blank page.
+    // A build without the URL takes the "desk not staffed" branch instead.
     const board = await fetch(`${BASE}/leaderboard`);
     const boardHtml = await board.text();
     check("/leaderboard returns 200", board.status === 200, `got ${board.status}`);
@@ -358,7 +363,40 @@ try {
         boardHtml.includes("Leaderboard 🏆") &&
             (boardHtml.includes("desk is not staffed") || boardHtml.includes("Overall"))
     );
+    if (boardHtml.includes("Overall")) {
+        check(
+            "/leaderboard (worker configured) server-renders the desk card and the rich list",
+            boardHtml.includes("Your desk") && boardHtml.includes("Net worth")
+        );
+    }
     check("/ links the Leaderboard", homeHtml.includes("Leaderboard 🏆"));
+    // 2026-09-08: the corporate ladder renders below the board from local
+    // state alone (hard rule 1) - every rung, bottom to top, SSR'd as Pupil.
+    check(
+        "/leaderboard shows the corporate ladder without a worker",
+        boardHtml.includes("Corporate ladder") &&
+            boardHtml.includes("Pupil") &&
+            boardHtml.includes("FinanceBro #N") &&
+            boardHtml.includes("The Richest Person") &&
+            boardHtml.includes("from 1,000,000 💸")
+    );
+    check("/leaderboard ships no em dashes", !boardHtml.includes(EM_DASH));
+    // 2026-09-08: one statement per rung - Pupil's pocket-money statement on
+    // first paint, and the running gag that closes every statement.
+    check(
+        "/ shows the Pupil statement",
+        homeHtml.includes("Gummy bears") && homeHtml.includes("0DTE SPY calls")
+    );
+
+    // --- multiplayer (optional extra, hard rule 1) -------------------------
+    const mp = await fetch(`${BASE}/multiplayer`);
+    const mpHtml = await mp.text();
+    check("/multiplayer returns 200", mp.status === 200, `got ${mp.status}`);
+    check("/multiplayer ships no em dashes", !mpHtml.includes(EM_DASH));
+
+    // The unlinked Language page was deleted 2026-09-08 - it must stay gone.
+    const language = await fetch(`${BASE}/language`);
+    check("/language is gone", language.status === 404, `got ${language.status}`);
 
     // --- legal pages (added 2026-08-21) -----------------------------------
     const impressum = await fetch(`${BASE}/impressum`);
