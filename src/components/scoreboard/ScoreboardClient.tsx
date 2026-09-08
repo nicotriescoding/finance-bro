@@ -334,7 +334,7 @@ function YouCard({
             )}
 
             {editing ? (
-                <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
                     <div className="flex-1">
                         <NameField
                             id="board-name"

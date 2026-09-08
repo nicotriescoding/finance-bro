@@ -93,23 +93,19 @@ export default function CookieBanner() {
                 We&apos;d like to steal your cookies 🍪
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                Translation for the lawyers: with your OK{" "}
+                Translation for the lawyers: with your OK,{" "}
                 {adsEnabled && (
                     <>
-                        Google AdSense shows ads picked for you and stores identifiers
-                        (cookies) for that, and{" "}
+                        Google AdSense shows ads picked for you and stores identifiers (cookies) for
+                        that, and{" "}
                     </>
                 )}
-                we use PostHog analytics (cookies / local storage) to see which
-                pages get used and which questions make people rage-quit. Decline
-                and nothing is tracked
-                {adsEnabled && " - you get at most limited ads without cookies"} -
-                the site works exactly the same. Change your mind anytime via
-                &quot;Cookie settings&quot; in the footer. Details in the{" "}
-                <Link
-                    href="/privacy"
-                    className="font-bold text-brand underline underline-offset-2"
-                >
+                we use PostHog analytics (cookies / local storage) to see which pages get used and
+                which questions make people rage-quit. Decline and nothing is tracked
+                {adsEnabled && ", and you get at most limited ads without cookies"}. The site works
+                exactly the same either way. Change your mind anytime via &quot;Cookie
+                settings&quot; in the footer. Details in the{" "}
+                <Link href="/privacy" className="font-bold text-brand underline underline-offset-2">
                     privacy policy
                 </Link>
                 .
@@ -175,7 +171,7 @@ export default function CookieBanner() {
                 <button
                     type="button"
                     onClick={() => setCustom(true)}
-                    className="mt-2.5 w-full text-center text-xs font-bold text-muted underline underline-offset-2 transition hover:text-ink"
+                    className="mt-1 w-full py-3 text-center text-xs font-bold text-muted underline underline-offset-2 transition hover:text-ink"
                 >
                     Pick and choose
                 </button>
@@ -207,11 +203,11 @@ function Toggle({
                 type="checkbox"
                 checked={checked}
                 onChange={(e) => onChange(e.target.checked)}
-                className="h-4 w-4 shrink-0 accent-[#1f6f47]"
+                className="h-4 w-4 shrink-0 accent-brand"
             />
             <span className="min-w-0">
                 <span className="block text-sm font-extrabold leading-tight">{label}</span>
-                <span className="block text-xs text-muted-light">{hint}</span>
+                <span className="block text-xs text-muted">{hint}</span>
             </span>
         </label>
     );

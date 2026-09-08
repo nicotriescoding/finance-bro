@@ -765,15 +765,15 @@ export default function ProductsPage() {
                     link, what was changed, and that the adapted image is released
                     under the SAME licence (share-alike; the Birkin stays 2.0 because
                     a 2.0 adaptation may not move to 4.0 - keep the versions apart). */}
-                <div className="text-center text-[11px] leading-relaxed text-muted-light">
-                    <p>
+                <div className="mx-auto max-w-2xl text-[11px] leading-relaxed text-muted">
+                    <p className="text-center">
                         Product photos licensed via Adobe Stock. Pictures are
                         illustrative - the linked offer may look better. Or worse.
                         Four photos come from Wikimedia Commons under Creative Commons
                         licences; our edited versions are released under the same
                         licence as the original in each case:
                     </p>
-                    <ul className="mt-1 flex flex-col gap-0.5">
+                    <ul className="mt-1.5 flex list-disc flex-col gap-1 pl-4 text-left">
                         {COMMONS_CREDITS.map((c) => (
                             <li key={c.file}>
                                 {c.what}: &quot;{c.file}&quot; by{" "}

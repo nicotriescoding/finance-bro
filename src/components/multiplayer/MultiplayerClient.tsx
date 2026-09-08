@@ -519,11 +519,7 @@ function HomeView(props: {
                     onSuggestion={props.onSuggestion}
                 />
                 <p className="-mt-1 text-xs text-muted">
-                    Leave it empty and you go in as the intern shown. Same name on the{" "}
-                    <Link href="/leaderboard" className="font-bold text-brand hover:underline">
-                        leaderboard
-                    </Link>
-                    .
+                    Leave it empty and you go in as the intern shown.
                 </p>
 
                 <div className="mt-2 grid gap-3 sm:grid-cols-2">
