@@ -40,22 +40,3 @@ export function buildInstance(question: Question, seed = randomSeed()): Question
         correctIndices: shuffled.reduce<number[]>((acc, c, i) => (c.correct ? [...acc, i] : acc), []),
     };
 }
-
-/**
- * Build a shuffled run of `length` instances out of the selected pool.
- * If the pool is smaller than the requested length, questions repeat with a
- * fresh seed - which is fine, because the numbers will be different.
- */
-export function buildSession(pool: Question[], length: number): QuestionInstance[] {
-    if (pool.length === 0) return [];
-    const rng = createRng(randomSeed());
-    const out: QuestionInstance[] = [];
-    let bag: Question[] = [];
-
-    for (let i = 0; i < length; i++) {
-        if (bag.length === 0) bag = rng.shuffle(pool);
-        const q = bag.pop()!;
-        out.push(buildInstance(q, rng.int(1, 2_147_483_646)));
-    }
-    return out;
-}

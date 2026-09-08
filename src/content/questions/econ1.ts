@@ -1731,8 +1731,7 @@ export const econ1Questions: Question[] = [
             const p = rng.pick([1, 2, 3, 4]);
             const w = rng.pick([2, 3, 4, 5, 6, 8, 10, 12].filter((x) => x !== p));
             const cycle = p * (p + w);
-            let v = rng.int(Math.ceil(24 / cycle), Math.floor(168 / cycle));
-            if (p === 1 && w === 5 && cycle * v === 24) v += 1;
+            const v = rng.int(Math.ceil(30 / cycle), Math.floor(168 / cycle));
             const Z = cycle * v;
             const F = p * p * v;
             const answer = p * w * v; // = Z - F = w Z / (p + w)
@@ -1760,8 +1759,7 @@ export const econ1Questions: Question[] = [
             const p = rng.pick([1, 2, 3, 4]);
             const w = rng.pick([2, 3, 4, 5, 6, 8, 10, 12].filter((x) => x !== p));
             const cycle = p * (p + w);
-            let v = rng.int(Math.ceil(24 / cycle), Math.floor(168 / cycle));
-            if (p === 1 && w === 5 && cycle * v === 24) v += 1;
+            const v = rng.int(Math.ceil(30 / cycle), Math.floor(168 / cycle));
             const Z = cycle * v;
             const F = p * p * v;
             const L = p * w * v;

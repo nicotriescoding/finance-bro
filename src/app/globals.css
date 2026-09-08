@@ -13,8 +13,8 @@
 }
 
 /*
- * Design tokens for direction 3a - "private bank" palette.
- * Names follow the design handoff (docs/design/3a/README.md).
+ * Design tokens for direction 3a - "private bank" palette. This block is the
+ * whole colour vocabulary; the design-reviewer agent checks new UI against it.
  */
 @theme {
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;

@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:check": "NEXT_PUBLIC_MP_URL=http://127.0.0.1:9/check next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "verify": "tsx scripts/verify-questions.ts",
     "smoke": "node scripts/smoke.mjs",
-    "check": "npm run typecheck && npm run verify && npm run build && npm run smoke"
+    "check": "npm run typecheck && npm run verify && npm run build:check && npm run smoke"
   },
   "dependencies": {
     "katex": "^0.18.4",
@@ -20,25 +21,14 @@
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19.1.11",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.0",
+    "eslint-config-next": "^16.1.1",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
     "typescript": "^5"
-  },
-  "eslintConfig": {
-    "extends": [
-      "next",
-      "next/core-web-vitals"
-    ],
-    "rules": {
-      "@typescript-eslint/no-explicit-any": "off",
-      "react/no-unescaped-entities": "off"
-    }
   }
 }

@@ -1978,8 +1978,7 @@ export const econ2Questions: Question[] = [
         source: "TUM Economics II SS2018, Q23-24 (Cobb-Douglas consumption smoothing)",
         build: (rng) => {
             const y1 = 10 * rng.int(4, 16);
-            let r = 5 * rng.int(1, 7);
-            if (y1 === 100 && r === 20) r = 25; // never the SS2019 frontier tuple
+            const r = 3 * rng.int(1, 10);
             const c1 = y1 / 2;
             const answer = (1 + r / 100) * c1;
             return {
@@ -2030,8 +2029,7 @@ export const econ2Questions: Question[] = [
         source: "TUM Economics II SS2019, Q26",
         build: (rng) => {
             const y1 = 20 * rng.int(2, 6);
-            let r = 5 * rng.int(1, 8) * rng.pick([1, -1]);
-            if (y1 === 100 && r === 20) r = 25; // never the SS2019 Anneliese tuple
+            const r = 3 * rng.int(1, 10) * rng.pick([1, -1]);
             const F = y1 * (1 + r / 100);
             return {
                 prompt: `Ana in Portugal earns ${n(y1)} thousand € this year and nothing next year. If she invests her entire income in her workshop, she can consume at most ${n(F)} thousand € next year (there is no other way to transfer income between the years). What rate of return does her investment yield? A negative number means the investment loses value.`,
@@ -2612,8 +2610,7 @@ export const econ2Questions: Question[] = [
         source: "TUM Economics II lecture, Unit VII slides 21-23 (money creation by lending)",
         build: (rng) => {
             const X = 50 * rng.int(1, 8);
-            let Y = 50 * rng.int(1, 8);
-            if (X === 100 && Y === 100) Y = 150; // never the lecture's Marco/Gino tuple
+            const Y = 50 * rng.int(1, 8) + 25;
             const answer = X + Y;
             return {
                 prompt: `A saver deposits ${n(X)} € of cash at a Portuguese bank, which credits her account with ${n(X)} €. The bank then grants a firm a loan of ${n(Y)} € by crediting the firm's account - no cash changes hands. How much **broad money** (total account balances payable on demand) now exists in this small banking system, in €?`,

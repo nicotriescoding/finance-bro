@@ -2,8 +2,17 @@
  * Sanity check for the whole question bank.
  * Run: npm run verify
  *
- * Builds every question against many seeds and fails on NaN / Infinity,
- * unfilled placeholders, unknown topics, or broken choice definitions.
+ * Checks, per question: duplicate ids, unknown subject/topic, and for every
+ * numeric question 200 seeded builds that must not throw, produce a
+ * non-finite answer, leave an unfilled `{placeholder}` in the prompt, or leak
+ * NaN/Infinity/undefined into the text. Every `$...$` segment (prompt, given,
+ * explanation) must compile with KaTeX; the formula hint (first `$...$` of
+ * the explanation) must exist and must not contain the answer. Choice
+ * questions (engine support only, unused) get their index/option checks.
+ * Then parseNumericInput is run against fixed en-US and German inputs, and
+ * every numeric answer is formatted and re-parsed to make sure retyping the
+ * displayed answer grades correct. Implausibly large answers and missing
+ * hints are warnings, everything else fails the build.
  */
 import katex from "katex";
 import { ALL_QUESTIONS } from "../src/content/questions";

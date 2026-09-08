@@ -1,7 +1,8 @@
 # AdSense + consent dialog + PostHog - go-live steps (Nico)
 
-Code is done (2026-09-06). Everything below is account work; each step
-flips on by itself once its env var / id exists.
+Code is done (2026-09-06): PostHog token, AdSense client id and slot ids are
+all baked in. Still open (account work): AdSense site review (step 2.3), the
+GDPR consent message (step 2.4), payments (step 2.6) and the Amazon tag (3).
 
 ## 1. PostHog - DONE in code (2026-09-06)
 
@@ -14,11 +15,14 @@ keep session replay OFF in the project (the code disables it too).
 
 1. https://adsense.google.com -> sign in with the gmx account -> add site
    `finance-bro.de`. Country Germany, payment name = Impressum name.
-2. Publisher id `ca-pub-6951760347839431` is baked into `src/lib/ads.ts`
-   (2026-09-06) - the AdSense tag is on every page after the next push,
-   which is what the site review needs. Striped placeholders stay until
-   step 5. Until step 4 is published, the site's own cookie banner shows
-   as a fallback (6 s after load, only if Google's dialog never appears).
+2. DONE in code (2026-09-06): publisher id `ca-pub-6951760347839431` and
+   the six `AD_SLOTS` ids are baked into `src/lib/ads.ts`, the AdSense tag
+   is in `<head>` on every page (`layout.tsx`), which is what the site
+   review needs. Units render live per slot id; a unit whose id is empty
+   would keep its striped placeholder. Until step 4 is published, the
+   site's own cookie banner shows as a fallback (6 s after load, only if
+   Google's dialog never appears - `adsEnabled && isGoogleConsentDialogActive()`
+   in `CookieBanner.tsx` is the gate that keeps ours closed).
 3. AdSense -> Sites -> "Request review". Google checks content, Impressum,
    privacy page (all in place). Wait for "Ready".
 4. **Privacy & messaging -> European regulations -> Create message**
@@ -39,12 +43,15 @@ keep session replay OFF in the project (the code disables it too).
    - Manage options: `Pick and choose`
    - Styling: primary colour `#1f6f47` (brand green), font Manrope if
      offered, otherwise default; add the site logo if you want.
-   Publish. (The site's own banner switches itself off as soon as
-   `NEXT_PUBLIC_ADSENSE_CLIENT` exists - `src/components/consent`.)
-5. Ads -> By ad unit -> Display ads -> **Fixed** size, one per row of
-   `AD_SLOTS` in `src/lib/ads.ts`: 160x600, 200x200, 728x90, 320x100,
-   468x60, 320x50. Paste each `data-ad-slot` id (digits) into that map,
-   commit, push. Units go live per id - the rest keep their placeholder.
+   Publish. (The site's own banner stays closed whenever Google's dialog is
+   active - `src/components/consent/CookieBanner.tsx`. `NEXT_PUBLIC_ADSENSE_CLIENT`
+   only overrides the baked-in client id, or set it to `off` to disable
+   AdSense and fall back to the own banner for a build.)
+5. DONE (2026-09-06): the six ad units (Display ads, **Fixed** size:
+   160x600, 200x200, 728x90, 320x100, 468x60, 320x50, named fb-<slot>)
+   exist in AdSense and their `data-ad-slot` ids are in `AD_SLOTS` in
+   `src/lib/ads.ts`. Only for a new unit: create it the same way and add
+   the id to that map.
 6. Payments: address verification PIN comes by post at 10 EUR earned;
    bank + tax info (Steuer-ID) before the first payout at 70 EUR.
    AdSense income is gewerblich - Gewerbeanmeldung / Kleinunternehmer

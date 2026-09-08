@@ -14,20 +14,21 @@ push to `main` -> Vercel rebuilds the site AND Cloudflare rebuilds the worker.
 
 1. **Create the D1 database.** Dashboard -> Storage & Databases -> D1 ->
    Create -> name it `finance-bro-mp`. Copy the Database ID into
-   `wrangler.jsonc` (`database_id`). Then apply the schema: open the database
-   -> Console -> paste the contents of `schema.sql` and run it.
-   (Or with the CLI: `npx wrangler d1 create finance-bro-mp` and
-   `npx wrangler d1 execute finance-bro-mp --remote --file=schema.sql`.)
+   `wrangler.jsonc` (`database_id`). Applying `schema.sql` by hand is
+   optional: the worker runs `ensureSchema()` (`src/scoreboard.ts`) on first
+   access and creates the tables itself (`CREATE TABLE IF NOT EXISTS`).
+   (CLI alternative: `npx wrangler d1 create finance-bro-mp`; to apply the
+   schema anyway, `npx wrangler d1 execute finance-bro-mp --remote --file=schema.sql`.)
 2. **Connect the repo.** Dashboard -> Workers & Pages -> Create -> Workers ->
    Import a repository -> pick `nicotriescoding/finance-bro`.
-   - Project name: `finance-bro-mp`
+   - Project name: `finance-bro` (must match `name` in `wrangler.jsonc`)
    - Root directory: `worker`
    - Build command: leave default (`npx wrangler deploy` runs from the root
      directory)
    Every push to `main` now auto-deploys the worker, same flow as Vercel.
 3. **Point the site at it.** Vercel -> Project -> Settings -> Environment
    Variables -> add `NEXT_PUBLIC_MP_URL` = the worker URL from step 2
-   (e.g. `https://finance-bro-mp.<account>.workers.dev`, no trailing slash)
+   (e.g. `https://finance-bro.<account>.workers.dev`, no trailing slash)
    -> redeploy. Until this is set, /multiplayer shows the canon placeholder.
 
 ## Local development
@@ -41,7 +42,8 @@ npm run typecheck
 
 Run the site with `NEXT_PUBLIC_MP_URL=http://localhost:8787 npm run dev` to
 play against yourself in two tabs. `npx tsx worker/test/e2e.ts` from the repo
-root plays three games and exercises the scoreboard endpoints against it.
+root plays three games (Bull Run, Front Running vs. the bot, Rapid) and
+exercises the scoreboard endpoints against it.
 
 ## Endpoints
 
@@ -60,8 +62,11 @@ root plays three games and exercises the scoreboard endpoints against it.
   locally with the shared engine. Answers are graded in the DO with
   `isWithinTolerance`, so the scoreboard cannot be faked from devtools.
 - Modes: **Front Running 🏃** (shared posting, first correct settles it,
-  120s deadline, 3s wrong-answer lockout) and **Bull Run 🐂** (own pace,
+  120 s deadline, 3 s wrong-answer lockout) and **Bull Run 🐂** (own pace,
   write-offs re-queue with fresh seeds, first finished statement wins).
+  **Rapid ⚡** is a flag on either mode: 45 s per posting
+  (`RAPID_DEADLINE_MS` in `src/lib/multiplayer/protocol.ts`), easier
+  difficulties only.
 - The bot answers on Durable Object alarms with per-difficulty delay and
   accuracy (see `BOT_TUNING` in `src/lobby.ts`).
 - Scoreboard rows are upserted per (semester, player id, subject): at game
@@ -69,8 +74,9 @@ root plays three games and exercises the scoreboard endpoints against it.
   and per solo posting from `/api/earnings` after the worker re-graded the
   answer itself. Unclaimed players get a numbered intern name derived from
   their id (`src/lib/scoreboard/shared.ts`).
-- Schema changes: re-run `npx wrangler d1 execute finance-bro-mp --remote
-  --file=schema.sql` (idempotent). The v1 `leaderboard` (wins) table is
+- Schema changes: edit `schema.sql` AND the mirrored `SCHEMA` in
+  `src/scoreboard.ts` (the worker applies that one itself via
+  `ensureSchema()`, idempotent). The v1 `leaderboard` (wins) table is
   unused since 2026-09-02 and can be dropped.
 - BroDollars: every settled/won posting pays its difficulty's base points
   (`maxPoints`), the winner gets a flat closing-bell bonus (`WIN_BONUS`).

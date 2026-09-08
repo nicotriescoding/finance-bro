@@ -4,8 +4,9 @@
  *
  *   npx tsx worker/test/e2e.ts
  *
- * Plays a full Bull Run (two humans, one deliberately failing first) and a
- * full Front Running game (vs. the bot), then checks the semester scoreboard
+ * Plays three games - a full Bull Run (two humans, one deliberately failing
+ * first), a full Front Running game (vs. the bot) and a solo Rapid Bull Run
+ * (only very_easy/easy postings dealt) - then checks the semester scoreboard
  * (BroDollars, overall + per subject) and the solo reporting endpoint.
  */
 

@@ -47,3 +47,6 @@ next-env.d.ts
 worker/node_modules/
 worker/.wrangler/
 _to_delete/
+
+# IDE
+.idea/

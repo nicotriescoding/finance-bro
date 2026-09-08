@@ -23,7 +23,8 @@ const TEASERS: { emoji: string; title: string; text: string; status: string; hre
         emoji: "🥋",
         title: "Multiplayer duels",
         text: "Settle postings 1-vs-1 against your study group. Loser buys the oat-milk flat whites.",
-        status: "in development",
+        status: "live",
+        href: "/multiplayer",
     },
     {
         emoji: "🏆",
@@ -64,7 +65,7 @@ export default function Home() {
                         Coming soon(ish)
                     </h2>
                     <p className="mt-1 text-sm text-muted">
-                        Features currently stuck in the approval workflow.
+                        Two features escaped the approval workflow. One is still stuck in it.
                     </p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -90,7 +91,7 @@ export default function Home() {
                                     href={t.href}
                                     className="mt-2.5 text-[13px] font-extrabold text-brand hover:underline"
                                 >
-                                    Open the board →
+                                    {t.href === "/multiplayer" ? "Open the desk →" : "Open the board →"}
                                 </Link>
                             )}
                         </div>

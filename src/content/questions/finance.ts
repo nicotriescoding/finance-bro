@@ -1386,7 +1386,6 @@ export const financeQuestions: NumericQuestion[] = [
             const w = rng.int(1, 4);
             const r = w + rng.int(2, 6); // r > w always, so q − g > 0
             const q = 1 + r / 100;
-            const g = 1 + w / 100;
             const answer = (q * C) / ((r - w) / 100);
             return {
                 prompt: `A perpetuity pays ${eur(C)} **at the beginning of each year**, starting today, and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}. What is the present value?`,

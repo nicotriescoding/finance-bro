@@ -22,7 +22,6 @@ import { SUBJECTS } from "@/content/subjects";
 import { buildInstance } from "@/lib/questions/engine";
 import type { Question } from "@/lib/questions/types";
 import {
-    DEFAULT_CONFIG,
     MODES,
     PING_INTERVAL_MS,
     POSTING_COUNTS,
@@ -37,7 +36,6 @@ import {
     type S2C,
 } from "@/lib/multiplayer/protocol";
 import {
-    MP_URL,
     createRoom,
     getPlayerId,
     getStoredName,
@@ -241,6 +239,9 @@ export default function MultiplayerClient() {
         [send, setBalance]
     );
 
+    // the reconnect timer calls back into `connect` itself - via a ref, so the
+    // callback does not close over its own binding
+    const connectRef = useRef<(code: string, playerName: string) => void>(() => {});
     const connect = useCallback(
         (code: string, playerName: string) => {
             setError(null);
@@ -292,7 +293,7 @@ export default function MultiplayerClient() {
                     setReconnecting(true);
                     reconnectTimerRef.current = setTimeout(() => {
                         if (!leaveRef.current && codeRef.current) {
-                            connect(codeRef.current, nameRef.current);
+                            connectRef.current(codeRef.current, nameRef.current);
                         }
                     }, RECONNECT_DELAYS_MS[attempt]);
                 } else {
@@ -309,6 +310,9 @@ export default function MultiplayerClient() {
         },
         [handleMessage]
     );
+    useEffect(() => {
+        connectRef.current = connect;
+    }, [connect]);
 
     const leaveRoom = useCallback(() => {
         leaveRef.current = true;

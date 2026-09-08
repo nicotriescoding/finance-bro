@@ -90,7 +90,7 @@ function randomCode(): string {
     return code;
 }
 
-export default {
+const worker = {
     async fetch(request: Request, env: Env): Promise<Response> {
         const url = new URL(request.url);
         const path = url.pathname;
@@ -196,3 +196,5 @@ export default {
         return json({ error: "not_found" }, 404);
     },
 };
+
+export default worker;
