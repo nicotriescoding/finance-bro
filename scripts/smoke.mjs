@@ -291,18 +291,31 @@ try {
         productsHtml.includes("/products/birkin.jpg") &&
             !/<img[^>]+src="https?:\/\//.test(productsHtml)
     );
-    // 2026-09-07: every product links one amazon.de listing (ASIN); only the
-    // beer mortar keeps a search link. The Birkin photo is CC BY-SA and needs
-    // its credit line in the footer.
+    // 2026-09-07: every product links one amazon.de listing (ASIN); since
+    // 2026-09-08 (beer mortar dropped) no search link is left. The four
+    // Commons photos are CC BY-SA and need their credit lines in the footer.
     check(
         "/products links specific Amazon listings",
         new Set(productsHtml.match(/amazon\.de\/dp\/[A-Z0-9]+/g)).size >= 35 &&
-            new Set(productsHtml.match(/amazon\.de\/s\?k=[^"\\]+/g)).size === 1
+            !/amazon\.de\/s\?k=/.test(productsHtml)
     );
     check(
-        "/products credits the CC BY-SA Birkin photo",
-        productsHtml.includes("Wen-Cheng Liu") &&
-            productsHtml.includes("CC BY-SA 2.0")
+        "/products credits the CC BY-SA photos",
+        productsHtml.includes("CC BY-SA") &&
+            ["Wen-Cheng Liu", "Klaas van Buiten", "TaurusEmerald", "Pundit"].every(
+                (name) => productsHtml.includes(name)
+            )
+    );
+    // 2026-09-08: the exam-legal calculator (Casio FX-85MS per the TUM
+    // finance chair's policy) and the pattern behind, not over, the photo.
+    check(
+        "/products links the exam-legal Casio FX-85MS",
+        productsHtml.includes("amazon.de/dp/B000120516") &&
+            productsHtml.includes("FX-85MS")
+    );
+    check(
+        "/products keeps the money pattern behind the photo",
+        !productsHtml.includes("mix-blend-mode")
     );
     check(
         "/products puts the glasses and the sleep mask first",
@@ -317,7 +330,8 @@ try {
         "/products shelves the After-Exam Party Kit",
         productsHtml.includes("After-Exam Party Kit") &&
             productsHtml.includes("/products/aperol-tower.jpg") &&
-            productsHtml.includes("bierflaschen")
+            productsHtml.includes("Beer Pong Set") &&
+            !productsHtml.includes("Beer Mortar")
     );
     check(
         "/products dropped the ketchup and the cigarettes",

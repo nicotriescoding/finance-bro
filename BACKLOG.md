@@ -6,8 +6,43 @@ feature status live in `SPEC.md`.
 
 ## Where things stand
 
-**PROMOTED flash + seven new rungs on the ladder (2026-09-07, latest
-session).** Per Nico. (1) `PromotionOverlay` (mounted once in the root
+**Bro Shop: pattern behind the photo, exam-legal calculator, nine
+listings/photos re-picked (2026-09-08, latest session).** Per Nico.
+(1) The money pattern was showing *through* the products (multiply blend);
+the photo now sits in a white rounded tile (68 % wide) on top of the
+pattern - side effect: dark-background photos (matcha, highlighters) are
+fine now. (2) Calculator = Casio FX-85MS (B000120516), one of the two
+models the TUM Chair of Financial Management names as allowed
+(fa.mgt.tum.de/fm/teaching/calculator-policy; the other is the TI-30X
+IIS); card renamed "The Exam-Legal Calculator" with a check-your-course
+note. (3) Links: shaker → BlenderBottle Classic V2 (B0CN16Y9S5), iPad →
+iPad A16 (B0DZ769BMS; Amazon has no iPad+Pencil bundle, note on the
+card), Prosecco → Dom Pérignon Vintage 2015 (B0BT7W5T9V, card renamed
+Emergency Champagne), mat → Amazon Basics black (B0CJJNSM9V, 4.4 - best
+black option), Bialetti → Moka Express 3-cup black (B06ZYYDGYN), tower →
+GOODS+GADGETS 5 L column (B0BFBYHYC5, 4.2 - the category has no 4.5),
+speaker → JBL PartyBox 310 (B08HBG3M7M). Beer mortar removed (no
+listing worth linking), "Beer Pong, Regulation Set" → "Beer Pong Set",
+Party Kit chips 5 positions / 5 liters. (4) Photos: Stock free tier for
+calculator (165040606), iPad+pencil (437346634), champagne (555201757),
+black claw clip (273457849, matches the Lolalet set), black mat
+(224311222), black moka (1236907954). Three from Wikimedia Commons, CC
+BY-SA 4.0, credited in the footer (license condition): Red Bull can
+(Klaas van Buiten, cropped), JBL PartyBox 710 (TaurusEmerald, bg removed
+locally with rembg/u2net), beer tower (Pundit, bg removed via the Adobe
+connector after an upload - the connector rejects commons.wikimedia.org
+URLs directly). `prosecco.jpg` and `bottle-opener.jpg` are `git rm`'d
+in the cloud clone; on the mount the sandbox cannot unlink them, so if
+they still exist locally: `git rm public/products/prosecco.jpg
+public/products/bottle-opener.jpg` before pushing (harmless if left).
+Smoke updated: no search links left, four CC BY-SA credits, FX-85MS
+linked, no mix-blend-mode. Gate green in the cloud clone (typecheck,
+verify, build, 97 smoke); dark-mode Playwright shots of /products
+(Starter Pack, BWL Marie, Party Kit, footer) looked right. Open:
+real-Chrome look on Nico's Mac; the Party Kit now has 5 cards, so the
+last row is a lone card - add a sixth if that bothers him.
+
+**PROMOTED flash + seven new rungs on the ladder (2026-09-07).** Per Nico. (1) `PromotionOverlay` (mounted once in the root
 layout) watches the balance and, whenever the rank index climbs - quiz,
 multiplayer, anywhere - takes the whole screen: mint flash, 48 💵💸🤑💰💶🪙
 raining from the top, old emoji greyed → new emoji popping, blinking

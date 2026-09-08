@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import AdRail from "@/components/AdRail";
-import { amz, amzProduct } from "@/lib/affiliate";
+import { amzProduct } from "@/lib/affiliate";
 import AffiliateLabel from "@/components/AffiliateLabel";
 
 export const metadata: Metadata = {
@@ -17,7 +17,8 @@ export const metadata: Metadata = {
  * the four 2026-09-05 bundles (Excel Monkey, Doomsday Bunker, LinkedIn
  * Thought Leader, Boring Index Fund - the "would actually buy" bundle, keep
  * it earnest), then the After-Exam Party Kit (Nico's picks: an Aperol tower
- * = beer tower, the mortar-shaped beer opener, plus more drinking gear).
+ * = beer tower plus more drinking gear; the mortar-shaped beer opener was
+ * dropped 2026-09-08 because no listing earned a rating we would link).
  * The Birkin card shows a real (orange, ostrich) Birkin since 2026-09-07 -
  * the only license-free non-pink Birkin photo around, Wikimedia Commons
  * CC BY-SA 2.0 by Wen-Cheng Liu, cropped; the credit line in the footer is
@@ -37,6 +38,20 @@ export const metadata: Metadata = {
  * coloured background got their background removed via the Adobe
  * connector (ring light, tower); the sleep mask is the licensed gold
  * photo recoloured to black to match the listing.
+ *
+ * Three photos are Wikimedia Commons CC BY-SA 4.0 (2026-09-08, Nico wanted
+ * the real thing and Stock has no branded cans/speakers/towers): the Red
+ * Bull can (Klaas van Buiten, "Red Bull ice.jpg", can cropped out), the
+ * JBL PartyBox 710 (TaurusEmerald, background removed) and the beer tower
+ * (Pundit, "Beer tower.jpg", background removed, cropped to the column).
+ * Their credit lines in the footer are a license condition - keep them, and
+ * keep the Birkin one.
+ *
+ * The calculator is the Casio FX-85MS because that is one of the two
+ * models the TUM Chair of Financial Management explicitly names in its
+ * calculator policy (non-programmable, no SOLVE/CALC, no graphing):
+ * https://www.fa.mgt.tum.de/fm/teaching/calculator-policy/ - the other is
+ * the TI-30X IIS.
  *
  * Affiliate links come from src/lib/affiliate.ts (Amazon PartnerNet; the
  * rationale and Nico's tag TODO live there). Since 2026-09-07 each product
@@ -128,18 +143,19 @@ const BUNDLES: Bundle[] = [
                     alt: "A protein shaker bottle filled with shake",
                 },
                 blurb:
-                    "For the 6 AM gym-before-market-open routine you commit to every Sunday evening. Holds 700 ml of whey and an unlimited amount of ambition.",
-                href: amzProduct("B0FSRYY1VM"),
+                    "For the 6 AM gym-before-market-open routine you commit to every Sunday evening. Holds 800 ml of whey and an unlimited amount of ambition.",
+                href: amzProduct("B0CN16Y9S5"),
             },
             {
-                name: "TI-30 Calculator",
+                name: "The Exam-Legal Calculator",
                 img: {
                     src: "/products/calculator.jpg",
                     alt: "A black scientific calculator on a white background",
                 },
                 blurb:
-                    "The only Bloomberg terminal the exam hall allows. Discounts cash flows, compounds interest, and never once suggests a 0DTE position.",
-                href: amzProduct("B07BNGDTCH"),
+                    "Casio FX-85MS - one of the two models the TUM finance chair explicitly allows. No SOLVE key, no graphs, no memory of your last attempt. The only Bloomberg terminal the exam hall lets in.",
+                href: amzProduct("B000120516"),
+                note: "Exam-legal per the chair's calculator policy; check your own course's rules before you rely on it.",
             },
         ],
     },
@@ -162,14 +178,15 @@ const BUNDLES: Bundle[] = [
                 href: amzProduct("B002P01O8A"),
             },
             {
-                name: "iPad Pencil Setup",
+                name: "iPad + Pencil Setup",
                 img: {
                     src: "/products/ipad-pencil.jpg",
-                    alt: "A tablet with a stylus pen on a white background",
+                    alt: "A tablet with a white stylus pen beside it on a white background",
                 },
                 blurb:
                     "For lecture notes so beautifully color-coded they never get read twice. The handwriting-to-text feature has seen things.",
-                href: amzProduct("B0CL7DZXB2"),
+                href: amzProduct("B0DZ769BMS"),
+                note: "Amazon sells no iPad-plus-Pencil bundle, so the link is the iPad; the Pencil sits in 'frequently bought together', right where your budget planned it.",
             },
             {
                 name: "Pastel Highlighter Set",
@@ -185,7 +202,7 @@ const BUNDLES: Bundle[] = [
                 name: "Claw Clip, Load-Bearing",
                 img: {
                     src: "/products/claw-clip.jpg",
-                    alt: "A red claw clip on a white background",
+                    alt: "A large matte black claw clip on a white background",
                 },
                 blurb:
                     "Structural engineering for the messy bun. Holds more together than the group project ever did.",
@@ -202,24 +219,24 @@ const BUNDLES: Bundle[] = [
                 href: amzProduct("B09681S2X6"),
             },
             {
-                name: "Emergency Prosecco",
+                name: "Emergency Champagne",
                 img: {
-                    src: "/products/prosecco.jpg",
-                    alt: "A Prosecco bottle with two filled glasses",
+                    src: "/products/champagne.jpg",
+                    alt: "A dark champagne bottle on a white background",
                 },
                 blurb:
-                    "For passed exams, failed exams and Wednesdays. The only position in this bundle that pays a liquid dividend.",
-                href: amzProduct("B08XLC3JTX"),
+                    "Dom Pérignon, vintage. For passed exams, failed exams and Wednesdays. The only position in this bundle that pays a liquid dividend - and the only one Daddy audits.",
+                href: amzProduct("B0BT7W5T9V"),
             },
             {
                 name: "Pilates Princess Mat",
                 img: {
                     src: "/products/yoga-mat.jpg",
-                    alt: "A pink rolled yoga mat",
+                    alt: "A black rolled yoga mat",
                 },
                 blurb:
-                    "Where the 'movement is my meditation' LinkedIn posts are produced. Returns arrive as core strength and content.",
-                href: amzProduct("B09WDRNDG6"),
+                    "Black, because pink photographs badly at 6 AM. Where the 'movement is my meditation' LinkedIn posts are produced. Returns arrive as core strength and content.",
+                href: amzProduct("B0CJJNSM9V"),
             },
         ],
     },
@@ -254,11 +271,11 @@ const BUNDLES: Bundle[] = [
                 name: "Espresso Machine (Value Edition)",
                 img: {
                     src: "/products/moka.jpg",
-                    alt: "A red moka pot on a white background",
+                    alt: "A black moka pot on a white background",
                 },
                 blurb:
                     "Does what the campus coffee subscription does at 0.09 € a shot. The single highest-ROI machine ever admitted to a shared kitchen.",
-                href: amzProduct("B071CGGMRG"),
+                href: amzProduct("B06ZYYDGYN"),
             },
             {
                 name: "The 89 € Interview Suit",
@@ -362,7 +379,7 @@ const BUNDLES: Bundle[] = [
                 name: "Energy Drinks, 24-Pack",
                 img: {
                     src: "/products/energy-can.jpg",
-                    alt: "Cold aluminum drink cans on ice",
+                    alt: "A Red Bull energy drink can",
                 },
                 blurb:
                     "Sleep is a fixed cost and you are cutting fixed costs. Twenty-four cans, one exam, roughly the same heart rate as the day the grades come out.",
@@ -493,31 +510,20 @@ const BUNDLES: Bundle[] = [
         tint: ["#ffe1d0", "#fff0b8"],
         emoji: "🍾",
         tagline: "Grades are lagging indicators. The party is priced in tonight.",
-        chips: ["6 positions", "risk: blackout", "liquidity: 4 liters"],
+        chips: ["5 positions", "risk: blackout", "liquidity: 5 liters"],
         products: [
             {
                 name: "The Aperol Tower",
                 img: {
                     src: "/products/aperol-tower.jpg",
-                    alt: "A drink dispenser tower filled with an orange drink",
+                    alt: "A tall slim beer tower column with a tap, filled with an orange drink",
                 },
                 blurb:
-                    "Four liters of Spritz with its own tap, technically a beer tower with an identity crisis. The only tower in this shop with more liquidity than your bank account.",
-                href: amzProduct("B009SJ25TI"),
+                    "Five liters of Spritz in one slim column with its own tap - technically a beer tower with an identity crisis. The only tower in this shop with more liquidity than your bank account.",
+                href: amzProduct("B0BFBYHYC5"),
             },
             {
-                name: "Beer Mortar, Heavy Artillery",
-                img: {
-                    src: "/products/bottle-opener.jpg",
-                    alt: "A steel bottle opener next to a bottle cap",
-                },
-                blurb:
-                    "A bottle opener shaped like a mortar that fires the cap across the room. Recoil: none. Casualties: one lampshade per semester. Opens beer, closes exam season.",
-                href: amz("bierflaschenöffner mörser"),
-                note: "Picture shows the civilian model. The link goes to an Amazon search for the actual artillery - no mortar listing has earned a rating we would stand behind.",
-            },
-            {
-                name: "Beer Pong, Regulation Set",
+                name: "Beer Pong Set",
                 img: {
                     src: "/products/beer-pong.jpg",
                     alt: "Two red plastic party cups",
@@ -550,11 +556,11 @@ const BUNDLES: Bundle[] = [
                 name: "Party Speaker, Neighbor-Grade",
                 img: {
                     src: "/products/party-speaker.jpg",
-                    alt: "A black portable Bluetooth speaker with a carry handle",
+                    alt: "A tall black JBL party speaker with glowing orange light rings",
                 },
                 blurb:
-                    "Loud enough to get a noise complaint filed before the first tower is empty. Pairs with three phones and one very unfortunate playlist decision at 2 AM.",
-                href: amzProduct("B08KZJFC2F"),
+                    "JBL PartyBox: loud enough to get a noise complaint filed before the first tower is empty. Pairs with three phones and one very unfortunate playlist decision at 2 AM.",
+                href: amzProduct("B08HBG3M7M"),
             },
         ],
     },
@@ -563,12 +569,15 @@ const BUNDLES: Bundle[] = [
 /**
  * Image-area background (Nico, 2026-09-07: "the white boxes are boring"). A
  * tiled SVG of faint $ / € / % glyphs plus a 💸 and a 📈, laid over the
- * bundle's pastel gradient. The product photo sits on it with
- * `mix-blend-mode: multiply`, so the white studio background of a stock
- * photo disappears and the item floats on the pattern - which is also why
- * every product photo must be shot on white (dark backgrounds turn into a
- * dark block). Chosen from five candidates (stripes, studio spotlight,
- * emoji confetti, mint radial, this) by screenshot.
+ * bundle's pastel gradient. Chosen from five candidates (stripes, studio
+ * spotlight, emoji confetti, mint radial, this) by screenshot.
+ *
+ * Until 2026-09-08 the photo was laid over it with `mix-blend-mode:
+ * multiply`, which made the glyphs show through the product itself - not
+ * what Nico wanted ("put it in the background"). Now the photo sits in a
+ * plain white tile on top of the pattern, so the pattern frames the product
+ * instead of tattooing it. Photos should still be shot on white so the tile
+ * edge is invisible.
  */
 const MONEY_PATTERN = `url("data:image/svg+xml,${encodeURIComponent(
     "<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>" +
@@ -584,20 +593,21 @@ function ProductCard({ p, tint }: { p: Product; tint: [string, string] }) {
     return (
         <div className="flex flex-col overflow-hidden rounded-[14px] border border-hairline bg-surface shadow-[0_1px_2px_rgba(15,33,55,.05)]">
             <div
-                className="flex h-44 flex-none items-center justify-center border-b border-hairline-soft p-4"
+                className="flex h-56 flex-none items-center justify-center border-b border-hairline-soft px-4 py-4"
                 style={{
                     backgroundColor: tint[0],
                     backgroundImage: `${MONEY_PATTERN}, linear-gradient(135deg, ${tint[0]} 0%, ${tint[1]} 100%)`,
                 }}
             >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src={p.img.src}
-                    alt={p.img.alt}
-                    loading="lazy"
-                    className="max-h-full max-w-full object-contain"
-                    style={{ mixBlendMode: "multiply" }}
-                />
+                <div className="flex h-full w-[68%] items-center justify-center rounded-[12px] bg-white p-3 shadow-[0_2px_8px_rgba(15,33,55,.14)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={p.img.src}
+                        alt={p.img.alt}
+                        loading="lazy"
+                        className="max-h-full max-w-full object-contain"
+                    />
+                </div>
             </div>
             <div className="flex flex-1 flex-col p-4">
                 <p className="font-extrabold">{p.name}</p>
@@ -694,11 +704,12 @@ export default function ProductsPage() {
                 ))}
 
                 {/* Photo note - Adobe Stock standard license (no attribution owed)
-                    plus the one CC BY-SA photo, which needs this credit line. */}
+                    plus the four CC BY-SA photos, which need these credit lines. */}
                 <p className="text-center text-[11px] leading-relaxed text-muted-light">
                     Product photos licensed via Adobe Stock. Pictures are
                     illustrative - the linked offer may look better. Or worse.
-                    Birkin photo:{" "}
+                    Wikimedia Commons photos, all CC BY-SA, cropped or
+                    background removed: Birkin by{" "}
                     <a
                         href="https://commons.wikimedia.org/wiki/File:Hermes_Ostrich_Birkin_Bag.jpg"
                         target="_blank"
@@ -706,8 +717,35 @@ export default function ProductsPage() {
                         className="underline"
                     >
                         Wen-Cheng Liu
-                    </a>
-                    , CC BY-SA 2.0, cropped.
+                    </a>{" "}
+                    (2.0), Red Bull can by{" "}
+                    <a
+                        href="https://commons.wikimedia.org/wiki/File:Red_Bull_ice.jpg"
+                        target="_blank"
+                        rel="noopener"
+                        className="underline"
+                    >
+                        Klaas van Buiten
+                    </a>{" "}
+                    (4.0), JBL PartyBox by{" "}
+                    <a
+                        href="https://commons.wikimedia.org/wiki/File:JBL_PartyBox_710.jpg"
+                        target="_blank"
+                        rel="noopener"
+                        className="underline"
+                    >
+                        TaurusEmerald
+                    </a>{" "}
+                    (4.0), beer tower by{" "}
+                    <a
+                        href="https://commons.wikimedia.org/wiki/File:Beer_tower.jpg"
+                        target="_blank"
+                        rel="noopener"
+                        className="underline"
+                    >
+                        Pundit
+                    </a>{" "}
+                    (4.0).
                 </p>
             </div>
 
