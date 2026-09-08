@@ -43,7 +43,7 @@ export default function PrivacyPage() {
                     Privacy Policy · Datenschutzerklärung
                 </h1>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                    Last updated: 6 September 2026
+                    Last updated: 8 September 2026
                 </p>
             </header>
 
@@ -51,12 +51,13 @@ export default function PrivacyPage() {
                 <p>
                     No account, no newsletter. Your quiz balance stays in your
                     browser; the semester leaderboard only receives a random player
-                    ID plus the BroDollars you earn. Multiplayer works with a
-                    self-chosen display name - no registration. Analytics only runs
+                    ID, the BroDollars you earn and the display name you choose (or a
+                    placeholder). Multiplayer works with the same self-chosen display
+                    name - no registration. Analytics only runs
                     if you explicitly say yes to the
                     consent dialog - decline it and nothing is tracked.{" "}
                     {adsEnabled
-                        ? "Ads come from Google AdSense and are personalised only with your consent in that same dialog."
+                        ? "Ads come from Google AdSense; no ad is requested and no ad cookie is set until you decide in that same dialog, and personalised ads only run if you say yes."
                         : "No ad network is currently connected."}
                 </p>
             </Section>
@@ -131,9 +132,19 @@ export default function PrivacyPage() {
                     that semester ends.
                 </p>
                 <p>
-                    Legal basis: performance of the service you request by starting a
-                    game (Art. 6 (1) (b) GDPR). A data processing agreement per
-                    Art. 28 GDPR is in place with Cloudflare; Cloudflare, Inc. is
+                    Legal basis: our legitimate interest in running the game features
+                    you deliberately start - a duel or a leaderboard entry cannot work
+                    without a name and a score being shown (Art. 6 (1) (f) GDPR);
+                    both features are optional and the trainer itself never needs
+                    them. You can object at any time by not using them, and have your
+                    name replaced with the placeholder or your entry deleted by
+                    e-mailing the address in section 1. Display names are subject to
+                    the name rules in our{" "}
+                    <a href="/terms" className="font-bold text-brand underline underline-offset-2">
+                        terms
+                    </a>
+                    , which also explain how to report a name. A data processing
+                    agreement per Art. 28 GDPR is in place with Cloudflare; Cloudflare, Inc. is
                     certified under the EU-US Data Privacy Framework, so transfers to
                     the USA rest on the EU Commission&apos;s adequacy decision
                     (Art. 45 GDPR). If the leaderboard service is unreachable, the
@@ -159,7 +170,7 @@ export default function PrivacyPage() {
                 <p>
                     Legal basis: your consent (Art. 6 (1) (a) GDPR, § 25 (1) TDDDG).
                     {adsEnabled &&
-                        " You give or refuse it once, in the consent dialog on your first visit, which covers analytics and advertising (section 6) together."}{" "}
+                        " You give or refuse it in the consent dialog on your first visit, which asks about analytics and advertising (section 6) separately."}{" "}
                     You can withdraw it at any time with effect for the future via{" "}
                     <CookieSettingsLink /> - withdrawal stops all capturing and resets
                     the stored identifiers.
@@ -195,9 +206,12 @@ export default function PrivacyPage() {
                         <p>
                             Legal basis: your consent for personalised ads and for storing
                             identifiers (Art. 6 (1) (a) GDPR, § 25 (1) TDDDG), given or
-                            refused in the consent dialog. If you decline, Google shows
-                            at most non-personalised ads that use no cross-site
-                            identifiers; declining does not limit the site. You can change
+                            refused in the consent dialog. Until you decide, no ad is
+                            requested and no advertising cookie is set (Google&apos;s
+                            Consent Mode starts as &quot;denied&quot; and ad requests are
+                            paused). If you decline, Google shows at most limited,
+                            non-personalised ads that neither set nor read advertising
+                            cookies; declining does not limit the site. You can change
                             your choice any time via <CookieSettingsLink />.
                         </p>
                         <p>

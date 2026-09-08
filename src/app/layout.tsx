@@ -9,7 +9,7 @@ import CookieBanner from "@/components/consent/CookieBanner";
 import ConsentBridge from "@/components/consent/ConsentBridge";
 import AnchorAd from "@/components/AnchorAd";
 import PromotionOverlay from "@/components/account/PromotionOverlay";
-import { ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
+import { AD_CONSENT_BOOTSTRAP, ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
 
 const manrope = Manrope({
     subsets: ["latin"],
@@ -83,13 +83,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             {adsEnabled && (
                 <head>
-                    {/* Google's AdSense tag, verbatim and in the static HTML head:
-                        the AdSense site-verification crawler looks for exactly
-                        this tag in the raw HTML (next/script would inject it
-                        client-side and the crawler reports "code not found").
-                        The same script delivers Google's consent dialog. */}
+                    {/* Google's AdSense tag in the static HTML head: the AdSense
+                        site-verification crawler looks for this src in the raw
+                        HTML (next/script would inject it client-side and the
+                        crawler reports "code not found"). The same script
+                        delivers Google's consent dialog.
+
+                        The inline script BEFORE it sets Consent Mode v2 to denied
+                        and pauses ad requests until a consent decision exists
+                        (AD_CONSENT_BOOTSTRAP) - order matters. That is why the
+                        tag is `defer`, not Google's default `async`: React 19
+                        hoists `<script async src>` to the top of <head>, above
+                        the bootstrap (seen 2026-09-08), and an async script may
+                        execute the moment it arrives. `defer` keeps it in place,
+                        non-blocking, and guarantees it runs after the inline
+                        script. Ad requests only start from AdUnit effects after
+                        hydration anyway. If AdSense ever reports "code not
+                        found" because of the missing `async`, that is the one
+                        attribute to revisit - the bootstrap must still win. */}
+                    <script dangerouslySetInnerHTML={{ __html: AD_CONSENT_BOOTSTRAP }} />
                     <script
-                        async
+                        defer
                         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
                         crossOrigin="anonymous"
                     />

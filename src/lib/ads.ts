@@ -61,3 +61,52 @@ export const AD_SLOTS: Record<AdSlotName, string> = {
 export function slotLive(name: AdSlotName): boolean {
     return adsEnabled && AD_SLOTS[name].length > 0;
 }
+
+/**
+ * Inline script that runs in `<head>` BEFORE adsbygoogle.js (2026-09-08,
+ * legal audit): nothing ad-related may touch the visitor's device before a
+ * consent decision (§ 25 (1) TDDDG, Art. 6 (1) (a) GDPR).
+ *
+ *   1. Consent Mode v2 defaults - every advertising signal starts DENIED, so
+ *      Google's tag neither sets nor reads ad cookies until `applyAdConsent`
+ *      (or Google's own TCF dialog) grants them.
+ *   2. `pauseAdRequests = 1` - no ad request leaves the page until a decision
+ *      exists (Google's documented pause hook for consent solutions).
+ *
+ * Both are per-page globals, which is why this lives in the static head and
+ * not in a React effect: the AdSense loader would otherwise race it.
+ */
+export const AD_CONSENT_BOOTSTRAP = [
+    "window.dataLayer=window.dataLayer||[];",
+    "function gtag(){dataLayer.push(arguments)}",
+    "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});",
+    "(adsbygoogle=window.adsbygoogle||[]).pauseAdRequests=1;",
+].join("");
+
+/**
+ * Release the ad requests once the visitor has decided (client only).
+ *
+ * Granted: Consent Mode signals flip to `granted`, requests resume, Google
+ * may use its cookies. Declined: the signals stay DENIED and the request is
+ * flagged non-personalized - Google's tag then serves only limited ads that
+ * neither read nor write ad cookies (Nico's choice 2026-09-08: try limited
+ * ads rather than no ads for decliners). Idempotent, safe to call again.
+ *
+ * With Google's certified TCF dialog active, `ConsentBridge` calls this with
+ * the dialog's purpose-1 decision; the TCF string itself is what Google's tag
+ * ultimately honours, this only lifts the pause.
+ */
+export function applyAdConsent(granted: boolean): void {
+    if (!adsEnabled || typeof window === "undefined") return;
+    const state = granted ? "granted" : "denied";
+    window.gtag?.("consent", "update", {
+        ad_storage: state,
+        ad_user_data: state,
+        ad_personalization: state,
+    });
+    const queue = (window.adsbygoogle = window.adsbygoogle ?? []) as AdsByGoogle;
+    queue.requestNonPersonalizedAds = granted ? 0 : 1;
+    queue.pauseAdRequests = 0;
+}
+
+type AdsByGoogle = unknown[] & { pauseAdRequests?: 0 | 1; requestNonPersonalizedAds?: 0 | 1 };

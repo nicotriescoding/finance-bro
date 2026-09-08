@@ -27,18 +27,21 @@ export const metadata: Metadata = {
  * the legend acknowledges it). For future books: null = Nico still owes them
  * (rendered as "pending audit") - never invent a rating or review for him.
  *
- * Covers are SELF-HOSTED under public/covers/ (sourced once from the Open
- * Library covers API - hotlinking it sent every visitor's IP to a US server
- * pre-consent, the LG Muenchen Google-Fonts fact pattern; see 2026-09-01
- * backlog entry). For a new book: download the cover of the exact English
- * edition (ISBN URL beats cover-ID), drop it in public/covers/, and LOOK at
- * it - cover IDs can silently point at the wrong edition.
+ * NO cover art (2026-09-08 legal audit). The publisher owns the cover; Open
+ * Library grants no licence, and photographing/scanning a cover is a
+ * reproduction (§ 16 UrhG) that neither the citation right (§ 51) nor the
+ * "seller may show the product" line (BGH Parfümflakon - we are the
+ * advertiser, Amazon is the seller) covers on an ad-financed affiliate page.
+ * Until Amazon's Product Advertising API is available (its images come with
+ * the licence; needs 10 qualifying sales in 30 days), every book gets a
+ * generated typographic cover (`CoverCard`): title, author, section colour.
+ * Never re-add publisher covers from Open Library, Goodreads, Google Books,
+ * a scan or a phone photo - same exposure, every time.
  */
 
 type Book = {
     title: string;
     author: string;
-    cover: string;
     /** Amazon search query for the affiliate link. */
     q: string;
     /** Nico's ROI multiplier, e.g. 7.5 - null until he rates it. */
@@ -57,7 +60,6 @@ const SECTIONS: Section[] = [
             {
                 title: "The Lean Startup",
                 author: "Eric Ries",
-                cover: "/covers/lean-startup.jpg",
                 q: "the lean startup eric ries",
                 roi: 67,
                 review:
@@ -66,7 +68,6 @@ const SECTIONS: Section[] = [
             {
                 title: "SPIN Selling",
                 author: "Neil Rackham",
-                cover: "/covers/spin-selling.jpg",
                 q: "spin selling neil rackham",
                 roi: 21,
                 review:
@@ -81,7 +82,6 @@ const SECTIONS: Section[] = [
             {
                 title: "The Psychology of Money",
                 author: "Morgan Housel",
-                cover: "/covers/psychology-of-money.jpg",
                 q: "the psychology of money morgan housel",
                 roi: 13,
                 review:
@@ -96,7 +96,6 @@ const SECTIONS: Section[] = [
             {
                 title: "What Every BODY Is Saying",
                 author: "Joe Navarro",
-                cover: "/covers/what-every-body-is-saying.jpg",
                 q: "what every body is saying joe navarro",
                 roi: 9,
                 review:
@@ -105,7 +104,6 @@ const SECTIONS: Section[] = [
             {
                 title: "Never Split the Difference",
                 author: "Chris Voss",
-                cover: "/covers/never-split-the-difference.jpg",
                 q: "never split the difference chris voss",
                 roi: 7,
                 review:
@@ -114,7 +112,6 @@ const SECTIONS: Section[] = [
             {
                 title: "How to Win Friends and Influence People",
                 author: "Dale Carnegie",
-                cover: "/covers/how-to-win-friends.jpg",
                 q: "how to win friends and influence people dale carnegie",
                 roi: 8,
                 review:
@@ -129,7 +126,6 @@ const SECTIONS: Section[] = [
             {
                 title: "Atomic Habits",
                 author: "James Clear",
-                cover: "/covers/atomic-habits.jpg",
                 q: "atomic habits james clear",
                 roi: 6,
                 review:
@@ -138,7 +134,6 @@ const SECTIONS: Section[] = [
             {
                 title: "The Child in You",
                 author: "Stefanie Stahl",
-                cover: "/covers/the-child-in-you.jpg",
                 q: "the child in you stefanie stahl",
                 roi: 11,
                 review:
@@ -176,16 +171,32 @@ function RoiChip({ roi }: { roi: number | null }) {
     );
 }
 
-function BookCard({ book }: { book: Book }) {
+/**
+ * Generated stand-in for the cover: a navy "spine" with the title set large,
+ * the author underneath and the section emoji as the publisher's mark. No
+ * third-party artwork anywhere on the page (see the file comment).
+ */
+function CoverCard({ book, emoji }: { book: Book; emoji: string }) {
+    return (
+        <div
+            aria-hidden
+            className="flex h-36 w-[92px] flex-none flex-col justify-between overflow-hidden rounded-[6px] border border-hairline-soft bg-ink p-2 text-white shadow-[0_1px_3px_rgba(15,33,55,.12)]"
+        >
+            <span className="text-[15px] leading-none">{emoji}</span>
+            <span className="line-clamp-4 text-[12px] font-extrabold leading-[1.15] tracking-[-0.01em]">
+                {book.title}
+            </span>
+            <span className="caps-label line-clamp-2 text-[7.5px] leading-tight tracking-[.12em] text-white/70">
+                {book.author}
+            </span>
+        </div>
+    );
+}
+
+function BookCard({ book, emoji }: { book: Book; emoji: string }) {
     return (
         <div className="flex gap-4 rounded-[14px] border border-hairline bg-surface p-4 shadow-[0_1px_2px_rgba(15,33,55,.05)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-                src={book.cover}
-                alt={`Cover of ${book.title}`}
-                loading="lazy"
-                className="h-36 w-[92px] flex-none rounded-[6px] border border-hairline-soft bg-chip object-cover shadow-[0_1px_3px_rgba(15,33,55,.12)]"
-            />
+            <CoverCard book={book} emoji={emoji} />
             <div className="flex min-w-0 flex-col">
                 <div className="flex flex-wrap items-center gap-2">
                     <p className="font-extrabold leading-snug">{book.title}</p>
@@ -228,6 +239,18 @@ export default function LibraryPage() {
                     been read - reviews are one paragraph, because you have an exam to
                     study for.
                 </p>
+                {/* Transparency: affiliate links are advertising (§ 5a UWG) and the
+                    PartnerNet agreement wants the disclosure sentence clearly visible */}
+                <p className="mt-3 text-xs leading-relaxed text-muted-light">
+                    <span className="caps-label text-[9px] tracking-[.14em]">
+                        Transparency · advertising:
+                    </span>{" "}
+                    every &quot;Get the book on Amazon&quot; button is an affiliate link
+                    (Amazon PartnerNet).{" "}
+                    <strong className="text-muted">
+                        As an Amazon Associate, this site earns from qualifying purchases.
+                    </strong>
+                </p>
             </header>
 
             {/* Fund overview - the shelf as a portfolio statement */}
@@ -258,7 +281,7 @@ export default function LibraryPage() {
                     </h2>
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         {section.books.map((book) => (
-                            <BookCard key={book.title} book={book} />
+                            <BookCard key={book.title} book={book} emoji={section.emoji} />
                         ))}
                     </div>
                 </section>
@@ -286,8 +309,9 @@ export default function LibraryPage() {
                     buttons are affiliate links - that is advertising: buy a book
                     through one and the site earns a small commission while your price
                     stays exactly the same. As an Amazon Associate, this site earns from
-                    qualifying purchases. This page carries no other ads. Covers
-                    sourced via Open Library, served from this site.
+                    qualifying purchases. This page carries no other ads. No cover
+                    art: publishers own it, so every book wears a house-made
+                    jacket until the real ones can be licensed.
                 </p>
             </section>
         </div>

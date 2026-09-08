@@ -22,6 +22,10 @@ export default function Footer() {
                     Privacy
                 </Link>
                 <span aria-hidden className="text-muted-light">·</span>
+                <Link href="/terms" className="transition hover:text-ink">
+                    Terms
+                </Link>
+                <span aria-hidden className="text-muted-light">·</span>
                 <button
                     type="button"
                     onClick={openCookieSettings}

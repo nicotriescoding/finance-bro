@@ -102,7 +102,10 @@ skipping it silently.
 - `worker/` - Cloudflare Worker: Durable Object lobbies, D1 leaderboard, own
   README, `npm run typecheck` and `test/e2e.ts` there.
 - `src/lib/ads.ts`, `analytics.ts`, `affiliate.ts`, `components/consent/` -
-  AdSense units, PostHog (consent-gated), Amazon links, cookie banner.
+  AdSense units (paused + Consent Mode denied until a decision), PostHog
+  (consent-gated), Amazon links, cookie banner (ads + analytics switches).
+  `src/lib/legal.ts` + `src/app/terms` - DSA terms, name rules, report link.
+  `docs/gdpr-records.md` - Art. 30 record + DPA checklist.
 
 Rules for authoring questions live in `.claude/rules/questions.md` and load
 automatically when you open a bank. The workflow for turning a past exam into
@@ -115,7 +118,8 @@ questions is the `add-exam-questions` skill.
    Leaderboard and multiplayer are optional extras with a real error state -
    never a precondition for the page rendering.
 2. **Only TUM-derived content.** Every question traces to real TUM course
-   material; exam questions carry `source` (internal, never rendered). Never
+   material; exam questions carry `source` (internal, never rendered, and
+  stripped from every bundle by the loader in `next.config.ts`). Never
    invent questions from a syllabus - the invented seed banks were removed on
    2026-08-21 for good. The exam's own numbers and wording never enter the
    repo, not even as guards or comments.

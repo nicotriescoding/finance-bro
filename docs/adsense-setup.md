@@ -63,10 +63,34 @@ partnernet.amazon.de -> sign up -> paste the tag into `AMAZON_TAG` in
 `src/lib/affiliate.ts`. Approval finalises after 3 qualifying sales in
 180 days.
 
+## Consent before anything (2026-09-08 legal audit)
+
+Verified live that day: the GDPR message was NOT published, so Google's CMP
+never served, and the site's own banner asked about PostHog only while
+adsbygoogle.js ran regardless. Code now:
+
+- `<head>` runs `AD_CONSENT_BOOTSTRAP` (`src/lib/ads.ts`) BEFORE the AdSense
+  tag: Consent Mode v2 defaults all denied + `pauseAdRequests = 1`. The tag
+  is `defer` (not `async`) so React cannot hoist it above the bootstrap.
+- The own banner asks about advertising AND analytics ("Pick and choose"
+  = one switch each). A stored decision without the `ads` flag (pre
+  2026-09-08) counts as undecided, so old visitors are asked again once.
+- `saveConsent` → `applyAdConsent`: granted = Consent Mode granted +
+  requests resume; declined = stays denied, `requestNonPersonalizedAds = 1`,
+  requests resume - Google then serves limited ads without cookies (Nico's
+  choice) or nothing.
+- With Google's TCF dialog active, `ConsentBridge` lifts the pause from the
+  TCF decision (purpose 1 = ads, 1 + 8 = analytics); the TCF string governs.
+
+Step 4 (publish the message) is still the real fix - Google's EEA policy
+wants a certified CMP. Also accept the Google Ads Data Processing Terms in
+the account (`docs/gdpr-records.md`).
+
 ## What the code does once the ids exist
 
 - One banner: Google's dialog. `ConsentBridge` reads its TCF signal;
-  purposes 1 + 8 granted = PostHog on, otherwise off (and reset).
+  purposes 1 + 8 granted = PostHog on, otherwise off (and reset); purpose 1
+  lifts the ad-request pause.
 - "Cookie settings" (footer, privacy page) reopens Google's dialog.
 - Quiz in-flow units (728x90 / 320x100) request a new ad when the student
   moves to the next posting; the sticky rails never refresh (AdSense

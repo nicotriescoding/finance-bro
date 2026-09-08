@@ -13,7 +13,10 @@ not a suggestion - `npm run verify` enforces most of it.
 ## Provenance
 
 **Every question must come from real TUM course material.** Questions from past
-exams carry `source: "TUM <exam> <term>, A<n>"` and are written with the
+exams carry `source: "TUM <exam> <term>, A<n>"` (one line, one string
+literal - a Turbopack loader strips exactly that line from the bundle, see
+`scripts/strip-question-source-loader.mjs`; `npm run smoke` fails if a
+source string reaches a chunk) and are written with the
 `add-exam-questions` skill. Never write questions from a syllabus or from
 general knowledge - the syllabus-derived seed banks were deliberately removed
 on 2026-08-21 and must not come back.

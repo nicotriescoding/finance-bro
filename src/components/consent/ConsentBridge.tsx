@@ -3,9 +3,8 @@
 import { useEffect } from "react";
 import {
     CONSENT_EVENT,
-    acceptAnalytics,
-    declineAnalytics,
     getStoredConsent,
+    saveConsent,
     isGoogleConsentDialogActive,
     markGoogleConsentDialogActive,
 } from "@/lib/analytics";
@@ -17,12 +16,15 @@ import { adsEnabled } from "@/lib/ads";
  * that one decision drive everything else:
  *
  *   - TCF purpose 1 (store/access information on a device) AND purpose 8
- *     (measure content performance) granted  -> `acceptAnalytics()`:
+ *     (measure content performance) granted  -> analytics: true:
  *     PostHog may start, the mobile anchor ad may show.
- *   - anything less                          -> `declineAnalytics()`:
+ *   - anything less                          -> analytics: false:
  *     PostHog stays off / is switched off and its identifiers are dropped.
+ *   - purpose 1 alone decides `ads` - it lifts the AdSense request pause
+ *     set in <head> (see `AD_CONSENT_BOOTSTRAP`); which ads Google then
+ *     serves is governed by the TCF string itself.
  *
- * Both calls also persist the choice in our own consent store, so the rest
+ * `saveConsent` persists the choice in our own consent store, so the rest
  * of the site (AnchorAd, CookieBanner's "already decided" check) keeps
  * working unchanged. "Cookie settings" in the footer and the privacy policy
  * dispatch CONSENT_EVENT; here that reopens Google's revocation dialog
@@ -48,14 +50,16 @@ export default function ConsentBridge() {
             if (data.gdprApplies === false) {
                 // Outside the GDPR area the dialog never shows; treat as no
                 // analytics consent rather than assuming one.
-                if (getStoredConsent() === null) declineAnalytics();
+                if (getStoredConsent() === null) void saveConsent({ analytics: false, ads: false });
                 return;
             }
             const c = data.purpose?.consents ?? {};
-            const ok = c["1"] === true && c["8"] === true;
+            const ads = c["1"] === true;
+            const analytics = ads && c["8"] === true;
             const stored = getStoredConsent();
-            if (ok && stored?.analytics !== true) void acceptAnalytics();
-            if (!ok && stored?.analytics !== false) declineAnalytics();
+            if (stored?.analytics !== analytics || stored?.ads !== ads) {
+                void saveConsent({ analytics, ads });
+            }
         };
 
         // adsbygoogle.js installs __tcfapi asynchronously; poll briefly.

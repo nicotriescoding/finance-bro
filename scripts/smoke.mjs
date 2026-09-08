@@ -8,7 +8,8 @@
  * whenever you fix a bug that a build alone would not have caught.
  */
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 
 const PORT = 3210;
@@ -306,6 +307,14 @@ try {
                 (name) => productsHtml.includes(name)
             )
     );
+    // 2026-09-08 audit: share-alike needs the deed link and the statement that
+    // the edited image carries the same licence; the Birkin stays 2.0.
+    check(
+        "/products CC BY-SA credits link the deeds and state share-alike",
+        productsHtml.includes("creativecommons.org/licenses/by-sa/4.0/") &&
+            productsHtml.includes("creativecommons.org/licenses/by-sa/2.0/") &&
+            (productsHtml.match(/licensed under CC BY-SA \d\.\d as well/g) ?? []).length >= 4
+    );
     // 2026-09-08: the exam-legal calculator (Casio FX-85MS per the TUM
     // finance chair's policy) and the pattern behind, not over, the photo.
     check(
@@ -426,11 +435,22 @@ try {
     );
     // Google's verification crawler wants the literal tag in the raw <head>,
     // not a client-injected script (that was the "code not found" failure).
+    // `defer` instead of `async` since 2026-09-08 so the consent bootstrap
+    // is guaranteed to run first (layout.tsx explains).
     check(
-        "/ carries the verbatim AdSense tag in the HTML head",
-        /<head>[\s\S]*<script async="" src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-6951760347839431" crossorigin="anonymous">/.test(
+        "/ carries the AdSense tag in the HTML head",
+        /<head>[\s\S]*<script defer="" src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-6951760347839431" crossorigin="anonymous">/.test(
             homeHtml
         )
+    );
+    // 2026-09-08 legal audit: nothing ad-related before a consent decision.
+    // The consent bootstrap (Consent Mode denied + pauseAdRequests) must sit
+    // in the head BEFORE adsbygoogle.js, on every page.
+    check(
+        "/ pauses AdSense and denies Consent Mode before the tag loads",
+        /pauseAdRequests=1[\s\S]*adsbygoogle\.js\?client=/.test(homeHtml) &&
+            homeHtml.includes("ad_storage:'denied'") &&
+            homeHtml.indexOf("pauseAdRequests=1") < homeHtml.indexOf("adsbygoogle.js?client=")
     );
     check(
         "/privacy names Amazon PartnerNet and the under-16 rule",
@@ -448,6 +468,33 @@ try {
         [301, 302, 307, 308].includes(tasks.status) &&
             (tasks.headers.get("location") ?? "").includes("/quiz"),
         `status ${tasks.status}, location ${tasks.headers.get("location")}`
+    );
+
+    // --- provenance stays off the wire ------------------------------------
+    // 2026-09-08: the Turbopack loader in next.config.ts strips `source` from
+    // the question banks. Every bank's source strings start with "TUM " and
+    // name an exam or problem set; none of that may survive in any built
+    // chunk (client or server) - and the questions themselves must.
+    const chunkFiles = [];
+    const walk = (dir) => {
+        for (const entry of readdirSync(dir)) {
+            const full = join(dir, entry);
+            if (statSync(full).isDirectory()) walk(full);
+            else if (/\.(js|mjs|cjs)$/.test(entry)) chunkFiles.push(full);
+        }
+    };
+    for (const dir of [".next/static", ".next/server"]) if (existsSync(dir)) walk(dir);
+    const leakingChunks = chunkFiles.filter((f) =>
+        /source:"TUM |"TUM [^"]*(Exam|Problem Set|eTest|catalogue)/.test(readFileSync(f, "utf8"))
+    );
+    check(
+        "built chunks carry no question `source` provenance",
+        chunkFiles.length > 0 && leakingChunks.length === 0,
+        leakingChunks.slice(0, 3).join(", ")
+    );
+    check(
+        "built chunks still carry the question banks",
+        chunkFiles.some((f) => readFileSync(f, "utf8").includes("fin-bond-modified-duration"))
     );
 
     // --- SEO surface -----------------------------------------------------

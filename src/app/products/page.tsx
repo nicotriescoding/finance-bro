@@ -644,6 +644,59 @@ function ProductCard({ p, tint }: { p: Product; tint: [string, string] }) {
     );
 }
 
+/**
+ * The four Wikimedia Commons photos on this page and their licence facts.
+ * Rendered as one credit line each in the footer - every field is a licence
+ * condition, so a new Commons photo gets a complete entry here or does not
+ * ship.
+ */
+const COMMONS_CREDITS: Array<{
+    what: string;
+    file: string;
+    author: string;
+    source: string;
+    license: string;
+    licenseUrl: string;
+    change: string;
+}> = [
+    {
+        what: "Birkin bag",
+        file: "Hermes Ostrich Birkin Bag.jpg",
+        author: "Wen-Cheng Liu",
+        source: "https://commons.wikimedia.org/wiki/File:Hermes_Ostrich_Birkin_Bag.jpg",
+        license: "CC BY-SA 2.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0/",
+        change: "cropped",
+    },
+    {
+        what: "Energy drink can",
+        file: "Red Bull ice.jpg",
+        author: "Klaas van Buiten",
+        source: "https://commons.wikimedia.org/wiki/File:Red_Bull_ice.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        change: "cropped to the can",
+    },
+    {
+        what: "Party speaker",
+        file: "JBL PartyBox 710.jpg",
+        author: "TaurusEmerald",
+        source: "https://commons.wikimedia.org/wiki/File:JBL_PartyBox_710.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        change: "background removed",
+    },
+    {
+        what: "Beer tower",
+        file: "Beer tower.jpg",
+        author: "Pundit",
+        source: "https://commons.wikimedia.org/wiki/File:Beer_tower.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        change: "background removed, cropped to the column",
+    },
+];
+
 export default function ProductsPage() {
     return (
         <div className="mx-auto flex max-w-[1440px] gap-[18px] px-4 py-8 lg:px-[22px]">
@@ -665,8 +718,11 @@ export default function ProductsPage() {
                         </span>{" "}
                         every &quot;See the offer on Amazon&quot; button is an affiliate
                         link (Amazon PartnerNet) - buy through one and the site earns a
-                        small commission while your price stays exactly the same. As an
-                        Amazon Associate, this site earns from qualifying purchases.
+                        small commission while your price stays exactly the same.{" "}
+                        <strong className="text-muted">
+                            As an Amazon Associate, this site earns from qualifying
+                            purchases.
+                        </strong>{" "}
                         Product names are jokes, not brand endorsements: each link goes
                         to one specific Amazon listing we picked for it.
                     </p>
@@ -704,49 +760,45 @@ export default function ProductsPage() {
                 ))}
 
                 {/* Photo note - Adobe Stock standard license (no attribution owed)
-                    plus the four CC BY-SA photos, which need these credit lines. */}
-                <p className="text-center text-[11px] leading-relaxed text-muted-light">
-                    Product photos licensed via Adobe Stock. Pictures are
-                    illustrative - the linked offer may look better. Or worse.
-                    Wikimedia Commons photos, all CC BY-SA, cropped or
-                    background removed: Birkin by{" "}
-                    <a
-                        href="https://commons.wikimedia.org/wiki/File:Hermes_Ostrich_Birkin_Bag.jpg"
-                        target="_blank"
-                        rel="noopener"
-                        className="underline"
-                    >
-                        Wen-Cheng Liu
-                    </a>{" "}
-                    (2.0), Red Bull can by{" "}
-                    <a
-                        href="https://commons.wikimedia.org/wiki/File:Red_Bull_ice.jpg"
-                        target="_blank"
-                        rel="noopener"
-                        className="underline"
-                    >
-                        Klaas van Buiten
-                    </a>{" "}
-                    (4.0), JBL PartyBox by{" "}
-                    <a
-                        href="https://commons.wikimedia.org/wiki/File:JBL_PartyBox_710.jpg"
-                        target="_blank"
-                        rel="noopener"
-                        className="underline"
-                    >
-                        TaurusEmerald
-                    </a>{" "}
-                    (4.0), beer tower by{" "}
-                    <a
-                        href="https://commons.wikimedia.org/wiki/File:Beer_tower.jpg"
-                        target="_blank"
-                        rel="noopener"
-                        className="underline"
-                    >
-                        Pundit
-                    </a>{" "}
-                    (4.0).
-                </p>
+                    plus the four CC BY-SA photos. Each credit is a licence condition
+                    (BY-SA 4.0 s. 3(a), 2.0 s. 4(c)): author, source, licence deed
+                    link, what was changed, and that the adapted image is released
+                    under the SAME licence (share-alike; the Birkin stays 2.0 because
+                    a 2.0 adaptation may not move to 4.0 - keep the versions apart). */}
+                <div className="text-center text-[11px] leading-relaxed text-muted-light">
+                    <p>
+                        Product photos licensed via Adobe Stock. Pictures are
+                        illustrative - the linked offer may look better. Or worse.
+                        Four photos come from Wikimedia Commons under Creative Commons
+                        licences; our edited versions are released under the same
+                        licence as the original in each case:
+                    </p>
+                    <ul className="mt-1 flex flex-col gap-0.5">
+                        {COMMONS_CREDITS.map((c) => (
+                            <li key={c.file}>
+                                {c.what}: &quot;{c.file}&quot; by{" "}
+                                <a
+                                    href={c.source}
+                                    target="_blank"
+                                    rel="noopener"
+                                    className="underline"
+                                >
+                                    {c.author}
+                                </a>
+                                , Wikimedia Commons,{" "}
+                                <a
+                                    href={c.licenseUrl}
+                                    target="_blank"
+                                    rel="license noopener"
+                                    className="underline"
+                                >
+                                    {c.license}
+                                </a>
+                                {`, ${c.change}; this edited version is licensed under ${c.license} as well.`}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
 
             <AdRail note="Trading Platform" />

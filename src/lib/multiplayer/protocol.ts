@@ -185,22 +185,97 @@ export const MAX_NAME_LENGTH = 20;
 export const MAX_PLAYERS = 8;
 
 /**
- * Minimal decency filter for self-chosen names. Not a moderation system -
- * just the obvious slurs. Substring match, case-insensitive.
+ * Decency filter for self-chosen names (extended 2026-09-08, DSA work: the
+ * terms page describes exactly this - an automatic word filter that swaps a
+ * blocked name for the placeholder, nothing more). Not a moderation system;
+ * the obvious slurs and hate terms in English and German, matched as
+ * substrings after normalisation: lower-case, accents stripped, common
+ * leet-speak digits/symbols mapped back to letters, everything that is not
+ * a letter removed - so "H1tl3r", "h.i.t.l.e.r" and "Hïtler" all hit.
+ * Keep the list to unambiguous terms: a false positive costs a student
+ * their name; a miss is fixed by a report. Deliberately NOT on the list
+ * because real names or study terms contain them: "nazi" (Nazim), "isis",
+ * "kike" (Enrique), "mongo" (MongoDB), "pedo" (torpedo), "slut" (Slutsky
+ * equation), "fagot" (Fagott).
  */
 const BLOCKED = [
+    // slurs / hate
     "nigg",
-    "hitler",
     "faggot",
     "kanak",
     "retard",
+    "tranny",
+    "spastik",
+    "spasti",
+    "chink",
+    "wetback",
+    "raghead",
+    "zigeuner",
+    // nazi / terror glorification (illegal under §§ 86, 86a, 130 StGB)
+    "hitler",
+    "heilhitler",
+    "siegheil",
+    "sieg heil",
+    "swastika",
+    "hakenkreuz",
+    "judensau",
+    "holocaust",
+    // sexual / insults
     "hurensohn",
+    "hurenson",
+    "wichser",
+    "fotze",
+    "schlampe",
+    "cunt",
+    "whore",
+    "rapist",
+    "vergewaltig",
+    "paedo",
+    "pedophil",
+    "paedophil",
+    "neonazi",
+    "kinderfick",
+    "motherfucker",
+    "arschloch",
+    "missgeburt",
 ];
+
+const LEET: Record<string, string> = {
+    "0": "o",
+    "1": "i",
+    "3": "e",
+    "4": "a",
+    "5": "s",
+    "7": "t",
+    "8": "b",
+    "@": "a",
+    $: "s",
+    "!": "i",
+    "|": "i",
+    "+": "t",
+};
+
+function normalizeForFilter(name: string): string {
+    return name
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ß/g, "ss")
+        .replace(/[0-9@$!|+]/g, (c) => LEET[c] ?? c)
+        .replace(/[^a-z]/g, "");
+}
+
+const BLOCKED_NORMALIZED = BLOCKED.map(normalizeForFilter);
+
+/** True when the name trips the decency filter (exported for tests). */
+export function isBlockedName(name: string): boolean {
+    const n = normalizeForFilter(name);
+    return BLOCKED_NORMALIZED.some((b) => b.length > 0 && n.includes(b));
+}
 
 export function sanitizeName(raw: string): string {
     const trimmed = raw.replace(/\s+/g, " ").trim().slice(0, MAX_NAME_LENGTH);
     if (!trimmed) return "Intern";
-    const lower = trimmed.toLowerCase();
-    if (BLOCKED.some((b) => lower.includes(b))) return "Intern";
+    if (isBlockedName(trimmed)) return "Intern";
     return trimmed;
 }

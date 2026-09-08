@@ -3,6 +3,9 @@
 /** Globals installed by Google's AdSense loader and its consent dialog. */
 interface Window {
     adsbygoogle?: unknown[];
+    /** Consent Mode v2 shim installed by the head bootstrap in `lib/ads`. */
+    gtag?: (command: "consent", action: "default" | "update", params: Record<string, string | number>) => void;
+    dataLayer?: unknown[];
     googlefc?: {
         callbackQueue?: Array<Record<string, () => void>>;
         showRevocationMessage?: () => void;

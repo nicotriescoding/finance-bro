@@ -26,6 +26,15 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   `buildSession`, `worker/test/shots.mjs`, scaffold SVGs and `.idea/` were
   deleted; the last exam-tuple guards in econ1/econ2 were replaced by
   ranges; `eslint-config-next` bumped to 16 (flat config, no FlatCompat).
+- **Legal audit fixes (2026-09-08, latest):** AdSense paused + Consent Mode
+  denied until a decision (`AD_CONSENT_BOOTSTRAP`, tag is `defer`), own
+  banner asks ads + analytics separately, old consent records re-asked;
+  `/terms` (DSA Arts. 11-16), Art. 13 line under every name field, wider
+  slur filter; Open Library covers deleted → `CoverCard`; CC BY-SA credits
+  with deed links + share-alike sentence; Amazon disclosure bold on
+  `/products` + `/library`; `source` stripped from bundles (Turbopack
+  loader, smoke-guarded); PostHog lazy bundles off; leaderboard legal basis
+  → Art. 6 (1) (f); `docs/gdpr-records.md` (Art. 30 + DPA checklist).
 - **2026-09-08 features:** `/leaderboard` shows the full corporate ladder
   (`CorporateLadder`, local balance, endgame rungs on top) and the net-worth
   top 10 with your own position (`NetWorthTop`, overall board); the landing
@@ -33,6 +42,20 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   aligned with `ranks`, build fails if the counts differ).
 
 ## Owed on Nico's machine (real Chrome, dark mode)
+
+- **Legal audit follow-ups (dashboards, not code):** AdSense → publish the
+  GDPR message AND accept the Google Ads Data Processing Terms; PostHog
+  retention ≤ 24 months + DPA; Vercel + Cloudflare DPA PDFs saved; Adobe
+  Stock: confirm no product photo is "editorial use only" - all in
+  `docs/gdpr-records.md` §§ 2-3. Also: private-window check that the own
+  banner now shows the "Pick and choose" switches and that no
+  `pagead2`/`doubleclick` cookie exists before answering it (DevTools →
+  Application → Cookies); after "Never", check ads (if any) come without
+  `__gads`. AdSense site review: if Google ever reports "code not found",
+  the `defer` on the tag (layout.tsx) is the thing to look at.
+- `/library` cover cards, `/terms`, the name-field notice on `/multiplayer`
+  and `/leaderboard`, the `/products` credit block - all seen only in
+  headless dark-mode Chromium.
 
 - `/leaderboard`: ladder + net-worth panel with the live worker (sandbox saw
   it with a mocked board only), the 🎲 name suggestions, per-subject tabs.
@@ -51,8 +74,10 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 ## Next up
 
 - **Amazon PartnerNet:** once approved, set `AMAZON_TAG` in
-  `src/lib/affiliate.ts`; product images stay stock photos (Associates only
-  allows API-served images, which needs 10 sales in 30 days).
+  `src/lib/affiliate.ts`; product images stay stock photos and the Library
+  keeps its generated covers (Associates only allows API-served images,
+  which needs 10 sales in 30 days - that API is also the only clean way to
+  get real book covers back, decided 2026-09-08).
 - **AdSense:** site review + publish the GDPR consent message
   (`docs/adsense-setup.md`, steps still open). **PostHog:** retention ≤ 24
   months in the project settings (privacy policy promises it).
