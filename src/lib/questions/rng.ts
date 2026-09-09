@@ -48,6 +48,7 @@ export function createRng(seed: number): Rng {
     return { int, float, pick, shuffle, next };
 }
 
+/** 1 … 2^31 − 2 - never 0, the worker rejects seed < 1. */
 export function randomSeed() {
-    return Math.floor(Math.random() * 2_147_483_647);
+    return Math.floor(Math.random() * 2_147_483_646) + 1;
 }

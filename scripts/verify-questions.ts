@@ -20,6 +20,7 @@ import { buildInstance } from "../src/lib/questions/engine";
 import { SUBJECT_MAP } from "../src/content/subjects";
 import { formatAnswer, isWithinTolerance, parseNumericInput } from "../src/lib/questions/grading";
 import { resolveHint } from "../src/lib/hints";
+import { rotateAwayFrom, variantSeed } from "../src/lib/session";
 
 const SEEDS = 200;
 const errors: string[] = [];
@@ -60,7 +61,8 @@ const COACHING: RegExp[] = [
     /\bapply the\b/i,
     /\b(i\.e\.|that is,)/i,
 ];
-function checkCoaching(id: string, seed: number, inst: ReturnType<typeof buildInstance>) {
+const coached = new Set<string>();
+function checkCoaching(id: string, seed: number, inst: ReturnType<typeof buildInstance>): boolean {
     const texts = [
         ["prompt", stripMath(inst.prompt)],
         ...Object.keys(inst.given ?? {}).map((k) => [`given key "${k}"`, stripMath(k)] as const),
@@ -69,9 +71,10 @@ function checkCoaching(id: string, seed: number, inst: ReturnType<typeof buildIn
         const hit = COACHING.find((re) => re.test(text));
         if (hit) {
             errors.push(`${id} (seed ${seed}): ${where} coaches the student (${hit.source}) - move it to \`hint\``);
-            return;
+            return true;
         }
     }
+    return false;
 }
 
 /**
@@ -169,7 +172,9 @@ for (const q of ALL_QUESTIONS) {
         if (seed === 1 && !hint) {
             warnings.push(`${q.id}: no hint and no $…$ segment in the explanation - the hint button stays hidden`);
         }
-        if (seed === 1) checkCoaching(q.id, seed, inst);
+        // story lines rotate per seed, so the coaching lint runs on every seed
+        // (first hit per question is enough)
+        if (!coached.has(q.id) && checkCoaching(q.id, seed, inst)) coached.add(q.id);
         if (inst.hint && seed <= 3) checkMath(q.id, "hint", inst.hint);
         if (hint) {
             const leak = answerForms(a).find((form) => hint.includes(form));
@@ -245,6 +250,38 @@ if (warnings.length) {
 if (errors.length) {
     console.error(`\n${errors.length} ERROR(S):`);
     errors.slice(0, 40).forEach((e) => console.error("  x " + e));
+    process.exit(1);
+}
+// ------------------------------------------------------------ variant memory
+// A new run never opens with the last run's first posting, and a re-dealt
+// question steers away from the story line it showed last (src/lib/session.ts).
+{
+    const rotated = rotateAwayFrom([{ id: "a" }, { id: "b" }, { id: "c" }], "a");
+    if (rotated.map((x) => x.id).join() !== "b,c,a") errors.push("rotateAwayFrom: did not rotate the repeated opener");
+    if (rotateAwayFrom([{ id: "a" }], "a").length !== 1) errors.push("rotateAwayFrom: single-question pool broke");
+    const opening = (q: (typeof ALL_QUESTIONS)[number], seed: number) => buildInstance(q, seed).prompt.slice(0, 48);
+    let rotating = 0;
+    let repeats = 0;
+    for (const q of ALL_QUESTIONS) {
+        if (q.kind !== "numeric") continue;
+        const openings = new Set<string>();
+        for (let seed = 1; seed <= 40; seed++) openings.add(opening(q, seed * 7919));
+        if (openings.size < 2) continue;
+        rotating++;
+        for (let seed = 1; seed <= 5; seed++) {
+            const avoid = seed * 7919;
+            if (opening(q, variantSeed(q, avoid)) === opening(q, avoid)) repeats++;
+        }
+    }
+    // a question with n lines repeats with p = 1/n twice in a row - the check
+    // still has to tolerate that; anything beyond a few percent is a bug
+    if (repeats > rotating * 5 * 0.15) errors.push(`variantSeed: ${repeats} repeated story lines over ${rotating * 5} re-deals`);
+    console.log(`Variant memory: ${rotating} questions rotate story lines, ${repeats} repeats over ${rotating * 5} re-deals`);
+}
+
+if (errors.length) {
+    console.error(`\n${errors.length} ERROR(S):`);
+    errors.forEach((e) => console.error("  x " + e));
     process.exit(1);
 }
 console.log("\nAll questions build cleanly.");

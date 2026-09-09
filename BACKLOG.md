@@ -5,7 +5,7 @@ Nico's machine, what is next, what is undecided, what is known to be weak.
 Not a changelog - the session log is `git log`; feature status is the table
 in `SPEC.md`. Keep every section short enough to read at session start.
 
-## Current state (2026-09-08)
+## Current state (2026-09-09)
 
 - **Code:** 447 numeric questions (Finance 159, Econ 1 107, Econ 2 90, Cost
   Accounting 91; since 2026-09-08 281 of them rotate a seed-picked story
@@ -43,6 +43,30 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   aligned with `ranks`, build fails if the counts differ).
 
 ## Owed on Nico's machine (real Chrome, dark mode)
+
+- **Nico's decisions from the 2026-09-09 exam-fidelity audit** (the
+  reviewers kept these; change on his word): (a) "too easy vs exam" -
+  `e1-mono-*` (5 q) print "so $MC = c\,q$" next to the cost function;
+  `e1-pctl-cap-*` (3 q) say the cap "lies below the market-clearing
+  price"; `fin-bond-dmod` / `fin-bond-modified-duration` hand over the
+  Macaulay duration; `fin-cs-eps-leverage` gives both new debt and shares
+  repurchased; `fin-ratio-diluted-eps-simple` gives the dilution factor;
+  `ec2-lm-price-setting` / `ec2-lm-profit-per-worker` give λ and μ
+  directly; `ec2-ls-employed-count` gives the rates, not head counts;
+  `ca-proc-wa-ending-wip` / `ca-proc-wa-completed-costs` hand over the
+  cost per equivalent unit. (b) kept as exam data, arguably coaching:
+  `fin-ratio-dupont` / `fin-ratio-book-leverage` / `fin-ratio-nfl` gloss
+  their input ratios; `fin-eq-pvgo` / `fin-inv-npv-perpetual` explain what
+  a negative answer means; `e1-mkt-total-surplus` "(consumer plus producer
+  surplus)"; `e2-rd-subsidy` "to correct the underinvestment"; the
+  `ca-alloc-*` "(before any levy)" clauses; `ca-pl-noe-absorption-profit`
+  opening-stock valuation clause; `fin-ratio-roa` lost its definition
+  (Berk/DeMarzo add-back form assumed).
+- A quiz run with the 💡 button on a few authored hints (Pareto, sunk
+  cost, quick ratio) - seen only in headless dark-mode Chromium.
+- Two runs in a row on the same topic: the second must open with a
+  different posting, and re-dealt write-offs with a different story line
+  (`fb_variants_v1` in localStorage).
 
 - `/career`: locked careers are now grey dashed cards with a lock, open
   ones white with a shadow (2026-09-09, Nico could not tell them apart in
@@ -128,11 +152,10 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Known gaps
 
-- **Hint quality varies.** The hint is the FIRST `$…$` segment of the
-  explanation; for a handful of special-case annuities that is a given, not
-  the formula. Never wrong, never leaking (verify guards that). Fix if it
-  bothers anyone: optional explicit `hint` field, preferred in
-  `src/lib/hints.ts`.
+- **Hint = authored `hint` + lecture formula** since 2026-09-09 (80 of 447
+  questions carry an authored hint; the rest show the first `$…$` of the
+  explanation, which for a handful of special-case annuities is a given
+  rather than the formula). Never leaking - verify guards that.
 - `fin-bond-modified-duration` asks for a signed percentage price change, so
   `7.19` instead of `-7.19` fails. Reword to "by how much does it fall" or
   say "state the sign".
@@ -160,6 +183,29 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   `rm -f .git/index.lock .git/HEAD.lock .git/objects/maintenance.lock`.
 
 ## Last three sessions (kept verbatim, older ones are in `git log`)
+
+**Exam-fidelity audit: prompts ask, hints coach (2026-09-09, latest
+session).** Per Nico: a prompt may not explain the concept it tests (the
+Pareto definition, "the ticket is already paid and does not count"). (1)
+`build` may return `hint`; `src/lib/hints.ts` shows it behind 💡 and
+appends the explanation's first `$…$` when the hint has no math;
+`QuestionInstance.hint`; label now "table + rule + formula". (2) All 447
+questions audited by four subagents (one per bank), 80 changed: the
+definition / decision rule / method moved into `hint`, prompts and given
+labels made exam-neutral (`sunk*` scenario fields renamed, "(sunk)" labels
+gone), maths untouched - the question-reviewer diffed answers over 60
+seeds: identical. Its two FAILs (arithmetic-degressive depreciation lost
+its pinning convention) fixed by putting "the final year's amount equal to
+the yearly decrease" back as exam data. (3) `verify` now fails on coaching
+phrases in prompts / given keys on every seed (`COACHING` list) and
+leak-checks the resolved hint. (4) Variant memory in `src/lib/session.ts`:
+`fb_variants_v1` remembers the last seed per question and the last opening
+posting; `variantSeed()` re-draws (≤ 3 candidates) when a re-deal would
+open with the same story line, `rotateAwayFrom()` never opens two runs with
+the same posting; verify covers both. `randomSeed()` never returns 0 (the
+worker rejects it). (5) `_helpers.ts` caches its two `Intl.NumberFormat`
+instances - a bank builds 10× faster. Rules file + skill document the
+prompt-vs-hint rule.
 
 **Story-line rotation in all four banks + nine Bro Shop cards
 (2026-09-08, latest session).** Per Nico. (1) Questions: 281 of 447

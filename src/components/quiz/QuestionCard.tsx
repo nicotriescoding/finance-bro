@@ -236,7 +236,7 @@ export default function QuestionCard({
                 <div className="overflow-hidden rounded-[10px] border border-hairline-table">
                     {/* Exam mode: every number is already in the posting text, like
                         on the real exam sheet. The tidy table is paid advice -
-                        30% of the payout, included in the 50% formula hint, free
+                        30% of the payout, included in the 50% hint, free
                         once the posting is settled. */}
                     <button
                         type="button"
@@ -273,7 +273,7 @@ export default function QuestionCard({
             {hintUsed && (
                 <div className="flex flex-col gap-1.5 rounded-[10px] border border-hairline bg-chip p-3.5">
                     <span className="caps-label text-[10px] text-muted">
-                        💡 Hint · table + formula · advisory fee: 50% of the payout
+                        💡 Hint · table + rule + formula · advisory fee: 50% of the payout
                     </span>
                     {isNumeric && formulaHint ? (
                         <p className="text-[15px] leading-relaxed text-ledger">

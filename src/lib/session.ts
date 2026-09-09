@@ -58,8 +58,9 @@ const QUESTION_BY_ID: Map<string, Question> = new Map(
 // ---- variant memory ---------------------------------------------------------
 // Most questions rotate a seed-picked story line. Pure chance repeats the same
 // line often enough that a run "always starts with the same variant", so the
-// last seed dealt per question (and the id that opened the last run) are
-// remembered in this browser and the next deal steers away from them.
+// seed last dealt per question (and the id that opened the last run) are
+// remembered in this browser and the next deal steers away from them. Dealt,
+// not shown: a run abandoned early still counts as seen - good enough.
 const VARIANT_KEY = "fb_variants_v1";
 
 type VariantMemory = { firstId?: string; seeds: Record<string, number> };
@@ -89,26 +90,29 @@ const opening = (q: Question, seed: number) => buildInstance(q, seed).prompt.sli
 
 /**
  * A fresh seed for `question` whose prompt opens differently from the one
- * built with `avoidSeed`. Pure-formula questions have one opening for every
- * seed, so the search gives up after a few tries and any seed will do.
+ * built with `avoidSeed`. Three candidates at most: a question whose first
+ * two candidates both open like the avoided seed has no (or very little)
+ * story variation and any seed will do. Worst case four `buildInstance`
+ * calls, so dealing a whole bank stays well under the cost of one render.
  */
-export function variantSeed(question: Question, avoidSeed?: number, tries = 8): number {
+export function variantSeed(question: Question, avoidSeed?: number): number {
     if (avoidSeed === undefined) return randomSeed();
-    let avoid: string;
-    try {
-        avoid = opening(question, avoidSeed);
-    } catch {
-        return randomSeed();
-    }
     let seed = randomSeed();
-    for (let i = 0; i < tries; i++, seed = randomSeed()) {
-        try {
+    try {
+        const avoid = opening(question, avoidSeed);
+        for (let i = 0; i < 3; i++, seed = randomSeed()) {
             if (opening(question, seed) !== avoid) return seed;
-        } catch {
-            return seed;
         }
+    } catch {
+        /* a throwing build is verify's problem, not the deal's */
     }
     return seed;
+}
+
+/** Never open two runs in a row with the same posting (pure, for verify). */
+export function rotateAwayFrom<T extends { id: string }>(dealt: T[], lastFirstId?: string): T[] {
+    if (dealt.length > 1 && dealt[0].id === lastFirstId) return [...dealt.slice(1), dealt[0]];
+    return dealt;
 }
 
 export function buildUnlimitedSession(
@@ -118,12 +122,8 @@ export function buildUnlimitedSession(
     const pool = questionsFor(subjectId, topicIds);
     if (pool.length === 0) return null;
     const rng = createRng(randomSeed());
-    let dealt = rng.shuffle(pool);
     const memory = loadVariants();
-    // never open two runs in a row with the same posting
-    if (dealt.length > 1 && dealt[0].id === memory.firstId) {
-        dealt = [...dealt.slice(1), dealt[0]];
-    }
+    const dealt = rotateAwayFrom(rng.shuffle(pool), memory.firstId);
     const queue = dealt.map((q) => ({ id: q.id, seed: variantSeed(q, memory.seeds[q.id]) }));
     for (const { id, seed } of queue) memory.seeds[id] = seed;
     memory.firstId = dealt[0].id;

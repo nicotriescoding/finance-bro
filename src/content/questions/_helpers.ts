@@ -6,8 +6,11 @@
  */
 const LOCALE = "en-US";
 
-const fmt = (min = 2, max = 2) =>
-    new Intl.NumberFormat(LOCALE, { minimumFractionDigits: min, maximumFractionDigits: max });
+// Intl.NumberFormat construction dominates a question build (~1 ms each on a
+// laptop) - two cached instances make dealing a whole bank cheap.
+const FMT_2_2 = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const FMT_0_2 = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const fmt = (min = 2, max = 2) => (min === 2 && max === 2 ? FMT_2_2 : FMT_0_2);
 
 /** 1234.5 -> "1,234.50" */
 export const n2 = (v: number) => fmt(2, 2).format(v);
