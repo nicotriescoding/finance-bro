@@ -222,35 +222,35 @@ const E1_OC_MIN_BENEFIT_SCENARIOS = [
     {
         name: "Jonas", subj: "he", poss: "his", when: "Saturday evening",
         opt1: "attend a jazz concert", fee: "ticket", feeLabel: "Concert ticket", event: "concert",
-        sunk: "he would get there with the annual transit pass he already bought for", sunkLabel: "Transit pass (already bought)", sunkNoun: "The transit pass",
+        travel: "he would get there with the annual transit pass he bought last year for", travelLabel: "Transit pass, bought last year", travelNoun: "The transit pass",
         home: "play video games at home", homeLabel: "Benefit of gaming", homeNoun: "Gaming",
         job: "help a neighbor move furniture for a payment of", jobLabel: "Moving job: pay / effort cost", jobNoun: "the moving job",
     },
     {
         name: "Mira", subj: "she", poss: "her", when: "Friday night",
         opt1: "go bungee jumping from the river bridge", fee: "jump fee", feeLabel: "Jump fee", event: "jump",
-        sunk: "she would drive there in the car she already insured this year for", sunkLabel: "Car insurance (already paid)", sunkNoun: "The car insurance",
+        travel: "she would drive there in the car she insured for the year at a premium of", travelLabel: "Car insurance, paid for the year", travelNoun: "The car insurance",
         home: "binge a series on the sofa", homeLabel: "Benefit of the series", homeNoun: "The series",
         job: "cover a bar shift for a colleague for a payment of", jobLabel: "Bar shift: pay / effort cost", jobNoun: "the bar shift",
     },
     {
         name: "Tariq", subj: "he", poss: "his", when: "Sunday afternoon",
         opt1: "watch a film at the cinema", fee: "ticket", feeLabel: "Cinema ticket", event: "cinema visit",
-        sunk: "he would ride there on the bike he already bought for", sunkLabel: "Bike (already bought)", sunkNoun: "The bike",
+        travel: "he would ride there on the bike he bought last year for", travelLabel: "Bike, bought last year", travelNoun: "The bike",
         home: "read on the balcony", homeLabel: "Benefit of reading", homeNoun: "Reading",
         job: "walk the neighbors' dogs for a payment of", jobLabel: "Dog walking: pay / effort cost", jobNoun: "the dog walking",
     },
     {
         name: "Sofia", subj: "she", poss: "her", when: "Saturday",
         opt1: "take a pottery class", fee: "class fee", feeLabel: "Class fee", event: "class",
-        sunk: "she would go there with the yearly bus pass she already paid for", sunkLabel: "Bus pass (already paid)", sunkNoun: "The bus pass",
+        travel: "she would go there with the yearly bus pass she paid for in January at", travelLabel: "Bus pass, paid for the year", travelNoun: "The bus pass",
         home: "cook and relax at home", homeLabel: "Benefit of the evening at home", homeNoun: "The evening at home",
         job: "babysit for a neighbor for a payment of", jobLabel: "Babysitting: pay / effort cost", jobNoun: "the babysitting",
     },
     {
         name: "Kenji", subj: "he", poss: "his", when: "Friday evening",
         opt1: "see a football match in the stadium", fee: "ticket", feeLabel: "Match ticket", event: "match",
-        sunk: "he would wear the scarf and jersey he already bought for", sunkLabel: "Fan gear (already bought)", sunkNoun: "The fan gear",
+        travel: "he would wear the scarf and jersey he bought last season for", travelLabel: "Fan gear, bought last season", travelNoun: "The fan gear",
         home: "play board games with his flatmates", homeLabel: "Benefit of the game night", homeNoun: "The game night",
         job: "work a delivery shift for a payment of", jobLabel: "Delivery shift: pay / effort cost", jobNoun: "the delivery shift",
     },
@@ -428,11 +428,11 @@ const E1_OC_PARETO_THRESHOLD_SCENARIOS = [
 ] as const;
 
 const E1_OC_SUNK_COST_NET_BENEFIT_SCENARIOS = [
-    { name: "Lena", subj: "she", sunkItem: "a concert ticket", sunkWord: "ticket", when: "Tonight", whenLow: "tonight", opt1: "go to the concert", val1: "she values that evening at", cost1: "the train ride there costs", label1: "Concert: value / travel", noun1: "the concert", opt2: "join a climbing session", val2: "she values at", cost2: "for which the gym charges", label2: "Climbing: value / fee", noun2: "the climbing session" },
-    { name: "Omar", subj: "he", sunkItem: "a ticket for a stand-up show", sunkWord: "ticket", when: "Tonight", whenLow: "tonight", opt1: "go to the show", val1: "he values that evening at", cost1: "the taxi there costs", label1: "Show: value / taxi", noun1: "the show", opt2: "go bowling with friends", val2: "he values at", cost2: "for which the alley charges", label2: "Bowling: value / fee", noun2: "the bowling night" },
-    { name: "Hana", subj: "she", sunkItem: "a ticket for a football match", sunkWord: "ticket", when: "This evening", whenLow: "this evening", opt1: "go to the match", val1: "she values that evening at", cost1: "the tram ride there costs", label1: "Match: value / travel", noun1: "the match", opt2: "take a cooking class", val2: "she values at", cost2: "for which the school charges", label2: "Cooking class: value / fee", noun2: "the cooking class" },
-    { name: "Diego", subj: "he", sunkItem: "a day pass for a theme park", sunkWord: "pass", when: "On Saturday", whenLow: "on Saturday", opt1: "go to the park", val1: "he values that day at", cost1: "the fuel for the drive costs", label1: "Theme park: value / fuel", noun1: "the theme park", opt2: "go kayaking on the lake", val2: "he values at", cost2: "for which the rental costs", label2: "Kayaking: value / rental", noun2: "the kayaking trip" },
-    { name: "Yuki", subj: "she", sunkItem: "a ticket for a musical", sunkWord: "ticket", when: "Tonight", whenLow: "tonight", opt1: "go to the musical", val1: "she values that evening at", cost1: "the bus ride there costs", label1: "Musical: value / travel", noun1: "the musical", opt2: "join a pottery workshop", val2: "she values at", cost2: "for which the studio charges", label2: "Pottery: value / fee", noun2: "the pottery workshop" },
+    { name: "Lena", subj: "she", item: "a concert ticket", itemWord: "ticket", when: "Tonight", whenLow: "tonight", opt1: "go to the concert", val1: "she values that evening at", cost1: "the train ride there costs", label1: "Concert: value / travel", noun1: "the concert", opt2: "join a climbing session", val2: "she values at", cost2: "for which the gym charges", label2: "Climbing: value / fee", noun2: "the climbing session" },
+    { name: "Omar", subj: "he", item: "a ticket for a stand-up show", itemWord: "ticket", when: "Tonight", whenLow: "tonight", opt1: "go to the show", val1: "he values that evening at", cost1: "the taxi there costs", label1: "Show: value / taxi", noun1: "the show", opt2: "go bowling with friends", val2: "he values at", cost2: "for which the alley charges", label2: "Bowling: value / fee", noun2: "the bowling night" },
+    { name: "Hana", subj: "she", item: "a ticket for a football match", itemWord: "ticket", when: "This evening", whenLow: "this evening", opt1: "go to the match", val1: "she values that evening at", cost1: "the tram ride there costs", label1: "Match: value / travel", noun1: "the match", opt2: "take a cooking class", val2: "she values at", cost2: "for which the school charges", label2: "Cooking class: value / fee", noun2: "the cooking class" },
+    { name: "Diego", subj: "he", item: "a day pass for a theme park", itemWord: "pass", when: "On Saturday", whenLow: "on Saturday", opt1: "go to the park", val1: "he values that day at", cost1: "the fuel for the drive costs", label1: "Theme park: value / fuel", noun1: "the theme park", opt2: "go kayaking on the lake", val2: "he values at", cost2: "for which the rental costs", label2: "Kayaking: value / rental", noun2: "the kayaking trip" },
+    { name: "Yuki", subj: "she", item: "a ticket for a musical", itemWord: "ticket", when: "Tonight", whenLow: "tonight", opt1: "go to the musical", val1: "she values that evening at", cost1: "the bus ride there costs", label1: "Musical: value / travel", noun1: "the musical", opt2: "join a pottery workshop", val2: "she values at", cost2: "for which the studio charges", label2: "Pottery: value / fee", noun2: "the pottery workshop" },
 ] as const;
 
 const E1_CT_CD_QUANTITY_AFTER_PRICE_CHANGE_SCENARIOS = [
@@ -760,9 +760,9 @@ const E1_MONO_UNIT_TAX_PROFIT_SCENARIOS = [
 ] as const;
 
 const E1_EXT_DWL_NEGATIVE_SCENARIOS = [
-    { intro: "Sand is dredged from the Danube near Novi Sad and sold by the tonne", supply: "the dredgers' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne dredged costs downstream fishers", harmPost: "in lost catch, an amount the dredgers ignore" },
-    { intro: "Gravel is quarried near Lake Bled and sold by the tonne", supply: "the quarries' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne quarried costs the lakeside hotels", harmPost: "in lost bookings from dust and noise, an amount the quarries ignore" },
-    { intro: "Coal is mined in a valley in Silesia and sold by the tonne", supply: "the mines' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne mined costs the nearby farms", harmPost: "in crop damage from the dust, an amount the mines ignore" },
+    { intro: "Sand is dredged from the Danube near Novi Sad and sold by the tonne", supply: "the dredgers' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne dredged costs downstream fishers", harmPost: "in lost catch, which no dredger pays for" },
+    { intro: "Gravel is quarried near Lake Bled and sold by the tonne", supply: "the quarries' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne quarried costs the lakeside hotels", harmPost: "in lost bookings from dust and noise, which no quarry pays for" },
+    { intro: "Coal is mined in a valley in Silesia and sold by the tonne", supply: "the mines' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne mined costs the nearby farms", harmPost: "in crop damage from the dust, which no mine pays for" },
 ] as const;
 
 const E1_EXT_PIGOU_TAX_RISING_DAMAGE_SCENARIOS = [
@@ -785,10 +785,10 @@ const E1_EXT_POSITIVE_DWL_SCENARIOS = [
 ] as const;
 
 const E1_PG_EFFICIENT_PROVISION_IDENTICAL_SCENARIOS = [
-    { members: "households", member: "household", place: "of Ostuni", what: "the village fireworks show, a pure public good: everyone watches the same display", one: "minute", units: "minutes", good: "fireworks", provider: "the pyrotechnician charges" },
-    { members: "flats", member: "flat", place: "in a Hamburg apartment block", what: "the lighting of the shared courtyard, a pure public good: every flat looks onto it", one: "lamp", units: "lamps", good: "courtyard lighting", provider: "the electrician charges" },
-    { members: "villages", member: "village", place: "along a Norwegian fjord", what: "the winter snow-clearing of their shared access road, a pure public good: every village uses it", one: "kilometre", units: "kilometres", good: "cleared road", provider: "the contractor charges" },
-    { members: "cabins", member: "cabin", place: "around a Finnish lake", what: "the treatment of the lake against algae, a pure public good: the whole lake benefits", one: "hour", units: "hours", good: "treatment", provider: "the contractor charges" },
+    { members: "households", member: "household", place: "of Ostuni", what: "the village fireworks show, a pure public good", one: "minute", units: "minutes", good: "fireworks", provider: "the pyrotechnician charges" },
+    { members: "flats", member: "flat", place: "in a Hamburg apartment block", what: "the lighting of the shared courtyard, a pure public good", one: "lamp", units: "lamps", good: "courtyard lighting", provider: "the electrician charges" },
+    { members: "villages", member: "village", place: "along a Norwegian fjord", what: "the winter snow-clearing of their shared access road, a pure public good", one: "kilometre", units: "kilometres", good: "cleared road", provider: "the contractor charges" },
+    { members: "cabins", member: "cabin", place: "around a Finnish lake", what: "the treatment of the lake against algae, a pure public good", one: "hour", units: "hours", good: "treatment", provider: "the contractor charges" },
 ] as const;
 
 const E1_PG_EFFICIENT_PROVISION_TWO_TYPES_SCENARIOS = [
@@ -798,10 +798,10 @@ const E1_PG_EFFICIENT_PROVISION_TWO_TYPES_SCENARIOS = [
 ] as const;
 
 const E1_PG_UNDERPROVISION_GAP_SCENARIOS = [
-    { members: "households", member: "household", intro: "on a street in Naples can hire a night security patrol; the patrol protects the whole street, so it is a pure public good", unit: "patrol hour", costPhrase: "an hour of patrolling costs" },
-    { members: "farms", member: "farm", intro: "in a valley in Tyrol can hire a helicopter for hail-defence flights; a flight protects every field in the valley, so it is a pure public good", unit: "flight hour", costPhrase: "an hour of flying costs" },
-    { members: "shops", member: "shop", intro: "in an arcade in Genoa can hire a cleaner for the shared passage; a clean passage benefits every shop, so it is a pure public good", unit: "cleaning hour", costPhrase: "an hour of cleaning costs" },
-    { members: "boat owners", member: "boat owner", intro: "in a marina in Kiel can hire a night watch for the pontoons; the watch guards every boat, so it is a pure public good", unit: "watch hour", costPhrase: "an hour of watch costs" },
+    { members: "households", member: "household", intro: "on a street in Naples can hire a night security patrol for the whole street, a pure public good", unit: "patrol hour", costPhrase: "an hour of patrolling costs" },
+    { members: "farms", member: "farm", intro: "in a valley in Tyrol can hire a helicopter for hail-defence flights over the whole valley, a pure public good", unit: "flight hour", costPhrase: "an hour of flying costs" },
+    { members: "shops", member: "shop", intro: "in an arcade in Genoa can hire a cleaner for the shared passage, a pure public good", unit: "cleaning hour", costPhrase: "an hour of cleaning costs" },
+    { members: "boat owners", member: "boat owner", intro: "in a marina in Kiel can hire a night watch for all the pontoons, a pure public good", unit: "watch hour", costPhrase: "an hour of watch costs" },
 ] as const;
 
 export const econ1Questions: Question[] = [
@@ -1013,12 +1013,13 @@ export const econ1Questions: Question[] = [
             const c1 = rng.int(4, 12);
             const answer = c1 + 2 * c2 * qm; // min AC
             return {
-                prompt: String.raw`Firms in a competitive market all have the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$. In the long run, firms enter whenever the market price lies above a threshold and exit below it. What is this **break-even price**?`,
+                prompt: String.raw`Firms in a competitive market all have the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$, and entry and exit are free. What is the long-run **break-even price**?`,
                 given: {
                     "Cost function": String.raw`$C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$`,
                 },
                 answer,
                 explanation: String.raw`The long-run entry/exit threshold is the minimum of average cost: $AC(q) = ${n(c2)} q + ${n(c1)} + \frac{${n(F)}}{q}$, minimized where $${n(c2)} = \frac{${n(F)}}{q^2}$, i.e. $q^* = \sqrt{F / ${n(c2)}}$ = ${n(qm)}. There $AC = $ ${n(c2)} · ${n(qm)} + ${n(c1)} + ${n(F)}/${n(qm)} = ${eur(answer)}. Above this price firms earn profit and entry occurs; below it they exit.`,
+                hint: String.raw`Firms enter above the threshold and exit below it, so the break-even price is the lowest average cost the technology allows: minimise $AC(q) = \frac{C(q)}{q}$ over $q$.`,
             };
         },
     },
@@ -1036,12 +1037,13 @@ export const econ1Questions: Question[] = [
             const F = c2 * qm * qm;
             const c1 = rng.int(5, 15);
             return {
-                prompt: String.raw`A firm produces with the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$. Up to which output level does the firm enjoy **economies of scale** (falling average cost)?`,
+                prompt: String.raw`A firm produces with the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$. Up to which output level does the firm enjoy **economies of scale**?`,
                 given: {
                     "Cost function": String.raw`$C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$`,
                 },
                 answer: qm,
                 explanation: String.raw`Economies of scale last while $AC(q) = ${n(c2)} q + ${n(c1)} + \frac{${n(F)}}{q}$ is falling; they are exhausted at the minimum, where $\frac{dAC}{dq} = ${n(c2)} - \frac{${n(F)}}{q^2} = 0$, i.e. $q^* = \sqrt{F / c_2}$ = √(${n(F)} / ${n(c2)}) = ${n(qm)} units. Below ${n(qm)} the spread of the fixed cost dominates and AC falls; above it the rising marginal cost dominates.`,
+                hint: String.raw`Economies of scale mean a falling average cost, so they run out where $AC(q) = \frac{C(q)}{q}$ reaches its minimum: set $\frac{dAC}{dq} = 0$.`,
             };
         },
     },
@@ -1310,15 +1312,16 @@ export const econ1Questions: Question[] = [
             const pass = rng.int(30, 60);
             const answer = ticket + jobSurplus;
             return {
-                prompt: `${s.name} can spend ${s.when} in one of three ways: (i) ${s.opt1} (${s.fee} ${eur(ticket)}; ${s.sunk} ${eur(pass)}), (ii) ${s.home}, which is worth a benefit of ${eur(home)} to ${obj}, or (iii) ${s.job} ${eur(wage)}, where the effort feels like a cost of ${eur(effort)} to ${obj}. What is the minimum benefit the ${s.event} must provide so that ${s.name} chooses option (i)?`,
+                prompt: `${s.name} can spend ${s.when} in one of three ways: (i) ${s.opt1} (${s.fee} ${eur(ticket)}; ${s.travel} ${eur(pass)}), (ii) ${s.home}, which is worth a benefit of ${eur(home)} to ${obj}, or (iii) ${s.job} ${eur(wage)}, where the effort feels like a cost of ${eur(effort)} to ${obj}. What is the minimum benefit the ${s.event} must provide so that ${s.name} chooses option (i)?`,
                 given: {
                     [s.feeLabel]: eur(ticket),
-                    [s.sunkLabel]: eur(pass),
+                    [s.travelLabel]: eur(pass),
                     [s.homeLabel]: eur(home),
                     [s.jobLabel]: `${eur(wage)} / ${eur(effort)}`,
                 },
                 answer,
-                explanation: String.raw`${cap(s.subj)} picks the ${s.event} only if its surplus beats the best alternative: $b_{\text{${s.event}}} - \text{expenditure} \geq \text{opportunity cost}$, where the opportunity cost is the highest surplus among the alternatives forgone. ${s.homeNoun} is worth ${eur(home)}; ${s.jobNoun} yields a producer surplus of ${eur(wage)} − ${eur(effort)} = ${eur(jobSurplus)} - the best alternative. ${s.sunkNoun} is a **sunk cost**: it was paid for either way and never enters the decision. The ${s.event} must therefore be worth at least its expenditure plus the forgone surplus: ${eur(ticket)} + ${eur(jobSurplus)} = ${eur(answer)}.`,
+                explanation: String.raw`${cap(s.subj)} picks the ${s.event} only if its surplus beats the best alternative: $b_{\text{${s.event}}} - \text{expenditure} \geq \text{opportunity cost}$, where the opportunity cost is the highest surplus among the alternatives forgone. ${s.homeNoun} is worth ${eur(home)}; ${s.jobNoun} yields a producer surplus of ${eur(wage)} − ${eur(effort)} = ${eur(jobSurplus)} - the best alternative. ${s.travelNoun} is a **sunk cost**: it was paid for either way and never enters the decision. The ${s.event} must therefore be worth at least its expenditure plus the forgone surplus: ${eur(ticket)} + ${eur(jobSurplus)} = ${eur(answer)}.`,
+                hint: String.raw`An option is worth taking only once its benefit covers the money it still costs plus the opportunity cost - the best surplus given up elsewhere. Money paid before the decision is the same under every option and drops out: $b \geq \text{expenditure} + \text{opportunity cost}$.`,
             };
         },
     },
@@ -1375,13 +1378,14 @@ export const econ1Questions: Question[] = [
             const q2 = rng.int(2, 9);
             const answer = (aExp * q2) / (bExp * q1);
             return {
-                prompt: String.raw`A consumer has the utility function $U(q_1, q_2) = q_1^{${aExp}} \cdot q_2^{${bExp}}$. At the bundle $(q_1, q_2) = (${n(q1)},\; ${n(q2)})$, how many units of good 2 is she willing to give up for one additional unit of good 1 - the absolute value of the marginal rate of substitution $|MRS_{1,2}|$?`,
+                prompt: String.raw`A consumer has the utility function $U(q_1, q_2) = q_1^{${aExp}} \cdot q_2^{${bExp}}$. What is the absolute value of the marginal rate of substitution $|MRS_{1,2}|$ at the bundle $(q_1, q_2) = (${n(q1)},\; ${n(q2)})$?`,
                 given: {
                     "Utility": String.raw`$U = q_1^{${aExp}} \cdot q_2^{${bExp}}$`,
                     "Bundle $(q_1, q_2)$": `(${n(q1)}, ${n(q2)})`,
                 },
                 answer,
                 explanation: String.raw`$|MRS_{1,2}| = \frac{MU_1}{MU_2} = \frac{a \cdot q_2}{b \cdot q_1}$ for $U = q_1^{a} q_2^{b}$: the marginal utilities are $MU_1 = a\, q_1^{a-1} q_2^{b}$ and $MU_2 = b\, q_1^{a} q_2^{b-1}$, and the powers cancel in the ratio. Substituting: (${n(aExp)} · ${n(q2)}) / (${n(bExp)} · ${n(q1)}) = ${n2(answer)}. The MRS is the (absolute) slope of the indifference curve through the bundle - it falls as $q_1$ rises, which is exactly the convexity of the indifference curves.`,
+                hint: String.raw`The marginal rate of substitution says how many units of good 2 the consumer gives up for one more unit of good 1, and it is the ratio of the marginal utilities: $|MRS_{1,2}| = \frac{MU_1}{MU_2}$.`,
             };
         },
     },
@@ -1486,12 +1490,13 @@ export const econ1Questions: Question[] = [
             const half = rng.int(5, 15);
             const a = 2 * b * half;
             return {
-                prompt: String.raw`The demand for ${s.good} is $Q_D = ${n(a)} - ${n(b)} p$. At which price is demand exactly **unit-elastic** ($|\varepsilon_p| = 1$)?`,
+                prompt: String.raw`The demand for ${s.good} is $Q_D = ${n(a)} - ${n(b)} p$. At which price is demand exactly **unit-elastic**?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(a)} - ${n(b)} p$`,
                 },
                 answer: half,
                 explanation: String.raw`Along a linear demand curve, $|\varepsilon_p| = \frac{b\, p}{a - b\, p}$, which equals 1 exactly at the **midpoint** $p = \frac{a}{2b}$. Substituting: ${n(a)} / (2 · ${n(b)}) = ${eur(half)}. Check: there $Q$ = ${n(a)} − ${n(b)} · ${n(half)} = ${n(a - b * half)}, and ${n(b)} · ${n(half)} / ${n(a - b * half)} = 1. Below this price demand is inelastic (elasticity 0 at $p = 0$), above it elastic ($|\varepsilon_p| \to \infty$ toward the choke price ${eur(a / b)}) - and revenue $p \cdot Q$ is maximal at the unit-elastic point.`,
+                hint: String.raw`Demand is unit-elastic where a one-percent price rise cuts quantity by exactly one percent, so set the point elasticity to one: $\left| \varepsilon_p \right| = \left| \frac{dQ}{dp} \right| \cdot \frac{p}{Q} = 1$.`,
             };
         },
     },
@@ -1596,6 +1601,7 @@ export const econ1Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`A member keeps the contract only if the consumer surplus at the hourly price covers the fee: $CS = \frac{1}{2} \left( p_{max} - p \right) q$. ${s.labelA}: $q_A$ = ${n(qA)} hours, choke price ${eur(chokeA)}, so $CS_A$ = ½ · (${n(chokeA)} − ${n(p)}) · ${n(qA)} = ${eur(csA)} - **less** than the fee of ${eur(F)}, so ${s.theA} cancels. ${s.labelB}: $q_B$ = ${n(qB)} hours, $CS_B$ = ½ · (${n(chokeB)} − ${n(p)}) · ${n(qB)} = ${eur(csB)} > ${eur(F)}, so ${s.theB} stays and keeps ${s.verb} ${n(qB)} hours. Revenue: ${eur(F)} + ${eur(p)} · ${n(qB)} = ${eur(answer)} - the fee skims part of the remaining member's surplus.`,
+                hint: String.raw`A member keeps the contract only while the consumer surplus earned at the usage price still covers the fixed fee: $CS = \frac{1}{2} \left( p_{max} - p \right) q$. Revenue is the fee from the members who stay plus the usage price times what they buy.`,
             };
         },
     },
@@ -2248,7 +2254,7 @@ export const econ1Questions: Question[] = [
             const c1 = rng.int(1, 8);
             const c2 = c1 + rng.int(0, 4); // person C is never worse off
             return {
-                prompt: String.raw`${s.intro}. Under allocation (1) the utilities are: ${s.a} ${n(a1)}, ${s.b} ${n(b1)}, ${s.c} ${n(c1)}. Under allocation (2) they are: ${s.a} ${n(a2)}, ${s.b} $X$, ${s.c} ${n(c2)}. Allocation (2) is a Pareto improvement over allocation (1) if nobody is worse off and at least one person is strictly better off. What is the smallest integer value of $X$ for which allocation (2) is a Pareto improvement over allocation (1)?`,
+                prompt: String.raw`${s.intro}. Under allocation (1) the utilities are: ${s.a} ${n(a1)}, ${s.b} ${n(b1)}, ${s.c} ${n(c1)}. Under allocation (2) they are: ${s.a} ${n(a2)}, ${s.b} $X$, ${s.c} ${n(c2)}. What is the smallest integer value of $X$ for which allocation (2) is a Pareto improvement over allocation (1)?`,
                 given: {
                     [`${s.a}: (1) → (2)`]: `${n(a1)} → ${n(a2)}`,
                     [`${s.b}: (1) → (2)`]: `${n(b1)} → $X$`,
@@ -2256,6 +2262,7 @@ export const econ1Questions: Question[] = [
                 },
                 answer: b1,
                 explanation: String.raw`A Pareto improvement needs $u_i(2) \geq u_i(1)$ for every person, with a strict gain for at least one of them. ${s.a} rises from ${n(a1)} to ${n(a2)} and ${s.c} ${c2 === c1 ? "stays at" : "rises from"} ${n(c1)}${c2 === c1 ? "" : ` to ${n(c2)}`}, so the strict gain is already there and nobody among them loses. The only open condition is ${s.b}, who must not be worse off, i.e. $X \geq$ ${n(b1)}. The smallest integer that satisfies this is ${n(b1)}. Anything below leaves ${s.b} worse off, and then allocation (2) merely redistributes instead of improving.`,
+                hint: String.raw`One allocation is a Pareto improvement over another when nobody ends up worse off and at least one person is strictly better off: $u_i(2) \geq u_i(1)$ for every person $i$, with a strict inequality for at least one.`,
             };
         },
     },
@@ -2280,14 +2287,15 @@ export const econ1Questions: Question[] = [
             const v2 = net2 + c2;
             const better = sign === 1 ? s.noun2 : s.noun1;
             return {
-                prompt: `${s.name} bought ${s.sunkItem} for ${eur(S)} last month; it cannot be returned or resold. ${s.when} ${s.subj} can either ${s.opt1} - ${s.val1} ${eur(v1)} and ${s.cost1} ${eur(c1)} - or ${s.opt2}, which ${s.val2} ${eur(v2)} and ${s.cost2} ${eur(c2)}. By how many euros is the net benefit of the better option higher than the net benefit of the other one? (The ${s.sunkWord} price is already spent and does not enter the comparison.)`,
+                prompt: `${s.name} bought ${s.item} for ${eur(S)} last month; it cannot be returned or resold. ${s.when} ${s.subj} can either ${s.opt1} - ${s.val1} ${eur(v1)} and ${s.cost1} ${eur(c1)} - or ${s.opt2}, which ${s.val2} ${eur(v2)} and ${s.cost2} ${eur(c2)}. By how many euros is the net benefit of the better option higher than the net benefit of the other one?`,
                 given: {
-                    [`${cap(s.sunkWord)} already paid`]: eur(S),
+                    [`${cap(s.itemWord)}, bought last month`]: eur(S),
                     [s.label1]: `${eur(v1)} / ${eur(c1)}`,
                     [s.label2]: `${eur(v2)} / ${eur(c2)}`,
                 },
                 answer: d,
-                explanation: String.raw`A rational decision maker compares net benefits and ignores what is already spent: $\Delta NB = \left| (V_1 - c_1) - (V_2 - c_2) \right|$. ${cap(s.noun1)}: ${eur(v1)} − ${eur(c1)} = ${eur(net1)}. ${cap(s.noun2)}: ${eur(v2)} − ${eur(c2)} = ${eur(net2)}. The difference is ${eur(d)} in favour of ${better}. The ${eur(S)} for the ${s.sunkWord} is a sunk cost - it is gone whatever ${s.name} does ${s.whenLow}, so it appears in neither net benefit - paying for the ${s.sunkWord} does not by itself make ${s.noun1} the better choice.`,
+                explanation: String.raw`A rational decision maker compares net benefits and ignores what is already spent: $\Delta NB = \left| (V_1 - c_1) - (V_2 - c_2) \right|$. ${cap(s.noun1)}: ${eur(v1)} − ${eur(c1)} = ${eur(net1)}. ${cap(s.noun2)}: ${eur(v2)} − ${eur(c2)} = ${eur(net2)}. The difference is ${eur(d)} in favour of ${better}. The ${eur(S)} for the ${s.itemWord} is a sunk cost - it is gone whatever ${s.name} does ${s.whenLow}, so it appears in neither net benefit - paying for the ${s.itemWord} does not by itself make ${s.noun1} the better choice.`,
+                hint: String.raw`Rank options by net benefit, value minus the cost the choice still causes; spending that has already happened is unavoidable now and is the same under every option: $NB = V - c$.`,
             };
         },
     },
@@ -2693,7 +2701,7 @@ export const econ1Questions: Question[] = [
             const K = Math.ceil((3 * L) / a) + rng.int(0, 6); // a K > 2 L by construction
             const answer = (a * K - 2 * L) / (a * L);
             return {
-                prompt: String.raw`${s.who} produces with the technology $Q = ${co(a)}K L - L^2$, where $L$ is labour and $K$ is capital. It currently uses $K$ = ${n(K)} ${s.capital} and $L$ = ${n(L)} workers. How many units of capital can it give up per additional worker while holding output constant - the absolute value of $MRTS_{L,K}$ at this input combination?`,
+                prompt: String.raw`${s.who} produces with the technology $Q = ${co(a)}K L - L^2$, where $L$ is labour and $K$ is capital. It currently uses $K$ = ${n(K)} ${s.capital} and $L$ = ${n(L)} workers. What is the absolute value of $MRTS_{L,K}$ at this input combination?`,
                 given: {
                     "Technology": String.raw`$Q = ${co(a)}K L - L^2$`,
                     "Capital K": n(K),
@@ -2701,6 +2709,7 @@ export const econ1Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$MRTS_{L,K} = \frac{MP_L}{MP_K}$ - the slope of the isoquant, i.e. how much capital one extra worker replaces. The marginal products are $MP_L = ${co(a)}K - 2 L$ and $MP_K = ${co(a)}L$. At (K, L) = (${n(K)}, ${n(L)}): $MP_L$ = ${n(a)} · ${n(K)} − 2 · ${n(L)} = ${n(a * K - 2 * L)} and $MP_K$ = ${n(a)} · ${n(L)} = ${n(a * L)}. So $MRTS_{L,K}$ = ${n(a * K - 2 * L)} / ${n(a * L)} = ${n2(answer)} units of capital per worker. It falls as $L$ rises - the isoquants are convex.`,
+                hint: String.raw`The marginal rate of technical substitution is the slope of the isoquant: how much capital one extra worker replaces at constant output, $MRTS_{L,K} = \frac{MP_L}{MP_K}$.`,
             };
         },
     },
@@ -3054,13 +3063,14 @@ export const econ1Questions: Question[] = [
             const F = a * qm * qm; // makes F/a a perfect square
             const answer = 2 * a * qm; // min AC = 2 sqrt(a F)
             return {
-                prompt: String.raw`${s.who} has the long-run cost $C(q) = ${co(a)}q^2 + ${n(F)}$ for $q > 0$, and $C(0) = 0$ - in the long run even the ${eur(F)} of overhead can be avoided by closing down. It is a price taker. Above which market price per ${s.one} does it stay in the market?`,
+                prompt: String.raw`${s.who} has the long-run cost $C(q) = ${co(a)}q^2 + ${n(F)}$ for $q > 0$, and $C(0) = 0$. It is a price taker. Above which market price per ${s.one} does it stay in the market?`,
                 given: {
                     "Long-run cost": String.raw`$C(q) = ${co(a)}q^2 + ${n(F)}$ for $q > 0$`,
                     "Cost when closed": String.raw`$C(0) = 0$`,
                 },
                 answer,
                 explanation: String.raw`The long-run threshold is the minimum of average cost, $\bar p = \min AC = 2 \sqrt{a F}$. Average cost is $AC(q) = ${co(a)}q + \frac{${n(F)}}{q}$; it is minimal where $${n(a)} = \frac{${n(F)}}{q^2}$, i.e. at the efficient scale $q^* = \sqrt{F / a}$ = ${n(qm)} ${s.units}. There $AC$ = ${n(a)} · ${n(qm)} + ${n(F)} / ${n(qm)} = ${eur(answer)}. Below that price no output level covers average cost, so ${s.short} closes; above it, it earns a positive profit.`,
+                hint: String.raw`Staying pays only if some output covers its full average cost, so the threshold sits at the minimum of $AC(q) = \frac{C(q)}{q}$ - the efficient scale, where $MC = AC$.`,
             };
         },
     },
@@ -3083,10 +3093,11 @@ export const econ1Questions: Question[] = [
                 prompt: String.raw`${s.who} has the short-run cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$, where ${eur(F)} is the fixed cost of the plant and cannot be recovered this season. Below which market price per ${s.one} does ${s.short} stop producing altogether in the **short run**?`,
                 given: {
                     "Cost function": String.raw`$C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$`,
-                    "Fixed cost (sunk)": eur(F),
+                    "Fixed cost": eur(F),
                 },
                 answer: b,
                 explanation: String.raw`In the short run the fixed cost is sunk, so the firm produces as long as the price covers average variable cost: the shut-down price is $p_{\text{shut}} = \min AVC$. Here $AVC(q) = ${co(a)}q + ${n(b)}$ rises in $q$, so its lowest value is reached as $q \to 0$ and equals ${eur(b)}. Check it directly: the optimum is $q^* = \frac{p - ${n(b)}}{${n(2 * a)}}$, where $AVC = \frac{p + ${n(b)}}{2}$, and $p \geq \frac{p + ${n(b)}}{2}$ holds exactly for $p \geq$ ${eur(b)}. The **long-run** threshold is higher, because there the fixed cost has to be earned as well: $b + 2\sqrt{a F}$ = ${eur(lr)}.`,
+                hint: String.raw`A cost the firm carries whether or not it produces cannot be escaped by closing, so in the short run it keeps producing as long as the price covers average variable cost: $p_{\text{shut}} = \min AVC$ with $AVC(q) = \frac{C_v(q)}{q}$.`,
             };
         },
     },
@@ -3139,7 +3150,7 @@ export const econ1Questions: Question[] = [
             const p = b + 2 * a * q;
             const answer = above ? q : 0;
             return {
-                prompt: String.raw`${s.who} is a price taker with the **long-run** cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$ for $q > 0$ and $C(0) = 0$: all costs, including the ${eur(F)} of overhead, are avoidable by leaving the market. The price is ${eur(p)} per ${s.one}. How many ${s.units} does ${s.short} produce in the long run? Enter 0 if it leaves the market.`,
+                prompt: String.raw`${s.who} is a price taker with the **long-run** cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$ for $q > 0$ and $C(0) = 0$. The price is ${eur(p)} per ${s.one}. How many ${s.units} does ${s.short} produce in the long run? Enter 0 if it leaves the market.`,
                 given: {
                     "Long-run cost": String.raw`$C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$ for $q > 0$`,
                     "Cost when closed": String.raw`$C(0) = 0$`,
@@ -3149,6 +3160,7 @@ export const econ1Questions: Question[] = [
                 explanation: above
                     ? String.raw`The firm stays only if $p \geq \bar p = b + 2\sqrt{a F}$, and then produces where $p = MC(q)$. The threshold is ${n(b)} + 2 · √(${n(a)} · ${n(F)}) = ${eur(pBar)}, and the price of ${eur(p)} lies **above** it, so ${s.short} produces. From $MC(q) = ${n(2 * a)} q + ${n(b)} = ${n(p)}$: $q^* = \frac{p - ${n(b)}}{${n(2 * a)}}$ = ${n(q)} ${s.units}. At that output average cost is exactly covered plus a margin, so staying beats exiting.`
                     : String.raw`The firm stays only if $p \geq \bar p = b + 2\sqrt{a F}$, and then produces where $p = MC(q)$. The threshold is ${n(b)} + 2 · √(${n(a)} · ${n(F)}) = ${eur(pBar)}, and the price of ${eur(p)} lies **below** it. Producing where $MC = p$ would give ${n(q)} ${q === 1 ? s.oneShort : s.units}, but there average cost is ${eur((a * q * q + b * q + F) / q)} > ${eur(p)}, so every ${s.oneShort} loses money and the whole ${eur(F)} of overhead is avoidable. ${cap(s.short)} therefore leaves the market and produces nothing.`,
+                hint: String.raw`In the long run a firm stays only if the price reaches the minimum of average cost, $\bar p = \min AC$; if it does, output follows from $p = MC(q)$, otherwise the firm exits.`,
             };
         },
     },
@@ -3227,13 +3239,14 @@ export const econ1Questions: Question[] = [
             const A = nStar * qm + d * pStar;
             const answer = nStar * F; // PS = n* F
             return {
-                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$, where the ${eur(F)} is a quasi-fixed cost that only arises when the firm actually produces. Entry is free and market demand is $Q_D = ${n(A)} - ${co(d)}p$ ${s.units} per day. What is the **producer surplus** in the long-run equilibrium?`,
+                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$. Entry is free and market demand is $Q_D = ${n(A)} - ${co(d)}p$ ${s.units} per day. What is the **producer surplus** in the long-run equilibrium?`,
                 given: {
                     "Cost per firm": String.raw`$C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$`,
                     "Demand": String.raw`$Q_D = ${n(A)} - ${co(d)}p$`,
                 },
                 answer,
                 explanation: String.raw`Producer surplus is revenue minus **variable** cost, $PS = p^* Q^* - VC$, while profit also subtracts the quasi-fixed cost - so the two differ by exactly that cost. Free entry gives $q^* = \sqrt{F / c}$ = ${n(qm)} ${s.units} and $p^* = \min AC$ = ${eur(pStar)}, and demand ${n(A)} − ${n(d)} · ${n(pStar)} = ${n(nStar * qm)} ${s.units} implies $n^*$ = ${n(nStar)} firms. Per firm: revenue ${eur(pStar * qm)} minus variable cost ${n(b)} · ${n(qm)} + ${n(c)} · ${n(qm * qm)} = ${eur(b * qm + c * qm * qm)} leaves ${eur(F)} - precisely the quasi-fixed cost. Total: ${n(nStar)} · ${eur(F)} = ${eur(answer)}. The trap: profits are zero in the long run, but producer surplus is **not**.`,
+                hint: String.raw`Producer surplus is revenue minus variable cost only, while profit also subtracts the cost that arises with production but not with output. Free entry fixes $q^* = \arg\min AC$, $p^* = \min AC$ and the number of firms from demand: $PS = p^* Q^* - VC$.`,
             };
         },
     },
@@ -3999,6 +4012,7 @@ export const econ1Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$DWL = \frac{1}{2}\, e \left( Q_m - Q_s \right)$: on every ${s.one} between the two quantities the social cost exceeds the willingness to pay, and the wedge grows linearly from 0 to $e$. The market ignores the damage: $${n(a)} - ${co(b)}Q = ${n(c)} + ${co(g)}Q$ gives $Q_m$ = ${n(Qm)} ${s.units}. The social optimum uses $MSC = ${n(c)} + ${n(e)} + ${co(g)}Q$: $${n(a)} - ${co(b)}Q = ${n(c + e)} + ${co(g)}Q$ gives $Q_s$ = ${n(Qs)} ${s.units}. So DWL = ½ · ${n(e)} · (${n(Qm)} − ${n(Qs)}) = ${eur(answer)}.`,
+                hint: String.raw`Compare the quantity the market trades with the one that equates demand and the **social** marginal cost, private supply plus the external damage. The loss is the triangle between them: $DWL = \frac{1}{2}\, e \left( Q_m - Q_s \right)$.`,
             };
         },
     },
@@ -4173,7 +4187,7 @@ export const econ1Questions: Question[] = [
             const eff = a - j; // efficient hours
             const answer = eff - priv; // = c - c/m
             return {
-                prompt: String.raw`The ${n(households)} ${s.members} ${s.intro}. Each ${s.member}'s marginal benefit from an extra ${s.unit} per week is $MB(Q) = ${n(a)} - Q$ euros, and ${s.costPhrase} a constant ${eur(c)}. If each ${s.member} decides alone, provision stops where **its own** marginal benefit equals the cost. By how many hours per week does the efficient level exceed that private level?`,
+                prompt: String.raw`The ${n(households)} ${s.members} ${s.intro}. Each ${s.member}'s marginal benefit from an extra ${s.unit} per week is $MB(Q) = ${n(a)} - Q$ euros, and ${s.costPhrase} a constant ${eur(c)}. By how many hours per week does the socially efficient level exceed the level a single ${s.member} would buy on its own?`,
                 given: {
                     [cap(s.members)]: n(households),
                     [`Marginal benefit per ${s.member}`]: String.raw`$MB(Q) = ${n(a)} - Q$`,
@@ -4181,6 +4195,7 @@ export const econ1Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`Efficiency needs the **vertical** sum $\sum_{i=1}^{m} MB_i(Q) = MC$, while a ${s.member} acting alone only sets its own $MB_i(Q) = MC$. Privately: $${n(a)} - Q = ${n(c)}$ gives $Q^{priv}$ = ${n(priv)} hours. Efficiently: $${n(households)} \left( ${n(a)} - Q \right) = ${n(c)}$ gives $Q^E = ${n(a)} - \frac{${n(c)}}{${n(households)}}$ = ${n(eff)} hours. The gap is ${n(eff)} − ${n(priv)} = ${n(answer)} hours per week. Acting alone, a ${s.member} ignores the benefit its purchase confers on the other ${n(households - 1)} ${households === 2 ? s.member : s.members}, which is exactly why a public good is under-provided without collective action.`,
+                hint: String.raw`A buyer acting alone stops where its **own** marginal benefit equals the cost, while efficiency sums the marginal benefits of everyone vertically: $\sum_{i=1}^{m} MB_i(Q) = MC$.`,
             };
         },
     },

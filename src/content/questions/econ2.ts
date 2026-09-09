@@ -325,9 +325,9 @@ const E2_GDP_VA_TWO_STAGE_SCENARIOS = [
 ] as const;
 
 const E2_GDP_VA_FIRM_SCENARIOS = [
-    { firm: "A furniture maker in Poland", dom: "timber from domestic sawmills", imp: "fittings", adj: "Polish" },
-    { firm: "A bicycle assembler in Portugal", dom: "frames from domestic welders", imp: "gear sets", adj: "Portuguese" },
-    { firm: "A winery in Spain", dom: "grapes from domestic growers", imp: "oak barrels", adj: "Spanish" },
+    { firm: "A furniture maker in Poland", dom: "timber from domestic sawmills", imp: "fittings" },
+    { firm: "A bicycle assembler in Portugal", dom: "frames from domestic welders", imp: "gear sets" },
+    { firm: "A winery in Spain", dom: "grapes from domestic growers", imp: "oak barrels" },
 ] as const;
 
 const E2_RN_NOMINAL_GROWTH_SCENARIOS = [
@@ -649,7 +649,7 @@ export const econ2Questions: Question[] = [
             const costBNew = eB * pLow + lB * w;
             const answer = costBNew - costANew;
             return {
-                prompt: `${s.firm} can ${s.batch} with technique **A** (${n(eA)} units of ${s.energy}, ${n(lA)} worker-days) or technique **B** (${n(eB)} units of ${s.energy}, ${n(lB)} worker-days). A worker-day costs ${eur(w)}. At the old ${s.energy} price of ${eur(pHigh)} per unit the firm correctly chose technique B. The ${s.energy} price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A, i.e. by how much is A now cheaper than B?`,
+                prompt: `${s.firm} can ${s.batch} with technique **A** (${n(eA)} units of ${s.energy}, ${n(lA)} worker-days) or technique **B** (${n(eB)} units of ${s.energy}, ${n(lB)} worker-days). A worker-day costs ${eur(w)}. At the old ${s.energy} price of ${eur(pHigh)} per unit the firm correctly chose technique B. The ${s.energy} price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A?`,
                 given: {
                     "Technique A": `${n(eA)} ${s.energy} + ${n(lA)} worker-days`,
                     "Technique B": `${n(eB)} ${s.energy} + ${n(lB)} worker-days`,
@@ -659,6 +659,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$c_T = e_T \cdot p_{${s.energy}} + l_T \cdot w$ per technique, and the switching rent is the cost difference at the **new** prices. Old price: A costs ${eur(costAOld)}, B costs ${eur(costBOld)} - B was the right choice. New price: A costs ${eur(costANew)}, B costs ${eur(costBNew)}. Switching to the ${s.energy}-intensive technique A now saves ${eur(costBNew)} − ${eur(costANew)} = ${eur(answer)} per batch.`,
+                hint: String.raw`A technique costs each of its inputs times that input's price, and the rent from switching is how much cheaper the new technique is than the one in use - evaluated at the prices that hold now, not at the old ones: $c_T = e_T \cdot p + l_T \cdot w$.`,
             };
         },
     },
@@ -760,13 +761,14 @@ export const econ2Questions: Question[] = [
             const answer = 9 * h * h; // (3m/4)²
             const cPrivate = (m / 2) ** 2;
             return {
-                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. The labs now **merge** and choose both research budgets to maximize joint profit, internalizing the spillover. What spending $C_i$ does the merged firm pick for each lab?`,
+                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. The labs now **merge** and choose both research budgets to maximize their **joint** profit. What spending $C_i$ does the merged firm pick for each lab?`,
                 given: {
                     [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
                     [`Profit per ${s.item}`]: `${n(1)} million €`,
                 },
                 answer,
                 explanation: String.raw`$\frac{\partial (D_i + D_j)}{\partial C_i} = \frac{m}{2\sqrt{C_i}} + \frac{m}{4\sqrt{C_i}} = \frac{3m}{4\sqrt{C_i}} = 1$ - after the merger, a euro spent in lab $i$ also raises lab $j$'s output, and that extra benefit is counted. With $m = ${m}$: $\sqrt{C_i} = 3 \cdot ${n(m)} / 4 = ${n(3 * h)}$, so $C_i = ${n(answer)}$ per lab, versus ${n(cPrivate)} before the merger. Total output rises by ${pct(50)}.`,
+                hint: String.raw`A single owner counts what a euro of research in one lab adds in **both** labs, so the cross effect that a rival would ignore enters the first-order condition: $\frac{\partial (D_i + D_j)}{\partial C_i} = 1$.`,
             };
         },
     },
@@ -853,10 +855,11 @@ export const econ2Questions: Question[] = [
             const d = drawGoodsMarket(rng);
             const answer = d.t * d.Y - d.G;
             return {
-                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **budget balance** $BB = tY - G$ in equilibrium? (Negative = deficit.)`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **budget balance** in equilibrium? (Negative = deficit.)`,
                 given: goodsMarketGiven(d),
                 answer,
                 explanation: String.raw`$BB = t \cdot Y^* - G$ - tax revenue at equilibrium output minus purchases. First $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.c0 + d.I + d.G + d.X - d.M)} / ${n(d.D)} = ${n(d.Y)}. Then BB = ${n(d.t)} · ${n(d.Y)} − ${n(d.G)} = ${n(answer)}.`,
+                hint: String.raw`The budget balance is what the proportional income tax brings in at equilibrium output, minus what the government spends - so the goods market has to be solved first: $BB = t \cdot Y^* - G$.`,
             };
         },
     },
@@ -916,12 +919,13 @@ export const econ2Questions: Question[] = [
             const answer = rt * rt;
             const eStar = a * rt - b; // = b
             return {
-                prompt: String.raw`${s.firm} observes that its workers' effort depends on the hourly wage $w$ (in €): $e(w) = ${n(a)}\sqrt{w} - ${n(b)}$. Output is proportional to effort, so the firm picks the wage that **minimizes the wage cost per unit of effort**. What is this efficiency wage?`,
+                prompt: String.raw`${s.firm} observes that its workers' effort depends on the hourly wage $w$ (in €): $e(w) = ${n(a)}\sqrt{w} - ${n(b)}$. Output is proportional to effort. What **efficiency wage** does the firm set?`,
                 given: {
                     "Effort function": String.raw`$e(w) = ${n(a)}\sqrt{w} - ${n(b)}$`,
                 },
                 answer,
                 explanation: String.raw`$e'(w) \cdot w = e(w)$ - the Solow condition: at the efficiency wage, the elasticity of effort with respect to the wage is one. Here $\frac{${n(a)}}{2\sqrt{w}} \cdot w = ${n(a)}\sqrt{w} - ${n(b)}$, so $\frac{${n(a)}}{2}\sqrt{w} = ${n(b)}$ and $\sqrt{w^*} = ${n((2 * b) / a)}$, giving $w^*$ = ${eur(answer)} with effort $e(w^*) = ${n(eStar)}$.`,
+                hint: String.raw`The efficiency wage is the wage that buys a unit of effort most cheaply, $\min_w \frac{w}{e(w)}$; the first-order condition makes the elasticity of effort with respect to the wage equal to one: $e'(w) \cdot w = e(w)$.`,
             };
         },
     },
@@ -996,7 +1000,7 @@ export const econ2Questions: Question[] = [
             const LMin = (p * p * eMin) / (4 * wMin * wMin);
             const answer = ((cfg.Ls - LMin) / cfg.Ls) * 100;
             return {
-                prompt: String.raw`${s.firm} is the only employer of the ${n(cfg.Ls)} workers of ${s.town}. It produces $Y = \sqrt{e \cdot L}$ ${s.units} at a price of ${eur(p)} per ton; effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The government now imposes a **minimum wage** of ${eur(wMin)} per hour, which lies above the firm's efficiency wage, and the firm pays exactly this minimum wage. What is the unemployment rate under the minimum wage?`,
+                prompt: String.raw`${s.firm} is the only employer of the ${n(cfg.Ls)} workers of ${s.town}. It produces $Y = \sqrt{e \cdot L}$ ${s.units} at a price of ${eur(p)} per ton; effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The government now imposes a **minimum wage** of ${eur(wMin)} per hour, and the firm pays exactly this wage. What is the unemployment rate under the minimum wage?`,
                 given: {
                     "Labor supply": `${n(cfg.Ls)} workers`,
                     "Production function": String.raw`$Y = \sqrt{e \cdot L}$`,
@@ -1006,6 +1010,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$L = \frac{p^2 \, e(w^{min})}{4 \, (w^{min})^2}$ - the wage is no longer chosen, so only the labor-demand condition $p \cdot \frac{\partial Y}{\partial L} = w^{min}$ applies, with effort evaluated at the imposed wage. Effort: $e(${n(wMin)}) = ${n(cfg.a)} \cdot ${n(cfg.rt + j)} - ${n(b)} = ${n(eMin)}$. Employment: ${n(p ** 2)} · ${n(eMin)} / ${n(4 * wMin * wMin)} = ${n2(LMin)}. Unemployment: (${n(cfg.Ls)} − ${n2(LMin)}) / ${n(cfg.Ls)} = ${pct(answer)} - the minimum wage raises effort but cuts employment sharply, because beyond the efficiency wage effort per euro falls.`,
+                hint: String.raw`Once the wage is imposed from outside, the firm no longer chooses it: only the labor-demand condition is left, with effort evaluated at the wage actually paid. Unemployment is the share of the labor supply left without a job: $p \cdot \frac{\partial Y}{\partial L} = w$.`,
             };
         },
     },
@@ -1061,7 +1066,7 @@ export const econ2Questions: Question[] = [
             const rentH = w - d - bh;
             const answer = rentH * H * weeks;
             return {
-                prompt: `${s.who} earns ${eur(w)} per hour and works ${n(H)} hours a week; the effort costs ${s.obj} the equivalent of ${eur(d)} per hour. If ${s.subj} were dismissed, benefits would pay ${eur(B)} per week, and ${s.subj} would expect to stay unemployed for ${n(weeks)} weeks before finding an equivalent job. What is ${s.poss} **total employment rent**, i.e. the value of keeping this job rather than losing it today?`,
+                prompt: `${s.who} earns ${eur(w)} per hour and works ${n(H)} hours a week; the effort costs ${s.obj} the equivalent of ${eur(d)} per hour. If ${s.subj} were dismissed, benefits would pay ${eur(B)} per week, and ${s.subj} would expect to stay unemployed for ${n(weeks)} weeks before finding an equivalent job. What is ${s.poss} **total employment rent**?`,
                 given: {
                     "Hourly wage": eur(w),
                     "Hours per week": n(H),
@@ -1071,6 +1076,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$R = \left( w - d - \frac{B}{H} \right) \cdot H \cdot T$ - the hourly rent, scaled up by the hours per week and the expected weeks of unemployment. Hourly rent: ${eur(w)} − ${eur(d)} − ${eur(B)} / ${n(H)} = ${eur(rentH)}. Total: ${eur(rentH)} · ${n(H)} · ${n(weeks)} = ${eur(answer)}.`,
+                hint: String.raw`The employment rent is what the job is worth beyond the next-best alternative: per hour the wage less the disutility of effort and less the benefit given up, accumulated over the hours of the expected unemployment spell - $R = \left( w - d - \frac{B}{H} \right) \cdot H \cdot T$.`,
             };
         },
     },
@@ -1271,7 +1277,7 @@ export const econ2Questions: Question[] = [
             const now = p1b * q11 + p2b * q21;
             const answer = (now / base - 1) * 100;
             return {
-                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. In year 1, prices were ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1}, and the consumption basket was ${n(q11)} ${s.uA} and ${n(q21)} ${s.uB}. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and quantities happen to shift to ${n(q12)} ${s.uA} and ${n(q22)} ${s.uB}. What is the **CPI inflation rate**, using the year-1 basket as the fixed consumer basket?`,
+                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. In year 1, prices were ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1}, and the consumption basket was ${n(q11)} ${s.uA} and ${n(q21)} ${s.uB}. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and quantities happen to shift to ${n(q12)} ${s.uA} and ${n(q22)} ${s.uB}. What is the **CPI inflation rate** between year 1 and year 2?`,
                 given: {
                     "Prices year 1": `${s.lA} ${eur(p1)}, ${s.lB} ${eur(p2)}`,
                     "Basket (year 1)": `${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}`,
@@ -1280,6 +1286,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$\pi^{CPI} = \frac{\sum p_2 \, q^{base}}{\sum p_1 \, q^{base}} - 1$ - the CPI prices the **fixed base-year basket** at both years' prices, so the year-2 quantities are pure distractor data (they would matter for the GDP deflator, which uses current quantities). Basket at year-1 prices: ${eur(base)}; at year-2 prices: ${eur(p1b)} · ${n(q11)} + ${eur(p2b)} · ${n(q21)} = ${eur(now)}. Inflation: ${eur(now)} / ${eur(base)} − 1 = ${pct(answer)}.`,
+                hint: String.raw`The consumer price index prices one and the same basket - the base-year quantities - at both years' prices, so what consumers happen to buy later plays no role: $\pi^{CPI} = \frac{\sum p_2 \, q^{base}}{\sum p_1 \, q^{base}} - 1$.`,
             };
         },
     },
@@ -1383,7 +1390,7 @@ export const econ2Questions: Question[] = [
             const answer = cfg.r0 ** 2;
             const Astr = cfg.A === 1 ? "" : `${cfg.A} `;
             return {
-                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. What is the **golden-rule** capital stock per effective worker $k^{gr}$, i.e. the one that maximizes steady-state consumption?`,
+                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. What is the **golden-rule** capital stock per effective worker $k^{gr}$?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = ${Astr}\sqrt{k}$`,
                     "Savings rate s": pct(s),
@@ -1393,6 +1400,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$f'(k^{gr}) = n + g + \delta$ - at the golden rule, the marginal product of capital equals the dilution rate; the savings rate plays no role here (it is what would have to adjust). $f'(k) = \frac{${cfg.A}}{2\sqrt{k}}$, so $\sqrt{k^{gr}} = \frac{${cfg.A}}{2 \cdot ${n(xPct / 100)}}$ = ${n(cfg.r0)}, giving $k^{gr}$ = ${n(answer)}.`,
+                hint: String.raw`The golden-rule capital stock is the one that leaves the largest steady-state consumption, $f(k) - (n + g + \delta) k$; maximizing it sets the marginal product of capital equal to the dilution rate, with the savings rate playing no role: $f'(k^{gr}) = n + g + \delta$.`,
             };
         },
     },
@@ -1448,7 +1456,7 @@ export const econ2Questions: Question[] = [
             const answer = (cfg.A * cfg.r0) / 2;
             const Astr = cfg.A === 1 ? "" : `${cfg.A} `;
             return {
-                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$, population growth of ${pct(nPop)}, technological progress of ${pct(g)}, and depreciation of ${pct(delta)}. What is the **maximum sustainable consumption per effective worker**, i.e. steady-state consumption at the golden-rule capital stock?`,
+                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$, population growth of ${pct(nPop)}, technological progress of ${pct(g)}, and depreciation of ${pct(delta)}. What is the **maximum sustainable consumption per effective worker**?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = ${Astr}\sqrt{k}$`,
                     "Population growth n": pct(nPop),
@@ -1457,6 +1465,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$c^{gr} = f(k^{gr}) - (n + g + \delta) \cdot k^{gr}$ - output minus the investment needed to hold $k$ constant, evaluated at the golden rule. First $f'(k) = \frac{${cfg.A}}{2\sqrt{k}} = ${n(xPct / 100)}$ gives $\sqrt{k^{gr}} = ${n(cfg.r0)}$, so $k^{gr} = ${n(kGr)}$. Then $f(k^{gr}) = ${n(fk)}$ and the dilution term is ${n(xPct / 100)} · ${n(kGr)} = ${n(xPct / 100 * kGr)}, leaving $c^{gr}$ = ${n(fk)} − ${n(xPct / 100 * kGr)} = ${n(answer)}.`,
+                hint: String.raw`Consumption that can be sustained forever is output minus the investment needed to hold capital per effective worker constant, and it peaks at the golden-rule stock where $f'(k^{gr}) = n + g + \delta$: $c^{gr} = f(k^{gr}) - (n + g + \delta) \cdot k^{gr}$.`,
             };
         },
     },
@@ -1753,7 +1762,7 @@ export const econ2Questions: Question[] = [
             const k = 1000 * rng.int(1, 5);
             const answer = s - d - m;
             return {
-                prompt: `${sc.firm} sells output worth ${eur(s)} in one year. To produce it, the firm buys ${sc.dom} for ${eur(d)} and imports ${sc.imp} from abroad for ${eur(m)}. It pays ${eur(w)} in wages and ${eur(k)} in capital costs. What is the firm's **value added**, i.e. its contribution to ${sc.adj} GDP?`,
+                prompt: `${sc.firm} sells output worth ${eur(s)} in one year. To produce it, the firm buys ${sc.dom} for ${eur(d)} and imports ${sc.imp} from abroad for ${eur(m)}. It pays ${eur(w)} in wages and ${eur(k)} in capital costs. What is the firm's **value added**?`,
                 given: {
                     "Sales": eur(s),
                     "Domestic intermediate inputs": eur(d),
@@ -1763,6 +1772,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$VA = \text{sales} - \text{intermediate inputs}$ - both domestic and imported intermediates are subtracted: ${eur(s)} − ${eur(d)} − ${eur(m)} = ${eur(answer)}. Wages and capital costs are how the value added is distributed to workers and owners; subtracting them too is the classic mistake.`,
+                hint: String.raw`Value added is what a firm's own production adds on top of the goods it bought in, so every intermediate input is deducted, domestic and imported alike, while payments to workers and owners only distribute what is left: $VA = \text{sales} - \text{intermediate inputs}$.`,
             };
         },
     },
@@ -1820,7 +1830,7 @@ export const econ2Questions: Question[] = [
             const qb2 = rng.int(60, 400);
             const answer = pa1 * qa2 + pb1 * qb2;
             return {
-                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year, with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 it produces ${n(qa2)} ${s.uA} of ${s.gA} (price now ${eur(pa2)}) and ${n(qb2)} ${s.uB} of ${s.gB} (price now ${eur(pb2)}). What is **real** GDP of year 2, measured in base-year prices?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year, with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 it produces ${n(qa2)} ${s.uA} of ${s.gA} (price now ${eur(pa2)}) and ${n(qb2)} ${s.uB} of ${s.gB} (price now ${eur(pb2)}). What is **real** GDP of year 2?`,
                 given: {
                     "Base-year prices": `${s.gA} ${eur(pa1)}, ${s.gB} ${eur(pb1)}`,
                     "Year-2 quantities": `${n(qa2)} ${s.uA} ${s.gA}, ${n(qb2)} ${s.uB} ${s.gB}`,
@@ -1828,6 +1838,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$Y_2^{real} = \sum p^{base} \, q_2$ - real GDP values current quantities at **base-year** prices, so only quantities matter: ${eur(pa1)} · ${n(qa2)} + ${eur(pb1)} · ${n(qb2)} = ${eur(answer)}. The year-2 prices are needed for nominal GDP, not here.`,
+                hint: String.raw`Real GDP strips price changes out by valuing the quantities of the year in question at the prices of the base year: $Y_t^{real} = \sum p^{base} \, q_t$.`,
             };
         },
     },
@@ -1909,13 +1920,14 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(EU_COUNTRIES);
             const answer = gW - piInfl;
             return {
-                prompt: `In ${country}, nominal wages grew by ${pct(gW)} last year while consumer prices rose by ${pct(piInfl)}. Using the approximation $g_{W/P} = g_W - \\pi$, what was the growth rate of **real** wages?`,
+                prompt: `In ${country}, nominal wages grew by ${pct(gW)} last year while consumer prices rose by ${pct(piInfl)}. What was the growth rate of **real** wages? (Use the approximation, not the exact ratio.)`,
                 given: {
                     "Nominal wage growth": pct(gW),
                     "Inflation": pct(piInfl),
                 },
                 answer,
                 explanation: String.raw`$g_{W/P} = g_W - \pi$ - real wage growth is nominal wage growth minus inflation: ${pct(gW)} − ${pct(piInfl)} = ${pct(answer)}. ${answer < 0 ? "Prices rose faster than wages, so workers' purchasing power fell despite the nominal raise." : answer > 0 ? "Wages outpaced prices, so purchasing power rose." : "Wages only kept pace with prices - purchasing power was unchanged."}`,
+                hint: String.raw`The real wage is the nominal wage deflated by the price level, so to a first approximation its growth rate is the difference of the two growth rates: $g_{W/P} = g_W - \pi$.`,
             };
         },
     },
@@ -1933,13 +1945,15 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(EU_COUNTRIES);
             const answer = piLag + gap;
             return {
-                prompt: `In ${country}, workers form their inflation expectations adaptively: they expect this year's inflation to equal last year's observed rate of ${pct(piLag)}. Unemployment is ${gap > 0 ? "below" : "above"} its equilibrium level, creating a bargaining gap of ${pct(gap)}. According to the Phillips curve with expectations, what is this year's inflation rate?`,
+                prompt: `In ${country}, wage bargainers form their inflation expectations **adaptively**. Last year's inflation was ${pct(piLag)}. Unemployment is ${gap > 0 ? "below" : "above"} its equilibrium level, creating a bargaining gap of ${pct(gap)}. According to the Phillips curve with expectations, what is this year's inflation rate?`,
                 given: {
-                    "Last year's inflation (= expected inflation)": pct(piLag),
+                    "Last year's inflation": pct(piLag),
                     "Bargaining gap": pct(gap),
+                    "Expectations": "adaptive",
                 },
                 answer,
                 explanation: String.raw`$\pi = \pi^e + \text{bargaining gap}$ - expected inflation is built into wage claims, and the bargaining gap adds to (or subtracts from) it: ${pct(piLag)} ${gap >= 0 ? "+" : "−"} ${pct(Math.abs(gap))} = ${pct(answer)}.`,
+                hint: String.raw`Adaptive expectations means bargainers simply carry last year's actual inflation forward as this year's expectation, and the bargaining gap is added on top of it: $\pi = \pi^e + \text{gap}$ with $\pi^e = \pi_{-1}$.`,
             };
         },
     },
@@ -1958,14 +1972,15 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(EU_COUNTRIES);
             const answer = pi0 + N * gap;
             return {
-                prompt: `${country[0].toUpperCase()}${country.slice(1)} starts in year 0 with inflation of ${pct(pi0)} and a labour market in equilibrium. From year 1 on, a boom keeps unemployment below equilibrium, creating a constant **positive bargaining gap of ${pct(gap)}** in every year. Expectations are adaptive: each year's expected inflation equals the previous year's actual inflation. What is the inflation rate in year ${n(N)}?`,
+                prompt: `${country[0].toUpperCase()}${country.slice(1)} starts in year 0 with inflation of ${pct(pi0)} and a labour market in equilibrium. From year 1 on, a boom keeps unemployment below equilibrium, creating a constant **positive bargaining gap of ${pct(gap)}** in every year. Expectations are **adaptive**. What is the inflation rate in year ${n(N)}?`,
                 given: {
                     "Inflation in year 0": pct(pi0),
                     "Bargaining gap (each year from year 1)": pct(gap),
-                    "Expectations": "adaptive (last year's inflation)",
+                    "Expectations": "adaptive",
                 },
                 answer,
                 explanation: String.raw`$\pi_t = \pi_{t-1} + \text{gap}$ - with adaptive expectations, $\pi_t = \pi_t^e + \text{gap} = \pi_{t-1} + \text{gap}$, so a constant gap makes inflation **ratchet up every year**: after ${n(N)} years, $\pi_{${N}} = ${n(pi0)}\,\% + ${n(N)} \cdot ${n(gap)}\,\%$ = ${pct(answer)}. Inflation does not stay at ${pct(pi0 + gap)} - that is the classic mistake.`,
+                hint: String.raw`With adaptive expectations the rate expected this year is last year's actual rate, so a gap that persists is added on again in every single year instead of once: $\pi_t = \pi_{t-1} + \text{gap}$.`,
             };
         },
     },
@@ -2034,13 +2049,14 @@ export const econ2Questions: Question[] = [
             const piInfl = rng.int(2, 9);
             const answer = X / (1 + piInfl / 100);
             return {
-                prompt: `${s.who} keeps ${eur(X)} ${s.how} for exactly one year, during which prices rise by ${pct(piInfl)}. What is the **real value** of the cash at the end of the year, i.e. its purchasing power expressed in start-of-year euros?`,
+                prompt: `${s.who} keeps ${eur(X)} ${s.how} for exactly one year, during which prices rise by ${pct(piInfl)}. What is the **real value** of the cash at the end of the year, expressed in start-of-year euros?`,
                 given: {
                     "Nominal amount": eur(X),
                     "Inflation over the year": pct(piInfl),
                 },
                 answer,
                 explanation: String.raw`$\text{real value} = \frac{X}{1 + \pi}$ - after inflation of ${pct(piInfl)}, every euro buys $1/(1+\pi)$ of what it used to: ${eur(X)} / ${n(1 + piInfl / 100)} = ${eur(answer)}. This is why unexpected inflation hurts people on fixed nominal incomes and benefits debtors.`,
+                hint: String.raw`Rising prices shrink what a fixed nominal amount buys, so deflate the amount by the price level of the year you want to express it in: $\text{real value} = \frac{X}{1 + \pi}$.`,
             };
         },
     },
@@ -2173,10 +2189,11 @@ export const econ2Questions: Question[] = [
             const d = drawGM2(rng);
             const answer = d.t * d.Y;
             return {
-                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **tax revenue** $T = t \cdot Y$ in the goods-market equilibrium?`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **tax revenue** in the goods-market equilibrium?`,
                 given: gm2Given(d),
                 answer,
                 explanation: String.raw`$T = t \cdot Y^*$ - first solve for equilibrium output: $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.A)} / ${n(d.D)} = ${n(d.Y)}. Then tax revenue is ${n(d.t)} · ${n(d.Y)} = ${n(answer)}. The budget balance would additionally subtract G (${n(d.G)}), giving ${n(answer - d.G)}.`,
+                hint: String.raw`A proportional income tax raises revenue on the income actually earned, so the goods market has to be solved for equilibrium output before the rate is applied: $T = t \cdot Y^*$.`,
             };
         },
     },
@@ -2605,7 +2622,7 @@ export const econ2Questions: Question[] = [
             const cNew = w * L + p * (R - dR);
             const answer = cOld - cNew;
             return {
-                prompt: `${s.firm} ${s.action} with ${n(L)} workers and ${n(R)} MWh of ${s.energy} (wage ${eur(w)}, ${s.energy} ${eur(p)} per MWh). A process innovation cuts the ${s.energy} requirement to ${n(R - dR)} MWh with the same number of workers. What is the innovation rent per batch, i.e. the cost saving from adopting the improved process?`,
+                prompt: `${s.firm} ${s.action} with ${n(L)} workers and ${n(R)} MWh of ${s.energy} (wage ${eur(w)}, ${s.energy} ${eur(p)} per MWh). A process innovation cuts the ${s.energy} requirement to ${n(R - dR)} MWh with the same number of workers. What is the **innovation rent** per batch?`,
                 given: {
                     "Old process": `${n(L)} workers + ${n(R)} MWh`,
                     "New process": `${n(L)} workers + ${n(R - dR)} MWh`,
@@ -2614,6 +2631,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$IR = c_{old} - c_{new}$ - with the labor input unchanged, only the energy saving matters: $c_{old}$ = ${eur(cOld)}, $c_{new}$ = ${eur(cNew)}, so the rent is $p \cdot \Delta R$ = ${eur(p)} · ${n(dR)} = ${eur(answer)} per batch. First adopters pocket this Schumpeterian rent until competitors catch up.`,
+                hint: String.raw`An innovation rent is what the better process saves per batch at the prevailing input prices - the total cost of the old process minus that of the new one: $IR = c_{old} - c_{new}$.`,
             };
         },
     },
@@ -2641,7 +2659,7 @@ export const econ2Questions: Question[] = [
             const q = 50 * rng.int(2, 10);
             const answer = (cB - cA) * q;
             return {
-                prompt: `All ${s.firms} in ${s.town} ${s.verb} with technique **B** (${n(LB)} workers, ${n(RB)} MWh per batch). One ${s.firm} pioneers the energy-intensive technique **A** (${n(LA)} workers, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the ${s.firm} produces ${n(q)} batches per year. What **annual innovation rent** does the first mover earn, i.e. its yearly cost saving over technique B?`,
+                prompt: `All ${s.firms} in ${s.town} ${s.verb} with technique **B** (${n(LB)} workers, ${n(RB)} MWh per batch). One ${s.firm} pioneers the energy-intensive technique **A** (${n(LA)} workers, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the ${s.firm} produces ${n(q)} batches per year. What **annual innovation rent** does the first mover earn?`,
                 given: {
                     "Technique A": `${n(LA)} workers + ${n(RA)} MWh`,
                     "Technique B": `${n(LB)} workers + ${n(RB)} MWh`,
@@ -2651,6 +2669,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$IR = (c_B - c_A) \cdot q$ - the rent per batch is the cost difference at the current input prices: $c_A$ = ${eur(w)} · ${n(LA)} + ${eur(p)} · ${n(RA)} = ${eur(cA)}, $c_B$ = ${eur(cB)}, difference ${eur(cB - cA)}. Over ${n(q)} batches the first mover earns ${eur(answer)} per year - until the rivals adopt A and competition erodes the rent.`,
+                hint: String.raw`The rent per batch is the cost gap between the pioneer's technique and the one the rest of the industry still uses, priced at the current wage and energy price; a year's rent scales that gap by the batches produced: $IR = (c_B - c_A) \cdot q$.`,
             };
         },
     },
@@ -2977,13 +2996,14 @@ export const econ2Questions: Question[] = [
             const mult = rng.int(8, 30);
             const assets = E * mult;
             return {
-                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth (equity) of ${n(E)} billion €. What is its **leverage ratio**, defined as assets divided by net worth?`,
+                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth (equity) of ${n(E)} billion €. What is its **leverage ratio**?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Net worth (equity)": `${n(E)} billion €`,
                 },
                 answer: mult,
                 explanation: String.raw`$\text{leverage} = \frac{\text{assets}}{\text{net worth}}$: ${n(assets)} / ${n(E)} = ${n(mult)}. The bank holds ${n(mult)} € of assets for every euro of its own equity - the rest is financed by debt, which is what makes highly leveraged banks fragile.`,
+                hint: String.raw`Leverage measures how many euros of assets a bank carries per euro of its own equity: $\text{leverage} = \frac{\text{assets}}{\text{net worth}}$.`,
             };
         },
     },
@@ -3001,13 +3021,14 @@ export const econ2Questions: Question[] = [
             const E = rng.int(8, 60);
             const answer = (E / assets) * 100;
             return {
-                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth of ${n(E)} billion €. By what **percentage** would the value of its assets have to fall to wipe out the bank's net worth entirely, i.e. to make it insolvent?`,
+                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth of ${n(E)} billion €. By what **percentage** would the value of its assets have to fall to wipe out the bank's net worth entirely?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Net worth (equity)": `${n(E)} billion €`,
                 },
                 answer,
                 explanation: String.raw`$\frac{\text{net worth}}{\text{assets}} \cdot 100$ - liabilities are fixed, so every euro of asset losses eats a euro of equity; equity is gone when losses reach the full net worth: ${n(E)} / ${n(assets)} = ${pct(answer)}. This is the flip side of leverage: the higher the leverage, the smaller the asset fall a bank can survive.`,
+                hint: String.raw`What a bank owes is fixed in nominal terms, so a loss in asset value eats equity euro for euro, and the bank is wiped out once the losses reach its whole net worth: $\frac{\text{net worth}}{\text{assets}} \cdot 100$.`,
             };
         },
     },
@@ -3053,13 +3074,14 @@ export const econ2Questions: Question[] = [
             const Y = 50 * rng.int(1, 8) + 25;
             const answer = X + Y;
             return {
-                prompt: `${s.saver} deposits ${n(X)} € of cash at ${s.bank}, which credits ${s.poss} account with ${n(X)} €. The bank then grants ${s.borrower} a loan of ${n(Y)} € by crediting ${s.borrowerPoss} account - no cash changes hands. How much **broad money** (total account balances payable on demand) now exists in this small banking system, in €?`,
+                prompt: `${s.saver} deposits ${n(X)} € of cash at ${s.bank}, which credits ${s.poss} account with ${n(X)} €. The bank then grants ${s.borrower} a loan of ${n(Y)} € by crediting ${s.borrowerPoss} account - no cash changes hands. How much **broad money** now exists in this small banking system, in €?`,
                 given: {
                     "Cash deposited": `${n(X)} €`,
                     "Loan granted by account credit": `${n(Y)} €`,
                 },
                 answer,
                 explanation: String.raw`$\text{broad money} = \text{deposits from base money} + \text{deposits created by lending}$ - the saver's account holds ${n(X)} € and ${s.borrowerPoss} account holds ${n(Y)} €, so ${n(X)} + ${n(Y)} = ${n(answer)} € is payable on demand, although only ${n(X)} € of base money exists. The loan created new bank money: it is a liability of the bank, matched by the loan contract on its asset side.`,
+                hint: `Broad money counts everything that is payable on demand: the deposits backed by base money plus the deposits a bank creates out of nothing when it grants a loan by crediting an account.`,
             };
         },
     },

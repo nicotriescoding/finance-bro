@@ -716,10 +716,11 @@ export const costAccountingQuestions: Question[] = [
             const t = rng.int(2, N);
             const answer = (N - t + 1) * dStep;
             return {
-                prompt: `${sc.asset} is bought for ${eur(A)} and depreciated over ${N} years to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation (yearly amounts fall by a constant amount, reaching that constant in the final year). What is the depreciation amount in year ${t}?`,
+                prompt: `${sc.asset} is bought for ${eur(A)} and depreciated over ${N} years to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation. What is the depreciation amount in year ${t}?`,
                 given: { "Acquisition cost": eur(A), "Residual value": eur(R), "Useful life": `${N} years`, "Year": String(t) },
                 answer,
                 explanation: String.raw`With arithmetic-degressive depreciation the yearly amounts are $N \cdot d, (N-1) \cdot d, \ldots, d$, so their sum is $d \cdot \frac{N (N+1)}{2} = A_0 - RV$. Here $d$ = (${eur(A)} − ${eur(R)}) / ${n((N * (N + 1)) / 2)} = ${eur(dStep)}. Year ${t} depreciates $(N - t + 1) \cdot d$ = ${n(N - t + 1)} × ${eur(dStep)} = ${eur(answer)}.`,
+                hint: String.raw`Arithmetic-degressive depreciation falls by the same amount $d$ every year and depreciates exactly $d$ in the final year, so the schedule is $N \cdot d, (N-1) \cdot d, \ldots, d$ and year $t$ carries $(N - t + 1) \cdot d$. The whole schedule sums to $A_0 - RV$.`,
             };
         },
     },
@@ -1079,15 +1080,16 @@ export const costAccountingQuestions: Question[] = [
             const startedCompleted = s - e;
             const answer = startedCompleted * dmRate;
             return {
-                prompt: `${sc.firm} adds all direct materials at the **beginning** of the process in its ${sc.dept}. In July, ${n(s)} ${sc.items} are started and direct material costs of ${eur(D)} are added; beginning work-in-process inventory is ${n(b)} ${sc.items} (their material was added last period) and ending work-in-process inventory is ${n(e)} ${sc.items}. Under the **FIFO method**, what direct material costs are assigned to the units **started and completed** in July?`,
+                prompt: `${sc.firm} adds all direct materials at the **beginning** of the process in its ${sc.dept}. In July, ${n(s)} ${sc.items} are started and direct material costs of ${eur(D)} are added; beginning work-in-process inventory is ${n(b)} ${sc.items} and ending work-in-process inventory is ${n(e)} ${sc.items}. Under the **FIFO method**, what direct material costs are assigned to the units **started and completed** in July?`,
                 given: {
                     "Started in July": `${n(s)} units`,
                     "Direct material costs added in July": eur(D),
-                    "Beginning WIP": `${n(b)} units (materials complete)`,
+                    "Beginning WIP": `${n(b)} units`,
                     "Ending WIP": `${n(e)} units`,
                 },
                 answer,
                 explanation: String.raw`Because materials enter at the start, every unit **started** this period is complete for materials: $EU_{DM} = x_{started}$ and the cost per equivalent unit is $\frac{K_{DM}}{x_{started}}$ = ${eur(D)} / ${n(s)} = ${eur(dmRate)}. Units started and completed: ${n(s)} − ${n(e)} = ${n(startedCompleted)}, so they carry ${n(startedCompleted)} × ${eur(dmRate)} = ${eur(answer)}. The beginning WIP units get no July material costs under FIFO.`,
+                hint: String.raw`When materials enter at the start of the process, every unit started in the period is already complete for materials, so the material cost per equivalent unit divides the period's material costs by the units started. Under FIFO the units started and completed are the units started minus the ending inventory.`,
             };
         },
     },
@@ -1216,7 +1218,6 @@ export const costAccountingQuestions: Question[] = [
             const sc = rng.pick(CA_ABC_LUMEN_SCENARIOS);
             const batch = 5000;
             const nBatches = rng.int(20, 50);
-            const q = nBatches * batch;
             const p = rng.int(10, 16) * 0.5;
             const dm = rng.int(4, 16) * 0.05;
             const dl = rng.int(4, 16) * 0.05;
@@ -1233,7 +1234,7 @@ export const costAccountingQuestions: Question[] = [
             const ohPerUnit = (sh * setupRate + ih * inspRate) / batch;
             const answer = p - dm - dl - ohPerUnit;
             return {
-                prompt: `${sc.firm} sells its ${sc.line2} ${sc.item} at ${eur(p)} per unit, with direct material of ${eur(dm)} and direct labor of ${eur(dl)} per unit. ${sc.line2} is made in batches of ${n(batch)} units (${n(nBatches)} batches budgeted, i.e. ${n(q)} units). Each ${sc.line2} batch needs ${n(sh)} setup hour${sh === 1 ? "" : "s"} and ${n(ih)} inspection hours. Budgeted setup costs are ${eur(S)} for ${n(totalSh)} setup hours in total; budgeted inspection costs are ${eur(I)} for ${n(totalIh)} inspection hours in total. Under **activity-based costing** (cost drivers: setup hours, inspection hours), what is the operating profit per ${sc.line2} ${sc.item}?`,
+                prompt: `${sc.firm} sells its ${sc.line2} ${sc.item} at ${eur(p)} per unit, with direct material of ${eur(dm)} and direct labor of ${eur(dl)} per unit. ${sc.line2} is made in batches of ${n(batch)} units (${n(nBatches)} batches budgeted). Each ${sc.line2} batch needs ${n(sh)} setup hour${sh === 1 ? "" : "s"} and ${n(ih)} inspection hours. Budgeted setup costs are ${eur(S)} for ${n(totalSh)} setup hours in total; budgeted inspection costs are ${eur(I)} for ${n(totalIh)} inspection hours in total. Under **activity-based costing** (cost drivers: setup hours, inspection hours), what is the operating profit per ${sc.line2} ${sc.item}?`,
                 given: {
                     "Price / direct material / direct labor": `${eur(p)} / ${eur(dm)} / ${eur(dl)} per unit`,
                     [`Batch size / ${sc.line2} batches`]: `${n(batch)} units / ${n(nBatches)}`,
@@ -1634,7 +1635,7 @@ export const costAccountingQuestions: Question[] = [
             const opp = qY * cmY + dX * cmX;
             const answer = vO + opp / Q;
             return {
-                prompt: `${sc.firm}'s ${sc.machine} is **fully utilized** producing ${n(qX)} ${sc.xs} (${n(tX)} min each, contribution margin ${eur(cmX)}) and ${n(qY)} ${sc.ys} (${n(tY)} min each, contribution margin ${eur(cmY)}). A retailer asks it to produce ${n(Q)} ${sc.os}, each taking ${n(tY)} min on the machine and causing variable costs of ${eur(vO)}. Own production must be displaced to free capacity. What is the **lower price limit** per ${sc.o} at which the order is worth accepting?`,
+                prompt: `${sc.firm}'s ${sc.machine} is **fully utilized** producing ${n(qX)} ${sc.xs} (${n(tX)} min each, contribution margin ${eur(cmX)}) and ${n(qY)} ${sc.ys} (${n(tY)} min each, contribution margin ${eur(cmY)}). A retailer asks it to produce ${n(Q)} ${sc.os}, each taking ${n(tY)} min on the machine and causing variable costs of ${eur(vO)}. What is the **lower price limit** per ${sc.o} at which the order is worth accepting?`,
                 given: {
                     "Current program": `${n(qX)} ${sc.xs} (${n(tX)} min, cm ${eur(cmX)}), ${n(qY)} ${sc.ys} (${n(tY)} min, cm ${eur(cmY)})`,
                     "Order": `${n(Q)} ${sc.os}, ${n(tY)} min each`,
@@ -1643,6 +1644,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$p_{min} = k_{var} + \frac{\text{forgone contribution margins}}{\text{order quantity}}$ - displace the product with the **lowest relative contribution margin** first. ${cap(sc.ys)} earn ${eur((cmY / tY) * 60)} per hour vs. ${eur((cmX / tX) * 60)} for ${sc.xs}, so all ${n(qY)} ${sc.ys} go (freeing ${n(qY)} × ${n(tY)} min), and the remaining time comes from ${n(dX)} ${sc.xs}. Opportunity costs: ${n(qY)} × ${eur(cmY)} + ${n(dX)} × ${eur(cmX)} = ${eur(opp)}, i.e. ${eur(opp / Q)} per ${sc.o}. Lower price limit: ${eur(vO)} + ${eur(opp / Q)} = ${eur(answer)}.`,
+                hint: `A lower price limit has to cover the order's own variable costs plus the contribution margins given up per ordered unit. On a machine that is already fully booked, free the needed minutes from the product with the lowest contribution margin per machine hour first.`,
             };
         },
     },
@@ -1776,7 +1778,7 @@ export const costAccountingQuestions: Question[] = [
             const value = s.b0 * s.p0 + s.q1 * s.p1 + s.q2 * s.p2;
             const answer = value / qty;
             return {
-                prompt: `${sc.firm} values ${sc.mat} with **moving average** prices, recomputed after every purchase. September opens with ${n(s.b0)} kg at ${eur(s.p0)} per kg; ${sc.firm} then buys ${n(s.q1)} kg at ${eur(s.p1)} per kg (Sep 3) and ${n(s.q2)} kg at ${eur(s.p2)} per kg (Sep 8). Nothing is issued before Sep 9. What is the moving average price per kilogram **after the Sep 8 purchase**?`,
+                prompt: `${sc.firm} values ${sc.mat} with **moving average** prices. September opens with ${n(s.b0)} kg at ${eur(s.p0)} per kg; ${sc.firm} then buys ${n(s.q1)} kg at ${eur(s.p1)} per kg (Sep 3) and ${n(s.q2)} kg at ${eur(s.p2)} per kg (Sep 8). Nothing is issued before Sep 9. What is the moving average price per kilogram **after the Sep 8 purchase**?`,
                 given: {
                     "Opening stock": `${n(s.b0)} kg at ${eur(s.p0)}/kg`,
                     "Purchase Sep 3": `${n(s.q1)} kg at ${eur(s.p1)}/kg`,
@@ -1784,6 +1786,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$\bar{p} = \frac{\text{stock value}}{\text{stock quantity}}$ - after each purchase the average blends the old stock with the new layer. Stock value: ${n(s.b0)} × ${eur(s.p0)} + ${n(s.q1)} × ${eur(s.p1)} + ${n(s.q2)} × ${eur(s.p2)} = ${eur(value)} over ${n(qty)} kg, so $\bar{p}$ = ${eur(answer)} per kg.`,
+                hint: `The moving average price is recomputed after every purchase, blending the stock already held with the new layer.`,
             };
         },
     },
@@ -1885,10 +1888,11 @@ export const costAccountingQuestions: Question[] = [
             const R = rng.int(1, 5) * 10000;
             const A = (d * N * (N + 1)) / 2 + R;
             return {
-                prompt: `${sc.firm}'s ${sc.asset3} costs ${eur(A)} and is depreciated over ${N} years down to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation: the yearly amounts fall by a constant amount each year and reach exactly that constant in the final year. By what amount does the yearly depreciation **decrease from one year to the next**?`,
+                prompt: `${sc.firm}'s ${sc.asset3} costs ${eur(A)} and is depreciated over ${N} years down to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation. By what amount does the yearly depreciation **decrease from one year to the next**?`,
                 given: { "Acquisition cost": eur(A), "Residual value": eur(R), "Useful life": `${N} years` },
                 answer: d,
                 explanation: String.raw`With yearly amounts $N \cdot d, (N-1) \cdot d, \ldots, d$ the total is $d \cdot \frac{N(N+1)}{2} = A_0 - RV$, so $d = \frac{A_0 - RV}{N(N+1)/2}$ = (${eur(A)} − ${eur(R)}) / ${n((N * (N + 1)) / 2)} = ${eur(d)} - the step between two consecutive years and at the same time the final year's amount.`,
+                hint: String.raw`Arithmetic-degressive depreciation falls by the same step $d$ every year and depreciates exactly $d$ in the final year, so the schedule is $N \cdot d, (N-1) \cdot d, \ldots, d$ and the whole schedule sums to $A_0 - RV$.`,
             };
         },
     },
@@ -1918,10 +1922,11 @@ export const costAccountingQuestions: Question[] = [
                 given: {
                     [`Primary overheads ${sc.ic1} / ${sc.ic2}`]: `${eur(O1)} / ${eur(O2)}`,
                     [`${cap(sc.svc)} output`]: `${n(s12)} ${sc.u} to ${sc.ic2}, ${n(d11)} ${sc.u} to ${sc.dc1}, ${n(d12)} ${sc.u} to ${sc.dc2}`,
-                    [`${sc.ic2} hours for ${sc.ic1}`]: `${n(s21)} h (ignored in the sequence)`,
+                    [`${sc.ic2} hours for ${sc.ic1}`]: `${n(s21)} h`,
                 },
                 answer,
                 explanation: String.raw`$\text{total}_2 = O_2 + tp_1 \cdot s_{1 \to 2}$ - the last center in the ladder passes on **everything** it carries: its own primary overheads plus what it received. The ${sc.ic1}'s rate is $tp_1 = \frac{O_1}{\text{output to later centers}}$ = ${eur(O1)} / ${n(s12 + d11 + d12)} ${sc.u} = ${eur(tp1)}/${sc.u}, so ${sc.ic2} receives ${n(s12)} ${sc.u} × ${eur(tp1)} = ${eur(received)} and allocates ${eur(O2)} + ${eur(received)} = ${eur(answer)} to ${sc.dc1} and ${sc.dc2}. The ${n(s21)} hours delivered back are ignored by the step-ladder method.`,
+                hint: `In the step-ladder sequence each center allocates only to the centers that come after it; deliveries back to an earlier center are left out. The last center in the ladder passes on its own primary overheads plus everything it received.`,
             };
         },
     },
@@ -2098,7 +2103,7 @@ export const costAccountingQuestions: Question[] = [
             const O2 = rng.int(20, 80) * 1000;
             const answer = tp * qty;
             return {
-                prompt: `${sc.firm} applies the **method of credits and debits** with a preset transfer price of ${eur(tp)} per ${sc.uLong}. The ${sc.ic1} delivers ${n(qty)} ${sc.u} of ${sc.svc} to the ${sc.ic2} - another **indirect** cost center with primary overheads of ${eur(O2)}. What amount is allocated from the ${sc.ic1} to the ${sc.ic2} (before any levy for cost coverage)?`,
+                prompt: `${sc.firm} applies the **method of credits and debits** with a preset transfer price of ${eur(tp)} per ${sc.uLong}. The ${sc.ic1} delivers ${n(qty)} ${sc.u} of ${sc.svc} to the ${sc.ic2} - another indirect cost center with primary overheads of ${eur(O2)}. What amount is allocated from the ${sc.ic1} to the ${sc.ic2} (before any levy for cost coverage)?`,
                 given: {
                     [`Preset transfer price ${sc.svc}`]: `${eur(tp)} per ${sc.u}`,
                     [`${cap(sc.svc)} delivered to ${sc.ic2}`]: `${n(qty)} ${sc.u}`,
@@ -2106,6 +2111,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$\text{debit} = tp \cdot x$ - unlike the direct method, the method of credits and debits also prices deliveries **between indirect cost centers**: ${n(qty)} ${sc.u} × ${eur(tp)} = ${eur(answer)}. The ${sc.ic2}'s own primary overheads play no role in this debit.`,
+                hint: `The method of credits and debits prices every service at its preset transfer price, deliveries between two indirect cost centers included, and the receiving center's own overheads never enter that debit.`,
             };
         },
     },
@@ -2149,13 +2155,14 @@ export const costAccountingQuestions: Question[] = [
             const D2 = rng.int(2, 8) * 10000;
             const answer = (B * D1) / (D1 + D2);
             return {
-                prompt: `After the allocation steps of the method of credits and debits, the balances of ${sc.firmShort}'s indirect cost centers sum to +${eur(B)} - the preset transfer prices did not fully cover their costs. This remainder is charged to the direct cost centers as a **levy for cost coverage**, in proportion to the primary and secondary overheads they carry so far: ${sc.dc1} ${eur(D1)}, ${sc.dc2} ${eur(D2)}. What amount is debited to **${sc.dc1}**?`,
+                prompt: `After the allocation steps of the method of credits and debits, the balances of ${sc.firmShort}'s indirect cost centers sum to +${eur(B)}. This remainder is charged to the direct cost centers as a **levy for cost coverage**. The primary and secondary overheads the direct cost centers carry so far are ${eur(D1)} for ${sc.dc1} and ${eur(D2)} for ${sc.dc2}. What amount is debited to **${sc.dc1}**?`,
                 given: {
                     "Uncovered balance of the indirect centers": eur(B),
                     [`Overheads so far ${sc.dc1} / ${sc.dc2}`]: `${eur(D1)} / ${eur(D2)}`,
                 },
                 answer,
                 explanation: String.raw`$\text{levy}_i = B \cdot \frac{\text{OH}_i}{\sum_j \text{OH}_j}$ - the levy distributes the uncovered balance over the direct cost centers by their overheads to date. ${sc.dc1} carries ${eur(D1)} of ${eur(D1 + D2)}, so it is debited ${eur(B)} × ${n2(D1 / (D1 + D2))} = ${eur(answer)}.`,
+                hint: `The levy for cost coverage spreads the indirect centers' uncovered balance over the direct cost centers in proportion to the overheads each of them carries at that point.`,
             };
         },
     },
@@ -2863,7 +2870,7 @@ export const costAccountingQuestions: Question[] = [
             const q2 = s2 + rng.pick([-2, 2, 3]) * 100;
             const answer = m1 * s1 + m2 * s2;
             return {
-                prompt: `${sc.firm}' full manufacturing costs are ${eur(m1)} per unit of the model ${sc.a} and ${eur(m2)} per unit of the model ${sc.b}. This period it produces ${n(q1)} ${sc.a} and ${n(q2)} ${sc.b} ${sc.items} and sells ${n(s1)} and ${n(s2)} respectively. What are the **manufacturing costs of the quantity sold** - the base for the administrative and selling overhead surcharge?`,
+                prompt: `${sc.firm}' full manufacturing costs are ${eur(m1)} per unit of the model ${sc.a} and ${eur(m2)} per unit of the model ${sc.b}. This period it produces ${n(q1)} ${sc.a} and ${n(q2)} ${sc.b} ${sc.items} and sells ${n(s1)} and ${n(s2)} respectively. What are the **manufacturing costs of the quantity sold**?`,
                 given: {
                     [`Full manufacturing costs ${sc.a} / ${sc.b}`]: `${eur(m1)} / ${eur(m2)} per unit`,
                     [`Sold ${sc.a} / ${sc.b}`]: `${n(s1)} / ${n(s2)} units`,
@@ -2871,6 +2878,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$K_{mfg}^{sold} = \sum_i k_{mfg,i} \cdot x_{sold,i}$ - the surcharge base follows the quantity **sold**, not the quantity produced: ${n(s1)} × ${eur(m1)} + ${n(s2)} × ${eur(m2)} = ${eur(answer)}.`,
+                hint: `Value each model's sold units at its full manufacturing costs per unit and add the two up - this figure is the base for the administrative and selling overhead surcharge, so the produced quantities stay out of it.`,
             };
         },
     },
@@ -3118,7 +3126,7 @@ export const costAccountingQuestions: Question[] = [
             const F = rng.int(20, 80) * 1000;
             const answer = vm + vp + vs;
             return {
-                prompt: `${sc.customer} asks ${sc.firm} to produce ${n(Q)} ${sc.order}, each taking ${n(tO)} hours on the ${sc.machine}. The ${sc.machineShort} still has ${n(free)} unused hours this year, so the current production program is not affected. Each ${sc.orderOne} causes variable material costs of ${eur(vm)}, variable production costs of ${eur(vp)} and variable shipping costs of ${eur(vs)}; yearly fixed costs of ${eur(F)} are incurred anyway. What is the **lower price limit** per ${sc.orderOne}?`,
+                prompt: `${sc.customer} asks ${sc.firm} to produce ${n(Q)} ${sc.order}, each taking ${n(tO)} hour${tO === 1 ? "" : "s"} on the ${sc.machine}. The ${sc.machineShort} still has ${n(free)} unused hours this year. Each ${sc.orderOne} causes variable material costs of ${eur(vm)}, variable production costs of ${eur(vp)} and variable shipping costs of ${eur(vs)}; yearly fixed costs of ${eur(F)} are incurred anyway. What is the **lower price limit** per ${sc.orderOne}?`,
                 given: {
                     "Order": `${n(Q)} units, ${n(tO)} h each`,
                     "Free capacity": `${n(free)} h`,
@@ -3127,6 +3135,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$p_{min} = k_{var}$ - with enough idle capacity no contribution margin is displaced, so the short-term lower price limit is just the variable costs per unit: ${eur(vm)} + ${eur(vp)} + ${eur(vs)} = ${eur(answer)}. The fixed costs are incurred either way and are irrelevant; opportunity costs are zero.`,
+                hint: `The short-term lower price limit is the variable cost per unit plus the contribution margin displaced elsewhere. Check first whether the free capacity covers the order - if nothing has to give way, no contribution margin is lost, and fixed costs that run either way do not raise the limit.`,
             };
         },
     },
@@ -3150,7 +3159,7 @@ export const costAccountingQuestions: Question[] = [
             const cmY = rng.int(10, 2 * cmX - 5);
             const answer = qY * cmY + dX * cmX;
             return {
-                prompt: `${sc.intro}, runs its ${sc.line} at **full capacity** producing ${n(qX)} ${sc.xs} (${n(tX)} min each, contribution margin ${eur(cmX)}) and ${n(qY)} ${sc.ys} (${n(tY)} min each, contribution margin ${eur(cmY)}). ${sc.customer} orders ${n(Q)} ${sc.os}, each taking ${n(tY)} min on the line - own production must be displaced to make room. What are the **total opportunity costs** (forgone contribution margins) of accepting the order?`,
+                prompt: `${sc.intro}, runs its ${sc.line} at **full capacity** producing ${n(qX)} ${sc.xs} (${n(tX)} min each, contribution margin ${eur(cmX)}) and ${n(qY)} ${sc.ys} (${n(tY)} min each, contribution margin ${eur(cmY)}). ${sc.customer} orders ${n(Q)} ${sc.os}, each taking ${n(tY)} min on the line. What are the **total opportunity costs** of accepting the order?`,
                 given: {
                     "Current program": `${n(qX)} ${sc.xsShort} (${n(tX)} min, cm ${eur(cmX)}), ${n(qY)} ${sc.ys} (${n(tY)} min, cm ${eur(cmY)})`,
                     "Order": `${n(Q)} ${sc.os}, ${n(tY)} min each`,
@@ -3158,6 +3167,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$K_{opp} = \sum \text{displaced units} \cdot cm$ - displace the product with the **lowest relative contribution margin** first. ${cap(sc.ys)} earn ${eur((cmY / tY) * 60)} per hour vs. ${eur((cmX / tX) * 60)} for ${sc.xsShort}, so all ${n(qY)} ${sc.ys} go (freeing ${n(qY * tY)} min) and the remaining ${n(Q * tY - qY * tY)} min come from ${n(dX)} ${sc.xsShort}. Opportunity costs: ${n(qY)} × ${eur(cmY)} + ${n(dX)} × ${eur(cmX)} = ${eur(answer)}.`,
+                hint: `The opportunity costs of an order are the contribution margins of the own production that has to make room for it. On a line running at full capacity, free the needed minutes from the product with the lowest contribution margin per hour first.`,
             };
         },
     },

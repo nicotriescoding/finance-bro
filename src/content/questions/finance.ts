@@ -451,10 +451,11 @@ export const financeQuestions: NumericQuestion[] = [
             const interest = (D0 - repay * (k - 1)) * (r / 100);
             const answer = repay + interest;
             return {
-                prompt: `An **installment loan** of ${eur(D0)} is repaid in ${N} equal principal repayments at an interest rate of ${pct(r)}. What is the total payment (principal repayment + interest) in year ${k}?`,
+                prompt: `An **installment loan** of ${eur(D0)} is repaid in ${N} equal principal repayments at an interest rate of ${pct(r)}. What is the **total payment** in year ${k}?`,
                 given: { "$D_0$": eur(D0), "r": pct(r), "N": String(N), "Year k": String(k) },
                 answer,
                 explanation: String.raw`Constant principal repayment: $\frac{D_0}{N}$ = ${eur(repay)}. Interest in year ${k} on the opening balance: $D_{k-1} \cdot i = \left(D_0 - (k - 1) \cdot \frac{D_0}{N}\right) \cdot i$ = ${eur(interest)}. Total payment = ${eur(repay)} + ${eur(interest)} = ${eur(answer)}`,
+                hint: `The payment of an installment loan is the constant principal repayment plus interest, and the interest is charged on the balance still outstanding at the start of the year.`,
             };
         },
     },
@@ -1351,7 +1352,7 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = C * N * q ** (N - 1);
             return {
-                prompt: `You pay into an account **at the end of each year** (ordinary annuity) for ${N} years. The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a., so the growth factor equals the interest factor (g = q) and the general geometric formula would divide by zero. What is the balance at the end of year ${N}?`,
+                prompt: `You pay into an account **at the end of each year** (ordinary annuity) for ${N} years. The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a. What is the balance at the end of year ${N}?`,
                 given: {
                     "First payment C": eur(C),
                     "Growth rate w": pct(w),
@@ -1361,6 +1362,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`With $g = q = ${n(q)}$ every payment compounds to the same end value $C \cdot q^{N-1}$, so $FV = C \cdot N \cdot q^{N-1}$ = ${eur(C)} · ${N} · ${n2(q ** (N - 1))} = ${eur(answer)}`,
+                hint: String.raw`Compare the growth factor $g = 1 + w$ with the interest factor $q = 1 + i$: when they coincide the general geometric-annuity formula divides by zero, and every payment compounds to the same end value instead, so $FV = C \cdot N \cdot q^{N-1}$.`,
             };
         },
     },
@@ -1409,7 +1411,7 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = C * N * q ** N;
             return {
-                prompt: `You pay into an account **at the beginning of each year** (annuity due) for ${N} years. The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a., so the growth factor equals the interest factor (g = q). What is the balance at the end of year ${N}?`,
+                prompt: `You pay into an account **at the beginning of each year** (annuity due) for ${N} years. The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The account earns ${pct(r)} p.a. What is the balance at the end of year ${N}?`,
                 given: {
                     "First payment C": eur(C),
                     "Growth rate w": pct(w),
@@ -1419,6 +1421,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`With $g = q = ${n(q)}$: $FV_{due} = C \cdot N \cdot q^N$ = ${eur(C)} · ${N} · ${n2(q ** N)} = ${eur(answer)} - one factor $q$ more than in arrears, because every payment earns one extra year.`,
+                hint: String.raw`Compare the growth factor $g = 1 + w$ with the interest factor $q = 1 + i$: when they coincide every payment compounds to the same end value, and payments in advance earn one extra year, so $FV_{due} = C \cdot N \cdot q^N$.`,
             };
         },
     },
@@ -1467,7 +1470,7 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = (C * N) / q;
             return {
-                prompt: `A payment stream runs for ${N} years, **at the end of each year** (ordinary annuity). The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}, so the growth factor equals the interest factor (g = q). What is the present value?`,
+                prompt: `A payment stream runs for ${N} years, **at the end of each year** (ordinary annuity). The first payment is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}. What is the present value?`,
                 given: {
                     "First payment C": eur(C),
                     "Growth rate w": pct(w),
@@ -1477,6 +1480,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`With $g = q = ${n(q)}$ payment $k$ is $C \cdot q^{k-1}$ and is discounted by $q^k$, so each payment is worth $\frac{C}{q}$ today: $PV = \frac{C \cdot N}{q}$ = ${eur(C)} · ${N} / ${n(q)} = ${eur(answer)}`,
+                hint: String.raw`Compare the growth factor $g = 1 + w$ with the discount factor $q = 1 + i$: when they coincide payment $k$ grows by $q^{k-1}$ and is discounted by $q^k$, so every payment is worth the same amount today and $PV = \frac{C \cdot N}{q}$.`,
             };
         },
     },
@@ -1525,7 +1529,7 @@ export const financeQuestions: NumericQuestion[] = [
             const q = 1 + r / 100;
             const answer = C * N;
             return {
-                prompt: `A payment stream runs for ${N} years, **at the beginning of each year** (annuity due). The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}, so the growth factor equals the interest factor (g = q). What is the present value?`,
+                prompt: `A payment stream runs for ${N} years, **at the beginning of each year** (annuity due). The first payment, today, is ${eur(C)} and every following payment is ${pct(w)} higher than the one before. The discount rate is ${pct(r)}. What is the present value?`,
                 given: {
                     "First payment C": eur(C),
                     "Growth rate w": pct(w),
@@ -1535,6 +1539,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`With $g = q = ${n(q)}$ payment $k$ is $C \cdot q^{k-1}$ and is discounted by $q^{k-1}$ - every payment is worth ${eur(C)} today: $PV_{due} = C \cdot N$ = ${eur(C)} · ${N} = ${eur(answer)}`,
+                hint: String.raw`Compare the growth factor $g = 1 + w$ with the discount factor $q = 1 + i$: when they coincide a payment in advance grows and is discounted by the same factor, so each one is worth its nominal amount today and $PV_{due} = C \cdot N$.`,
             };
         },
     },
@@ -1705,10 +1710,11 @@ export const financeQuestions: NumericQuestion[] = [
             const NFO = rng.int(50, 600) * 1000;
             const answer = E + NFO;
             return {
-                prompt: `A company reports a book value of equity of ${eur(E)} and net financial obligations (net debt, i.e. interest-bearing debt minus financial assets) of ${eur(NFO)}. What is its **invested capital**?`,
+                prompt: `A company reports a book value of equity of ${eur(E)} and net financial obligations (net debt) of ${eur(NFO)}. What is its **invested capital**?`,
                 given: { "Book value of equity E": eur(E), "Net financial obligations NFO": eur(NFO) },
                 answer,
                 explanation: String.raw`$IC = E + NFO$ = ${eur(E)} + ${eur(NFO)} = ${eur(answer)}`,
+                hint: `Invested capital is the whole capital tied up in the business: the book value of equity plus the net financial obligations.`,
             };
         },
     },
@@ -1744,10 +1750,11 @@ export const financeQuestions: NumericQuestion[] = [
             const E = rng.int(80, 700) * 1000;
             const answer = D / (E + D);
             return {
-                prompt: `A company is financed with ${eur(D)} of debt and ${eur(E)} of equity. What is its **debt-to-capital ratio** - the share of total capital (debt plus equity) that is debt? Give it as a factor.`,
+                prompt: `A company is financed with ${eur(D)} of debt and ${eur(E)} of equity. What is its **debt-to-capital ratio**? Give it as a factor.`,
                 given: { "Debt D": eur(D), "Equity E": eur(E) },
                 answer,
                 explanation: String.raw`$\frac{D}{D + E}$ = ${eur(D)} / ${eur(D + E)} = ${n2(answer)}`,
+                hint: `The debt-to-capital ratio is the share of total capital - debt plus equity - that is financed with debt.`,
             };
         },
     },
@@ -1782,10 +1789,11 @@ export const financeQuestions: NumericQuestion[] = [
             const MVE = rng.int(200, 1500) * 1000;
             const answer = NFO / (MVE + NFO);
             return {
-                prompt: `A listed company has net financial obligations of ${eur(NFO)} and a market value of equity of ${eur(MVE)}. Its enterprise value is the market value of equity plus net financial obligations. What is the **debt-to-enterprise-value ratio**? Give it as a factor.`,
+                prompt: `A listed company has net financial obligations of ${eur(NFO)} and a market value of equity of ${eur(MVE)}. What is the **debt-to-enterprise-value ratio**? Give it as a factor.`,
                 given: { "Net financial obligations NFO": eur(NFO), "Market value of equity MV_E": eur(MVE) },
                 answer,
                 explanation: String.raw`$\frac{NFO}{EV} = \frac{NFO}{MV_E + NFO}$ = ${eur(NFO)} / ${eur(MVE + NFO)} = ${n2(answer)}`,
+                hint: `The enterprise value of a listed company is the market value of its equity plus its net financial obligations; the ratio puts the net debt against that total.`,
             };
         },
     },
@@ -1805,7 +1813,7 @@ export const financeQuestions: NumericQuestion[] = [
             const CL = Math.round((cash + sti + ar) / rng.float(0.6, 2.2, 2) / 1000) * 1000;
             const answer = (cash + sti + ar) / CL;
             return {
-                prompt: `Cash ${eur(cash)}, short-term investments ${eur(sti)}, accounts receivable ${eur(ar)}, current liabilities ${eur(CL)}. What is the **quick ratio** (inventories are deliberately excluded)?`,
+                prompt: `Cash ${eur(cash)}, short-term investments ${eur(sti)}, accounts receivable ${eur(ar)}, current liabilities ${eur(CL)}. What is the **quick ratio**?`,
                 given: {
                     Cash: eur(cash),
                     "Short-term investments": eur(sti),
@@ -1814,6 +1822,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`$\text{quick ratio} = \frac{\text{cash} + \text{short-term investments} + \text{receivables}}{CL}$ = ${eur(cash + sti + ar)} / ${eur(CL)} = ${n2(answer)}`,
+                hint: `The quick ratio counts only the current assets that turn into cash quickly - cash, short-term investments and receivables - against the current liabilities. Inventories stay out.`,
             };
         },
     },
@@ -1829,10 +1838,11 @@ export const financeQuestions: NumericQuestion[] = [
             const FE = Math.round(NFO * rng.float(0.02, 0.09, 4));
             const answer = (FE / NFO) * 100;
             return {
-                prompt: `A company pays financial expenses of ${eur(FE)} on net financial obligations of ${eur(NFO)}. What is its **net financial expense (NFE)**, i.e. the financial expenses expressed as a percentage of net financial obligations?`,
+                prompt: `A company pays financial expenses of ${eur(FE)} on net financial obligations of ${eur(NFO)}. What is its **net financial expense (NFE)**?`,
                 given: { "Financial expenses FE": eur(FE), "Net financial obligations NFO": eur(NFO) },
                 answer,
                 explanation: String.raw`$NFE = \frac{FE}{NFO}$ = ${eur(FE)} / ${eur(NFO)} = ${pct(answer)}`,
+                hint: `The net financial expense is a rate, not an amount: the financial expenses as a percentage of the net financial obligations they are paid on.`,
             };
         },
     },
@@ -1906,10 +1916,11 @@ export const financeQuestions: NumericQuestion[] = [
             const df = rng.float(1.02, 1.35, 2);
             const answer = NI / (shares * df);
             return {
-                prompt: `Net income is ${eur(NI)} and ${n(shares)} shares are outstanding. Options and convertibles together give a **dilution factor** of ${n2(df)} - the factor by which the share count effectively grows. What are the **diluted earnings per share**?`,
+                prompt: `Net income is ${eur(NI)} and ${n(shares)} shares are outstanding. Options and convertibles together give a **dilution factor** of ${n2(df)}. What are the **diluted earnings per share**?`,
                 given: { "Net income": eur(NI), "Shares outstanding a": n(shares), "Dilution factor df": n2(df) },
                 answer,
                 explanation: String.raw`$EPS_{dil} = \frac{NI}{a \cdot df}$ = ${eur(NI)} / (${n(shares)} · ${n2(df)}) = ${eur(answer)}`,
+                hint: `The dilution factor is the factor by which the share count effectively grows, so the same net income is spread over that many more shares.`,
             };
         },
     },
@@ -2187,7 +2198,7 @@ export const financeQuestions: NumericQuestion[] = [
                 const wD = D / (E + D);
                 const answer = wE * rE + wD * rD;
                 return {
-                    prompt: `A firm is financed with ${eur(E)} of equity (cost of equity ${pct(rE)}) and ${eur(D)} of debt (cost of debt ${pct(rD)}). Assume a world **without taxes** (Modigliani-Miller). What is the **cost of capital of the unlevered firm r_U**, i.e. the weighted average return the assets have to earn?`,
+                    prompt: `A firm is financed with ${eur(E)} of equity (cost of equity ${pct(rE)}) and ${eur(D)} of debt (cost of debt ${pct(rD)}). Assume a world **without taxes** (Modigliani-Miller). What is the **cost of capital of the unlevered firm r_U**?`,
                     given: {
                         "Equity E": eur(E),
                         "Debt D": eur(D),
@@ -2197,6 +2208,7 @@ export const financeQuestions: NumericQuestion[] = [
                     },
                     answer,
                     explanation: String.raw`Without taxes $r_U$ is the value-weighted average return the assets must earn: $r_U = \frac{E}{E+D} \cdot r_E + \frac{D}{E+D} \cdot r_D$ = ${n2(wE)} · ${pct(rE)} + ${n2(wD)} · ${pct(rD)} = ${pct(answer)}`,
+                    hint: `Without taxes the unlevered cost of capital is the return the assets as a whole have to earn - the value-weighted average of the returns demanded by equity and debt holders.`,
                 };
             },
         },
@@ -2218,7 +2230,7 @@ export const financeQuestions: NumericQuestion[] = [
                 const wD = D / (E + D);
                 const answer = wE * betaE + wD * betaD;
                 return {
-                    prompt: `A firm has ${eur(E)} of equity with an equity beta of ${n2(betaE)} and ${eur(D)} of debt with a debt beta of ${n2(betaD)}. Assume **no taxes**, so the whole firm is simply the portfolio of its equity and its debt. What is the **unlevered (asset) beta $β_U$**?`,
+                    prompt: `A firm has ${eur(E)} of equity with an equity beta of ${n2(betaE)} and ${eur(D)} of debt with a debt beta of ${n2(betaD)}. Assume **no taxes**. What is the **unlevered (asset) beta $β_U$**?`,
                     given: {
                         "Equity E": eur(E),
                         "Debt D": eur(D),
@@ -2228,6 +2240,7 @@ export const financeQuestions: NumericQuestion[] = [
                     },
                     answer,
                     explanation: String.raw`$\beta_U = \frac{E}{E+D} \cdot \beta_E + \frac{D}{E+D} \cdot \beta_D$ = ${n2(wE)} · ${n2(betaE)} + ${n2(wD)} · ${n2(betaD)} = ${n2(answer)}`,
+                    hint: `Without taxes the whole firm is just the portfolio of its equity and its debt, so its asset beta is the value-weighted average of the two betas.`,
                 };
             },
         },
@@ -2304,7 +2317,7 @@ export const financeQuestions: NumericQuestion[] = [
                 const its = tauC * D;
                 const answer = VU + its;
                 return {
-                    prompt: `An all-equity firm is worth ${eur(VU)}. It now takes on **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} - only interest is paid, the principal is rolled over forever, so the interest tax shield is a perpetuity discounted at ${pct(rD)}. The **corporate tax rate is $τ_C$ = ${pct(tauC * 100)}**. What is the value of the **levered firm V_L**?`,
+                    prompt: `An all-equity firm is worth ${eur(VU)}. It now takes on **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} - only interest is paid, the principal is rolled over forever. The **corporate tax rate is $τ_C$ = ${pct(tauC * 100)}**. What is the value of the **levered firm V_L**?`,
                     given: {
                         "Unlevered firm value V_U": eur(VU),
                         "Permanent debt D": eur(D),
@@ -2313,6 +2326,7 @@ export const financeQuestions: NumericQuestion[] = [
                     },
                     answer,
                     explanation: String.raw`The perpetual tax shield is $PV(ITS) = \frac{\tau_C \cdot r_D \cdot D}{r_D} = \tau_C \cdot D$ - the cost of debt cancels: ${n(tauC)} · ${eur(D)} = ${eur(its)}. Then $V_L = V_U + PV(ITS)$ = ${eur(VU)} + ${eur(its)} = ${eur(answer)}`,
+                    hint: String.raw`With permanent debt the interest tax shield is a perpetuity discounted at the cost of debt, so the cost of debt cancels and the levered firm is worth the unlevered firm plus $\tau_C \cdot D$.`,
                 };
             },
         },
@@ -2330,7 +2344,7 @@ export const financeQuestions: NumericQuestion[] = [
                 const fcfe = rng.int(200, 900) * 1000;
                 const answer = fcfe / ((rE - g) / 100);
                 return {
-                    prompt: `Value a firm with the **equity method**: the free cash flow to equity is ${eur(fcfe)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCFE is already stated **after corporate taxes and after interest and debt payments**, so it is discounted at the cost of equity of ${pct(rE)}. What is the **market value of equity**?`,
+                    prompt: `Value a firm with the **equity method**: the free cash flow to equity is ${eur(fcfe)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCFE is already stated **after corporate taxes and after interest and debt payments**. The cost of equity is ${pct(rE)}. What is the **market value of equity**?`,
                     given: {
                         "$FCFE_1$": eur(fcfe),
                         "Growth g (perpetual)": pct(g),
@@ -2339,6 +2353,7 @@ export const financeQuestions: NumericQuestion[] = [
                     },
                     answer,
                     explanation: String.raw`$V_E = \sum_t \frac{FCFE_t}{(1+r_E)^t}$, and with constant growth the infinite sum collapses to the growing perpetuity $V_E = \frac{FCFE_1}{r_E - g}$ = ${eur(fcfe)} / (${n(rE / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
+                    hint: `The equity method discounts a cash flow that already belongs to the shareholders at the cost of equity, and constant perpetual growth collapses the infinite sum into a growing perpetuity.`,
                 };
             },
         },
@@ -2356,7 +2371,7 @@ export const financeQuestions: NumericQuestion[] = [
                 const fcf = rng.int(300, 1200) * 1000;
                 const answer = fcf / ((wacc - g) / 100);
                 return {
-                    prompt: `Value a firm with the **entity method**: the free cash flow to the firm is ${eur(fcf)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCF is the **unlevered after-tax cash flow** - taxed as if the firm were all-equity financed, so the tax advantage of debt sits in the WACC, not in the cash flow. The WACC is ${pct(wacc)}. What is the **total firm value**?`,
+                    prompt: `Value a firm with the **entity method**: the free cash flow to the firm is ${eur(fcf)} next year and then grows at a constant ${pct(g)} p.a. **in perpetuity**. The FCF is the **unlevered after-tax cash flow** - taxed as if the firm were all-equity financed. The WACC is ${pct(wacc)}. What is the **total firm value**?`,
                     given: {
                         "$FCF_1$": eur(fcf),
                         "Growth g (perpetual)": pct(g),
@@ -2365,6 +2380,7 @@ export const financeQuestions: NumericQuestion[] = [
                     },
                     answer,
                     explanation: String.raw`$V = \sum_t \frac{FCF_t}{(1+r_{WACC})^t}$, and with constant growth the infinite sum collapses to the growing perpetuity $V = \frac{FCF_1}{r_{WACC} - g}$ = ${eur(fcf)} / (${n(wacc / 100)} − ${n(g / 100)}) = ${eur(answer)}`,
+                    hint: `In the entity method the tax advantage of debt sits in the WACC, not in the cash flow, so the unlevered cash flow is discounted at the WACC; constant growth turns the sum into a growing perpetuity.`,
                 };
             },
         },
@@ -2387,7 +2403,7 @@ export const financeQuestions: NumericQuestion[] = [
                 const its = tauC * D;
                 const answer = vU + its;
                 return {
-                    prompt: `Value a firm with the **APV method**. Its unlevered free cash flow is ${eur(fcf)} next year and grows at a constant ${pct(g)} p.a. **in perpetuity**; it is taxed as if the firm were all-equity financed and is discounted at the unlevered cost of capital of ${pct(rU)}. The firm also carries **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} (interest only, principal rolled over forever), and the **corporate tax rate is $τ_C$ = ${pct(tauC * 100)}**. What is the **value of the levered firm (APV)**?`,
+                    prompt: `Value a firm with the **APV method**. Its unlevered free cash flow is ${eur(fcf)} next year and grows at a constant ${pct(g)} p.a. **in perpetuity**; it is taxed as if the firm were all-equity financed. The unlevered cost of capital is ${pct(rU)}. The firm also carries **permanent debt** of ${eur(D)} at a cost of debt of ${pct(rD)} (interest only, principal rolled over forever), and the **corporate tax rate is $τ_C$ = ${pct(tauC * 100)}**. What is the **value of the levered firm (APV)**?`,
                     given: {
                         "$FCF_1$ (unlevered, after tax)": eur(fcf),
                         "Growth g (perpetual)": pct(g),
@@ -2398,6 +2414,7 @@ export const financeQuestions: NumericQuestion[] = [
                     },
                     answer,
                     explanation: String.raw`APV values the two pieces separately. Unlevered: $V_U = \frac{FCF_1}{r_U - g}$ = ${eur(fcf)} / (${n(rU / 100)} − ${n(g / 100)}) = ${eur(vU)}. Tax shield of permanent debt: $PV(ITS) = \frac{\tau_C \cdot D \cdot r_D}{r_D} = \tau_C \cdot D$ = ${eur(its)}. $APV = V_U + PV(ITS)$ = ${eur(vU)} + ${eur(its)} = ${eur(answer)}`,
+                    hint: String.raw`APV values the two pieces separately: discount the unlevered cash flow at the unlevered cost of capital, then add the present value of the tax shield, which for permanent debt is $\tau_C \cdot D$.`,
                 };
             },
         },
@@ -2452,7 +2469,7 @@ export const financeQuestions: NumericQuestion[] = [
             const Pcum = rng.int(60, 220);
             const answer = Pcum / (1 + 1 / BV);
             return {
-                prompt: `A capital increase **from company funds** (Kapitalerhöhung aus Gesellschaftsmitteln) converts reserves into share capital. Shareholders receive the new shares free of charge, so **no subscription price is paid in** - the market value of the company is unchanged and only spread over more shares. The subscription ratio is ${BV}:1 (${BV} old shares carry one new share) and the price cum rights is ${eur(Pcum)}. What is the **price after the capital increase ($P_{ex}$)**?`,
+                prompt: `A capital increase **from company funds** (Kapitalerhöhung aus Gesellschaftsmitteln) converts reserves into share capital. Shareholders receive the new shares free of charge, so **no subscription price is paid in**. The subscription ratio is ${BV}:1 (${BV} old shares carry one new share) and the price cum rights is ${eur(Pcum)}. What is the **price after the capital increase ($P_{ex}$)**?`,
                 given: {
                     "Capital increase": "from company funds (nothing paid in)",
                     "Subscription ratio": `${BV}:1`,
@@ -2460,6 +2477,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`$P_{ex} = \frac{P_{cum}}{1 + \frac{1}{BV}}$ = ${eur(Pcum)} / ${n2(1 + 1 / BV)} = ${eur(answer)} - the value of ${BV} old shares at ${eur(Pcum)} is spread over ${BV + 1} shares. There is no issue-price term, unlike a rights issue against cash contributions.`,
+                hint: `Nothing is paid in, so the market value of the company stays the same and is only spread over more shares. There is no issue-price term as in a rights issue against cash contributions.`,
             };
         },
     },
@@ -2530,7 +2548,7 @@ export const financeQuestions: NumericQuestion[] = [
             const value = npv(flows, r / 100);
             const answer = value / I0;
             return {
-                prompt: `Capital is rationed, so projects are ranked by their **profitability index** - the NPV per euro of the scarce resource they consume. A project ties up ${eur(I0)} of capital today and returns ${eur(cf)} at the end of each of the next ${T} years; the discount rate is ${pct(r)}. What is its **profitability index**?`,
+                prompt: `Capital is rationed, so projects are ranked by their **profitability index**. A project ties up ${eur(I0)} of capital today and returns ${eur(cf)} at the end of each of the next ${T} years; the discount rate is ${pct(r)}. What is its **profitability index**?`,
                 given: {
                     "Capital consumed $I_0$": eur(I0),
                     "Cash flow p.a.": eur(cf),
@@ -2539,6 +2557,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`First the NPV: $NPV = -I_0 + \sum_{t=1}^{T} \frac{CF_t}{(1+i)^t}$ = ${eur(value)}. Then $PI = \frac{NPV}{I_0}$ = ${eur(value)} / ${eur(I0)} = ${n2(answer)}`,
+                hint: `The profitability index is the net present value per euro of the scarce resource a project consumes, so compute the NPV first and then divide it by the capital tied up.`,
             };
         },
     },
@@ -2615,7 +2634,7 @@ export const financeQuestions: NumericQuestion[] = [
             const days = (m2 - m1) * 30 + (d2 - d1);
             const answer = C0 * (1 + (r / 100) * (days / 360));
             return {
-                prompt: `A fixed-term deposit of ${eur(C0)} runs from ${months[m1 - 1]} ${d1} to ${months[m2 - 1]} ${d2} of the same year at a **simple** interest rate of ${pct(r)} p.a. Using the **30/360 day-count convention** (every month counts 30 days, the year counts 360 days), what is the balance at the end of the term?`,
+                prompt: `A fixed-term deposit of ${eur(C0)} runs from ${months[m1 - 1]} ${d1} to ${months[m2 - 1]} ${d2} of the same year at a **simple** interest rate of ${pct(r)} p.a. Using the **30/360 day-count convention**, what is the balance at the end of the term?`,
                 given: {
                     "Deposit $C_0$": eur(C0),
                     "Interest rate r": pct(r),
@@ -2624,6 +2643,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`Interest days under 30/360: $(${m2} - ${m1}) \cdot 30 + (${d2} - ${d1}) = ${n(days)}$ days. Then $C_t = C_0 \cdot \left(1 + i \cdot \frac{t}{360}\right)$ = ${eur(C0)} · (1 + ${n(r / 100)} · ${n(days)}/360) = ${eur(answer)}`,
+                hint: String.raw`Under 30/360 every month counts 30 days and the year counts 360, so the interest days are $(m_2 - m_1) \cdot 30 + (d_2 - d_1)$ and simple interest accrues over that fraction of the year.`,
             };
         },
     },
@@ -3337,7 +3357,7 @@ export const financeQuestions: NumericQuestion[] = [
             const D1 = p * EPS1;
             const answer = D1 / ((rE - w) / 100);
             return {
-                prompt: `${s.firm} expects earnings per share of ${eur(EPS1)} next year and so far pays out **all** earnings as dividends; under this zero-growth policy its share trades at ${eur(P0)}. Management now proposes to cut the payout ratio to ${pct(p * 100)} and invest the retained earnings in ${s.units} earning a permanent return on equity of ${pct(ROE)}. What would the share price be under the new policy?`,
+                prompt: `${s.firm} expects earnings per share of ${eur(EPS1)} next year and so far pays out **all** earnings as dividends; its share currently trades at ${eur(P0)}. Management now proposes to cut the payout ratio to ${pct(p * 100)} and invest the retained earnings in ${s.units} earning a permanent return on equity of ${pct(ROE)}. What would the share price be under the new policy?`,
                 given: {
                     "$EPS_1$": eur(EPS1),
                     "Price under full payout": eur(P0),
@@ -3346,6 +3366,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`From the zero-growth price the cost of equity is $r_E = \frac{EPS_1}{P_0}$ = ${pct(rE)}. The new dividend is $D_1 = p \cdot EPS_1$ = ${eur(D1)} and retention creates growth $w = (1 - p) \cdot ROE$ = ${pct(w)}. Gordon: $P_0' = \frac{D_1}{r_E - w}$ = ${eur(D1)} / ${n((rE - w) / 100)} = ${eur(answer)}. Retention ${ROE > rE ? "creates" : ROE < rE ? "destroys" : "neither creates nor destroys"} value because ROE ${ROE > rE ? ">" : ROE < rE ? "<" : "="} $r_E$.`,
+                hint: `A firm that pays out every euro it earns does not grow, so its current price reveals the cost of equity. Retaining part of the earnings creates dividend growth equal to the retention ratio times the return on equity.`,
             };
         },
     },
@@ -3389,7 +3410,7 @@ export const financeQuestions: NumericQuestion[] = [
             const total = Math.round(outstanding * dps);
             const answer = (total / outstanding / P) * 100;
             return {
-                prompt: `For the past fiscal year ${s.firm} distributes total dividends of ${eur(total)}. It has issued ${n(issued)} shares, of which ${n(treasury)} are held by the company itself (treasury shares receive no dividend). The share trades at ${eur(P)}. What is the **dividend yield**?`,
+                prompt: `For the past fiscal year ${s.firm} distributes total dividends of ${eur(total)}. It has issued ${n(issued)} shares, of which ${n(treasury)} are held by the company itself as treasury shares. The share trades at ${eur(P)}. What is the **dividend yield**?`,
                 given: {
                     "Total dividend payment": eur(total),
                     "Shares issued": n(issued),
@@ -3398,6 +3419,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`Dividend per share on the ${n(outstanding)} outstanding shares: $DPS = \frac{\text{total dividends}}{\text{shares outstanding}}$ = ${eur(total / outstanding)}. Then $\text{dividend yield} = \frac{DPS}{P_0}$ = ${eur(total / outstanding)} / ${eur(P)} = ${pct(answer)}`,
+                hint: `Treasury shares receive no dividend, so the distribution is spread only over the shares outstanding - issued shares less treasury shares - before it is compared with the share price.`,
             };
         },
     },
@@ -3484,10 +3506,11 @@ export const financeQuestions: NumericQuestion[] = [
             const TA = rng.int(300, 1500) * 1000;
             const answer = ((NI + IE) / TA) * 100;
             return {
-                prompt: `A company reports net income of ${eur(NI)}, interest expense of ${eur(IE)} and total assets of ${eur(TA)}. What is its **return on assets (ROA)**, defined as (net income + interest expense) divided by total assets?`,
+                prompt: `A company reports net income of ${eur(NI)}, interest expense of ${eur(IE)} and total assets of ${eur(TA)}. What is its **return on assets (ROA)**?`,
                 given: { "Net income": eur(NI), "Interest expense": eur(IE), "Total assets": eur(TA) },
                 answer,
                 explanation: String.raw`$ROA = \frac{\text{net income} + \text{interest expense}}{\text{total assets}}$ - interest is added back so the return on ALL assets is measured before the split between debt and equity holders: (${eur(NI)} + ${eur(IE)}) / ${eur(TA)} = ${pct(answer)}`,
+                hint: `The return on assets measures what all assets earn before the split between debt and equity holders, so interest expense is added back to net income.`,
             };
         },
     },
@@ -3509,10 +3532,11 @@ export const financeQuestions: NumericQuestion[] = [
             const crf = (q ** N * (q - 1)) / (q ** N - 1);
             const answer = NPV * crf;
             return {
-                prompt: `A project has a net present value of ${eur(NPV)} and runs for ${N} years; the cost of capital is ${pct(r)}. Using the **annuity method**, spread the NPV into an equivalent constant annual amount: what is the project's annuity?`,
+                prompt: `A project has a net present value of ${eur(NPV)} and runs for ${N} years; the cost of capital is ${pct(r)}. Using the **annuity method**, what is the project's annuity?`,
                 given: { "NPV": eur(NPV), "Term N": `${N} years`, "Cost of capital r": pct(r) },
                 answer,
                 explanation: String.raw`$A = NPV \cdot \frac{q^N (q - 1)}{q^N - 1}$ (capital-recovery factor) with $q = ${n(q)}$: the factor is ${n2(crf)}, so A = ${eur(NPV)} · ${n2(crf)} = ${eur(answer)}. Ranking projects of equal length by their annuity gives the same decision as the NPV rule.`,
+                hint: `The annuity method spreads the net present value evenly over the project's life with the capital-recovery factor.`,
             };
         },
     },
@@ -3724,7 +3748,7 @@ export const financeQuestions: NumericQuestion[] = [
             const tau = rng.pick([0.25, 0.3, 0.35]);
             const answer = -(dev * (1 - tau)) - capex - nwc;
             return {
-                prompt: `A project starts in t = 0 with an investment of ${eur(capex)} in machinery (capitalized and depreciated from t = 1 on), non-capitalizable development costs of ${eur(dev)} (expensed immediately) and a build-up of net working capital of ${eur(nwc)}. The firm is profitable overall, so expensed costs create an immediate tax credit at the tax rate of ${pct(tau * 100)}. What is the **free cash flow in t = 0**? Give the answer as a signed number - an outflow is negative.`,
+                prompt: `A project starts in t = 0 with an investment of ${eur(capex)} in machinery (capitalized and depreciated from t = 1 on), non-capitalizable development costs of ${eur(dev)} (expensed immediately) and a build-up of net working capital of ${eur(nwc)}. The firm is profitable overall, so any tax effect arises immediately; the tax rate is ${pct(tau * 100)}. What is the **free cash flow in t = 0**? Give the answer as a signed number - an outflow is negative.`,
                 given: {
                     "CapEx (t = 0)": eur(capex),
                     "Development costs (expensed)": eur(dev),
@@ -3733,6 +3757,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`The expensed development costs reduce taxable income immediately, so their after-tax cost is $\text{Dev} \cdot (1 - \tau_C)$ = ${eur(dev * (1 - tau))}. CapEx and the NWC build-up are full cash outflows, but not tax-deductible in t = 0: $FCF_0 = -\text{Dev} \cdot (1 - \tau_C) - \text{CapEx} - \Delta NWC$ = −${eur(dev * (1 - tau))} − ${eur(capex)} − ${eur(nwc)} = ${eur(answer)}`,
+                hint: `Expensed costs lower taxable income at once, so only their after-tax amount leaves the firm. Capitalized investment and the working-capital build-up are full outflows and are not deductible in t = 0.`,
             };
         },
     },
@@ -3752,7 +3777,7 @@ export const financeQuestions: NumericQuestion[] = [
             const tau = rng.pick([0.25, 0.3, 0.35]);
             const answer = -pNew + salvage + tau * (book - salvage);
             return {
-                prompt: `${s.who} replaces its old ${s.item}. The new ${s.item} costs ${eur(pNew)}. The old ${s.item} has a remaining book value of ${eur(book)} but can only be sold for ${eur(salvage)} today - the difference is a tax-deductible book loss, and ${s.firm} is profitable, so the tax saving arrives immediately at the tax rate of ${pct(tau * 100)}. What is the **incremental cash flow in year 0** of the replacement? Give a signed number - a net outflow is negative.`,
+                prompt: `${s.who} replaces its old ${s.item}. The new ${s.item} costs ${eur(pNew)}. The old ${s.item} has a remaining book value of ${eur(book)} but can only be sold for ${eur(salvage)} today. ${cap(s.firm)} is profitable, so any tax effect arises immediately; the tax rate is ${pct(tau * 100)}. What is the **incremental cash flow in year 0** of the replacement? Give a signed number - a net outflow is negative.`,
                 given: {
                     [`Price new ${s.item}`]: eur(pNew),
                     [`Book value old ${s.item}`]: eur(book),
@@ -3761,6 +3786,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`Selling below book value realizes a loss of ${eur(book - salvage)}, worth $\tau_C \cdot (\text{book} - \text{sale})$ = ${eur(tau * (book - salvage))} in saved taxes: $CF_0 = -P_{new} + \text{Sale} + \tau_C \cdot (\text{Book} - \text{Sale})$ = −${eur(pNew)} + ${eur(salvage)} + ${eur(tau * (book - salvage))} = ${eur(answer)}`,
+                hint: `Selling an asset below its book value realizes a book loss that lowers taxable income, so the tax saved on that loss is a cash inflow on top of the sale proceeds, set against the price of the new machine.`,
             };
         },
     },
@@ -3842,7 +3868,7 @@ export const financeQuestions: NumericQuestion[] = [
             const nd = D - C;
             const answer = (E * betaE + nd * betaD) / (E + nd);
             return {
-                prompt: `A company has equity worth ${eur(E)} with an equity beta of ${n2(betaE)}, debt of ${eur(D)} with a debt beta of ${n2(betaD)}, and holds ${eur(C)} of excess cash (risk-free, so it offsets the debt). Using **net debt** as the measure of leverage, what is the company's **unlevered (asset) beta**?`,
+                prompt: `A company has equity worth ${eur(E)} with an equity beta of ${n2(betaE)}, debt of ${eur(D)} with a debt beta of ${n2(betaD)}, and holds ${eur(C)} of excess cash (risk-free). Using **net debt** as the measure of leverage, what is the company's **unlevered (asset) beta**?`,
                 given: {
                     "Equity E": eur(E),
                     "Debt D": eur(D),
@@ -3852,6 +3878,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`Net debt = $D - C$ = ${eur(nd)}, so the enterprise is worth $E + D - C$ = ${eur(E + nd)}. Then $\beta_U = \frac{E}{E + D - C} \cdot \beta_E + \frac{D - C}{E + D - C} \cdot \beta_D$ = ${n2(E / (E + nd))} · ${n2(betaE)} + ${n2(nd / (E + nd))} · ${n2(betaD)} = ${n2(answer)}${nd < 0 ? " - with more cash than debt the asset beta exceeds the equity beta, because the risk-free cash cushions the equity" : ""}`,
+                hint: `Risk-free excess cash offsets the debt, so leverage is measured by net debt and the asset beta is the value-weighted average of the equity and debt betas over equity plus net debt.`,
             };
         },
     },
@@ -3881,7 +3908,7 @@ export const financeQuestions: NumericQuestion[] = [
             const v2 = fcf2 / ((r2 - g2) / 100);
             const answer = (v1 * r1 + v2 * r2) / (v1 + v2);
             return {
-                prompt: `${s.group} runs two divisions. Division A has an asset beta of ${n2(beta1)} and expects a free cash flow of ${eur(fcf1)} next year, growing at ${pct(g1)} forever; division B has an asset beta of ${n2(beta2)}, an expected free cash flow of ${eur(fcf2)} and perpetual growth of ${pct(g2)}. The risk-free rate is ${pct(rf)} and the market risk premium ${pct(mrp)}. What is the **cost of capital of the group as a whole** - the value-weighted average of the divisional costs of capital?`,
+                prompt: `${s.group} runs two divisions. Division A has an asset beta of ${n2(beta1)} and expects a free cash flow of ${eur(fcf1)} next year, growing at ${pct(g1)} forever; division B has an asset beta of ${n2(beta2)}, an expected free cash flow of ${eur(fcf2)} and perpetual growth of ${pct(g2)}. The risk-free rate is ${pct(rf)} and the market risk premium ${pct(mrp)}. What is the **cost of capital of the group as a whole**?`,
                 given: {
                     "Division A": `β = ${n2(beta1)}, $FCF_1$ = ${eur(fcf1)}, g = ${pct(g1)}`,
                     "Division B": `β = ${n2(beta2)}, $FCF_1$ = ${eur(fcf2)}, g = ${pct(g2)}`,
@@ -3890,6 +3917,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`CAPM per division: $r_i = r_f + \beta_i \cdot MRP$ gives $r_A$ = ${pct(r1)} and $r_B$ = ${pct(r2)}. Value each division as a growing perpetuity $V_i = \frac{FCF_1}{r_i - g_i}$: $V_A$ = ${eur(v1)}, $V_B$ = ${eur(v2)}. The group's cost of capital is the value-weighted average: ${n2(v1 / (v1 + v2))} · ${pct(r1)} + ${n2(v2 / (v1 + v2))} · ${pct(r2)} = ${pct(answer)}`,
+                hint: `Each division carries its own risk, so price it with the CAPM and value it as a growing perpetuity. The group's cost of capital is then the average of the divisional rates, weighted by those values.`,
             };
         },
     },
@@ -3943,7 +3971,7 @@ export const financeQuestions: NumericQuestion[] = [
             const repay = D * (1 + rf / 100);
             const answer = ((ev1 - repay) / E - 1) * 100;
             return {
-                prompt: `A firm's assets are worth ${eur(V0)} today. In one year they will be worth either ${eur(Vg)} (strong economy) or ${eur(Vb)} (weak economy), each with probability 50 %. The firm borrows ${eur(D)} today at the risk-free rate of ${pct(rf)}; in a perfect capital market (Modigliani-Miller) the equity is then worth the asset value minus the debt. What is the **expected return of the levered equity**?`,
+                prompt: `A firm's assets are worth ${eur(V0)} today. In one year they will be worth either ${eur(Vg)} (strong economy) or ${eur(Vb)} (weak economy), each with probability 50 %. The firm borrows ${eur(D)} today at the risk-free rate of ${pct(rf)}. Assume a perfect capital market (Modigliani-Miller). What is the **expected return of the levered equity**?`,
                 given: {
                     "Asset value today $V_0$": eur(V0),
                     "Value strong / weak": `${eur(Vg)} / ${eur(Vb)} (50/50)`,
@@ -3952,6 +3980,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`MM: $E = V_0 - D$ = ${eur(E)}. Next year the debt holders receive $D \cdot (1 + r_f)$ = ${eur(repay)} in both states, so the equity holders expect $\mathbb{E}[V_1] - D(1 + r_f)$ = ${eur(ev1)} − ${eur(repay)} = ${eur(ev1 - repay)}. Expected return: ${eur(ev1 - repay)} / ${eur(E)} − 1 = ${pct(answer)} - above the unlevered expected return of ${pct((ev1 / V0 - 1) * 100)}, because leverage concentrates the asset risk on less equity.`,
+                hint: `In a perfect market the equity is worth the assets minus the debt. The debt is served with interest in both states, so the equity return is the expected residual value over today's equity value.`,
             };
         },
     },
@@ -3973,7 +4002,7 @@ export const financeQuestions: NumericQuestion[] = [
             const rD = rng.int(4, 9);
             const answer = (ebit - (rD / 100) * D) / (a - buyback);
             return {
-                prompt: `An all-equity firm with ${n(a)} shares outstanding at a price of ${eur(P)} expects an EBIT of ${eur(ebit)} next year. It now borrows ${eur(D)} at ${pct(rD)} and uses the proceeds to repurchase ${n(buyback)} shares at the current price. Ignore taxes. What is the **earnings per share after the recapitalization**?`,
+                prompt: `An all-equity firm with ${n(a)} shares outstanding at a price of ${eur(P)} expects an EBIT of ${eur(ebit)} next year. It now borrows ${eur(D)} at ${pct(rD)} and uses the proceeds to repurchase ${n(buyback)} shares at the current price. There are no taxes. What is the **earnings per share after the recapitalization**?`,
                 given: {
                     "Shares outstanding a": n(a),
                     "Share price": eur(P),
@@ -4029,10 +4058,11 @@ export const financeQuestions: NumericQuestion[] = [
             const tau = rng.pick([0.25, 0.3, 0.35]);
             const answer = tau * (rD / 100) * D;
             return {
-                prompt: `${s.firm} carries ${eur(D)} of debt at an interest rate of ${pct(rD)}. Its corporate tax rate is ${pct(tau * 100)}. How large is the **annual interest tax shield** - the taxes saved each year because interest is deductible?`,
+                prompt: `${s.firm} carries ${eur(D)} of debt at an interest rate of ${pct(rD)}. Its corporate tax rate is ${pct(tau * 100)}. How large is the **annual interest tax shield**?`,
                 given: { "Debt D": eur(D), "$r_D$": pct(rD), "$τ_C$": pct(tau * 100) },
                 answer,
                 explanation: String.raw`$ITS = \tau_C \cdot \text{Interest} = \tau_C \cdot r_D \cdot D$ - the interest bill is ${eur((rD / 100) * D)}, of which the tax office effectively pays ${pct(tau * 100)}: ${n(tau)} · ${eur((rD / 100) * D)} = ${eur(answer)}`,
+                hint: `Interest is deductible, so every year the tax office effectively refunds the tax rate times the interest bill.`,
             };
         },
     },
@@ -4060,7 +4090,7 @@ export const financeQuestions: NumericQuestion[] = [
             const vL = fcf / ((after - g) / 100);
             const answer = vL - vU;
             return {
-                prompt: `${s.firm} expects a free cash flow of ${eur(fcf)} next year, growing at ${pct(g)} p.a. forever. Its cost of equity is ${pct(rE)}, its cost of debt ${pct(rD)}, the tax rate is ${pct(tau * 100)}, and it permanently maintains a debt-to-equity ratio of ${n(de)}. What is the **value of its interest tax shield** - the difference between the levered firm value (discounted at the after-tax WACC) and the unlevered value (discounted at the pre-tax WACC)?`,
+                prompt: `${s.firm} expects a free cash flow of ${eur(fcf)} next year, growing at ${pct(g)} p.a. forever. Its cost of equity is ${pct(rE)}, its cost of debt ${pct(rD)}, the tax rate is ${pct(tau * 100)}, and it permanently maintains a debt-to-equity ratio of ${n(de)}. What is the **value of its interest tax shield**?`,
                 given: {
                     "$FCF_1$": eur(fcf),
                     "Growth g": pct(g),
@@ -4071,6 +4101,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`Weights: $\frac{E}{E+D}$ = ${n2(wE)}, $\frac{D}{E+D}$ = ${n2(wD)}. Pre-tax WACC $= w_E r_E + w_D r_D$ = ${pct(pre)} → $V_U = \frac{FCF_1}{r_{pre} - g}$ = ${eur(vU)}. After-tax WACC $= w_E r_E + w_D r_D (1 - \tau_C)$ = ${pct(after)} → $V_L$ = ${eur(vL)}. $PV(ITS) = V_L - V_U$ = ${eur(answer)}`,
+                hint: `Value the same cash flow twice as a growing perpetuity - once at the WACC without the tax saving on debt and once at the WACC with it - and take the difference.`,
             };
         },
     },
@@ -4087,10 +4118,11 @@ export const financeQuestions: NumericQuestion[] = [
             const rD = rng.int(4, 9);
             const answer = ebit / (rD / 100);
             return {
-                prompt: `A firm expects a stable EBIT of ${eur(ebit)} per year and pays ${pct(rD)} interest on its debt. From a pure tax-saving perspective, how much **debt can it carry at most** so that the interest payment still fully offsets taxable income - i.e. interest exactly equals EBIT?`,
+                prompt: `A firm expects a stable EBIT of ${eur(ebit)} per year and pays ${pct(rD)} interest on its debt. From a pure tax-saving perspective, how much **debt can it carry at most** so that its interest payment still fully offsets its taxable income?`,
                 given: { "Expected EBIT": eur(ebit), "$r_D$": pct(rD) },
                 answer,
                 explanation: String.raw`The interest bill $r_D \cdot D$ may not exceed EBIT, so $D^{max} = \frac{EBIT}{r_D}$ = ${eur(ebit)} / ${n(rD / 100)} = ${eur(answer)}. Beyond this level extra interest no longer saves taxes - it only raises default risk.`,
+                hint: `A tax shield only works while there is taxable income left to shield, so the debt is capped where the interest bill exactly uses up EBIT.`,
             };
         },
     },
@@ -4245,10 +4277,11 @@ export const financeQuestions: NumericQuestion[] = [
             const Cu = u * S - K;
             const answer = (S * (u - d)) / Cu;
             return {
-                prompt: `One-period binomial model: a share trades at ${eur(S)} and will be worth either ×${n2(u)} or ×${n2(d)} in one period. A European call on it has a strike of ${eur(K)} - it pays off only in the up state. To build a **risk-free hedge portfolio** of one share and m short calls, how many calls m must be written per share?`,
+                prompt: `One-period binomial model: a share trades at ${eur(S)} and will be worth either ×${n2(u)} or ×${n2(d)} in one period. A European call on it has a strike of ${eur(K)}. To build a **risk-free hedge portfolio** of one share and m short calls, how many calls m must be written per share?`,
                 given: { "$S_0$": eur(S), "u": n2(u), "d": n2(d), "Strike K": eur(K) },
                 answer,
                 explanation: String.raw`The call payoffs are $C_u = uS - K$ = ${eur(Cu)} and $C_d = 0$. The hedge portfolio must be worth the same in both states: $uS - m \cdot C_u = dS - m \cdot C_d$, so $m = \frac{uS - dS}{C_u - C_d}$ = ${eur(S * (u - d))} / ${eur(Cu)} = ${n2(answer)} calls per share.`,
+                hint: String.raw`A portfolio is risk-free when it is worth the same in the up and the down state, so set the share value less $m$ call payoffs equal across the two states and solve for $m$.`,
             };
         },
     },
