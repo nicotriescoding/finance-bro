@@ -168,7 +168,7 @@ const BUNDLES: Bundle[] = [
                     alt: "Gold-framed aviator glasses with yellow-tinted lenses",
                 },
                 blurb:
-                    "Gold frame, yellow lens, no prescription - they do not fix your vision, they fix everyone else's. Sit by the library window at golden hour, stare into the middle distance, say nothing for forty minutes. That is not studying, that is aura farming, and the harvest goes straight to Instagram.",
+                    "They do not fix your vision, they fix everyone else's. Sit by the library window at golden hour, stare into the middle distance, say nothing for forty minutes. That is not studying, that is aura farming, and the harvest goes straight to Instagram.",
                 href: amzProduct("B0FP4VVNTS"),
             },
         ],
@@ -239,7 +239,7 @@ const BUNDLES: Bundle[] = [
                     alt: "A pink matcha set: bowl, whisk and a heap of pink matcha powder, seen from above",
                 },
                 blurb:
-                    "Same whisk, same bowl, same price as the green set, except this one is pink and therefore a personality. Ships with the belief that you will do a ceremony every morning. You will do three. After that the bowl holds hair ties - beautifully.",
+                    "The green set is for drinking. The pink one is a personality. Ships with the belief that you will do a ceremony every morning. You will do three. After that the bowl holds hair ties - beautifully.",
                 href: amzProduct("B0F138W228"),
                 note: "Links the ZENS pink set - the one that is actually in stock on amazon.de.",
             },
@@ -270,7 +270,7 @@ const BUNDLES: Bundle[] = [
                     alt: "A brown pebbled faux-leather refillable notebook with a snap strap, closed",
                 },
                 blurb:
-                    "Refillable faux leather with a snap strap, 10 €, for the person who buys a new notebook every semester and writes in it until Wednesday. Page one: colour-coded plan. Page two: 'call Mum'. Pages three to 180: an untouched monument to who you were on October 1st.",
+                    "For the person who buys a new notebook every semester and writes in it until Wednesday. Page one: colour-coded plan. Page two: 'call Mum'. Pages three to 180: an untouched monument to who you were on October 1st.",
                 href: amzProduct("B0BZH3Z25R"),
             },
             {
@@ -280,7 +280,7 @@ const BUNDLES: Bundle[] = [
                     alt: "Slim rectangular sunglasses with a thin gold frame and yellow lenses",
                 },
                 blurb:
-                    "Thin gold rectangle, yellow lens, 17 €. Makes any lecture hall look like a 2004 music video and any group project look like it might get done. You will still not finish the slides - but in the reflection of the iPad you looked incredible not finishing them.",
+                    "Makes any lecture hall look like a 2004 music video and any group project look like it might get done. You will still not finish the slides - but in the reflection of the iPad you looked incredible not finishing them.",
                 href: amzProduct("B0CRNXH7GP"),
             },
         ],
@@ -457,7 +457,7 @@ const BUNDLES: Bundle[] = [
                     alt: "A black retro flip clock showing 2:00 AM",
                 },
                 blurb:
-                    "Retro flip digits, silent movement, no snooze. Every flap is one hour closer to the exam, and at night it flaps loud enough to count as a study partner. 2:00 AM is not a time - it is the chapter you are on, and it is three of fourteen.",
+                    "Every flap is one hour closer to the exam, and at night it flaps loud enough to count as a study partner. 2:00 AM is not a time - it is the chapter you are on, and it is three of fourteen.",
                 href: amzProduct("B0D6GH3P3M"),
             },
             {
@@ -527,7 +527,7 @@ const BUNDLES: Bundle[] = [
                     alt: "A brushed aluminium name plate engraved with 'SENIOR ANALYST (unpaid, self-appointed)'",
                 },
                 blurb:
-                    "Brushed aluminium, laser-engraved, self-adhesive, 6 €, three lines of your choosing. From the desk: 'SENIOR ANALYST (unpaid, self-appointed)'. 'DO NOT DISTURB - BUILDING IN PUBLIC'. 'FOUNDER. OF THIS DESK.' 'OPEN TO WORK (since 2023)'. 'CEO - Chief Excel Officer'. The workshop engraves whatever you type; the shared-flat fridge is the last door where the title still impresses anyone.",
+                    "Three lines, laser-engraved, no questions asked. From the desk: 'SENIOR ANALYST (unpaid, self-appointed)'. 'DO NOT DISTURB - BUILDING IN PUBLIC'. 'FOUNDER. OF THIS DESK.' 'OPEN TO WORK (since 2023)'. 'CEO - Chief Excel Officer'. The workshop engraves whatever you type; the shared-flat fridge is the last door where the title still impresses anyone.",
                 href: amzProduct("B0DHZL2QGP"),
                 note: "The listing is meant for Italian holiday-rental codes. The workshop does not read what it engraves.",
             },
@@ -538,7 +538,7 @@ const BUNDLES: Bundle[] = [
                     alt: "Black metal A and Z bookends holding a row of books on a desk",
                 },
                 blurb:
-                    "Black metal, heavy enough to hold up five books and one personal brand. Spines face the webcam, pages face nobody: A to Z, exactly the range you plan to read. Ninety percent of the value is the video-call background; the other ten is never having to open Atomic Habits again.",
+                    "Heavy enough to hold up five books and one personal brand. Spines face the webcam, pages face nobody: A to Z, exactly the range you plan to read. Ninety percent of the value is the video-call background; the other ten is never having to open Atomic Habits again.",
                 href: amzProduct("B0FWRJ6Y19"),
             },
         ],
@@ -656,7 +656,7 @@ const BUNDLES: Bundle[] = [
                     alt: "A crystal wine decanter with a splash of white wine in it",
                 },
                 blurb:
-                    "Crystal decanter, two glasses. Turns a 4.99 € Rioja into 'something I picked up in Bordeaux' - decanting removes the sediment and the price tag. Nobody at the party knows what it does; nobody asks a man holding a decanter either. Doubles as a very expensive Aperol pitcher at 1 AM.",
+                    "Turns a 4.99 € Rioja into 'something I picked up in Bordeaux' - decanting removes the sediment and the price tag. Nobody at the party knows what it does; nobody asks a man holding a decanter either. Doubles as a very expensive Aperol pitcher at 1 AM.",
                 href: amzProduct("B0DX24FYF8"),
             },
             {
@@ -666,7 +666,7 @@ const BUNDLES: Bundle[] = [
                     alt: "A crystal tumbler of whiskey with smoke rising from it",
                 },
                 blurb:
-                    "Torch, wood chips, two glasses. Lets you set a whiskey on fire in front of people who watched you fail Cost Accounting six hours ago. Six smoke flavours, and every one of them tastes like 'I have processed the grade'. The smoke alarm joins in around round two - that is the applause.",
+                    "Lets you set a whiskey on fire in front of people who watched you fail Cost Accounting six hours ago. Six smoke flavours, and every one of them tastes like 'I have processed the grade'. The smoke alarm joins in around round two - that is the applause.",
                 href: amzProduct("B0BJV68C17"),
             },
         ],
