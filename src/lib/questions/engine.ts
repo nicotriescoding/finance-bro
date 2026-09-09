@@ -20,6 +20,7 @@ export function buildInstance(question: Question, seed = randomSeed()): Question
             explanation: built.explanation ?? question.explanation,
             answer: built.answer,
             unit: question.unit,
+            hint: built.hint,
         };
     }
 

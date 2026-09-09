@@ -19,7 +19,7 @@ import { ALL_QUESTIONS } from "../src/content/questions";
 import { buildInstance } from "../src/lib/questions/engine";
 import { SUBJECT_MAP } from "../src/content/subjects";
 import { formatAnswer, isWithinTolerance, parseNumericInput } from "../src/lib/questions/grading";
-import { extractFormulaHint } from "../src/lib/hints";
+import { resolveHint } from "../src/lib/hints";
 
 const SEEDS = 200;
 const errors: string[] = [];
@@ -39,6 +39,40 @@ const nf = (min: number, max: number) =>
     new Intl.NumberFormat("en-US", { minimumFractionDigits: min, maximumFractionDigits: max });
 const answerForms = (a: number) =>
     [nf(2, 2).format(a), nf(0, 2).format(a)].filter((s) => s.length >= 4);
+
+/**
+ * Exam fidelity: the prompt asks, it never coaches. Definitions, the rule to
+ * apply and "remember that X does not count" belong in `hint` (revealed for
+ * −50%), so a prompt or `given` label that reads like a tutor is an ERROR.
+ * Keep this list to phrasings that are coaching by construction; the
+ * question-reviewer subagent catches the subtler cases.
+ */
+const COACHING: RegExp[] = [
+    /\b(recall|remember|note|hint)\b/i,
+    /\bis defined as\b/i,
+    /\b(do|does|did) not (enter|count|matter|affect)\b/i,
+    /\bdoes not enter the comparison\b/i,
+    /\b(is|are) (a )?sunk\b/i,
+    /\bsunk cost/i,
+    /\bignore\b/i,
+    /\b(is|are) (not )?relevant\b/i,
+    /\bthe formula\b/i,
+    /\bapply the\b/i,
+    /\b(i\.e\.|that is,)/i,
+];
+function checkCoaching(id: string, seed: number, inst: ReturnType<typeof buildInstance>) {
+    const texts = [
+        ["prompt", stripMath(inst.prompt)],
+        ...Object.keys(inst.given ?? {}).map((k) => [`given key "${k}"`, stripMath(k)] as const),
+    ] as const;
+    for (const [where, text] of texts) {
+        const hit = COACHING.find((re) => re.test(text));
+        if (hit) {
+            errors.push(`${id} (seed ${seed}): ${where} coaches the student (${hit.source}) - move it to \`hint\``);
+            return;
+        }
+    }
+}
 
 /**
  * Compile every `$...$` segment with KaTeX. Invalid TeX or an odd number of
@@ -126,14 +160,17 @@ for (const q of ALL_QUESTIONS) {
             errors.push(`${q.id} (seed ${seed}): NaN/Infinity/undefined leaked into text`);
             break;
         }
-        // 💡 The quiz's hint button reveals the first `$…$` segment of the
-        // worked solution (src/lib/hints.ts). It has to exist, and it must
-        // not contain the graded answer in any display format - otherwise the
-        // hint is a free correct answer at half price.
-        const hint = extractFormulaHint(inst.explanation);
+        // 💡 The quiz's hint button reveals the authored `hint` plus the
+        // first `$…$` segment of the worked solution (src/lib/hints.ts). It
+        // has to exist, and it must not contain the graded answer in any
+        // display format - otherwise the hint is a free correct answer at
+        // half price.
+        const hint = resolveHint(inst.hint, inst.explanation);
         if (seed === 1 && !hint) {
-            warnings.push(`${q.id}: no $…$ segment in the explanation - the hint button stays hidden`);
+            warnings.push(`${q.id}: no hint and no $…$ segment in the explanation - the hint button stays hidden`);
         }
+        if (seed === 1) checkCoaching(q.id, seed, inst);
+        if (inst.hint && seed <= 3) checkMath(q.id, "hint", inst.hint);
         if (hint) {
             const leak = answerForms(a).find((form) => hint.includes(form));
             if (leak) {

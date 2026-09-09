@@ -53,6 +53,14 @@ export type NumericQuestion = BaseQuestion & {
         given?: Record<string, string>;
         /** worked solution, may reference the drawn numbers */
         explanation?: string;
+        /**
+         * What the 💡 button reveals (payout −50%). Definitions, the rule to
+         * apply and method reminders live HERE, never in the prompt - the
+         * prompt reads like the exam. When omitted the hint is the first
+         * `$…$` segment of the explanation (the lecture formula); when given
+         * without any `$…$`, that formula is appended automatically.
+         */
+        hint?: string;
     };
 };
 
@@ -77,6 +85,8 @@ export type QuestionInstance = {
     /** numeric only */
     answer?: number;
     unit?: Unit;
+    /** numeric only - authored hint text, see NumericQuestion.build */
+    hint?: string;
     /** choice only - already shuffled, with the remapped correct indices */
     choices?: string[];
     correctIndices?: number[];
