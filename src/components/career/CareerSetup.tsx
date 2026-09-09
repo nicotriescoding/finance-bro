@@ -170,16 +170,23 @@ export default function CareerSetup() {
                                     type="button"
                                     key={s.id}
                                     onClick={() => pickCareer(s.id, locked)}
-                                    className={`flex items-start gap-2.5 rounded-xl bg-surface p-3 text-left transition ${
+                                    aria-disabled={locked}
+                                    className={`flex items-start gap-2.5 rounded-xl p-3 text-left transition ${
+                                        locked
+                                            ? "cursor-not-allowed border border-dashed border-hairline bg-chip text-muted-light"
+                                            : "bg-surface shadow-[0_1px_2px_rgba(15,33,55,.06)]"
+                                    } ${
                                         active
                                             ? "border-2 border-brand"
-                                            : "border border-hairline hover:border-[#c8d3de]"
-                                    } ${locked ? "opacity-55" : ""}`}
+                                            : locked
+                                              ? ""
+                                              : "border border-hairline hover:border-[#c8d3de] hover:shadow-[0_3px_8px_rgba(15,33,55,.1)]"
+                                    }`}
                                 >
-                                    <span className="text-[22px]">{s.emoji}</span>
+                                    <span className={`text-[22px] ${locked ? "grayscale opacity-60" : ""}`}>{s.emoji}</span>
                                     <span className="flex flex-col gap-0.5">
-                                        <span className="text-[15px] font-extrabold">{s.label}</span>
-                                        <span className="text-xs leading-[1.5] text-muted">
+                                        <span className={`text-[15px] font-extrabold ${locked ? "text-muted" : ""}`}>{s.label}</span>
+                                        <span className={`text-xs leading-[1.5] ${locked ? "text-muted-light" : "text-muted"}`}>
                                             {s.description}
                                         </span>
                                         {active ? (
@@ -201,9 +208,9 @@ export default function CareerSetup() {
                                                 </span>
                                             </>
                                         ) : (
-                                            <span className="text-[11px] font-extrabold text-muted">
+                                            <span className={`text-[11px] font-extrabold ${locked ? "text-muted-light" : "text-muted"}`}>
                                                 {locked
-                                                    ? "Locked · questions in the works"
+                                                    ? "🔒 Locked · questions in the works"
                                                     : `${count} questions`}
                                             </span>
                                         )}

@@ -49,9 +49,11 @@ export const metadata: Metadata = {
  *
  * Nine more cards on 2026-09-08 (Nico's picks, sorted by him): pink matcha
  * set, vintage notebook and the thin-frame yellow glasses went to BWL
- * Marie; the gold "Tony Stark" glasses, decanter and whiskey smoker to the
- * Starter Pack; the engraved name plate and the bookends to the LinkedIn
- * kit; the flip clock to the Doomsday Bunker. Photos are free-tier Adobe
+ * Marie (pink set right after the green one); the gold "Aurafarm" glasses
+ * to the Starter Pack; the decanter and whiskey smoker to the Party Kit;
+ * the engraved name plate and the bookends to the LinkedIn kit; the flip
+ * clock to the Doomsday Bunker, where the calculator moved too (2026-09-09,
+ * Nico: it fits exam week better than the Starter Pack). Photos are free-tier Adobe
  * Stock again, three of them edited locally because the free tier had no
  * match: the matcha photo is a green set hue-shifted to pink (Stock has
  * no pink set), the aviators had their black lenses tinted amber, and the
@@ -106,7 +108,7 @@ const BUNDLES: Bundle[] = [
         tint: ["#fff3d6", "#e9fbf1"],
         emoji: "💼",
         tagline: "Look the part long before you can price the part.",
-        chips: ["9 positions", "risk: daddy-backed", "yield: pure image"],
+        chips: ["6 positions", "risk: daddy-backed", "yield: pure image"],
         products: [
             {
                 name: "Birkin Bag",
@@ -160,45 +162,14 @@ const BUNDLES: Bundle[] = [
                 href: amzProduct("B0CN16Y9S5"),
             },
             {
-                name: "The Exam-Legal Calculator",
-                img: {
-                    src: "/products/calculator.jpg",
-                    alt: "A black scientific calculator on a white background",
-                },
-                blurb:
-                    "Casio FX-85MS - one of the two models the TUM finance chair explicitly allows. No SOLVE key, no graphs, no memory of your last attempt. The only Bloomberg terminal the exam hall lets in.",
-                href: amzProduct("B000120516"),
-                note: "Exam-legal per the chair's calculator policy; check your own course's rules before you rely on it.",
-            },
-            {
-                name: "The Tony Stark Glasses",
+                name: "Aurafarm Glasses, Yellow",
                 img: {
                     src: "/products/glasses-tony.jpg",
-                    alt: "Gold-framed aviator sunglasses with amber-tinted lenses",
+                    alt: "Gold-framed aviator glasses with yellow-tinted lenses",
                 },
                 blurb:
-                    "Gold frame, amber lens, 19 €. Worn indoors, in the lecture hall, in the elevator. Through these every chart is bullish and every reflection is a billionaire. Reactor not included - the ego is.",
+                    "Gold frame, yellow lens, no prescription - they do not fix your vision, they fix everyone else's. Sit by the library window at golden hour, stare into the middle distance, say nothing for forty minutes. That is not studying, that is aura farming, and the harvest goes straight to Instagram.",
                 href: amzProduct("B0FP4VVNTS"),
-            },
-            {
-                name: "The Decanter",
-                img: {
-                    src: "/products/decanter.jpg",
-                    alt: "A crystal wine decanter with a splash of white wine in it",
-                },
-                blurb:
-                    "Crystal, long-stemmed glasses included. Lets a 6 € Rioja breathe until it tastes like a story about Bordeaux. You do not know what decanting does either - that is the point. Nobody asks a man with a decanter.",
-                href: amzProduct("B0DX24FYF8"),
-            },
-            {
-                name: "Whiskey Smoker Kit",
-                img: {
-                    src: "/products/whiskey-smoker.jpg",
-                    alt: "A crystal tumbler of whiskey with smoke rising from it",
-                },
-                blurb:
-                    "Torch, wood chips, two glasses. Sets a single malt on fire in front of guests so nobody notices the flat. Six flavours of smoke, all of which taste like 'I closed a deal today'. The smoke alarm is your first investor.",
-                href: amzProduct("B0BJV68C17"),
             },
         ],
     },
@@ -262,6 +233,17 @@ const BUNDLES: Bundle[] = [
                 href: amzProduct("B09681S2X6"),
             },
             {
+                name: "Pink Matcha Set",
+                img: {
+                    src: "/products/matcha-pink.jpg",
+                    alt: "A pink matcha set: bowl, whisk and a heap of pink matcha powder, seen from above",
+                },
+                blurb:
+                    "Same whisk, same bowl, same price as the green set, except this one is pink and therefore a personality. Ships with the belief that you will do a ceremony every morning. You will do three. After that the bowl holds hair ties - beautifully.",
+                href: amzProduct("B0F138W228"),
+                note: "Links the ZENS pink set - the one that is actually in stock on amazon.de.",
+            },
+            {
                 name: "Emergency Champagne",
                 img: {
                     src: "/products/champagne.jpg",
@@ -282,24 +264,13 @@ const BUNDLES: Bundle[] = [
                 href: amzProduct("B0CJJNSM9V"),
             },
             {
-                name: "Pink Matcha Set",
-                img: {
-                    src: "/products/matcha-pink.jpg",
-                    alt: "A pink matcha set: bowl, whisk and a heap of pink matcha powder, seen from above",
-                },
-                blurb:
-                    "The green set was for drinking. The pink set is for the story. Bowl, whisk, whisk holder, strainer - every piece photographs, none of them gets used after week two. Matcha is not the product; the morning is.",
-                href: amzProduct("B0F138W228"),
-                note: "Links the ZENS pink set - the one that is actually in stock on amazon.de.",
-            },
-            {
                 name: "The Vintage Notebook",
                 img: {
                     src: "/products/notebook-vintage.jpg",
                     alt: "A brown pebbled faux-leather refillable notebook with a snap strap, closed",
                 },
                 blurb:
-                    "Refillable faux leather, snap strap, 10 €. Page one: a colour-coded semester plan. Page two: a to-do list. Pages three to 180: pristine, because the plan moved to Notion, then to the iPad, then to vibes.",
+                    "Refillable faux leather with a snap strap, 10 €, for the person who buys a new notebook every semester and writes in it until Wednesday. Page one: colour-coded plan. Page two: 'call Mum'. Pages three to 180: an untouched monument to who you were on October 1st.",
                 href: amzProduct("B0BZH3Z25R"),
             },
             {
@@ -309,7 +280,7 @@ const BUNDLES: Bundle[] = [
                     alt: "Slim rectangular sunglasses with a thin gold frame and yellow lenses",
                 },
                 blurb:
-                    "Slim rectangle, thin gold frame, yellow lens. Zero UV protection needed, the library has no windows. Makes every lecture look like a 2004 music video and every group project like it might actually happen.",
+                    "Thin gold rectangle, yellow lens, 17 €. Makes any lecture hall look like a 2004 music video and any group project look like it might get done. You will still not finish the slides - but in the reflection of the iPad you looked incredible not finishing them.",
                 href: amzProduct("B0CRNXH7GP"),
             },
         ],
@@ -437,7 +408,7 @@ const BUNDLES: Bundle[] = [
         tint: ["#ffe8d6", "#fff3d6"],
         emoji: "🧟",
         tagline: "Fourteen chapters, four days, one plan: none.",
-        chips: ["5 positions", "risk: caffeine-adjusted", "maturity: Thursday, 8 AM"],
+        chips: ["6 positions", "risk: caffeine-adjusted", "maturity: Thursday, 8 AM"],
         products: [
             {
                 name: "Post-Exam Coma Mask",
@@ -486,8 +457,19 @@ const BUNDLES: Bundle[] = [
                     alt: "A black retro flip clock showing 2:00 AM",
                 },
                 blurb:
-                    "Retro flip digits, silent movement, no snooze. Every flap is one fewer hour until the exam, and it flaps loud enough to hear over the panic. 2:00 AM is not a time, it is a chapter you have not started.",
+                    "Retro flip digits, silent movement, no snooze. Every flap is one hour closer to the exam, and at night it flaps loud enough to count as a study partner. 2:00 AM is not a time - it is the chapter you are on, and it is three of fourteen.",
                 href: amzProduct("B0D6GH3P3M"),
+            },
+            {
+                name: "The Exam-Legal Calculator",
+                img: {
+                    src: "/products/calculator.jpg",
+                    alt: "A black scientific calculator on a white background",
+                },
+                blurb:
+                    "Casio FX-85MS - one of the two models the TUM finance chair explicitly allows. No SOLVE key, no graphs, no memory of your last attempt. The only Bloomberg terminal the exam hall lets in.",
+                href: amzProduct("B000120516"),
+                note: "Exam-legal per the chair's calculator policy; check your own course's rules before you rely on it.",
             },
         ],
     },
@@ -545,7 +527,7 @@ const BUNDLES: Bundle[] = [
                     alt: "A brushed aluminium name plate engraved with 'SENIOR ANALYST (unpaid, self-appointed)'",
                 },
                 blurb:
-                    "Brushed aluminium, laser-engraved, self-adhesive, 6 €. Up to three lines of your own choosing. Our suggestions: 'SENIOR ANALYST (unpaid, self-appointed)'. 'DO NOT DISTURB - BUILDING IN PUBLIC'. 'FOUNDER. OF THIS DESK.' 'OPEN TO WORK (since 2023)'. 'CEO - Chief Excel Officer'. Sticks to a dorm door, a library carrel or the fridge you share with four flatmates.",
+                    "Brushed aluminium, laser-engraved, self-adhesive, 6 €, three lines of your choosing. From the desk: 'SENIOR ANALYST (unpaid, self-appointed)'. 'DO NOT DISTURB - BUILDING IN PUBLIC'. 'FOUNDER. OF THIS DESK.' 'OPEN TO WORK (since 2023)'. 'CEO - Chief Excel Officer'. The workshop engraves whatever you type; the shared-flat fridge is the last door where the title still impresses anyone.",
                 href: amzProduct("B0DHZL2QGP"),
                 note: "The listing is meant for Italian holiday-rental codes. The workshop does not read what it engraves.",
             },
@@ -556,7 +538,7 @@ const BUNDLES: Bundle[] = [
                     alt: "Black metal A and Z bookends holding a row of books on a desk",
                 },
                 blurb:
-                    "Black metal, heavy enough to hold up five books and one personal brand. The bookends face the camera; the spines face the camera; the pages face nobody. A to Z, exactly the range you plan to read.",
+                    "Black metal, heavy enough to hold up five books and one personal brand. Spines face the webcam, pages face nobody: A to Z, exactly the range you plan to read. Ninety percent of the value is the video-call background; the other ten is never having to open Atomic Habits again.",
                 href: amzProduct("B0FWRJ6Y19"),
             },
         ],
@@ -615,7 +597,7 @@ const BUNDLES: Bundle[] = [
         tint: ["#ffe1d0", "#fff0b8"],
         emoji: "🍾",
         tagline: "Grades are lagging indicators. The party is priced in tonight.",
-        chips: ["5 positions", "risk: blackout", "liquidity: 5 liters"],
+        chips: ["7 positions", "risk: blackout", "liquidity: 5 liters"],
         products: [
             {
                 name: "The Aperol Tower",
@@ -666,6 +648,26 @@ const BUNDLES: Bundle[] = [
                 blurb:
                     "JBL PartyBox: loud enough to get a noise complaint filed before the first tower is empty. Pairs with three phones and one very unfortunate playlist decision at 2 AM.",
                 href: amzProduct("B08HBG3M7M"),
+            },
+            {
+                name: "The Decanter",
+                img: {
+                    src: "/products/decanter.jpg",
+                    alt: "A crystal wine decanter with a splash of white wine in it",
+                },
+                blurb:
+                    "Crystal decanter, two glasses. Turns a 4.99 € Rioja into 'something I picked up in Bordeaux' - decanting removes the sediment and the price tag. Nobody at the party knows what it does; nobody asks a man holding a decanter either. Doubles as a very expensive Aperol pitcher at 1 AM.",
+                href: amzProduct("B0DX24FYF8"),
+            },
+            {
+                name: "Whiskey Smoker Kit",
+                img: {
+                    src: "/products/whiskey-smoker.jpg",
+                    alt: "A crystal tumbler of whiskey with smoke rising from it",
+                },
+                blurb:
+                    "Torch, wood chips, two glasses. Lets you set a whiskey on fire in front of people who watched you fail Cost Accounting six hours ago. Six smoke flavours, and every one of them tastes like 'I have processed the grade'. The smoke alarm joins in around round two - that is the applause.",
+                href: amzProduct("B0BJV68C17"),
             },
         ],
     },

@@ -44,8 +44,11 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Owed on Nico's machine (real Chrome, dark mode)
 
-- `/products`: the nine new cards (Starter Pack 9, BWL Marie 10, Doomsday
-  5, LinkedIn kit 6) - seen only in headless dark-mode Chromium, where the
+- `/career`: locked careers are now grey dashed cards with a lock, open
+  ones white with a shadow (2026-09-09, Nico could not tell them apart in
+  real Chrome) - check the difference is obvious on his screen.
+- `/products`: the nine new cards (Starter Pack 6, BWL Marie 10, Doomsday
+  6 incl. the calculator, LinkedIn kit 6, Party Kit 7) - seen only in headless dark-mode Chromium, where the
   lazy images below the fold had not loaded when the shot was taken. Look
   at the engraved-plate text size and the pink matcha tint in particular.
 - A quiz run through Econ 1 / Cost Accounting: read a few rotated
@@ -185,7 +188,12 @@ word)` helper in `_helpers.ts` would clear them all. (2) Bro Shop: Pink
 Matcha Set, Vintage Notebook, thin-frame yellow glasses -> BWL Marie;
 Tony Stark glasses, Decanter, Whiskey Smoker Kit -> Starter Pack;
 Engraved Name Plate (five engraving suggestions in the blurb) + Bookends
--> LinkedIn kit; Flip Clock -> Doomsday Bunker. All amazon.de ASINs
+-> LinkedIn kit; Flip Clock -> Doomsday Bunker. Re-sorted 2026-09-09 per
+Nico: decanter + smoker -> Party Kit, calculator -> Doomsday, Tony Stark
+glasses renamed "Aurafarm Glasses, Yellow", pink matcha right after the
+green one, all nine blurbs rewritten for joke quality. Note: the question
+COUNT on /career stays 447 - the variety lives inside each question, not
+in new ids (Nico asked why the number did not move). All amazon.de ASINs
 checked live in Chrome; Nico's pink matcha (B0H1WCY4GF) is out of stock
 on .de, so the card links the ZENS pink set (B0F138W228, 4.8) - swap
 back if it restocks. Photos: free-tier Adobe Stock (162932600,
