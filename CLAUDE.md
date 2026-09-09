@@ -37,7 +37,7 @@ No em dashes in shipped text - write `-`. Brand is spelled `FinanceBro`.
 | --- | --- |
 | `npm run dev` | dev server on :3000 |
 | `npm run check` | **the gate** - typecheck, question verification, build (with a dummy worker URL so the leaderboard's enabled branch is smoked), route smoke test |
-| `npm run verify` | builds every question against 200 seeds; fails on NaN, Infinity, unfilled placeholders, unknown topics, duplicate ids, invalid KaTeX, hint leaks, grading round-trip errors |
+| `npm run verify` | builds every question against 200 seeds; fails on NaN, Infinity, unfilled placeholders, unknown topics, duplicate ids, invalid KaTeX, hint leaks, coaching phrases in prompts (definitions/rules belong in `hint`), grading round-trip errors |
 | `npm run smoke` | boots the production build and asserts the routes and copy that once broke (needs `build` first) |
 | `npm run lint` | eslint (not part of the gate) |
 

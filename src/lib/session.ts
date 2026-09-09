@@ -55,6 +55,62 @@ const QUESTION_BY_ID: Map<string, Question> = new Map(
     ALL_QUESTIONS.map((q) => [q.id, q])
 );
 
+// ---- variant memory ---------------------------------------------------------
+// Most questions rotate a seed-picked story line. Pure chance repeats the same
+// line often enough that a run "always starts with the same variant", so the
+// last seed dealt per question (and the id that opened the last run) are
+// remembered in this browser and the next deal steers away from them.
+const VARIANT_KEY = "fb_variants_v1";
+
+type VariantMemory = { firstId?: string; seeds: Record<string, number> };
+
+function loadVariants(): VariantMemory {
+    if (typeof window === "undefined") return { seeds: {} };
+    try {
+        const raw = localStorage.getItem(VARIANT_KEY);
+        const v = raw ? (JSON.parse(raw) as VariantMemory) : null;
+        return v && typeof v === "object" && v.seeds ? v : { seeds: {} };
+    } catch {
+        return { seeds: {} };
+    }
+}
+
+function saveVariants(v: VariantMemory): void {
+    if (typeof window === "undefined") return;
+    try {
+        localStorage.setItem(VARIANT_KEY, JSON.stringify(v));
+    } catch {
+        /* private mode etc. */
+    }
+}
+
+/** The part of a built prompt that identifies its story line. */
+const opening = (q: Question, seed: number) => buildInstance(q, seed).prompt.slice(0, 48);
+
+/**
+ * A fresh seed for `question` whose prompt opens differently from the one
+ * built with `avoidSeed`. Pure-formula questions have one opening for every
+ * seed, so the search gives up after a few tries and any seed will do.
+ */
+export function variantSeed(question: Question, avoidSeed?: number, tries = 8): number {
+    if (avoidSeed === undefined) return randomSeed();
+    let avoid: string;
+    try {
+        avoid = opening(question, avoidSeed);
+    } catch {
+        return randomSeed();
+    }
+    let seed = randomSeed();
+    for (let i = 0; i < tries; i++, seed = randomSeed()) {
+        try {
+            if (opening(question, seed) !== avoid) return seed;
+        } catch {
+            return seed;
+        }
+    }
+    return seed;
+}
+
 export function buildUnlimitedSession(
     subjectId: SubjectId,
     topicIds: string[]
@@ -62,13 +118,22 @@ export function buildUnlimitedSession(
     const pool = questionsFor(subjectId, topicIds);
     if (pool.length === 0) return null;
     const rng = createRng(randomSeed());
-    const dealt = rng.shuffle(pool);
+    let dealt = rng.shuffle(pool);
+    const memory = loadVariants();
+    // never open two runs in a row with the same posting
+    if (dealt.length > 1 && dealt[0].id === memory.firstId) {
+        dealt = [...dealt.slice(1), dealt[0]];
+    }
+    const queue = dealt.map((q) => ({ id: q.id, seed: variantSeed(q, memory.seeds[q.id]) }));
+    for (const { id, seed } of queue) memory.seeds[id] = seed;
+    memory.firstId = dealt[0].id;
+    saveVariants(memory);
     return {
         v: 1,
         subjectId,
         topicIds,
         order: dealt.map((q) => q.id),
-        queue: dealt.map((q) => ({ id: q.id, seed: rng.int(1, 2_147_483_646) })),
+        queue,
         settled: [],
         missed: [],
         skipped: [],
@@ -154,9 +219,12 @@ export function applyAnswer(
     };
 
     const rest = s.queue.slice(1);
+    // a write-off comes back with new numbers AND, where the question has
+    // story lines, a different one than the student just saw
+    const requeue = question ? variantSeed(question, head.seed) : randomSeed();
     return {
         ...s,
-        queue: correct ? rest : [...rest, { id: head.id, seed: randomSeed() }],
+        queue: correct ? rest : [...rest, { id: head.id, seed: requeue }],
         settled: correct && !s.settled.includes(head.id) ? [...s.settled, head.id] : s.settled,
         missed: !correct && !s.missed.includes(head.id) ? [...s.missed, head.id] : s.missed,
         log: [...s.log, entry],

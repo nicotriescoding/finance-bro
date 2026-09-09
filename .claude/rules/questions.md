@@ -65,10 +65,30 @@ never do. Numeric turns one exam task into unlimited practice:
             given: { "Payment C": eur(C), "Interest rate r": pct(r) },
             answer: C * pf,
             explanation: String.raw`$PV = C \cdot \frac{q^N - 1}{q^N (q - 1)}$ with $q = ${n(q)}$: the factor is ${n2(pf)}, so PV = ${eur(C)} · ${n2(pf)} = ${eur(C * pf)}`,
+            hint: String.raw`An annuity in arrears is worth the payment times the annuity present-value factor: $PV = C \cdot \frac{q^N - 1}{q^N (q - 1)}$, $q = 1 + i$.`,
         };
     },
 }
 ```
+
+## Prompt vs. hint - the exam asks, it never coaches
+
+The prompt reads like the exam sheet: scenario, data, the assumptions the exam
+would state (no taxes, perfect competition, "use the approximation"), sign
+and format conventions, and the question. **Definitions, decision rules,
+method steps and formulas never go in the prompt or in a `given` label** -
+"a Pareto improvement is …", "the ticket is already paid and does not enter
+the comparison", "(sunk)", "use MR = MC", "i.e. the difference between …".
+Recognising the concept IS the test.
+
+That knowledge goes into `hint` on the object `build` returns (the 💡
+button, payout −50%): 1-3 sentences, definition/rule plus the lecture
+formula in `$…$`. Without a `$…$` of its own the hint gets the first `$…$`
+segment of the explanation appended automatically (`src/lib/hints.ts`); a
+question without `hint` shows that formula alone. A hint must never contain
+the answer. `npm run verify` fails on coaching phrases in prompts and
+`given` keys (`COACHING` in `scripts/verify-questions.ts`) and on hints
+that leak the answer.
 
 ## Formulas - KaTeX, lecture notation
 

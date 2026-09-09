@@ -59,6 +59,13 @@ numeric, skip it and list it as skipped in the report. Write every formula as
 a `$…$` KaTeX segment in lecture notation (`String.raw` for backslashes) - the
 conventions are in `.claude/rules/questions.md`.
 
+Keep the prompt as hard as the exam: the exam states the situation and the
+data, never the definition or the rule the task tests. Whatever the student
+must *know* to solve it (what a Pareto improvement is, that money already
+spent does not enter the comparison, which formula applies) goes into the
+returned `hint`, revealed only behind the 💡 button - see "Prompt vs. hint"
+in the rules file.
+
 ## 4. Verify
 
 ```bash
