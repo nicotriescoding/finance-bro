@@ -2208,7 +2208,7 @@ export const financeQuestions: NumericQuestion[] = [
                     },
                     answer,
                     explanation: String.raw`Without taxes $r_U$ is the value-weighted average return the assets must earn: $r_U = \frac{E}{E+D} \cdot r_E + \frac{D}{E+D} \cdot r_D$ = ${n2(wE)} · ${pct(rE)} + ${n2(wD)} · ${pct(rD)} = ${pct(answer)}`,
-                    hint: `Without taxes the unlevered cost of capital is the return the assets as a whole have to earn - the value-weighted average of the returns demanded by equity and debt holders.`,
+                    hint: String.raw`Without taxes the unlevered cost of capital is the return the assets as a whole have to earn - the value-weighted average of the returns demanded by equity and debt holders: $r_U = \frac{E}{E+D} \cdot r_E + \frac{D}{E+D} \cdot r_D$.`,
                 };
             },
         },
@@ -3878,7 +3878,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`Net debt = $D - C$ = ${eur(nd)}, so the enterprise is worth $E + D - C$ = ${eur(E + nd)}. Then $\beta_U = \frac{E}{E + D - C} \cdot \beta_E + \frac{D - C}{E + D - C} \cdot \beta_D$ = ${n2(E / (E + nd))} · ${n2(betaE)} + ${n2(nd / (E + nd))} · ${n2(betaD)} = ${n2(answer)}${nd < 0 ? " - with more cash than debt the asset beta exceeds the equity beta, because the risk-free cash cushions the equity" : ""}`,
-                hint: `Risk-free excess cash offsets the debt, so leverage is measured by net debt and the asset beta is the value-weighted average of the equity and debt betas over equity plus net debt.`,
+                hint: String.raw`Risk-free excess cash offsets the debt, so leverage is measured by net debt $D - C$ and the asset beta is the value-weighted average over equity plus net debt: $\beta_U = \frac{E}{E + D - C} \cdot \beta_E + \frac{D - C}{E + D - C} \cdot \beta_D$.`,
             };
         },
     },
@@ -4101,7 +4101,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`Weights: $\frac{E}{E+D}$ = ${n2(wE)}, $\frac{D}{E+D}$ = ${n2(wD)}. Pre-tax WACC $= w_E r_E + w_D r_D$ = ${pct(pre)} → $V_U = \frac{FCF_1}{r_{pre} - g}$ = ${eur(vU)}. After-tax WACC $= w_E r_E + w_D r_D (1 - \tau_C)$ = ${pct(after)} → $V_L$ = ${eur(vL)}. $PV(ITS) = V_L - V_U$ = ${eur(answer)}`,
-                hint: `Value the same cash flow twice as a growing perpetuity - once at the WACC without the tax saving on debt and once at the WACC with it - and take the difference.`,
+                hint: String.raw`Value the same cash flow twice as a growing perpetuity $V = \frac{FCF_1}{r - g}$ - once at the pre-tax WACC $w_E r_E + w_D r_D$ and once at the after-tax WACC $w_E r_E + w_D r_D (1 - \tau_C)$ - and take the difference.`,
             };
         },
     },
@@ -4122,7 +4122,7 @@ export const financeQuestions: NumericQuestion[] = [
                 given: { "Expected EBIT": eur(ebit), "$r_D$": pct(rD) },
                 answer,
                 explanation: String.raw`The interest bill $r_D \cdot D$ may not exceed EBIT, so $D^{max} = \frac{EBIT}{r_D}$ = ${eur(ebit)} / ${n(rD / 100)} = ${eur(answer)}. Beyond this level extra interest no longer saves taxes - it only raises default risk.`,
-                hint: `A tax shield only works while there is taxable income left to shield, so the debt is capped where the interest bill exactly uses up EBIT.`,
+                hint: String.raw`A tax shield only works while there is taxable income left to shield, so the debt is capped where the interest bill exactly uses up EBIT: $r_D \cdot D^{max} = EBIT$.`,
             };
         },
     },

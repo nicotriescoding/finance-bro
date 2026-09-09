@@ -2,6 +2,9 @@ import type { Question } from "@/lib/questions/types";
 import type { Rng } from "@/lib/questions/rng";
 import { eur, n, n2, pct } from "./_helpers";
 
+/** "1 worker" / "3 workers" - counts that can hit 1. */
+const plural = (k: number, one: string, many = `${one}s`) => `${n(k)} ${k === 1 ? one : many}`;
+
 /**
  * Economics 2 - Macroeconomics.
  *
@@ -649,10 +652,10 @@ export const econ2Questions: Question[] = [
             const costBNew = eB * pLow + lB * w;
             const answer = costBNew - costANew;
             return {
-                prompt: `${s.firm} can ${s.batch} with technique **A** (${n(eA)} units of ${s.energy}, ${n(lA)} worker-days) or technique **B** (${n(eB)} units of ${s.energy}, ${n(lB)} worker-days). A worker-day costs ${eur(w)}. At the old ${s.energy} price of ${eur(pHigh)} per unit the firm correctly chose technique B. The ${s.energy} price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A?`,
+                prompt: `${s.firm} can ${s.batch} with technique **A** (${n(eA)} units of ${s.energy}, ${plural(lA, "worker-day")}) or technique **B** (${n(eB)} units of ${s.energy}, ${plural(lB, "worker-day")}). A worker-day costs ${eur(w)}. At the old ${s.energy} price of ${eur(pHigh)} per unit the firm correctly chose technique B. The ${s.energy} price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A?`,
                 given: {
-                    "Technique A": `${n(eA)} ${s.energy} + ${n(lA)} worker-days`,
-                    "Technique B": `${n(eB)} ${s.energy} + ${n(lB)} worker-days`,
+                    "Technique A": `${n(eA)} ${s.energy} + ${plural(lA, "worker-day")}`,
+                    "Technique B": `${n(eB)} ${s.energy} + ${plural(lB, "worker-day")}`,
                     "Wage per worker-day": eur(w),
                     [`Old ${s.energy} price`]: eur(pHigh),
                     [`New ${s.energy} price`]: eur(pLow),
@@ -2659,10 +2662,10 @@ export const econ2Questions: Question[] = [
             const q = 50 * rng.int(2, 10);
             const answer = (cB - cA) * q;
             return {
-                prompt: `All ${s.firms} in ${s.town} ${s.verb} with technique **B** (${n(LB)} workers, ${n(RB)} MWh per batch). One ${s.firm} pioneers the energy-intensive technique **A** (${n(LA)} workers, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the ${s.firm} produces ${n(q)} batches per year. What **annual innovation rent** does the first mover earn?`,
+                prompt: `All ${s.firms} in ${s.town} ${s.verb} with technique **B** (${plural(LB, "worker")}, ${n(RB)} MWh per batch). One ${s.firm} pioneers the energy-intensive technique **A** (${plural(LA, "worker")}, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the ${s.firm} produces ${n(q)} batches per year. What **annual innovation rent** does the first mover earn?`,
                 given: {
-                    "Technique A": `${n(LA)} workers + ${n(RA)} MWh`,
-                    "Technique B": `${n(LB)} workers + ${n(RB)} MWh`,
+                    "Technique A": `${plural(LA, "worker")} + ${n(RA)} MWh`,
+                    "Technique B": `${plural(LB, "worker")} + ${n(RB)} MWh`,
                     "Wage w": eur(w),
                     "Energy price p": eur(p),
                     "Batches per year": n(q),

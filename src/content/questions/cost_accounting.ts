@@ -716,7 +716,7 @@ export const costAccountingQuestions: Question[] = [
             const t = rng.int(2, N);
             const answer = (N - t + 1) * dStep;
             return {
-                prompt: `${sc.asset} is bought for ${eur(A)} and depreciated over ${N} years to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation. What is the depreciation amount in year ${t}?`,
+                prompt: `${sc.asset} is bought for ${eur(A)} and depreciated over ${N} years to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation, the final year's amount equal to the yearly decrease. What is the depreciation amount in year ${t}?`,
                 given: { "Acquisition cost": eur(A), "Residual value": eur(R), "Useful life": `${N} years`, "Year": String(t) },
                 answer,
                 explanation: String.raw`With arithmetic-degressive depreciation the yearly amounts are $N \cdot d, (N-1) \cdot d, \ldots, d$, so their sum is $d \cdot \frac{N (N+1)}{2} = A_0 - RV$. Here $d$ = (${eur(A)} − ${eur(R)}) / ${n((N * (N + 1)) / 2)} = ${eur(dStep)}. Year ${t} depreciates $(N - t + 1) \cdot d$ = ${n(N - t + 1)} × ${eur(dStep)} = ${eur(answer)}.`,
@@ -1888,7 +1888,7 @@ export const costAccountingQuestions: Question[] = [
             const R = rng.int(1, 5) * 10000;
             const A = (d * N * (N + 1)) / 2 + R;
             return {
-                prompt: `${sc.firm}'s ${sc.asset3} costs ${eur(A)} and is depreciated over ${N} years down to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation. By what amount does the yearly depreciation **decrease from one year to the next**?`,
+                prompt: `${sc.firm}'s ${sc.asset3} costs ${eur(A)} and is depreciated over ${N} years down to a residual value of ${eur(R)} using **arithmetic-degressive** depreciation, the final year's amount equal to the yearly decrease. By what amount does the yearly depreciation **decrease from one year to the next**?`,
                 given: { "Acquisition cost": eur(A), "Residual value": eur(R), "Useful life": `${N} years` },
                 answer: d,
                 explanation: String.raw`With yearly amounts $N \cdot d, (N-1) \cdot d, \ldots, d$ the total is $d \cdot \frac{N(N+1)}{2} = A_0 - RV$, so $d = \frac{A_0 - RV}{N(N+1)/2}$ = (${eur(A)} − ${eur(R)}) / ${n((N * (N + 1)) / 2)} = ${eur(d)} - the step between two consecutive years and at the same time the final year's amount.`,
