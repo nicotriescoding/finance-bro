@@ -3786,13 +3786,14 @@ export const econ1Questions: Question[] = [
             const answer = k * (1 + c * d); // = (A - q^M) / d
             const costTex = c === 2 ? String.raw`q^2` : String.raw`${n(c / 2)}\, q^2`;
             return {
-                prompt: String.raw`${s.firm} faces the demand $q = ${n(A)} - ${co(d)}p$ for ${s.units} per day, where $p$ is the ${s.price} in euros. Its cost function is $C(q) = ${costTex} + ${n(F)}$, so marginal cost is $MC = ${co(c)}q$. Which ${s.price} does the profit-maximizing monopolist charge?`,
+                prompt: String.raw`${s.firm} faces the demand $q = ${n(A)} - ${co(d)}p$ for ${s.units} per day, where $p$ is the ${s.price} in euros. Its cost function is $C(q) = ${costTex} + ${n(F)}$. Which ${s.price} does the profit-maximizing monopolist charge?`,
                 given: {
                     Demand: String.raw`$q = ${n(A)} - ${co(d)}p$`,
                     "Cost function": String.raw`$C(q) = ${costTex} + ${n(F)}$`,
                 },
                 answer,
                 explanation: String.raw`Invert demand to $p = \frac{A - q}{d}$, so revenue is $\frac{(A - q) q}{d}$ and $MR = \frac{A - 2q}{d}$. Setting $MR = MC = c\, q$ gives $q^M = \frac{A}{2 + c d}$. Here $q^M = \frac{${n(A)}}{${n(2 + c * d)}}$ = ${n(qM)} ${s.unitsShort}. The ${s.price} comes from the demand curve, not from MR: $p^M = \frac{${n(A)} - ${n(qM)}}{${n(d)}}$ = ${eur(answer)}. The fixed cost of ${eur(F)} shifts profit but never the optimal quantity.`,
+                hint: String.raw`Marginal cost is the derivative of the cost function, $MC = C'(q)$; the fixed part drops out. A monopolist picks the quantity where $MR = MC$ (invert demand first, $MR$ has twice the slope of inverse demand) and reads the price off the demand curve.`,
             };
         },
     },
@@ -3817,13 +3818,14 @@ export const econ1Questions: Question[] = [
             const answer = 0.5 * (choke - pM) * qM; // = d k^2 / 2
             const costTex = c === 2 ? String.raw`q^2` : String.raw`${n(c / 2)}\, q^2`;
             return {
-                prompt: String.raw`${s.firm} sells $q = ${n(A)} - ${co(d)}p$ ${s.units} per day at a price of $p$ euros ${s.per}, and its cost function is $C(q) = ${costTex} + ${n(F)}$ with $MC = ${co(c)}q$. It sets one uniform profit-maximizing price. How large is the consumer surplus at that price?`,
+                prompt: String.raw`${s.firm} sells $q = ${n(A)} - ${co(d)}p$ ${s.units} per day at a price of $p$ euros ${s.per}, and its cost function is $C(q) = ${costTex} + ${n(F)}$. It sets one uniform profit-maximizing price. How large is the consumer surplus at that price?`,
                 given: {
                     Demand: String.raw`$q = ${n(A)} - ${co(d)}p$`,
                     "Cost function": String.raw`$C(q) = ${costTex} + ${n(F)}$`,
                 },
                 answer,
                 explanation: String.raw`$CS = \frac{1}{2} \left( \frac{A}{d} - p^M \right) q^M$, so first solve $MR = MC$: with $p = \frac{A - q}{d}$ we get $MR = \frac{A - 2q}{d} = c\, q$, hence $q^M = \frac{A}{2 + c d}$. Here $q^M = \frac{${n(A)}}{${n(2 + c * d)}}$ = ${n(qM)} ${s.units} and $p^M = \frac{${n(A)} - ${n(qM)}}{${n(d)}}$ = ${eur(pM)}. The choke price is $\frac{${n(A)}}{${n(d)}}$ = ${eur(choke)}, so CS = ½ · (${n(choke)} − ${n(pM)}) · ${n(qM)} = ${eur(answer)}.`,
+                hint: String.raw`Marginal cost is $MC = C'(q)$. Find the monopoly quantity from $MR = MC$ and the price from the demand curve; consumer surplus is the triangle between the demand curve and that price, $CS = \frac{1}{2} (p_{max} - p^M) q^M$.`,
             };
         },
     },
@@ -3848,13 +3850,14 @@ export const econ1Questions: Question[] = [
             const answer = pM * qM - cost;
             const costTex = c === 2 ? String.raw`q^2` : String.raw`${n(c / 2)}\, q^2`;
             return {
-                prompt: String.raw`${s.firm} faces the demand $q = ${n(A)} - ${co(d)}p$ ${s.units} per day, with $p$ in euros per ${s.one}. Its cost function is $C(q) = ${costTex} + ${n(F)}$, so $MC = ${co(c)}q$. What profit does it make per day at its optimal uniform price?`,
+                prompt: String.raw`${s.firm} faces the demand $q = ${n(A)} - ${co(d)}p$ ${s.units} per day, with $p$ in euros per ${s.one}. Its cost function is $C(q) = ${costTex} + ${n(F)}$. What profit does it make per day at its optimal uniform price?`,
                 given: {
                     Demand: String.raw`$q = ${n(A)} - ${co(d)}p$`,
                     "Cost function": String.raw`$C(q) = ${costTex} + ${n(F)}$`,
                 },
                 answer,
                 explanation: String.raw`$\pi = p^M q^M - C(q^M)$ with $q^M$ from $MR = MC$: $\frac{A - 2q}{d} = c\, q$ gives $q^M = \frac{A}{2 + c d}$. Here $q^M = \frac{${n(A)}}{${n(2 + c * d)}}$ = ${n(qM)} ${s.units} and $p^M = \frac{${n(A)} - ${n(qM)}}{${n(d)}}$ = ${eur(pM)}. Revenue: ${eur(pM)} · ${n(qM)} = ${eur(pM * qM)}. Cost: ${eur(0.5 * c * qM * qM)} of variable cost plus the fixed ${eur(F)} = ${eur(cost)}. Profit: ${eur(pM * qM)} − ${eur(cost)} = ${eur(answer)}.`,
+                hint: String.raw`Marginal cost is $MC = C'(q)$. The monopoly quantity solves $MR = MC$, the price comes from the demand curve, and profit is revenue minus the full cost function including the fixed part: $\pi = p^M q^M - C(q^M)$.`,
             };
         },
     },
@@ -3879,13 +3882,14 @@ export const econ1Questions: Question[] = [
             const answer = d * j * (2 + c * d); // = A / (1 + c d)
             const costTex = c === 2 ? String.raw`q^2` : String.raw`${n(c / 2)}\, q^2`;
             return {
-                prompt: String.raw`${s.firm} and faces the demand $q = ${n(A)} - ${co(d)}p$ ${s.units} per month, with $p$ in euros per ${s.one}. Its cost function is $C(q) = ${costTex} + ${n(F)}$, so $MC = ${co(c)}q$. It now knows every buyer's willingness to pay and charges each of them exactly that (perfect price discrimination). How many ${s.units} does it sell per month?`,
+                prompt: String.raw`${s.firm} and faces the demand $q = ${n(A)} - ${co(d)}p$ ${s.units} per month, with $p$ in euros per ${s.one}. Its cost function is $C(q) = ${costTex} + ${n(F)}$. It now knows every buyer's willingness to pay and charges each of them exactly that (perfect price discrimination). How many ${s.units} does it sell per month?`,
                 given: {
                     Demand: String.raw`$q = ${n(A)} - ${co(d)}p$`,
                     "Cost function": String.raw`$C(q) = ${costTex} + ${n(F)}$`,
                 },
                 answer,
                 explanation: String.raw`Under first-degree price discrimination the price of the last unit is its inverse demand, so the firm expands until $p(q) = MC$: $\frac{A - q}{d} = c\, q \Rightarrow \tilde{q} = \frac{A}{1 + c d}$. Here $\tilde{q} = \frac{${n(A)}}{${n(1 + c * d)}}$ = ${n(answer)} ${s.units} - the same quantity a competitive market would deliver. A single-price monopolist would stop at $\frac{${n(A)}}{${n(2 + c * d)}}$ = ${n(qM)} ${s.units} sold at ${eur(pM)}, because for him one more unit also lowers the price on all previous ones.`,
+                hint: String.raw`Marginal cost is $MC = C'(q)$. A perfectly discriminating monopolist has no uniform price to protect, so it sells every unit whose willingness to pay covers its marginal cost: expand until $p(q) = MC$ on the inverse demand curve.`,
             };
         },
     },
@@ -3913,13 +3917,14 @@ export const econ1Questions: Question[] = [
             const single = pM * qM - (0.5 * c * qM * qM + F);
             const costTex = c === 2 ? String.raw`q^2` : String.raw`${n(c / 2)}\, q^2`;
             return {
-                prompt: String.raw`${s.firm} faces the demand $q = ${n(A)} - ${co(d)}p$ ${s.units} per month, with $p$ in euros per month. Its cost function is $C(q) = ${costTex} + ${n(F)}$, so $MC = ${co(c)}q$. It can price every household individually at exactly that household's willingness to pay. What monthly profit does it earn under this perfect price discrimination?`,
+                prompt: String.raw`${s.firm} faces the demand $q = ${n(A)} - ${co(d)}p$ ${s.units} per month, with $p$ in euros per month. Its cost function is $C(q) = ${costTex} + ${n(F)}$. It can price every household individually at exactly that household's willingness to pay. What monthly profit does it earn under this perfect price discrimination?`,
                 given: {
                     Demand: String.raw`$q = ${n(A)} - ${co(d)}p$`,
                     "Cost function": String.raw`$C(q) = ${costTex} + ${n(F)}$`,
                 },
                 answer,
                 explanation: String.raw`A perfectly discriminating monopolist captures the entire surplus: it sells up to $p(q) = MC$ and earns the whole area between inverse demand and marginal cost, $\pi = \frac{1}{2} \cdot \frac{A}{d} \cdot \tilde{q} - F$ (both lines are straight and meet at $\tilde{q}$). Here $\tilde{q} = \frac{${n(A)}}{${n(1 + c * d)}}$ = ${n(qTilde)} ${s.units} and the choke price is $\frac{${n(A)}}{${n(d)}}$ = ${eur(choke)}, so the area is ½ · ${n(choke)} · ${n(qTilde)} = ${eur(0.5 * choke * qTilde)} and profit is ${eur(0.5 * choke * qTilde)} − ${eur(F)} = ${eur(answer)}. With one uniform price it would sell only ${n(qM)} ${s.units} at ${eur(pM)} and earn ${eur(single)} - discrimination raises profit and, because output rises to the competitive level, it also removes the deadweight loss.`,
+                hint: String.raw`Marginal cost is $MC = C'(q)$. Under perfect price discrimination the firm sells until $p(q) = MC$ and pockets the entire area between inverse demand and marginal cost; subtract the fixed cost to get profit.`,
             };
         },
     },
