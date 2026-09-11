@@ -823,7 +823,7 @@ export const econ1Questions: Question[] = [
             // opportunity cost of Y (in X): A >= 3, B <= 2 by construction
             const answer = cA + tB;
             return {
-                prompt: `${s.intro}. Working alone for a month, ${s.a} can ${s.verb} ${n(cA)} ${s.x} **or** ${n(tA)} ${s.y}, while ${s.b} can ${s.verb} ${n(cB)} ${s.x} **or** ${n(tB)} ${s.y}. Each specializes fully in the good in which they hold the comparative advantage. How many ${s.total} does ${s.who} produce in total per month?`,
+                prompt: `${s.intro}. Working alone for a month, ${s.a} can ${s.verb} ${n(cA)} ${s.x} or ${n(tA)} ${s.y}, while ${s.b} can ${s.verb} ${n(cB)} ${s.x} or ${n(tB)} ${s.y}. Each specializes fully in the good in which they hold the comparative advantage. How many ${s.total} does ${s.who} produce in total per month?`,
                 given: {
                     [`${s.a}: ${s.x} or ${s.y}`]: `${n(cA)} or ${n(tA)}`,
                     [`${s.b}: ${s.x} or ${s.y}`]: `${n(cB)} or ${n(tB)}`,
@@ -850,7 +850,7 @@ export const econ1Questions: Question[] = [
             const fac = rng.pick([1, 1.25, 2]); // B's opportunity cost of Y
             const xB = yB * fac; // country B: units of good X
             return {
-                prompt: `${s.a} can produce ${n(xA)} ${s.x} **or** ${n(yA)} ${s.y} per year; ${s.b} can produce ${n(xB)} ${s.x} **or** ${n(yB)} ${s.y}. They want to trade ${s.yShort} for ${s.xShort}. What is the **maximum** price of one ${s.yOne}, measured in ${s.xUnit}, at which both countries still gain from trade?`,
+                prompt: `${s.a} can produce ${n(xA)} ${s.x} or ${n(yA)} ${s.y} per year; ${s.b} can produce ${n(xB)} ${s.x} or ${n(yB)} ${s.y}. They want to trade ${s.yShort} for ${s.xShort}. What is the maximum price of one ${s.yOne}, measured in ${s.xUnit}, at which both countries still gain from trade?`,
                 given: {
                     [`${s.a}: ${s.xShort} or ${s.yShort}`]: `${n(xA)} or ${n(yA)}`,
                     [`${s.b}: ${s.xShort} or ${s.yShort}`]: `${n(xB)} or ${n(yB)}`,
@@ -925,7 +925,7 @@ export const econ1Questions: Question[] = [
             const q2 = (b * m) / p2;
             const answer = q1 ** a * q2 ** b;
             return {
-                prompt: String.raw`A consumer with utility $U(q_1, q_2) = q_1^{${num}/${den}} \cdot q_2^{${den - num}/${den}}$ has income ${eur(m)}. The price of good 2 is ${eur(p2)}. The price of good 1 has just **doubled** from ${eur(p1)} to ${eur(p1New)}. What utility level does she reach at the new prices (her indirect utility)?`,
+                prompt: String.raw`A consumer with utility $U(q_1, q_2) = q_1^{${num}/${den}} \cdot q_2^{${den - num}/${den}}$ has income ${eur(m)}. The price of good 2 is ${eur(p2)}. The price of good 1 has just doubled from ${eur(p1)} to ${eur(p1New)}. What utility level does she reach at the new prices (her indirect utility)?`,
                 given: {
                     "Income m": eur(m),
                     "New price $p_1$": eur(p1New),
@@ -956,7 +956,7 @@ export const econ1Questions: Question[] = [
             const Q = coef * L * L;
             const K = ((s * a + 2) / a) * L;
             return {
-                prompt: String.raw`A workshop produces with the technology $Q = ${a} K L - L^2$. The wage is ${eur(w)} per unit of labor and the rental rate of capital is ${eur(r)}. It must deliver an output of ${n(Q)} units at minimum cost. How much **labor** $L$ does it hire?`,
+                prompt: String.raw`A workshop produces with the technology $Q = ${a} K L - L^2$. The wage is ${eur(w)} per unit of labor and the rental rate of capital is ${eur(r)}. It must deliver an output of ${n(Q)} units at minimum cost. How much labor $L$ does it hire?`,
                 given: {
                     "Technology": String.raw`$Q = ${a} K L - L^2$`,
                     "Wage w": eur(w),
@@ -1013,7 +1013,7 @@ export const econ1Questions: Question[] = [
             const c1 = rng.int(4, 12);
             const answer = c1 + 2 * c2 * qm; // min AC
             return {
-                prompt: String.raw`Firms in a competitive market all have the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$, and entry and exit are free. What is the long-run **break-even price**?`,
+                prompt: String.raw`Firms in a competitive market all have the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$, and entry and exit are free. What is the long-run break-even price?`,
                 given: {
                     "Cost function": String.raw`$C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$`,
                 },
@@ -1037,7 +1037,7 @@ export const econ1Questions: Question[] = [
             const F = c2 * qm * qm;
             const c1 = rng.int(5, 15);
             return {
-                prompt: String.raw`A firm produces with the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$. Up to which output level does the firm enjoy **economies of scale**?`,
+                prompt: String.raw`A firm produces with the cost function $C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$. Up to which output level does the firm enjoy economies of scale?`,
                 given: {
                     "Cost function": String.raw`$C(q) = ${n(c2)} q^2 + ${n(c1)} q + ${n(F)}$`,
                 },
@@ -1059,7 +1059,7 @@ export const econ1Questions: Question[] = [
             const qm = 2 * rng.int(3, 7); // 6..14, even so F is an integer
             const F = (qm * qm) / 2;
             return {
-                prompt: String.raw`Every firm in a competitive industry has the cost function $C(q) = 0.5 q^2 + ${n(F)}$, and entry and exit are free. How much does each firm produce in the **long-run equilibrium**?`,
+                prompt: String.raw`Every firm in a competitive industry has the cost function $C(q) = 0.5 q^2 + ${n(F)}$, and entry and exit are free. How much does each firm produce in the long-run equilibrium?`,
                 given: {
                     "Cost function": String.raw`$C(q) = 0.5 q^2 + ${n(F)}$`,
                 },
@@ -1120,7 +1120,7 @@ export const econ1Questions: Question[] = [
             const pMax = c / d; // demand choke price
             const answer = 0.5 * (pMax - pStar) * Q; // = Q^2 / (2d)
             return {
-                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p$. Compute the **consumer surplus** in the market equilibrium.`,
+                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p$. Compute the consumer surplus in the market equilibrium.`,
                 given: {
                     "Supply": String.raw`$Q_S = ${n(a)} p - ${n(b)}$`,
                     "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p$`,
@@ -1152,7 +1152,7 @@ export const econ1Questions: Question[] = [
             const pS = (c + b) / (a + d * tau); // net producer price
             const answer = tau * pS; // gross consumer price
             return {
-                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p_S - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p_D$. The government introduces an **ad-valorem tax of ${pct(t)} on consumers**, so the gross price is $p_D = ${n(tau)} \cdot p_S$. What price do consumers pay (including tax) in the new equilibrium?`,
+                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p_S - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p_D$. The government introduces an ad-valorem tax of ${pct(t)} on consumers, so the gross price is $p_D = ${n(tau)} \cdot p_S$. What price do consumers pay (including tax) in the new equilibrium?`,
                 given: {
                     "Supply": String.raw`$Q_S = ${n(a)} p_S - ${n(b)}$`,
                     "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p_D$`,
@@ -1186,7 +1186,7 @@ export const econ1Questions: Question[] = [
             const pD = pStar + (s * t) / (d + s); // new consumer price
             const answer = 0.5 * t * dQ;
             return {
-                prompt: String.raw`In the market for ${sc.good}, demand is $Q_D = ${n(A)} - ${n(d)} p$ and supply is $Q_S = ${n(s)} p - ${n(B)}$. The government levies a per-unit tax of ${eur(t)} **on producers**. What is the deadweight loss of the tax?`,
+                prompt: String.raw`In the market for ${sc.good}, demand is $Q_D = ${n(A)} - ${n(d)} p$ and supply is $Q_S = ${n(s)} p - ${n(B)}$. The government levies a per-unit tax of ${eur(t)} on producers. What is the deadweight loss of the tax?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${n(d)} p$`,
                     "Supply": String.raw`$Q_S = ${n(s)} p - ${n(B)}$`,
@@ -1280,7 +1280,7 @@ export const econ1Questions: Question[] = [
             const alpha = cc + t + Qt * (2 * beta + gamma);
             const answer = t * Qt;
             return {
-                prompt: String.raw`${s.firm} faces inverse demand $P = ${n(alpha)} - ${n(beta)} Q$ and has marginal cost $MC = ${n(gamma)} Q + ${n(cc)}$. The authorities introduce a **per-unit tax of ${eur(t)}** on every ${s.one} sold. How much tax revenue do they collect when the operator re-optimizes?`,
+                prompt: String.raw`${s.firm} faces inverse demand $P = ${n(alpha)} - ${n(beta)} Q$ and has marginal cost $MC = ${n(gamma)} Q + ${n(cc)}$. The authorities introduce a per-unit tax of ${eur(t)} on every ${s.one} sold. How much tax revenue do they collect when the operator re-optimizes?`,
                 given: {
                     "Inverse demand": String.raw`$P = ${n(alpha)} - ${n(beta)} Q$`,
                     "Marginal cost": String.raw`$MC = ${n(gamma)} Q + ${n(cc)}$`,
@@ -1320,7 +1320,7 @@ export const econ1Questions: Question[] = [
                     [s.jobLabel]: `${eur(wage)} / ${eur(effort)}`,
                 },
                 answer,
-                explanation: String.raw`${cap(s.subj)} picks the ${s.event} only if its surplus beats the best alternative: $b_{\text{${s.event}}} - \text{expenditure} \geq \text{opportunity cost}$, where the opportunity cost is the highest surplus among the alternatives forgone. ${s.homeNoun} is worth ${eur(home)}; ${s.jobNoun} yields a producer surplus of ${eur(wage)} − ${eur(effort)} = ${eur(jobSurplus)} - the best alternative. ${s.travelNoun} is a **sunk cost**: it was paid for either way and never enters the decision. The ${s.event} must therefore be worth at least its expenditure plus the forgone surplus: ${eur(ticket)} + ${eur(jobSurplus)} = ${eur(answer)}.`,
+                explanation: String.raw`${cap(s.subj)} picks the ${s.event} only if its surplus beats the best alternative: $b_{\text{${s.event}}} - \text{expenditure} \geq \text{opportunity cost}$, where the opportunity cost is the highest surplus among the alternatives forgone. ${s.homeNoun} is worth ${eur(home)}; ${s.jobNoun} yields a producer surplus of ${eur(wage)} − ${eur(effort)} = ${eur(jobSurplus)} - the best alternative. ${s.travelNoun} is a sunk cost: it was paid for either way and never enters the decision. The ${s.event} must therefore be worth at least its expenditure plus the forgone surplus: ${eur(ticket)} + ${eur(jobSurplus)} = ${eur(answer)}.`,
                 hint: String.raw`An option is worth taking only once its benefit covers the money it still costs plus the opportunity cost - the best surplus given up elsewhere. Money paid before the decision is the same under every option and drops out: $b \geq \text{expenditure} + \text{opportunity cost}$.`,
             };
         },
@@ -1343,7 +1343,7 @@ export const econ1Questions: Question[] = [
             const T = k * (a + b);
             const answer = k * a * b;
             return {
-                prompt: String.raw`${s.name} assembles ${s.product}; every ${s.one} needs exactly **one ${s.partA} and one ${s.partB}**. Per hour ${s.subj} can ${s.verb} either ${n(a)} ${s.partsA} or ${n(b)} ${s.partsB}. In a working month of ${n(T)} hours, producing both parts ${s.refl}, how many complete ${s.product} can ${s.subj} assemble at most?`,
+                prompt: String.raw`${s.name} assembles ${s.product}; every ${s.one} needs exactly one ${s.partA} and one ${s.partB}. Per hour ${s.subj} can ${s.verb} either ${n(a)} ${s.partsA} or ${n(b)} ${s.partsB}. In a working month of ${n(T)} hours, producing both parts ${s.refl}, how many complete ${s.product} can ${s.subj} assemble at most?`,
                 given: {
                     [`${cap(s.partsA)} per hour`]: n(a),
                     [`${cap(s.partsB)} per hour`]: n(b),
@@ -1406,7 +1406,7 @@ export const econ1Questions: Question[] = [
             const m = p2 * rng.int(11, 24);
             const answer = m / p2;
             return {
-                prompt: String.raw`${s.who} treats ${s.g1} ($q_1$) and ${s.g2} ($q_2$) as perfect substitutes with utility $U(q_1, q_2) = ${n(alpha)} q_1 + ${n(beta)} q_2$. ${s.one1} costs ${eur(p1)}, ${s.one2} ${eur(p2)}, and ${s.poss} ${s.budget} is ${eur(m)}. How many **${s.ask}** does ${s.subj} buy at the optimum?`,
+                prompt: String.raw`${s.who} treats ${s.g1} ($q_1$) and ${s.g2} ($q_2$) as perfect substitutes with utility $U(q_1, q_2) = ${n(alpha)} q_1 + ${n(beta)} q_2$. ${s.one1} costs ${eur(p1)}, ${s.one2} ${eur(p2)}, and ${s.poss} ${s.budget} is ${eur(m)}. How many ${s.ask} does ${s.subj} buy at the optimum?`,
                 given: {
                     "Utility": String.raw`$U = ${n(alpha)} q_1 + ${n(beta)} q_2$`,
                     "Price $p_1$": eur(p1),
@@ -1436,7 +1436,7 @@ export const econ1Questions: Question[] = [
             const uBar = xStar * yStar;
             const answer = m * Math.sqrt(pyNew / py);
             return {
-                prompt: String.raw`A household with utility $U(x, y) = x \cdot y$ and income ${eur(m)} faces prices $p_x$ = ${eur(px)} and $p_y$ = ${eur(py)}. Then the price of good $y$ rises to ${eur(pyNew)}. What income would the household need at the **new** prices to reach exactly its **old** utility level?`,
+                prompt: String.raw`A household with utility $U(x, y) = x \cdot y$ and income ${eur(m)} faces prices $p_x$ = ${eur(px)} and $p_y$ = ${eur(py)}. Then the price of good $y$ rises to ${eur(pyNew)}. What income would the household need at the new prices to reach exactly its old utility level?`,
                 given: {
                     "Income m": eur(m),
                     "Price $p_x$": eur(px),
@@ -1466,7 +1466,7 @@ export const econ1Questions: Question[] = [
             const a = Q0 + b * p0;
             const answer = (b * p0) / Q0;
             return {
-                prompt: String.raw`The demand for ${s.good} is $Q_D = ${n(a)} - ${n(b)} p$. What is the **absolute value** of the price elasticity of demand at a price of ${eur(p0)}?`,
+                prompt: String.raw`The demand for ${s.good} is $Q_D = ${n(a)} - ${n(b)} p$. What is the absolute value of the price elasticity of demand at a price of ${eur(p0)}?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(a)} - ${n(b)} p$`,
                     "Price p": eur(p0),
@@ -1490,12 +1490,12 @@ export const econ1Questions: Question[] = [
             const half = rng.int(5, 15);
             const a = 2 * b * half;
             return {
-                prompt: String.raw`The demand for ${s.good} is $Q_D = ${n(a)} - ${n(b)} p$. At which price is demand exactly **unit-elastic**?`,
+                prompt: String.raw`The demand for ${s.good} is $Q_D = ${n(a)} - ${n(b)} p$. At which price is demand exactly unit-elastic?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(a)} - ${n(b)} p$`,
                 },
                 answer: half,
-                explanation: String.raw`Along a linear demand curve, $|\varepsilon_p| = \frac{b\, p}{a - b\, p}$, which equals 1 exactly at the **midpoint** $p = \frac{a}{2b}$. Substituting: ${n(a)} / (2 · ${n(b)}) = ${eur(half)}. Check: there $Q$ = ${n(a)} − ${n(b)} · ${n(half)} = ${n(a - b * half)}, and ${n(b)} · ${n(half)} / ${n(a - b * half)} = 1. Below this price demand is inelastic (elasticity 0 at $p = 0$), above it elastic ($|\varepsilon_p| \to \infty$ toward the choke price ${eur(a / b)}) - and revenue $p \cdot Q$ is maximal at the unit-elastic point.`,
+                explanation: String.raw`Along a linear demand curve, $|\varepsilon_p| = \frac{b\, p}{a - b\, p}$, which equals 1 exactly at the midpoint $p = \frac{a}{2b}$. Substituting: ${n(a)} / (2 · ${n(b)}) = ${eur(half)}. Check: there $Q$ = ${n(a)} − ${n(b)} · ${n(half)} = ${n(a - b * half)}, and ${n(b)} · ${n(half)} / ${n(a - b * half)} = 1. Below this price demand is inelastic (elasticity 0 at $p = 0$), above it elastic ($|\varepsilon_p| \to \infty$ toward the choke price ${eur(a / b)}) - and revenue $p \cdot Q$ is maximal at the unit-elastic point.`,
                 hint: String.raw`Demand is unit-elastic where a one-percent price rise cuts quantity by exactly one percent, so set the point elasticity to one: $\left| \varepsilon_p \right| = \left| \frac{dQ}{dp} \right| \cdot \frac{p}{Q} = 1$.`,
             };
         },
@@ -1520,7 +1520,7 @@ export const econ1Questions: Question[] = [
             const c = Q + d * pStar;
             const answer = (s * pStar) / Q;
             return {
-                prompt: String.raw`In the market for ${sc.good}, supply is $Q_S = ${n(s)} p - ${n(B)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p$. What is the **price elasticity of supply** in the market equilibrium?`,
+                prompt: String.raw`In the market for ${sc.good}, supply is $Q_S = ${n(s)} p - ${n(B)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p$. What is the price elasticity of supply in the market equilibrium?`,
                 given: {
                     "Supply": String.raw`$Q_S = ${n(s)} p - ${n(B)}$`,
                     "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p$`,
@@ -1592,7 +1592,7 @@ export const econ1Questions: Question[] = [
             const F = csA + rng.int(5, 45) * 10; // strictly between the two surpluses
             const answer = F + p * qB;
             return {
-                prompt: String.raw`${s.service} charges ${eur(p)} per ${s.unit} and has two members: ${s.memberA} with monthly demand $q_A = ${n(cA)} - ${n(bA)} p$ and ${s.memberB} with $q_B = ${n(cB)} - ${n(bB)} p$ (hours per month). It introduces a monthly **membership fee** of ${eur(F)} on top of the unchanged hourly price. What is its new total monthly revenue from these two members? (The income effect of the fee on hourly demand is negligible.)`,
+                prompt: String.raw`${s.service} charges ${eur(p)} per ${s.unit} and has two members: ${s.memberA} with monthly demand $q_A = ${n(cA)} - ${n(bA)} p$ and ${s.memberB} with $q_B = ${n(cB)} - ${n(bB)} p$ (hours per month). It introduces a monthly membership fee of ${eur(F)} on top of the unchanged hourly price. What is its new total monthly revenue from these two members? (The income effect of the fee on hourly demand is negligible.)`,
                 given: {
                     "Hourly price p": eur(p),
                     [`${s.labelA} demand`]: String.raw`$q_A = ${n(cA)} - ${n(bA)} p$`,
@@ -1600,7 +1600,7 @@ export const econ1Questions: Question[] = [
                     "Membership fee": eur(F),
                 },
                 answer,
-                explanation: String.raw`A member keeps the contract only if the consumer surplus at the hourly price covers the fee: $CS = \frac{1}{2} \left( p_{max} - p \right) q$. ${s.labelA}: $q_A$ = ${n(qA)} hours, choke price ${eur(chokeA)}, so $CS_A$ = ½ · (${n(chokeA)} − ${n(p)}) · ${n(qA)} = ${eur(csA)} - **less** than the fee of ${eur(F)}, so ${s.theA} cancels. ${s.labelB}: $q_B$ = ${n(qB)} hours, $CS_B$ = ½ · (${n(chokeB)} − ${n(p)}) · ${n(qB)} = ${eur(csB)} > ${eur(F)}, so ${s.theB} stays and keeps ${s.verb} ${n(qB)} hours. Revenue: ${eur(F)} + ${eur(p)} · ${n(qB)} = ${eur(answer)} - the fee skims part of the remaining member's surplus.`,
+                explanation: String.raw`A member keeps the contract only if the consumer surplus at the hourly price covers the fee: $CS = \frac{1}{2} \left( p_{max} - p \right) q$. ${s.labelA}: $q_A$ = ${n(qA)} hours, choke price ${eur(chokeA)}, so $CS_A$ = ½ · (${n(chokeA)} − ${n(p)}) · ${n(qA)} = ${eur(csA)} - less than the fee of ${eur(F)}, so ${s.theA} cancels. ${s.labelB}: $q_B$ = ${n(qB)} hours, $CS_B$ = ½ · (${n(chokeB)} − ${n(p)}) · ${n(qB)} = ${eur(csB)} > ${eur(F)}, so ${s.theB} stays and keeps ${s.verb} ${n(qB)} hours. Revenue: ${eur(F)} + ${eur(p)} · ${n(qB)} = ${eur(answer)} - the fee skims part of the remaining member's surplus.`,
                 hint: String.raw`A member keeps the contract only while the consumer surplus earned at the usage price still covers the fixed fee: $CS = \frac{1}{2} \left( p_{max} - p \right) q$. Revenue is the fee from the members who stay plus the usage price times what they buy.`,
             };
         },
@@ -1662,7 +1662,7 @@ export const econ1Questions: Question[] = [
             const MP = rng.int(2, AP - 1); // diminishing: MP below AP
             const Qprev = QL - MP;
             return {
-                prompt: `${s.intro}. With ${n(L - 1)} ${s.workers} it produced ${n(Qprev)} ${s.unit} per day; with ${n(L)} ${s.workers} the **average product** of labor is ${n(AP)} ${s.unit}. What is the marginal product of the ${n(L)}th ${s.worker}?`,
+                prompt: `${s.intro}. With ${n(L - 1)} ${s.workers} it produced ${n(Qprev)} ${s.unit} per day; with ${n(L)} ${s.workers} the average product of labor is ${n(AP)} ${s.unit}. What is the marginal product of the ${n(L)}th ${s.worker}?`,
                 given: {
                     [`Output with ${n(L - 1)} ${s.workers}`]: `${n(Qprev)} ${s.unit}`,
                     [`Average product with ${n(L)} ${s.workers}`]: `${n(AP)} ${s.unit}`,
@@ -1692,7 +1692,7 @@ export const econ1Questions: Question[] = [
             const cFix = b * Lstar * Lstar;
             const a = rng.int(8, 15);
             return {
-                prompt: String.raw`${s.intro} produces $Q = -${n(cFix)} + ${n(a)} L - ${n(b)} L^2$ ${s.unit} with labor input $L$. At which labor input does the **average product of labor** reach its maximum?`,
+                prompt: String.raw`${s.intro} produces $Q = -${n(cFix)} + ${n(a)} L - ${n(b)} L^2$ ${s.unit} with labor input $L$. At which labor input does the average product of labor reach its maximum?`,
                 given: {
                     "Production function": String.raw`$Q = -${n(cFix)} + ${n(a)} L - ${n(b)} L^2$`,
                 },
@@ -1725,7 +1725,7 @@ export const econ1Questions: Question[] = [
                     "Wage w": eur(w),
                 },
                 answer,
-                explanation: String.raw`A competitive firm hires until the **value of the marginal product** equals the wage: $p \cdot MP_L = w$. Here $MP_L = \frac{${n(A)}}{2 \sqrt{L}}$, so $${n(p)} \cdot \frac{${n(A)}}{2 \sqrt{L}} = ${n(w)}$ gives $\sqrt{L} = \frac{${n(p)} \cdot ${n(A)}}{2 \cdot ${n(w)}} = ${n(k)}$, hence $L^* = ${n(k)}^2 = ${n(answer)}$ workers. A higher wage would raise the required marginal product and - since $MP_L$ is diminishing - cut employment.`,
+                explanation: String.raw`A competitive firm hires until the value of the marginal product equals the wage: $p \cdot MP_L = w$. Here $MP_L = \frac{${n(A)}}{2 \sqrt{L}}$, so $${n(p)} \cdot \frac{${n(A)}}{2 \sqrt{L}} = ${n(w)}$ gives $\sqrt{L} = \frac{${n(p)} \cdot ${n(A)}}{2 \cdot ${n(w)}} = ${n(k)}$, hence $L^* = ${n(k)}^2 = ${n(answer)}$ workers. A higher wage would raise the required marginal product and - since $MP_L$ is diminishing - cut employment.`,
             };
         },
     },
@@ -1747,7 +1747,7 @@ export const econ1Questions: Question[] = [
             const r = rng.int(8, 15);
             const answer = dw * L;
             return {
-                prompt: `${s.firm} produces its output $Q^*$ at minimum cost with ${n(L)} workers at a wage of ${eur(w)} and ${n(K)} ${s.capital} at a rental rate of ${eur(r)}. Overnight, a statutory minimum wage of ${eur(wmin)} is introduced. In the **short run** the capital stock cannot be adjusted. By how much do the costs of producing $Q^*$ rise?`,
+                prompt: `${s.firm} produces its output $Q^*$ at minimum cost with ${n(L)} workers at a wage of ${eur(w)} and ${n(K)} ${s.capital} at a rental rate of ${eur(r)}. Overnight, a statutory minimum wage of ${eur(wmin)} is introduced. In the short run the capital stock cannot be adjusted. By how much do the costs of producing $Q^*$ rise?`,
                 given: {
                     "Labor / old wage": `${n(L)} workers at ${eur(w)}`,
                     "Minimum wage": eur(wmin),
@@ -1802,14 +1802,14 @@ export const econ1Questions: Question[] = [
             const dmg = rng.int(2, 8) * 10;
             const p = 2 * cSlope * Qsoc + dmg;
             return {
-                prompt: String.raw`${s.firm} sells at the fixed market price of ${eur(p)} per ${s.one} and has production costs $C(Q) = ${n(cSlope)} Q^2$. ${s.harm} by ${eur(dmg)} for every ${s.one}. What is the **socially optimal** output of ${s.short}?`,
+                prompt: String.raw`${s.firm} sells at the fixed market price of ${eur(p)} per ${s.one} and has production costs $C(Q) = ${n(cSlope)} Q^2$. ${s.harm} by ${eur(dmg)} for every ${s.one}. What is the socially optimal output of ${s.short}?`,
                 given: {
                     [`Price per ${s.one}`]: eur(p),
                     [s.costLabel]: String.raw`$C(Q) = ${n(cSlope)} Q^2$`,
                     [`External damage per ${s.one}`]: eur(dmg),
                 },
                 answer: Qsoc,
-                explanation: String.raw`The social optimum equates the price with the **social** marginal cost: $p = MC(Q) + MEC$, where $MEC$ is the marginal external cost borne by ${s.victim}. Here $${n(p)} = ${n(2 * cSlope)} Q + ${n(dmg)}$ gives $Q_{soc}$ = ${n(Qsoc)} ${s.units}. Left alone, ${s.short} ignores the damage and produces where $p = MC$ only: $Q_{priv} = ${n(p)} / ${n(2 * cSlope)}$ = ${n2(p / (2 * cSlope))} ${s.units} - more than is socially efficient, because part of its true cost falls on others.`,
+                explanation: String.raw`The social optimum equates the price with the social marginal cost: $p = MC(Q) + MEC$, where $MEC$ is the marginal external cost borne by ${s.victim}. Here $${n(p)} = ${n(2 * cSlope)} Q + ${n(dmg)}$ gives $Q_{soc}$ = ${n(Qsoc)} ${s.units}. Left alone, ${s.short} ignores the damage and produces where $p = MC$ only: $Q_{priv} = ${n(p)} / ${n(2 * cSlope)}$ = ${n2(p / (2 * cSlope))} ${s.units} - more than is socially efficient, because part of its true cost falls on others.`,
             };
         },
     },
@@ -1831,7 +1831,7 @@ export const econ1Questions: Question[] = [
             const Q1 = Q0 - k;
             const answer = cSlope * k * k;
             return {
-                prompt: String.raw`${s.firm} sells at the fixed price of ${eur(p)} per ${s.one} and has costs $C(Q) = ${n(cSlope)} Q^2$; ${s.harm} by ${eur(dmg)} per ${s.one}. The two firms merge and from now on maximize **joint profit**. By how much does the sum of the two profits rise compared to separate profit maximization?`,
+                prompt: String.raw`${s.firm} sells at the fixed price of ${eur(p)} per ${s.one} and has costs $C(Q) = ${n(cSlope)} Q^2$; ${s.harm} by ${eur(dmg)} per ${s.one}. The two firms merge and from now on maximize joint profit. By how much does the sum of the two profits rise compared to separate profit maximization?`,
                 given: {
                     [`Price per ${s.one}`]: eur(p),
                     [s.costLabel]: String.raw`$C(Q) = ${n(cSlope)} Q^2$`,
@@ -1888,7 +1888,7 @@ export const econ1Questions: Question[] = [
             const Qc = 2 * qM;
             const answer = 0.5 * kS * qM * qM;
             return {
-                prompt: String.raw`${s.firm}, with inverse demand $P = ${n(A)} - ${n(kS)} Q$ and a constant marginal cost of ${eur(cM)}. What is the **deadweight loss** of the monopoly compared to the perfectly competitive outcome?`,
+                prompt: String.raw`${s.firm}, with inverse demand $P = ${n(A)} - ${n(kS)} Q$ and a constant marginal cost of ${eur(cM)}. What is the deadweight loss of the monopoly compared to the perfectly competitive outcome?`,
                 given: {
                     "Inverse demand": String.raw`$P = ${n(A)} - ${n(kS)} Q$`,
                     "Marginal cost": eur(cM),
@@ -2054,7 +2054,7 @@ export const econ1Questions: Question[] = [
             const line = (r: (typeof rows)[number]) =>
                 `${r.name} needs ${n(r.tx)} minutes for one ${s.x} and ${n(r.ty)} minutes for one ${s.y}`;
             return {
-                prompt: `${s.intro}. ${line(rows[0])}; ${line(rows[1])}. They think about specializing and then trading ${s.ys} against ${s.xs}. What is the **minimum** price of one ${s.y}, measured in ${s.xs}, at which both of them can still gain from trade?`,
+                prompt: `${s.intro}. ${line(rows[0])}; ${line(rows[1])}. They think about specializing and then trading ${s.ys} against ${s.xs}. What is the minimum price of one ${s.y}, measured in ${s.xs}, at which both of them can still gain from trade?`,
                 given: {
                     [`${rows[0].name}: ${s.xs} / ${s.ys}`]: `${n(rows[0].tx)} / ${n(rows[0].ty)} min per unit`,
                     [`${rows[1].name}: ${s.xs} / ${s.ys}`]: `${n(rows[1].tx)} / ${n(rows[1].ty)} min per unit`,
@@ -2085,7 +2085,7 @@ export const econ1Questions: Question[] = [
             const target = onEthiopia ? XE + rng.int(1, XU - 1) : rng.int(1, XE - 1);
             const answer = onEthiopia ? YU - ocU * (target - XE) : YU + YE - ocE * target;
             return {
-                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} **or** at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} **or** at most ${n(YU)} tonnes of ${s.y}. Both production possibility frontiers are straight lines, and any mix along them is feasible. If the two countries together grow exactly ${n(target)} tonnes of ${s.x} and divide the work in the most efficient way, what is the largest total amount of ${s.y} (in tonnes) they can still grow?`,
+                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} or at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} or at most ${n(YU)} tonnes of ${s.y}. Both production possibility frontiers are straight lines, and any mix along them is feasible. If the two countries together grow exactly ${n(target)} tonnes of ${s.x} and divide the work in the most efficient way, what is the largest total amount of ${s.y} (in tonnes) they can still grow?`,
                 given: {
                     [`${s.a}: ${s.x} or ${s.y}`]: `${n(XE)} or ${n(YE)} tonnes`,
                     [`${s.b}: ${s.x} or ${s.y}`]: `${n(XU)} or ${n(YU)} tonnes`,
@@ -2120,7 +2120,7 @@ export const econ1Questions: Question[] = [
             const YU = ocU * XU;
             const answer = tau * XE;
             return {
-                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} **or** at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} **or** at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. The two countries open trade at terms of trade of ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}, and ${s.b}'s ability to deliver ${s.y} is limited only by its own maximum output. ${s.a} specializes completely in ${s.x} and consumes no ${s.x} at all. How many tonnes of ${s.y} can ${s.a} consume at most?`,
+                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} or at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} or at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. The two countries open trade at terms of trade of ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}, and ${s.b}'s ability to deliver ${s.y} is limited only by its own maximum output. ${s.a} specializes completely in ${s.x} and consumes no ${s.x} at all. How many tonnes of ${s.y} can ${s.a} consume at most?`,
                 given: {
                     [`${s.a}: ${s.x} or ${s.y}`]: `${n(XE)} or ${n(YE)} tonnes`,
                     [`${s.b}: ${s.x} or ${s.y}`]: `${n(XU)} or ${n(YU)} tonnes`,
@@ -2154,7 +2154,7 @@ export const econ1Questions: Question[] = [
             const ownTea = XU - tau * m; // = X_U (1 - tau X_E / Y_U)
             const answer = XE + ownTea;
             return {
-                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} **or** at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} **or** at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. Trade takes place at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}. ${s.a} specializes completely in ${s.x}, so it can deliver at most its full harvest of ${n(XE)} tonnes and consumes none of it. ${s.b} wants to consume as many tonnes of ${s.x} as possible: it buys everything ${s.a} delivers, grows the ${s.y} for the bill itself and uses the rest of its land for its own ${s.x}. How many tonnes of ${s.x} can ${s.b} consume at most?`,
+                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} or at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} or at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. Trade takes place at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}. ${s.a} specializes completely in ${s.x}, so it can deliver at most its full harvest of ${n(XE)} tonnes and consumes none of it. ${s.b} wants to consume as many tonnes of ${s.x} as possible: it buys everything ${s.a} delivers, grows the ${s.y} for the bill itself and uses the rest of its land for its own ${s.x}. How many tonnes of ${s.x} can ${s.b} consume at most?`,
                 given: {
                     [`${s.a}: ${s.x} or ${s.y}`]: `${n(XE)} or ${n(YE)} tonnes`,
                     [`${s.b}: ${s.x} or ${s.y}`]: `${n(XU)} or ${n(YU)} tonnes`,
@@ -2187,7 +2187,7 @@ export const econ1Questions: Question[] = [
             const sold = XE - target;
             const answer = tau * sold;
             return {
-                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} **or** at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} **or** at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. The two trade at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}, and each country ends up consuming exactly ${n(target)} tonnes of ${s.x}. ${s.a} specializes completely in ${s.x} and sells whatever it does not consume. How many tonnes of ${s.y} can ${s.a} consume?`,
+                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} or at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} or at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. The two trade at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}, and each country ends up consuming exactly ${n(target)} tonnes of ${s.x}. ${s.a} specializes completely in ${s.x} and sells whatever it does not consume. How many tonnes of ${s.y} can ${s.a} consume?`,
                 given: {
                     [`${s.a}: ${s.x} or ${s.y}`]: `${n(XE)} or ${n(YE)} tonnes`,
                     [`${s.b}: ${s.x} or ${s.y}`]: `${n(XU)} or ${n(YU)} tonnes`,
@@ -2224,7 +2224,7 @@ export const econ1Questions: Question[] = [
             const grownCoffee = ocU * (XU - own); // = Y_U (1 - own / X_U)
             const answer = grownCoffee - bill;
             return {
-                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} **or** at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} **or** at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. The two trade at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}, and each country ends up consuming exactly ${n(target)} tonnes of ${s.x}. ${s.a} specializes completely in ${s.x} and sells what it does not consume; ${s.b} buys the ${s.x} on offer, pays in ${s.y} and grows the rest of its ${s.x} itself. How many tonnes of ${s.y} can ${s.b} consume?`,
+                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} or at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} or at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. The two trade at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}, and each country ends up consuming exactly ${n(target)} tonnes of ${s.x}. ${s.a} specializes completely in ${s.x} and sells what it does not consume; ${s.b} buys the ${s.x} on offer, pays in ${s.y} and grows the rest of its ${s.x} itself. How many tonnes of ${s.y} can ${s.b} consume?`,
                 given: {
                     [`${s.a}: ${s.x} or ${s.y}`]: `${n(XE)} or ${n(YE)} tonnes`,
                     [`${s.b}: ${s.x} or ${s.y}`]: `${n(XU)} or ${n(YU)} tonnes`,
@@ -2407,7 +2407,7 @@ export const econ1Questions: Question[] = [
                     "Price $p_2$": eur(p2),
                 },
                 answer,
-                explanation: String.raw`$M_{hyp} = M \cdot \left( \frac{p_1'}{p_1} \right)^{a}$. The hypothetical (compensated) budget is the **smallest** spending that still buys the old utility level at the new prices: minimising $p_1' q_1 + p_2 q_2$ subject to $U = \bar{U}$ again equates $|MRS_{1,2}|$ with the new price ratio $p_1' / p_2$, and the resulting expenditure function of a Cobb-Douglas consumer, $E = \frac{\bar{U}}{A} \left( \frac{p_1}{a} \right)^{a} \left( \frac{p_2}{b} \right)^{b}$, scales with $p_1^{a}$. The old optimum was $q_1^*$ = ${n(q1)} ${s.g1Units} and $q_2^*$ = ${n(q2)} ${s.g2Units}. The price ratio is ${eur(p1New)} / ${eur(p1)} = ${n(f)}, so $M_{hyp} = M \cdot ${n(f)}^{${fracTex(na, den)}}$ = ${eur(answer)} - a difference of ${eur(Math.abs(answer - M))} against the old budget.`,
+                explanation: String.raw`$M_{hyp} = M \cdot \left( \frac{p_1'}{p_1} \right)^{a}$. The hypothetical (compensated) budget is the smallest spending that still buys the old utility level at the new prices: minimising $p_1' q_1 + p_2 q_2$ subject to $U = \bar{U}$ again equates $|MRS_{1,2}|$ with the new price ratio $p_1' / p_2$, and the resulting expenditure function of a Cobb-Douglas consumer, $E = \frac{\bar{U}}{A} \left( \frac{p_1}{a} \right)^{a} \left( \frac{p_2}{b} \right)^{b}$, scales with $p_1^{a}$. The old optimum was $q_1^*$ = ${n(q1)} ${s.g1Units} and $q_2^*$ = ${n(q2)} ${s.g2Units}. The price ratio is ${eur(p1New)} / ${eur(p1)} = ${n(f)}, so $M_{hyp} = M \cdot ${n(f)}^{${fracTex(na, den)}}$ = ${eur(answer)} - a difference of ${eur(Math.abs(answer - M))} against the old budget.`,
             };
         },
     },
@@ -2430,7 +2430,7 @@ export const econ1Questions: Question[] = [
             const Z = cycle * v;
             const answer = p * p * v; // = p Z / (p + w)
             return {
-                prompt: String.raw`${s.who} has ${n(Z)} hours a week to divide between paid work $L$ and free time $F$. ${cap(s.subj)} earns ${eur(w)} per hour worked and spends every euro on a single consumption good that costs ${eur(p)} per unit. ${cap(s.poss)} preferences are $U(q, F) = \sqrt{q} + \sqrt{F}$. How many hours of **free time** does ${s.subj} choose?`,
+                prompt: String.raw`${s.who} has ${n(Z)} hours a week to divide between paid work $L$ and free time $F$. ${cap(s.subj)} earns ${eur(w)} per hour worked and spends every euro on a single consumption good that costs ${eur(p)} per unit. ${cap(s.poss)} preferences are $U(q, F) = \sqrt{q} + \sqrt{F}$. How many hours of free time does ${s.subj} choose?`,
                 given: {
                     "Time budget Z": `${n(Z)} hours`,
                     "Wage w": eur(w),
@@ -2459,7 +2459,7 @@ export const econ1Questions: Question[] = [
             const F = p * p * v;
             const answer = p * w * v; // = Z - F = w Z / (p + w)
             return {
-                prompt: String.raw`${s.who} can allocate ${n(Z)} hours a week between paid work $L$ and free time $F$. Each hour of work pays ${eur(w)}, and all income is spent on one consumption good priced at ${eur(p)} per unit. ${cap(s.poss)} preferences are $U(q, F) = \sqrt{q} + \sqrt{F}$. How many hours does ${s.subj} **work** at ${s.poss} optimum?`,
+                prompt: String.raw`${s.who} can allocate ${n(Z)} hours a week between paid work $L$ and free time $F$. Each hour of work pays ${eur(w)}, and all income is spent on one consumption good priced at ${eur(p)} per unit. ${cap(s.poss)} preferences are $U(q, F) = \sqrt{q} + \sqrt{F}$. How many hours does ${s.subj} work at ${s.poss} optimum?`,
                 given: {
                     "Time budget Z": `${n(Z)} hours`,
                     "Wage w": eur(w),
@@ -2489,7 +2489,7 @@ export const econ1Questions: Question[] = [
             const L = p * w * v;
             const answer = w * w * v; // = w^2 Z / (p (p + w))
             return {
-                prompt: String.raw`${s.who} divides ${n(Z)} hours a week between ${s.work} $L$ and free time $F$. An hour of ${s.activity} pays ${eur(w)}, and ${s.poss} whole income goes on one consumption good that costs ${eur(p)} per unit. With preferences $U(q, F) = \sqrt{q} + \sqrt{F}$, how many **units of the consumption good** does ${s.subj} buy at ${s.poss} optimum?`,
+                prompt: String.raw`${s.who} divides ${n(Z)} hours a week between ${s.work} $L$ and free time $F$. An hour of ${s.activity} pays ${eur(w)}, and ${s.poss} whole income goes on one consumption good that costs ${eur(p)} per unit. With preferences $U(q, F) = \sqrt{q} + \sqrt{F}$, how many units of the consumption good does ${s.subj} buy at ${s.poss} optimum?`,
                 given: {
                     "Time budget Z": `${n(Z)} hours`,
                     "Wage w": eur(w),
@@ -2520,7 +2520,7 @@ export const econ1Questions: Question[] = [
             const answer = ((p + w) * m) ** 2; // = (U0 / (1 + p/wNew))^2
             const FHat = (p + w) ** 2;
             return {
-                prompt: String.raw`${s.who} splits ${n(Z)} hours a week between paid work and free time $F$, spending all earnings on one consumption good priced at ${eur(p)} per unit; ${s.poss} preferences are $U(q, F) = \sqrt{q} + \sqrt{F}$. At the old wage of ${eur(w)} per hour ${s.subj} chose ${s.poss} optimum. The wage now changes to ${eur(wNew)}. Which quantity of the consumption good would ${s.subj} buy if ${s.subj} were compensated so that ${s.subj} reaches **exactly ${s.poss} old utility level** at the new wage while spending as little as possible?`,
+                prompt: String.raw`${s.who} splits ${n(Z)} hours a week between paid work and free time $F$, spending all earnings on one consumption good priced at ${eur(p)} per unit; ${s.poss} preferences are $U(q, F) = \sqrt{q} + \sqrt{F}$. At the old wage of ${eur(w)} per hour ${s.subj} chose ${s.poss} optimum. The wage now changes to ${eur(wNew)}. Which quantity of the consumption good would ${s.subj} buy if ${s.subj} were compensated so that ${s.subj} reaches exactly ${s.poss} old utility level at the new wage while spending as little as possible?`,
                 given: {
                     "Time budget Z": `${n(Z)} hours`,
                     "Old wage w": eur(w),
@@ -2528,7 +2528,7 @@ export const econ1Questions: Question[] = [
                     "Price p": eur(p),
                 },
                 answer,
-                explanation: String.raw`$\hat{q} = \left( \frac{U_0}{1 + p / w'} \right)^2$. First the old optimum: $F_0 = \frac{p Z}{p + w}$ = ${n(F0)} hours and $q_0 = \frac{w^2 Z}{p (p + w)}$ = ${n(q0)} units, so $U_0 = \sqrt{q_0} + \sqrt{F_0}$ = ${n(Math.sqrt(q0))} + ${n(Math.sqrt(F0))} = ${n(U0)}. The compensated bundle must satisfy the new tangency $F = \left( \frac{p}{w'} \right)^2 q$ **and** stay on the old indifference curve, so $\sqrt{q} \left( 1 + \frac{p}{w'} \right) = U_0$. Here $1 + \frac{p}{w'} = \frac{${n(j)}}{${n(m)}}$, so $\sqrt{\hat{q}} = ${n(U0)} \cdot \frac{${n(m)}}{${n(j)}} = ${n(Math.sqrt(answer))}$ and $\hat{q}$ = ${n(answer)} units, alongside $\hat{F} = \left( \frac{p}{w'} \right)^2 \hat{q}$ = ${n(FHat)} hours. This is the substitution effect alone - same utility, new relative price of free time.`,
+                explanation: String.raw`$\hat{q} = \left( \frac{U_0}{1 + p / w'} \right)^2$. First the old optimum: $F_0 = \frac{p Z}{p + w}$ = ${n(F0)} hours and $q_0 = \frac{w^2 Z}{p (p + w)}$ = ${n(q0)} units, so $U_0 = \sqrt{q_0} + \sqrt{F_0}$ = ${n(Math.sqrt(q0))} + ${n(Math.sqrt(F0))} = ${n(U0)}. The compensated bundle must satisfy the new tangency $F = \left( \frac{p}{w'} \right)^2 q$ and stay on the old indifference curve, so $\sqrt{q} \left( 1 + \frac{p}{w'} \right) = U_0$. Here $1 + \frac{p}{w'} = \frac{${n(j)}}{${n(m)}}$, so $\sqrt{\hat{q}} = ${n(U0)} \cdot \frac{${n(m)}}{${n(j)}} = ${n(Math.sqrt(answer))}$ and $\hat{q}$ = ${n(answer)} units, alongside $\hat{F} = \left( \frac{p}{w'} \right)^2 \hat{q}$ = ${n(FHat)} hours. This is the substitution effect alone - same utility, new relative price of free time.`,
             };
         },
     },
@@ -2554,7 +2554,7 @@ export const econ1Questions: Question[] = [
             const FHat = (p + w) ** 2;
             const answer = (p + w) ** 2 * (m + 1); // = (p qHat + wNew FHat) / wNew
             return {
-                prompt: String.raw`${s.who} currently has ${n(Z)} hours a week to divide between paid work and free time $F$, buys one consumption good at ${eur(p)} per unit and has preferences $U(q, F) = \sqrt{q} + \sqrt{F}$. ${cap(s.poss)} wage changes from ${eur(w)} to ${eur(wNew)} per hour. How large would ${s.poss} time budget have to be, in hours, so that at the **new** wage ${s.subj} could just afford the bundle that keeps ${obj} at ${s.poss} old utility level?`,
+                prompt: String.raw`${s.who} currently has ${n(Z)} hours a week to divide between paid work and free time $F$, buys one consumption good at ${eur(p)} per unit and has preferences $U(q, F) = \sqrt{q} + \sqrt{F}$. ${cap(s.poss)} wage changes from ${eur(w)} to ${eur(wNew)} per hour. How large would ${s.poss} time budget have to be, in hours, so that at the new wage ${s.subj} could just afford the bundle that keeps ${obj} at ${s.poss} old utility level?`,
                 given: {
                     "Time budget Z": `${n(Z)} hours`,
                     "Old wage w": eur(w),
@@ -2584,7 +2584,7 @@ export const econ1Questions: Question[] = [
             const answer = rng.int(3, 14); // q1*, drawn first so the budget stays clean
             const M = (p1 + r * p2) * answer;
             return {
-                prompt: String.raw`${s.who} treats ${s.g1} ($q_1$) and ${s.g2} ($q_2$) as perfect complements: ${s.subj} always ${s.verbPre} exactly ${n(r)} ${s.g2} ${s.verbPost} each ${s.g1One}, so $U(q_1, q_2) = \min\{ ${n(r)}\, q_1,\; q_2 \}$. ${s.one1} costs ${eur(p1)}, ${s.one2} ${eur(p2)}, and ${s.subj} has ${eur(M)} to spend. How many **${s.g1}** does ${s.subj} buy at the optimum?`,
+                prompt: String.raw`${s.who} treats ${s.g1} ($q_1$) and ${s.g2} ($q_2$) as perfect complements: ${s.subj} always ${s.verbPre} exactly ${n(r)} ${s.g2} ${s.verbPost} each ${s.g1One}, so $U(q_1, q_2) = \min\{ ${n(r)}\, q_1,\; q_2 \}$. ${s.one1} costs ${eur(p1)}, ${s.one2} ${eur(p2)}, and ${s.subj} has ${eur(M)} to spend. How many ${s.g1} does ${s.subj} buy at the optimum?`,
                 given: {
                     "Utility": String.raw`$U = \min\{ ${n(r)}\, q_1,\; q_2 \}$`,
                     "Price $p_1$": eur(p1),
@@ -2728,7 +2728,7 @@ export const econ1Questions: Question[] = [
             const K = Math.ceil((3 * L) / a) + rng.int(0, 6);
             const answer = a * K - L;
             return {
-                prompt: String.raw`${s.who} produces $Q = ${co(a)}K L - L^2$ ${s.unit} per shift with $L$ workers and $K$ machines. Today it runs ${n(K)} machines and ${n(L)} workers. What is the **average product of labour** at this input combination, in ${s.unit} per worker?`,
+                prompt: String.raw`${s.who} produces $Q = ${co(a)}K L - L^2$ ${s.unit} per shift with $L$ workers and $K$ machines. Today it runs ${n(K)} machines and ${n(L)} workers. What is the average product of labour at this input combination, in ${s.unit} per worker?`,
                 given: {
                     "Technology": String.raw`$Q = ${co(a)}K L - L^2$`,
                     "Capital K": n(K),
@@ -2766,7 +2766,7 @@ export const econ1Questions: Question[] = [
             const answer = lambda ** sum;
             const kind = sum > 1 ? "increasing" : sum < 1 ? "decreasing" : "constant";
             return {
-                prompt: String.raw`${s.who} produces with $Q = ${powTex("L", an, ad)} \cdot ${powTex("K", bn, bd)}$. It ${lambda === 2 ? "doubles" : lambda === 3 ? "triples" : "quadruples"} **both** inputs, so labour and capital are each multiplied by ${n(lambda)}. By what factor does output change?`,
+                prompt: String.raw`${s.who} produces with $Q = ${powTex("L", an, ad)} \cdot ${powTex("K", bn, bd)}$. It ${lambda === 2 ? "doubles" : lambda === 3 ? "triples" : "quadruples"} both inputs, so labour and capital are each multiplied by ${n(lambda)}. By what factor does output change?`,
                 given: {
                     "Technology": String.raw`$Q = ${powTex("L", an, ad)} \cdot ${powTex("K", bn, bd)}$`,
                     "Input factor λ": n(lambda),
@@ -2794,7 +2794,7 @@ export const econ1Questions: Question[] = [
             const K = s * answer;
             const Q = c * answer * K;
             return {
-                prompt: String.raw`${sc.who} produces with $q = ${co(c)}L K$, where $L$ is labour and $K$ is capital. A unit of labour costs ${eur(w)}, a unit of capital ${eur(r)}. The firm has to deliver ${n(Q)} units and wants to do so at minimum cost. How much **labour** does it hire?`,
+                prompt: String.raw`${sc.who} produces with $q = ${co(c)}L K$, where $L$ is labour and $K$ is capital. A unit of labour costs ${eur(w)}, a unit of capital ${eur(r)}. The firm has to deliver ${n(Q)} units and wants to do so at minimum cost. How much labour does it hire?`,
                 given: {
                     "Technology": String.raw`$q = ${co(c)}L K$`,
                     "Wage w": eur(w),
@@ -2825,7 +2825,7 @@ export const econ1Questions: Question[] = [
             const Q = c * L * K;
             const answer = w * L + r * K; // = 2 sqrt(Q w r / c)
             return {
-                prompt: String.raw`${sc.who} produces with $q = ${co(c)}L K$ from labour $L$ at ${eur(w)} per unit and capital $K$ at ${eur(r)} per unit. What is the **minimum cost** of producing ${n(Q)} units?`,
+                prompt: String.raw`${sc.who} produces with $q = ${co(c)}L K$ from labour $L$ at ${eur(w)} per unit and capital $K$ at ${eur(r)} per unit. What is the minimum cost of producing ${n(Q)} units?`,
                 given: {
                     "Technology": String.raw`$q = ${co(c)}L K$`,
                     "Wage w": eur(w),
@@ -2864,7 +2864,7 @@ export const econ1Questions: Question[] = [
             const Q = A * t;
             const answer = 2 * root * t; // = (2 sqrt(w r) / A) * Q
             return {
-                prompt: String.raw`${s.who} produces with $Q = ${n(A)} \, L^{1/2} K^{1/2}$. Labour costs ${eur(w)} per unit, capital ${eur(r)} per unit, and there are no other costs. What is the **minimum cost** of producing ${n(Q)} tonnes?`,
+                prompt: String.raw`${s.who} produces with $Q = ${n(A)} \, L^{1/2} K^{1/2}$. Labour costs ${eur(w)} per unit, capital ${eur(r)} per unit, and there are no other costs. What is the minimum cost of producing ${n(Q)} tonnes?`,
                 given: {
                     "Technology": String.raw`$Q = ${n(A)} \, L^{1/2} K^{1/2}$`,
                     "Wage w": eur(w),
@@ -2908,7 +2908,7 @@ export const econ1Questions: Question[] = [
                     "Budget B": eur(B),
                 },
                 answer,
-                explanation: String.raw`$q = c \cdot \frac{B}{2w} \cdot \frac{B}{2r}$. Maximising $c L K$ on the budget line $w L + r K = B$ requires $\frac{MP_L}{MP_K} = \frac{K}{L} = \frac{w}{r}$, which means each input absorbs exactly half of the budget: $L = \frac{B}{2w}$ = ${n(L)} and $K = \frac{B}{2r}$ = ${n(K)}. Output: ${n(c)} · ${n(L)} · ${n(K)} = ${n(answer)} units. Equivalently $q = \frac{c B^2}{4 w r}$ - output grows with the **square** of the budget here, because both inputs expand together.`,
+                explanation: String.raw`$q = c \cdot \frac{B}{2w} \cdot \frac{B}{2r}$. Maximising $c L K$ on the budget line $w L + r K = B$ requires $\frac{MP_L}{MP_K} = \frac{K}{L} = \frac{w}{r}$, which means each input absorbs exactly half of the budget: $L = \frac{B}{2w}$ = ${n(L)} and $K = \frac{B}{2r}$ = ${n(K)}. Output: ${n(c)} · ${n(L)} · ${n(K)} = ${n(answer)} units. Equivalently $q = \frac{c B^2}{4 w r}$ - output grows with the square of the budget here, because both inputs expand together.`,
             };
         },
     },
@@ -2932,7 +2932,7 @@ export const econ1Questions: Question[] = [
             const cost = w * L + r * K;
             const answer = cost / Q; // = 2 sqrt(w r / (c q))
             return {
-                prompt: String.raw`${sc.who} produces with $q = ${co(c)}L K$, hiring labour at ${eur(w)} per unit and capital at ${eur(r)} per unit, and it makes ${n(Q)} ${sc.units} at minimum cost. It sells at a price it cannot influence. At which **output price** is its profit exactly zero?`,
+                prompt: String.raw`${sc.who} produces with $q = ${co(c)}L K$, hiring labour at ${eur(w)} per unit and capital at ${eur(r)} per unit, and it makes ${n(Q)} ${sc.units} at minimum cost. It sells at a price it cannot influence. At which output price is its profit exactly zero?`,
                 given: {
                     "Technology": String.raw`$q = ${co(c)}L K$`,
                     "Wage w": eur(w),
@@ -2968,7 +2968,7 @@ export const econ1Questions: Question[] = [
             const q0 = rng.int(2, 12);
             const answer = 4 * root * q0;
             return {
-                prompt: String.raw`${s.who} produces with $q = (L K)^{1/4}$, paying ${eur(w)} per unit of labour and ${eur(r)} per unit of capital, and it always chooses the cheapest input mix for whatever output it makes. What are its **marginal costs** at an output of ${n(q0)} units?`,
+                prompt: String.raw`${s.who} produces with $q = (L K)^{1/4}$, paying ${eur(w)} per unit of labour and ${eur(r)} per unit of capital, and it always chooses the cheapest input mix for whatever output it makes. What are its marginal costs at an output of ${n(q0)} units?`,
                 given: {
                     "Technology": String.raw`$q = (L K)^{1/4}$`,
                     "Wage w": eur(w),
@@ -3009,7 +3009,7 @@ export const econ1Questions: Question[] = [
             const A = rng.pick([2, 3, 4, 5].filter((d) => (2 * root) % d === 0));
             const answer = (2 * root) / A;
             return {
-                prompt: String.raw`${s.who} produces with $Q = ${n(A)} \, L^{1/2} K^{1/2}$, paying ${eur(w)} per unit of labour and ${eur(r)} per unit of capital. It has no fixed costs and takes the market price as given. Below which **output price** would it be better off producing nothing at all?`,
+                prompt: String.raw`${s.who} produces with $Q = ${n(A)} \, L^{1/2} K^{1/2}$, paying ${eur(w)} per unit of labour and ${eur(r)} per unit of capital. It has no fixed costs and takes the market price as given. Below which output price would it be better off producing nothing at all?`,
                 given: {
                     "Technology": String.raw`$Q = ${n(A)} \, L^{1/2} K^{1/2}$`,
                     "Wage w": eur(w),
@@ -3090,13 +3090,13 @@ export const econ1Questions: Question[] = [
             const b = rng.int(4, 30); // min AVC
             const lr = b + 2 * a * qm; // long-run break-even price
             return {
-                prompt: String.raw`${s.who} has the short-run cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$, where ${eur(F)} is the fixed cost of the plant and cannot be recovered this season. Below which market price per ${s.one} does ${s.short} stop producing altogether in the **short run**?`,
+                prompt: String.raw`${s.who} has the short-run cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$, where ${eur(F)} is the fixed cost of the plant and cannot be recovered this season. Below which market price per ${s.one} does ${s.short} stop producing altogether in the short run?`,
                 given: {
                     "Cost function": String.raw`$C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$`,
                     "Fixed cost": eur(F),
                 },
                 answer: b,
-                explanation: String.raw`In the short run the fixed cost is sunk, so the firm produces as long as the price covers average variable cost: the shut-down price is $p_{\text{shut}} = \min AVC$. Here $AVC(q) = ${co(a)}q + ${n(b)}$ rises in $q$, so its lowest value is reached as $q \to 0$ and equals ${eur(b)}. Check it directly: the optimum is $q^* = \frac{p - ${n(b)}}{${n(2 * a)}}$, where $AVC = \frac{p + ${n(b)}}{2}$, and $p \geq \frac{p + ${n(b)}}{2}$ holds exactly for $p \geq$ ${eur(b)}. The **long-run** threshold is higher, because there the fixed cost has to be earned as well: $b + 2\sqrt{a F}$ = ${eur(lr)}.`,
+                explanation: String.raw`In the short run the fixed cost is sunk, so the firm produces as long as the price covers average variable cost: the shut-down price is $p_{\text{shut}} = \min AVC$. Here $AVC(q) = ${co(a)}q + ${n(b)}$ rises in $q$, so its lowest value is reached as $q \to 0$ and equals ${eur(b)}. Check it directly: the optimum is $q^* = \frac{p - ${n(b)}}{${n(2 * a)}}$, where $AVC = \frac{p + ${n(b)}}{2}$, and $p \geq \frac{p + ${n(b)}}{2}$ holds exactly for $p \geq$ ${eur(b)}. The long-run threshold is higher, because there the fixed cost has to be earned as well: $b + 2\sqrt{a F}$ = ${eur(lr)}.`,
                 hint: String.raw`A cost the firm carries whether or not it produces cannot be escaped by closing, so in the short run it keeps producing as long as the price covers average variable cost: $p_{\text{shut}} = \min AVC$ with $AVC(q) = \frac{C_v(q)}{q}$.`,
             };
         },
@@ -3150,7 +3150,7 @@ export const econ1Questions: Question[] = [
             const p = b + 2 * a * q;
             const answer = above ? q : 0;
             return {
-                prompt: String.raw`${s.who} is a price taker with the **long-run** cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$ for $q > 0$ and $C(0) = 0$. The price is ${eur(p)} per ${s.one}. How many ${s.units} does ${s.short} produce in the long run? Enter 0 if it leaves the market.`,
+                prompt: String.raw`${s.who} is a price taker with the long-run cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$ for $q > 0$ and $C(0) = 0$. The price is ${eur(p)} per ${s.one}. How many ${s.units} does ${s.short} produce in the long run? Enter 0 if it leaves the market.`,
                 given: {
                     "Long-run cost": String.raw`$C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$ for $q > 0$`,
                     "Cost when closed": String.raw`$C(0) = 0$`,
@@ -3158,8 +3158,8 @@ export const econ1Questions: Question[] = [
                 },
                 answer,
                 explanation: above
-                    ? String.raw`The firm stays only if $p \geq \bar p = b + 2\sqrt{a F}$, and then produces where $p = MC(q)$. The threshold is ${n(b)} + 2 · √(${n(a)} · ${n(F)}) = ${eur(pBar)}, and the price of ${eur(p)} lies **above** it, so ${s.short} produces. From $MC(q) = ${n(2 * a)} q + ${n(b)} = ${n(p)}$: $q^* = \frac{p - ${n(b)}}{${n(2 * a)}}$ = ${n(q)} ${s.units}. At that output average cost is exactly covered plus a margin, so staying beats exiting.`
-                    : String.raw`The firm stays only if $p \geq \bar p = b + 2\sqrt{a F}$, and then produces where $p = MC(q)$. The threshold is ${n(b)} + 2 · √(${n(a)} · ${n(F)}) = ${eur(pBar)}, and the price of ${eur(p)} lies **below** it. Producing where $MC = p$ would give ${n(q)} ${q === 1 ? s.oneShort : s.units}, but there average cost is ${eur((a * q * q + b * q + F) / q)} > ${eur(p)}, so every ${s.oneShort} loses money and the whole ${eur(F)} of overhead is avoidable. ${cap(s.short)} therefore leaves the market and produces nothing.`,
+                    ? String.raw`The firm stays only if $p \geq \bar p = b + 2\sqrt{a F}$, and then produces where $p = MC(q)$. The threshold is ${n(b)} + 2 · √(${n(a)} · ${n(F)}) = ${eur(pBar)}, and the price of ${eur(p)} lies above it, so ${s.short} produces. From $MC(q) = ${n(2 * a)} q + ${n(b)} = ${n(p)}$: $q^* = \frac{p - ${n(b)}}{${n(2 * a)}}$ = ${n(q)} ${s.units}. At that output average cost is exactly covered plus a margin, so staying beats exiting.`
+                    : String.raw`The firm stays only if $p \geq \bar p = b + 2\sqrt{a F}$, and then produces where $p = MC(q)$. The threshold is ${n(b)} + 2 · √(${n(a)} · ${n(F)}) = ${eur(pBar)}, and the price of ${eur(p)} lies below it. Producing where $MC = p$ would give ${n(q)} ${q === 1 ? s.oneShort : s.units}, but there average cost is ${eur((a * q * q + b * q + F) / q)} > ${eur(p)}, so every ${s.oneShort} loses money and the whole ${eur(F)} of overhead is avoidable. ${cap(s.short)} therefore leaves the market and produces nothing.`,
                 hint: String.raw`In the long run a firm stays only if the price reaches the minimum of average cost, $\bar p = \min AC$; if it does, output follows from $p = MC(q)$, otherwise the firm exits.`,
             };
         },
@@ -3186,7 +3186,7 @@ export const econ1Questions: Question[] = [
                     "Market structure": "perfect competition, free entry and exit",
                 },
                 answer,
-                explanation: String.raw`Free entry pushes profits to zero, so the long-run price equals minimum average cost: $p^* = \min AC = b + 2\sqrt{F c}$. Average cost is $AC(q) = \frac{${n(F)}}{q} + ${n(b)} + ${co(c)}q$, minimal where $\frac{${n(F)}}{q^2} = ${n(c)}$, i.e. at $q^*$ = ${n(qm)} ${s.units}. There $AC$ = ${n(F)} / ${n(qm)} + ${n(b)} + ${n(c)} · ${n(qm)} = ${eur(answer)}. Note that no demand curve was needed: demand fixes how **many** firms operate, but the long-run price is pinned down by the cost function alone.`,
+                explanation: String.raw`Free entry pushes profits to zero, so the long-run price equals minimum average cost: $p^* = \min AC = b + 2\sqrt{F c}$. Average cost is $AC(q) = \frac{${n(F)}}{q} + ${n(b)} + ${co(c)}q$, minimal where $\frac{${n(F)}}{q^2} = ${n(c)}$, i.e. at $q^*$ = ${n(qm)} ${s.units}. There $AC$ = ${n(F)} / ${n(qm)} + ${n(b)} + ${n(c)} · ${n(qm)} = ${eur(answer)}. Note that no demand curve was needed: demand fixes how many firms operate, but the long-run price is pinned down by the cost function alone.`,
             };
         },
     },
@@ -3239,13 +3239,13 @@ export const econ1Questions: Question[] = [
             const A = nStar * qm + d * pStar;
             const answer = nStar * F; // PS = n* F
             return {
-                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$. Entry is free and market demand is $Q_D = ${n(A)} - ${co(d)}p$ ${s.units} per day. What is the **producer surplus** in the long-run equilibrium?`,
+                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$. Entry is free and market demand is $Q_D = ${n(A)} - ${co(d)}p$ ${s.units} per day. What is the producer surplus in the long-run equilibrium?`,
                 given: {
                     "Cost per firm": String.raw`$C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$`,
                     "Demand": String.raw`$Q_D = ${n(A)} - ${co(d)}p$`,
                 },
                 answer,
-                explanation: String.raw`Producer surplus is revenue minus **variable** cost, $PS = p^* Q^* - VC$, while profit also subtracts the quasi-fixed cost - so the two differ by exactly that cost. Free entry gives $q^* = \sqrt{F / c}$ = ${n(qm)} ${s.units} and $p^* = \min AC$ = ${eur(pStar)}, and demand ${n(A)} − ${n(d)} · ${n(pStar)} = ${n(nStar * qm)} ${s.units} implies $n^*$ = ${n(nStar)} firms. Per firm: revenue ${eur(pStar * qm)} minus variable cost ${n(b)} · ${n(qm)} + ${n(c)} · ${n(qm * qm)} = ${eur(b * qm + c * qm * qm)} leaves ${eur(F)} - precisely the quasi-fixed cost. Total: ${n(nStar)} · ${eur(F)} = ${eur(answer)}. The trap: profits are zero in the long run, but producer surplus is **not**.`,
+                explanation: String.raw`Producer surplus is revenue minus variable cost, $PS = p^* Q^* - VC$, while profit also subtracts the quasi-fixed cost - so the two differ by exactly that cost. Free entry gives $q^* = \sqrt{F / c}$ = ${n(qm)} ${s.units} and $p^* = \min AC$ = ${eur(pStar)}, and demand ${n(A)} − ${n(d)} · ${n(pStar)} = ${n(nStar * qm)} ${s.units} implies $n^*$ = ${n(nStar)} firms. Per firm: revenue ${eur(pStar * qm)} minus variable cost ${n(b)} · ${n(qm)} + ${n(c)} · ${n(qm * qm)} = ${eur(b * qm + c * qm * qm)} leaves ${eur(F)} - precisely the quasi-fixed cost. Total: ${n(nStar)} · ${eur(F)} = ${eur(answer)}. The trap: profits are zero in the long run, but producer surplus is not.`,
                 hint: String.raw`Producer surplus is revenue minus variable cost only, while profit also subtracts the cost that arises with production but not with output. Free entry fixes $q^* = \arg\min AC$, $p^* = \min AC$ and the number of firms from demand: $PS = p^* Q^* - VC$.`,
             };
         },
@@ -3275,7 +3275,7 @@ export const econ1Questions: Question[] = [
             const PS = nStar * F;
             const answer = CS + PS;
             return {
-                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$, and entry is free. Inverse market demand is $p = \frac{${n(A)} - Q}{${n(d)}}$, with $Q$ in ${s.units} per day. What is the **total surplus** (consumer plus producer surplus) in the long-run equilibrium?`,
+                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$, and entry is free. Inverse market demand is $p = \frac{${n(A)} - Q}{${n(d)}}$, with $Q$ in ${s.units} per day. What is the total surplus (consumer plus producer surplus) in the long-run equilibrium?`,
                 given: {
                     "Cost per firm": String.raw`$C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$`,
                     "Inverse demand": String.raw`$p = \frac{${n(A)} - Q}{${n(d)}}$`,
@@ -3363,7 +3363,7 @@ export const econ1Questions: Question[] = [
             const A = Q + d * pStar;
             const answer = 0.5 * gap * Q;
             return {
-                prompt: String.raw`${sc.good} are traded in a competitive market with demand $Q_D = ${n(A)} - ${co(d)}p$ and supply $Q_S = ${co(s)}p - ${n(B)}$, quantities in kilograms per day. Compute the **producer surplus** in the market equilibrium.`,
+                prompt: String.raw`${sc.good} are traded in a competitive market with demand $Q_D = ${n(A)} - ${co(d)}p$ and supply $Q_S = ${co(s)}p - ${n(B)}$, quantities in kilograms per day. Compute the producer surplus in the market equilibrium.`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${co(d)}p$`,
                     "Supply": String.raw`$Q_S = ${co(s)}p - ${n(B)}$`,
@@ -3397,7 +3397,7 @@ export const econ1Questions: Question[] = [
                     "Extra quantity per euro": `${n(s)} ${sc.units}`,
                 },
                 answer: pStar,
-                explanation: String.raw`First turn the words into a supply curve: an intercept plus a slope, $Q_S = Q_0 + s \, p$. Here $Q_S = ${n(Q0)} + ${co(s)}p$. Market clearing $Q_D = Q_S$: $${n(A)} - ${co(d)}p = ${n(Q0)} + ${co(s)}p$, so $p^* = \frac{${n(A)} - ${n(Q0)}}{${n(d)} + ${n(s)}}$ = ${eur(pStar)}. The traded quantity is $Q^*$ = ${n(Q0)} + ${n(s)} · ${n(pStar)} = ${n(Q)} ${sc.units}. Note the supply curve does **not** run through the origin: it already cuts the quantity axis at ${n(Q0)} ${sc.units}.`,
+                explanation: String.raw`First turn the words into a supply curve: an intercept plus a slope, $Q_S = Q_0 + s \, p$. Here $Q_S = ${n(Q0)} + ${co(s)}p$. Market clearing $Q_D = Q_S$: $${n(A)} - ${co(d)}p = ${n(Q0)} + ${co(s)}p$, so $p^* = \frac{${n(A)} - ${n(Q0)}}{${n(d)} + ${n(s)}}$ = ${eur(pStar)}. The traded quantity is $Q^*$ = ${n(Q0)} + ${n(s)} · ${n(pStar)} = ${n(Q)} ${sc.units}. Note the supply curve does not run through the origin: it already cuts the quantity axis at ${n(Q0)} ${sc.units}.`,
             };
         },
     },
@@ -3420,14 +3420,14 @@ export const econ1Questions: Question[] = [
             const answer = 0.5 * (Q0 + Q) * pStar;
             const triangle = 0.5 * Q * pStar;
             return {
-                prompt: String.raw`Demand for ${sc.good} is $Q_D = ${n(A)} - ${co(d)}p$ ${sc.units} per week. Even at a price of zero ${sc.seller} offers ${n(Q0)} ${sc.units} (${sc.why}), and every additional euro of price raises the quantity offered by ${n(s)} ${sc.units}. What is the **producer surplus** in the market equilibrium?`,
+                prompt: String.raw`Demand for ${sc.good} is $Q_D = ${n(A)} - ${co(d)}p$ ${sc.units} per week. Even at a price of zero ${sc.seller} offers ${n(Q0)} ${sc.units} (${sc.why}), and every additional euro of price raises the quantity offered by ${n(s)} ${sc.units}. What is the producer surplus in the market equilibrium?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${co(d)}p$`,
                     "Offered at a price of zero": `${n(Q0)} ${sc.units}`,
                     "Extra quantity per euro": `${n(s)} ${sc.units}`,
                 },
                 answer,
-                explanation: String.raw`Producer surplus is the area between the price line and the supply curve, and because supply starts at a positive quantity that area is a **trapezoid**: $PS = \frac{1}{2}\left(Q_0 + Q^*\right) p^*$. Supply is $Q_S = ${n(Q0)} + ${co(s)}p$; equating with demand gives $p^* = \frac{${n(A)} - ${n(Q0)}}{${n(d)} + ${n(s)}}$ = ${eur(pStar)} and $Q^*$ = ${n(Q)} ${sc.units}. So $PS$ = ½ · (${n(Q0)} + ${n(Q)}) · ${n(pStar)} = ${eur(answer)}. Treating it as a triangle ½ · ${n(Q)} · ${n(pStar)} = ${eur(triangle)} understates the surplus - the first ${n(Q0)} ${sc.units} would be supplied even for free, and every euro paid for them is surplus.`,
+                explanation: String.raw`Producer surplus is the area between the price line and the supply curve, and because supply starts at a positive quantity that area is a trapezoid: $PS = \frac{1}{2}\left(Q_0 + Q^*\right) p^*$. Supply is $Q_S = ${n(Q0)} + ${co(s)}p$; equating with demand gives $p^* = \frac{${n(A)} - ${n(Q0)}}{${n(d)} + ${n(s)}}$ = ${eur(pStar)} and $Q^*$ = ${n(Q)} ${sc.units}. So $PS$ = ½ · (${n(Q0)} + ${n(Q)}) · ${n(pStar)} = ${eur(answer)}. Treating it as a triangle ½ · ${n(Q)} · ${n(pStar)} = ${eur(triangle)} understates the surplus - the first ${n(Q0)} ${sc.units} would be supplied even for free, and every euro paid for them is surplus.`,
             };
         },
     },
@@ -3452,7 +3452,7 @@ export const econ1Questions: Question[] = [
             const verdict =
                 answer > 1 ? "elastic" : answer < 1 ? "inelastic" : "exactly unit-elastic";
             return {
-                prompt: String.raw`The market for ${s.good} has inverse demand $P = ${n(A)} - ${co(b)}Q$ and inverse supply $P = ${n(c)} + ${co(g)}Q$, with $Q$ in ${s.units} per day. What is the **absolute value** of the price elasticity of demand in the market equilibrium?`,
+                prompt: String.raw`The market for ${s.good} has inverse demand $P = ${n(A)} - ${co(b)}Q$ and inverse supply $P = ${n(c)} + ${co(g)}Q$, with $Q$ in ${s.units} per day. What is the absolute value of the price elasticity of demand in the market equilibrium?`,
                 given: {
                     "Inverse demand": String.raw`$P = ${n(A)} - ${co(b)}Q$`,
                     "Inverse supply": String.raw`$P = ${n(c)} + ${co(g)}Q$`,
@@ -3486,7 +3486,7 @@ export const econ1Questions: Question[] = [
             // p_D = (A + B + s t) / (d + s); tot divides 100, so this is exact to 2 decimals
             const answer = Math.round((pStar + (s * t) / tot) * 100) / 100;
             return {
-                prompt: String.raw`In the market for ${sc.good}, demand is $Q_D = ${n(A)} - ${n(d)} p_D$ and supply is $Q_S = ${n(s)} p_S - ${n(B)}$, in ${sc.units} per day. The government levies a per-unit tax of ${eur(t)} **on the producers**, so that $p_S = p_D - ${n(t)}$. What price do consumers pay per ${sc.one} once the market has adjusted?`,
+                prompt: String.raw`In the market for ${sc.good}, demand is $Q_D = ${n(A)} - ${n(d)} p_D$ and supply is $Q_S = ${n(s)} p_S - ${n(B)}$, in ${sc.units} per day. The government levies a per-unit tax of ${eur(t)} on the producers, so that $p_S = p_D - ${n(t)}$. What price do consumers pay per ${sc.one} once the market has adjusted?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${n(d)} p_D$`,
                     "Supply": String.raw`$Q_S = ${n(s)} p_S - ${n(B)}$`,
@@ -3523,14 +3523,14 @@ export const econ1Questions: Question[] = [
             const Qt = Math.round((Q - (d * s * t) / tot) * 100) / 100; // traded quantity with the tax
             const answer = Math.round(t * Qt * 100) / 100;
             return {
-                prompt: String.raw`${sc.good} are traded competitively, with demand $Q_D = ${n(A)} - ${n(d)} p_D$ and supply $Q_S = ${n(s)} p_S - ${n(B)}$ per week. The government introduces a per-unit tax of ${eur(t)} **on the producers**, so that $p_S = p_D - ${n(t)}$. How much tax revenue does it collect per week?`,
+                prompt: String.raw`${sc.good} are traded competitively, with demand $Q_D = ${n(A)} - ${n(d)} p_D$ and supply $Q_S = ${n(s)} p_S - ${n(B)}$ per week. The government introduces a per-unit tax of ${eur(t)} on the producers, so that $p_S = p_D - ${n(t)}$. How much tax revenue does it collect per week?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${n(d)} p_D$`,
                     "Supply": String.raw`$Q_S = ${n(s)} p_S - ${n(B)}$`,
                     "Per-unit tax t": eur(t),
                 },
                 answer,
-                explanation: String.raw`Tax revenue is $T = t \cdot Q_t$, so the traded quantity **after** the tax is what matters. With $p_S = p_D - t$ the consumer price is $p_D = \frac{A + B + s\, t}{d + s}$ = (${n(A)} + ${n(B)} + ${n(s)} · ${n(t)}) / ${n(tot)} = ${eur(pD)}, and $Q_t$ = ${n(A)} − ${n(d)} · ${n(pD)} = ${n2(Qt)} ${sc.units}. Revenue: ${eur(t)} · ${n2(Qt)} = ${eur(answer)}. Using the pre-tax quantity ${n(Q)} instead would overstate the take, because the tax itself shrinks the market.`,
+                explanation: String.raw`Tax revenue is $T = t \cdot Q_t$, so the traded quantity after the tax is what matters. With $p_S = p_D - t$ the consumer price is $p_D = \frac{A + B + s\, t}{d + s}$ = (${n(A)} + ${n(B)} + ${n(s)} · ${n(t)}) / ${n(tot)} = ${eur(pD)}, and $Q_t$ = ${n(A)} − ${n(d)} · ${n(pD)} = ${n2(Qt)} ${sc.units}. Revenue: ${eur(t)} · ${n2(Qt)} = ${eur(answer)}. Using the pre-tax quantity ${n(Q)} instead would overstate the take, because the tax itself shrinks the market.`,
             };
         },
     },
@@ -3558,7 +3558,7 @@ export const econ1Questions: Question[] = [
             const PS = 0.5 * gap * Q;
             const answer = CS + PS;
             return {
-                prompt: String.raw`${sc.good} are traded in a competitive market with demand $Q_D = ${n(A)} - ${co(d)}p$ and supply $Q_S = ${co(s)}p - ${n(B)}$, in ${sc.units} per month. Compute the **total surplus** (consumer plus producer surplus) in the untaxed market equilibrium.`,
+                prompt: String.raw`${sc.good} are traded in a competitive market with demand $Q_D = ${n(A)} - ${co(d)}p$ and supply $Q_S = ${co(s)}p - ${n(B)}$, in ${sc.units} per month. Compute the total surplus (consumer plus producer surplus) in the untaxed market equilibrium.`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${co(d)}p$`,
                     "Supply": String.raw`$Q_S = ${co(s)}p - ${n(B)}$`,
@@ -3594,7 +3594,7 @@ export const econ1Questions: Question[] = [
                     "Price ceiling": eur(cap),
                 },
                 answer: Qstar,
-                explanation: String.raw`$Q_D(p^*) = Q_S(p^*)$ fixes the free-market price, and a ceiling $\bar{p}$ only bites when $\bar{p} < p^*$. Here $${n(A)} - ${co(d)}p = ${co(s)}p$ gives $p^* = \frac{${n(A)}}{${n(s + d)}}$ = ${eur(pStar)} and $Q^* = ${n(s)} \cdot ${n(pStar)}$ = ${n(Qstar)} ${sc.units}. The ceiling of ${eur(cap)} lies ${eur(cap - pStar)} **above** $p^*$, so it never restricts anyone: the market still clears at ${eur(pStar)} and ${n(Qstar)} ${sc.units} change hands.`,
+                explanation: String.raw`$Q_D(p^*) = Q_S(p^*)$ fixes the free-market price, and a ceiling $\bar{p}$ only bites when $\bar{p} < p^*$. Here $${n(A)} - ${co(d)}p = ${co(s)}p$ gives $p^* = \frac{${n(A)}}{${n(s + d)}}$ = ${eur(pStar)} and $Q^* = ${n(s)} \cdot ${n(pStar)}$ = ${n(Qstar)} ${sc.units}. The ceiling of ${eur(cap)} lies ${eur(cap - pStar)} above $p^*$, so it never restricts anyone: the market still clears at ${eur(pStar)} and ${n(Qstar)} ${sc.units} change hands.`,
             };
         },
     },
@@ -3658,7 +3658,7 @@ export const econ1Questions: Question[] = [
                     "Price ceiling": eur(cap),
                 },
                 answer: Qc,
-                explanation: String.raw`With a binding ceiling the **short side** of the market determines trade: $Q = \min \left\{ Q_D(\bar{p}),\, Q_S(\bar{p}) \right\} = Q_S(\bar{p})$. Free-market price: $${n(A)} - ${co(d)}p = ${co(s)}p$ gives $p^*$ = ${eur(pStar)} with $Q^*$ = ${n(Qstar)} ${sc.units}. At the ceiling of ${eur(cap)} sellers offer $Q_S$ = ${n(s)} · ${n(cap)} = ${n(Qc)} ${sc.units} while buyers want $Q_D$ = ${n(A)} − ${n(d)} · ${n(cap)} = ${n(Qd)} ${sc.units}. The excess demand of ${n(excess)} ${sc.units} per day is rationed away (queues, lotteries), and only ${n(Qc)} ${sc.units} are traded.`,
+                explanation: String.raw`With a binding ceiling the short side of the market determines trade: $Q = \min \left\{ Q_D(\bar{p}),\, Q_S(\bar{p}) \right\} = Q_S(\bar{p})$. Free-market price: $${n(A)} - ${co(d)}p = ${co(s)}p$ gives $p^*$ = ${eur(pStar)} with $Q^*$ = ${n(Qstar)} ${sc.units}. At the ceiling of ${eur(cap)} sellers offer $Q_S$ = ${n(s)} · ${n(cap)} = ${n(Qc)} ${sc.units} while buyers want $Q_D$ = ${n(A)} − ${n(d)} · ${n(cap)} = ${n(Qd)} ${sc.units}. The excess demand of ${n(excess)} ${sc.units} per day is rationed away (queues, lotteries), and only ${n(Qc)} ${sc.units} are traded.`,
             };
         },
     },
@@ -3754,7 +3754,7 @@ export const econ1Questions: Question[] = [
             const pS = pStar - j; // = Q_f / s
             const answer = 0.5 * (floor - pS) * (Qstar - Qf);
             return {
-                prompt: String.raw`${sc.intro}. Daily demand is $Q_D = ${n(A)} - ${co(d)}p$ and daily supply is $Q_S = ${co(s)}p$, with $p$ in euros per ${sc.one}. To support ${sc.producers} ${sc.authority} sets a minimum price of ${eur(floor)} per ${sc.one} and does **not** buy up the unsold ${sc.product}. What is the deadweight loss of this price floor?`,
+                prompt: String.raw`${sc.intro}. Daily demand is $Q_D = ${n(A)} - ${co(d)}p$ and daily supply is $Q_S = ${co(s)}p$, with $p$ in euros per ${sc.one}. To support ${sc.producers} ${sc.authority} sets a minimum price of ${eur(floor)} per ${sc.one} and does not buy up the unsold ${sc.product}. What is the deadweight loss of this price floor?`,
                 given: {
                     Demand: String.raw`$Q_D = ${n(A)} - ${co(d)}p$`,
                     Supply: String.raw`$Q_S = ${co(s)}p$`,
@@ -3975,7 +3975,7 @@ export const econ1Questions: Question[] = [
             const pt = A - Qt;
             const answer = 2 * Qt * Qt - F;
             return {
-                prompt: String.raw`${s.firm} faces the demand $Q = ${n(A)} - p$ ${s.units} per day, with $p$ in euros per ${s.one}, and has the cost function $C(Q) = ${n(F)} + ${co(b)}Q + Q^2$ for $Q > 0$. ${s.state} now levies a tax of ${eur(t)} on **every ${s.one} ${s.short} sells**. What profit does ${s.short} make per day once it has re-optimized?`,
+                prompt: String.raw`${s.firm} faces the demand $Q = ${n(A)} - p$ ${s.units} per day, with $p$ in euros per ${s.one}, and has the cost function $C(Q) = ${n(F)} + ${co(b)}Q + Q^2$ for $Q > 0$. ${s.state} now levies a tax of ${eur(t)} on every ${s.one} ${s.short} sells. What profit does ${s.short} make per day once it has re-optimized?`,
                 given: {
                     Demand: String.raw`$Q = ${n(A)} - p$`,
                     "Cost function": String.raw`$C(Q) = ${n(F)} + ${co(b)}Q + Q^2$`,
@@ -4017,7 +4017,7 @@ export const econ1Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$DWL = \frac{1}{2}\, e \left( Q_m - Q_s \right)$: on every ${s.one} between the two quantities the social cost exceeds the willingness to pay, and the wedge grows linearly from 0 to $e$. The market ignores the damage: $${n(a)} - ${co(b)}Q = ${n(c)} + ${co(g)}Q$ gives $Q_m$ = ${n(Qm)} ${s.units}. The social optimum uses $MSC = ${n(c)} + ${n(e)} + ${co(g)}Q$: $${n(a)} - ${co(b)}Q = ${n(c + e)} + ${co(g)}Q$ gives $Q_s$ = ${n(Qs)} ${s.units}. So DWL = ½ · ${n(e)} · (${n(Qm)} − ${n(Qs)}) = ${eur(answer)}.`,
-                hint: String.raw`Compare the quantity the market trades with the one that equates demand and the **social** marginal cost, private supply plus the external damage. The loss is the triangle between them: $DWL = \frac{1}{2}\, e \left( Q_m - Q_s \right)$.`,
+                hint: String.raw`Compare the quantity the market trades with the one that equates demand and the social marginal cost, private supply plus the external damage. The loss is the triangle between them: $DWL = \frac{1}{2}\, e \left( Q_m - Q_s \right)$.`,
             };
         },
     },
@@ -4047,7 +4047,7 @@ export const econ1Questions: Question[] = [
                     "Marginal external cost": String.raw`$MEC = ${co(mec)}Q$`,
                 },
                 answer,
-                explanation: String.raw`A Pigouvian tax equals the marginal external cost **at the social optimum**: $\tau = MEC(Q_s)$ with $Q_s$ from $a - b Q = (g + m) Q$, i.e. $Q_s = \frac{a}{b + g + m}$. Here $Q_s = \frac{${n(a)}}{${n(T)}}$ = ${n(Qs)} ${s.units}, against ${n(Qm)} ${s.units} in the unregulated market. The tax is $\tau = ${n(mec)} \cdot ${n(Qs)}$ = ${eur(answer)} per ${s.one}. Check: with it producers supply along $${co(g)}Q + ${n(answer)}$, and $${n(a)} - ${co(b)}Q = ${co(g)}Q + ${n(answer)}$ is solved exactly at ${n(Qs)} ${s.units}.`,
+                explanation: String.raw`A Pigouvian tax equals the marginal external cost at the social optimum: $\tau = MEC(Q_s)$ with $Q_s$ from $a - b Q = (g + m) Q$, i.e. $Q_s = \frac{a}{b + g + m}$. Here $Q_s = \frac{${n(a)}}{${n(T)}}$ = ${n(Qs)} ${s.units}, against ${n(Qm)} ${s.units} in the unregulated market. The tax is $\tau = ${n(mec)} \cdot ${n(Qs)}$ = ${eur(answer)} per ${s.one}. Check: with it producers supply along $${co(g)}Q + ${n(answer)}$, and $${n(a)} - ${co(b)}Q = ${co(g)}Q + ${n(answer)}$ is solved exactly at ${n(Qs)} ${s.units}.`,
             };
         },
     },
@@ -4078,7 +4078,7 @@ export const econ1Questions: Question[] = [
                     [`External benefit per ${s.one}`]: eur(e),
                 },
                 answer,
-                explanation: String.raw`With a positive externality the marginal social benefit lies above demand, $MSB = a + e - b Q$, and the optimum solves $MSB = MSC$, so $Q_s = \frac{a + e - c}{b + g}$. Here $${n(a + e)} - ${co(b)}Q = ${n(c)} + ${co(g)}Q$ gives $Q_s$ = ${n(answer)} ${s.units} per day. The market alone stops at $Q_m = \frac{${n(a)} - ${n(c)}}{${n(S)}}$ = ${n(Qm)} ${s.units} - ${s.noun} is **under**-provided, which is why a subsidy of ${eur(e)} ${s.subsidy} would be the efficient policy.`,
+                explanation: String.raw`With a positive externality the marginal social benefit lies above demand, $MSB = a + e - b Q$, and the optimum solves $MSB = MSC$, so $Q_s = \frac{a + e - c}{b + g}$. Here $${n(a + e)} - ${co(b)}Q = ${n(c)} + ${co(g)}Q$ gives $Q_s$ = ${n(answer)} ${s.units} per day. The market alone stops at $Q_m = \frac{${n(a)} - ${n(c)}}{${n(S)}}$ = ${n(Qm)} ${s.units} - ${s.noun} is under-provided, which is why a subsidy of ${eur(e)} ${s.subsidy} would be the efficient policy.`,
             };
         },
     },
@@ -4139,7 +4139,7 @@ export const econ1Questions: Question[] = [
                     [`Marginal cost per ${s.one}`]: eur(c),
                 },
                 answer,
-                explanation: String.raw`For a public good the Samuelson condition sums the marginal benefits **vertically**: $\sum_{i=1}^{m} MB_i(Q) = MC$, i.e. $m (a - Q) = c$, so $Q^E = a - \frac{c}{m}$. Here $${n(households)} \left( ${n(a)} - Q \right) = ${n(c)}$ gives $Q^E = ${n(a)} - \frac{${n(c)}}{${n(households)}}$ = ${n(answer)} ${s.units}. At that level each ${s.member} still values a further ${s.one} at ${eur(j)}, and ${n(households)} · ${eur(j)} = ${eur(c)} exactly covers the cost of one more ${s.one}.`,
+                explanation: String.raw`For a public good the Samuelson condition sums the marginal benefits vertically: $\sum_{i=1}^{m} MB_i(Q) = MC$, i.e. $m (a - Q) = c$, so $Q^E = a - \frac{c}{m}$. Here $${n(households)} \left( ${n(a)} - Q \right) = ${n(c)}$ gives $Q^E = ${n(a)} - \frac{${n(c)}}{${n(households)}}$ = ${n(answer)} ${s.units}. At that level each ${s.member} still values a further ${s.one} at ${eur(j)}, and ${n(households)} · ${eur(j)} = ${eur(c)} exactly covers the cost of one more ${s.one}.`,
             };
         },
     },
@@ -4170,7 +4170,7 @@ export const econ1Questions: Question[] = [
                     [`Marginal cost per ${s.unitOne}`]: eur(c),
                 },
                 answer,
-                explanation: String.raw`Marginal benefits of a public good are summed **vertically** across all users: $n_1 \left( a_1 - Q \right) + n_2 \left( a_2 - Q \right) = MC$, so $Q^E = \frac{n_1 a_1 + n_2 a_2 - c}{n_1 + n_2}$. Substituting: $\frac{${n(n1)} \cdot ${n(a1)} + ${n(n2)} \cdot ${n(a2)} - ${n(c)}}{${n(n1 + n2)}}$ = ${n(answer)} ${s.unit}. Check: at that level a ${s.type1One} still values an extra ${s.unitOne} at ${eur(x1)} and a ${s.type2One} at ${eur(x2)}, and ${n(n1)} · ${eur(x1)} + ${n(n2)} · ${eur(x2)} = ${eur(c)} - exactly the marginal cost. Every $MB$ is still positive, so nobody would want less.`,
+                explanation: String.raw`Marginal benefits of a public good are summed vertically across all users: $n_1 \left( a_1 - Q \right) + n_2 \left( a_2 - Q \right) = MC$, so $Q^E = \frac{n_1 a_1 + n_2 a_2 - c}{n_1 + n_2}$. Substituting: $\frac{${n(n1)} \cdot ${n(a1)} + ${n(n2)} \cdot ${n(a2)} - ${n(c)}}{${n(n1 + n2)}}$ = ${n(answer)} ${s.unit}. Check: at that level a ${s.type1One} still values an extra ${s.unitOne} at ${eur(x1)} and a ${s.type2One} at ${eur(x2)}, and ${n(n1)} · ${eur(x1)} + ${n(n2)} · ${eur(x2)} = ${eur(c)} - exactly the marginal cost. Every $MB$ is still positive, so nobody would want less.`,
             };
         },
     },
@@ -4199,8 +4199,8 @@ export const econ1Questions: Question[] = [
                     "Marginal cost per hour": eur(c),
                 },
                 answer,
-                explanation: String.raw`Efficiency needs the **vertical** sum $\sum_{i=1}^{m} MB_i(Q) = MC$, while a ${s.member} acting alone only sets its own $MB_i(Q) = MC$. Privately: $${n(a)} - Q = ${n(c)}$ gives $Q^{priv}$ = ${n(priv)} hours. Efficiently: $${n(households)} \left( ${n(a)} - Q \right) = ${n(c)}$ gives $Q^E = ${n(a)} - \frac{${n(c)}}{${n(households)}}$ = ${n(eff)} hours. The gap is ${n(eff)} − ${n(priv)} = ${n(answer)} hours per week. Acting alone, a ${s.member} ignores the benefit its purchase confers on the other ${n(households - 1)} ${households === 2 ? s.member : s.members}, which is exactly why a public good is under-provided without collective action.`,
-                hint: String.raw`A buyer acting alone stops where its **own** marginal benefit equals the cost, while efficiency sums the marginal benefits of everyone vertically: $\sum_{i=1}^{m} MB_i(Q) = MC$.`,
+                explanation: String.raw`Efficiency needs the vertical sum $\sum_{i=1}^{m} MB_i(Q) = MC$, while a ${s.member} acting alone only sets its own $MB_i(Q) = MC$. Privately: $${n(a)} - Q = ${n(c)}$ gives $Q^{priv}$ = ${n(priv)} hours. Efficiently: $${n(households)} \left( ${n(a)} - Q \right) = ${n(c)}$ gives $Q^E = ${n(a)} - \frac{${n(c)}}{${n(households)}}$ = ${n(eff)} hours. The gap is ${n(eff)} − ${n(priv)} = ${n(answer)} hours per week. Acting alone, a ${s.member} ignores the benefit its purchase confers on the other ${n(households - 1)} ${households === 2 ? s.member : s.members}, which is exactly why a public good is under-provided without collective action.`,
+                hint: String.raw`A buyer acting alone stops where its own marginal benefit equals the cost, while efficiency sums the marginal benefits of everyone vertically: $\sum_{i=1}^{m} MB_i(Q) = MC$.`,
             };
         },
     },

@@ -540,7 +540,7 @@ export const econ2Questions: Question[] = [
             const pop1 = pop0 + rng.int(-15, 15) / 10;
             const answer = (gdp1 / gdp0 - 1) * 100;
             return {
-                prompt: `${s.place} reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2. Its population grows from ${n(pop0)} million to ${n(pop1)} million. What is the growth rate of **total** GDP from year 1 to year 2?`,
+                prompt: `${s.place} reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2. Its population grows from ${n(pop0)} million to ${n(pop1)} million. What is the growth rate of total GDP from year 1 to year 2?`,
                 given: {
                     "GDP year 1": `${n(gdp0)} billion`,
                     "GDP year 2": `${n(gdp1)} billion`,
@@ -570,7 +570,7 @@ export const econ2Questions: Question[] = [
             const pc1 = gdp1 / pop1;
             const answer = (pc1 / pc0 - 1) * 100;
             return {
-                prompt: `${s.office} reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2, with a population of ${n(pop0)} million in year 1 and ${n(pop1)} million in year 2. What is the growth rate of GDP **per capita**?`,
+                prompt: `${s.office} reports GDP of ${n(gdp0)} billion in year 1 and ${n(gdp1)} billion in year 2, with a population of ${n(pop0)} million in year 1 and ${n(pop1)} million in year 2. What is the growth rate of GDP per capita?`,
                 given: {
                     "GDP year 1": `${n(gdp0)} billion`,
                     "GDP year 2": `${n(gdp1)} billion`,
@@ -609,7 +609,7 @@ export const econ2Questions: Question[] = [
             const va3 = s3 - buy3;
             const answer = va1 + va2 + va3;
             return {
-                prompt: `The economy of ${s.place} has exactly three producers. ${s.art1} **${s.s1}** imports ${s.imp1} for ${eur(m1)} and sells ${s.sale1} to the ${s.s2} for ${eur(s1)}; ${s.subj1} pays ${eur(w1)} in wages. The **${s.s2}** additionally imports ${s.imp2} for ${eur(m2)} and sells ${s.prod2} worth ${eur(s2)} - ${pct(frac * 100)} of it to the ${s.s3}, the rest directly to households; it pays ${eur(w2)} in wages and ${eur(k2)} in capital costs. The **${s.s3}** ${s.make3} sold for ${eur(s3)}, half of them exported. What is ${s.place}'s GDP?`,
+                prompt: `The economy of ${s.place} has exactly three producers. ${s.art1} ${s.s1} imports ${s.imp1} for ${eur(m1)} and sells ${s.sale1} to the ${s.s2} for ${eur(s1)}; ${s.subj1} pays ${eur(w1)} in wages. The ${s.s2} additionally imports ${s.imp2} for ${eur(m2)} and sells ${s.prod2} worth ${eur(s2)} - ${pct(frac * 100)} of it to the ${s.s3}, the rest directly to households; it pays ${eur(w2)} in wages and ${eur(k2)} in capital costs. The ${s.s3} ${s.make3} sold for ${eur(s3)}, half of them exported. What is ${s.place}'s GDP?`,
                 given: {
                     [`${s.L1}: imported ${s.imp1}`]: eur(m1),
                     [`${s.L1}: sales to ${s.s2}`]: eur(s1),
@@ -652,7 +652,7 @@ export const econ2Questions: Question[] = [
             const costBNew = eB * pLow + lB * w;
             const answer = costBNew - costANew;
             return {
-                prompt: `${s.firm} can ${s.batch} with technique **A** (${n(eA)} units of ${s.energy}, ${plural(lA, "worker-day")}) or technique **B** (${n(eB)} units of ${s.energy}, ${plural(lB, "worker-day")}). A worker-day costs ${eur(w)}. At the old ${s.energy} price of ${eur(pHigh)} per unit the firm correctly chose technique B. The ${s.energy} price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A?`,
+                prompt: `${s.firm} can ${s.batch} with technique A (${n(eA)} units of ${s.energy}, ${plural(lA, "worker-day")}) or technique B (${n(eB)} units of ${s.energy}, ${plural(lB, "worker-day")}). A worker-day costs ${eur(w)}. At the old ${s.energy} price of ${eur(pHigh)} per unit the firm correctly chose technique B. The ${s.energy} price now falls to ${eur(pLow)} per unit while the wage stays put. What is the rent per batch from switching to technique A?`,
                 given: {
                     "Technique A": `${n(eA)} ${s.energy} + ${plural(lA, "worker-day")}`,
                     "Technique B": `${n(eB)} ${s.energy} + ${plural(lB, "worker-day")}`,
@@ -661,7 +661,7 @@ export const econ2Questions: Question[] = [
                     [`New ${s.energy} price`]: eur(pLow),
                 },
                 answer,
-                explanation: String.raw`$c_T = e_T \cdot p_{${s.energy}} + l_T \cdot w$ per technique, and the switching rent is the cost difference at the **new** prices. Old price: A costs ${eur(costAOld)}, B costs ${eur(costBOld)} - B was the right choice. New price: A costs ${eur(costANew)}, B costs ${eur(costBNew)}. Switching to the ${s.energy}-intensive technique A now saves ${eur(costBNew)} − ${eur(costANew)} = ${eur(answer)} per batch.`,
+                explanation: String.raw`$c_T = e_T \cdot p_{${s.energy}} + l_T \cdot w$ per technique, and the switching rent is the cost difference at the new prices. Old price: A costs ${eur(costAOld)}, B costs ${eur(costBOld)} - B was the right choice. New price: A costs ${eur(costANew)}, B costs ${eur(costBNew)}. Switching to the ${s.energy}-intensive technique A now saves ${eur(costBNew)} − ${eur(costANew)} = ${eur(answer)} per batch.`,
                 hint: String.raw`A technique costs each of its inputs times that input's price, and the rent from switching is how much cheaper the new technique is than the one in use - evaluated at the prices that hold now, not at the old ones: $c_T = e_T \cdot p + l_T \cdot w$.`,
             };
         },
@@ -684,7 +684,7 @@ export const econ2Questions: Question[] = [
             const answer = a * aL * L0 ** (aL - 1) * K0 ** aK;
             const lTerm = aL - 1 === 1 ? "L" : `L^{${aL - 1}}`;
             return {
-                prompt: String.raw`${s.firm} produces with $Y = ${a} L^{${aL}} K^{${aK}}$, where $L$ is labor and $K$ is capital. What is the **marginal product of labor** at $L = ${L0}$ and $K = ${K0}$?`,
+                prompt: String.raw`${s.firm} produces with $Y = ${a} L^{${aL}} K^{${aK}}$, where $L$ is labor and $K$ is capital. What is the marginal product of labor at $L = ${L0}$ and $K = ${K0}$?`,
                 given: {
                     "Production function": String.raw`$Y = ${a} L^{${aL}} K^{${aK}}$`,
                     "Labor input L": n(L0),
@@ -717,7 +717,7 @@ export const econ2Questions: Question[] = [
                     "Cost per unit of research": `${n(1)} million €`,
                 },
                 answer,
-                explanation: String.raw`$\frac{\partial D_i}{\partial C_i} = \frac{m}{2\sqrt{C_i}} = 1$ - each lab spends until its **own** marginal ${s.item} output equals the marginal research cost; the spillover onto the rival is ignored. With $m = ${m}$: $\sqrt{C_i^*} = ${n(m)}/2 = ${n(h)}$, so $C_i^* = ${n(answer)}$. Each lab then produces ${n(dTotal)} ${s.plural}.`,
+                explanation: String.raw`$\frac{\partial D_i}{\partial C_i} = \frac{m}{2\sqrt{C_i}} = 1$ - each lab spends until its own marginal ${s.item} output equals the marginal research cost; the spillover onto the rival is ignored. With $m = ${m}$: $\sqrt{C_i^*} = ${n(m)}/2 = ${n(h)}$, so $C_i^* = ${n(answer)}$. Each lab then produces ${n(dTotal)} ${s.plural}.`,
             };
         },
     },
@@ -738,7 +738,7 @@ export const econ2Questions: Question[] = [
             const answer = sqrtC * sqrtC;
             const cPrivate = (m / 2) ** 2;
             return {
-                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. To correct the underinvestment caused by the spillover, the government now covers ${pct(sPct)} of every euro spent on research. What research spending $C_i$ does each lab choose **with** the subsidy?`,
+                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. To correct the underinvestment caused by the spillover, the government now covers ${pct(sPct)} of every euro spent on research. What research spending $C_i$ does each lab choose with the subsidy?`,
                 given: {
                     [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
                     [`Profit per ${s.item}`]: `${n(1)} million €`,
@@ -764,14 +764,14 @@ export const econ2Questions: Question[] = [
             const answer = 9 * h * h; // (3m/4)²
             const cPrivate = (m / 2) ** 2;
             return {
-                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. The labs now **merge** and choose both research budgets to maximize their **joint** profit. What spending $C_i$ does the merged firm pick for each lab?`,
+                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. The labs now merge and choose both research budgets to maximize their joint profit. What spending $C_i$ does the merged firm pick for each lab?`,
                 given: {
                     [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
                     [`Profit per ${s.item}`]: `${n(1)} million €`,
                 },
                 answer,
                 explanation: String.raw`$\frac{\partial (D_i + D_j)}{\partial C_i} = \frac{m}{2\sqrt{C_i}} + \frac{m}{4\sqrt{C_i}} = \frac{3m}{4\sqrt{C_i}} = 1$ - after the merger, a euro spent in lab $i$ also raises lab $j$'s output, and that extra benefit is counted. With $m = ${m}$: $\sqrt{C_i} = 3 \cdot ${n(m)} / 4 = ${n(3 * h)}$, so $C_i = ${n(answer)}$ per lab, versus ${n(cPrivate)} before the merger. Total output rises by ${pct(50)}.`,
-                hint: String.raw`A single owner counts what a euro of research in one lab adds in **both** labs, so the cross effect that a rival would ignore enters the first-order condition: $\frac{\partial (D_i + D_j)}{\partial C_i} = 1$.`,
+                hint: String.raw`A single owner counts what a euro of research in one lab adds in both labs, so the cross effect that a rival would ignore enters the first-order condition: $\frac{\partial (D_i + D_j)}{\partial C_i} = 1$.`,
             };
         },
     },
@@ -810,7 +810,7 @@ export const econ2Questions: Question[] = [
             const d = drawGoodsMarket(rng);
             const answer = d.c0 + d.c1 * (1 - d.t) * d.Y;
             return {
-                prompt: String.raw`${s.place} has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and an income tax rate of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is **consumption** in the goods-market equilibrium?`,
+                prompt: String.raw`${s.place} has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and an income tax rate of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is consumption in the goods-market equilibrium?`,
                 given: goodsMarketGiven(d),
                 answer,
                 explanation: String.raw`$C = c_0 + c_1 (1 - t) \cdot Y^*$ - first solve for equilibrium output, then feed it into the consumption function. $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.c0 + d.I + d.G + d.X - d.M)} / ${n(d.D)} = ${n(d.Y)}. Then C = ${n(d.c0)} + ${n(d.c1)} · ${n(1 - d.t)} · ${n(d.Y)} = ${n(answer)}.`,
@@ -858,7 +858,7 @@ export const econ2Questions: Question[] = [
             const d = drawGoodsMarket(rng);
             const answer = d.t * d.Y - d.G;
             return {
-                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **budget balance** in equilibrium? (Negative = deficit.)`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's budget balance in equilibrium? (Negative = deficit.)`,
                 given: goodsMarketGiven(d),
                 answer,
                 explanation: String.raw`$BB = t \cdot Y^* - G$ - tax revenue at equilibrium output minus purchases. First $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.c0 + d.I + d.G + d.X - d.M)} / ${n(d.D)} = ${n(d.Y)}. Then BB = ${n(d.t)} · ${n(d.Y)} − ${n(d.G)} = ${n(answer)}.`,
@@ -885,7 +885,7 @@ export const econ2Questions: Question[] = [
             const I = A - c0 - NX;
             const G = (tPct / 100) * Y;
             return {
-                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(c0)}$ and $c_1 = ${n(c1)}$. Investment is ${n(I)} and net exports are ${n(NX)}. The government must run a strictly **balanced budget**, so its purchases equal its tax revenue: $G = t \cdot Y$. Which tax rate $t$ makes the equilibrium output come out at exactly ${n(Y)}?`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(c0)}$ and $c_1 = ${n(c1)}$. Investment is ${n(I)} and net exports are ${n(NX)}. The government must run a strictly balanced budget, so its purchases equal its tax revenue: $G = t \cdot Y$. Which tax rate $t$ makes the equilibrium output come out at exactly ${n(Y)}?`,
                 given: {
                     "Autonomous consumption $c_0$": n(c0),
                     "Marginal propensity to consume $c_1$": n(c1),
@@ -922,7 +922,7 @@ export const econ2Questions: Question[] = [
             const answer = rt * rt;
             const eStar = a * rt - b; // = b
             return {
-                prompt: String.raw`${s.firm} observes that its workers' effort depends on the hourly wage $w$ (in €): $e(w) = ${n(a)}\sqrt{w} - ${n(b)}$. Output is proportional to effort. What **efficiency wage** does the firm set?`,
+                prompt: String.raw`${s.firm} observes that its workers' effort depends on the hourly wage $w$ (in €): $e(w) = ${n(a)}\sqrt{w} - ${n(b)}$. Output is proportional to effort. What efficiency wage does the firm set?`,
                 given: {
                     "Effort function": String.raw`$e(w) = ${n(a)}\sqrt{w} - ${n(b)}$`,
                 },
@@ -973,7 +973,7 @@ export const econ2Questions: Question[] = [
             const revenue = p * Math.sqrt(e * L);
             const answer = revenue - w * L;
             return {
-                prompt: String.raw`${s.firm} faces a labor supply of ${n(cfg.Ls)} workers. It produces $Y = \sqrt{e \cdot L}$ ${s.units}, sold at ${eur(p)} each, and worker effort follows $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. ${cap(s.short)} sets the wage and employment to maximize profit. What is ${s.short}'s **profit**?`,
+                prompt: String.raw`${s.firm} faces a labor supply of ${n(cfg.Ls)} workers. It produces $Y = \sqrt{e \cdot L}$ ${s.units}, sold at ${eur(p)} each, and worker effort follows $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. ${cap(s.short)} sets the wage and employment to maximize profit. What is ${s.short}'s profit?`,
                 given: {
                     "Labor supply": `${n(cfg.Ls)} workers`,
                     "Production function": String.raw`$Y = \sqrt{e \cdot L}$`,
@@ -1003,7 +1003,7 @@ export const econ2Questions: Question[] = [
             const LMin = (p * p * eMin) / (4 * wMin * wMin);
             const answer = ((cfg.Ls - LMin) / cfg.Ls) * 100;
             return {
-                prompt: String.raw`${s.firm} is the only employer of the ${n(cfg.Ls)} workers of ${s.town}. It produces $Y = \sqrt{e \cdot L}$ ${s.units} at a price of ${eur(p)} per ton; effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The government now imposes a **minimum wage** of ${eur(wMin)} per hour, and the firm pays exactly this wage. What is the unemployment rate under the minimum wage?`,
+                prompt: String.raw`${s.firm} is the only employer of the ${n(cfg.Ls)} workers of ${s.town}. It produces $Y = \sqrt{e \cdot L}$ ${s.units} at a price of ${eur(p)} per ton; effort is $e(w) = ${n(cfg.a)}\sqrt{w} - ${n(b)}$. The government now imposes a minimum wage of ${eur(wMin)} per hour, and the firm pays exactly this wage. What is the unemployment rate under the minimum wage?`,
                 given: {
                     "Labor supply": `${n(cfg.Ls)} workers`,
                     "Production function": String.raw`$Y = \sqrt{e \cdot L}$`,
@@ -1036,7 +1036,7 @@ export const econ2Questions: Question[] = [
             const B = bh * H;
             const answer = w - d + im + ps - bh;
             return {
-                prompt: `${s.who} earns ${eur(w)} per hour for ${n(H)} hours a week. Working costs ${s.obj} the equivalent of ${eur(d)} per hour in effort, but ${s.subj} genuinely enjoys the job - worth ${eur(im)} per hour to ${s.obj} - and being unemployed would additionally burden ${s.obj} psychologically by ${eur(ps)} per hour of lost work. If ${s.subj} lost the job, unemployment benefits would pay ${s.obj} ${eur(B)} per week. What is ${s.poss} **employment rent per hour** worked?`,
+                prompt: `${s.who} earns ${eur(w)} per hour for ${n(H)} hours a week. Working costs ${s.obj} the equivalent of ${eur(d)} per hour in effort, but ${s.subj} genuinely enjoys the job - worth ${eur(im)} per hour to ${s.obj} - and being unemployed would additionally burden ${s.obj} psychologically by ${eur(ps)} per hour of lost work. If ${s.subj} lost the job, unemployment benefits would pay ${s.obj} ${eur(B)} per week. What is ${s.poss} employment rent per hour worked?`,
                 given: {
                     "Hourly wage": eur(w),
                     "Hours per week": n(H),
@@ -1069,7 +1069,7 @@ export const econ2Questions: Question[] = [
             const rentH = w - d - bh;
             const answer = rentH * H * weeks;
             return {
-                prompt: `${s.who} earns ${eur(w)} per hour and works ${n(H)} hours a week; the effort costs ${s.obj} the equivalent of ${eur(d)} per hour. If ${s.subj} were dismissed, benefits would pay ${eur(B)} per week, and ${s.subj} would expect to stay unemployed for ${n(weeks)} weeks before finding an equivalent job. What is ${s.poss} **total employment rent**?`,
+                prompt: `${s.who} earns ${eur(w)} per hour and works ${n(H)} hours a week; the effort costs ${s.obj} the equivalent of ${eur(d)} per hour. If ${s.subj} were dismissed, benefits would pay ${eur(B)} per week, and ${s.subj} would expect to stay unemployed for ${n(weeks)} weeks before finding an equivalent job. What is ${s.poss} total employment rent?`,
                 given: {
                     "Hourly wage": eur(w),
                     "Hours per week": n(H),
@@ -1099,7 +1099,7 @@ export const econ2Questions: Question[] = [
             const r = rng.int(1, 8) * 5;
             const c2max = c1max * (1 + r / 100);
             return {
-                prompt: `${s.name} plans ${s.poss} consumption over this year and next year and can borrow or save freely at ${s.poss} bank. If ${s.subj} consumed everything **this year**, ${s.subj} could consume at most ${n(c1max)} thousand €; if ${s.subj} consumed everything **next year**, at most ${n(c2max)} thousand €. What interest rate is ${s.subj} facing?`,
+                prompt: `${s.name} plans ${s.poss} consumption over this year and next year and can borrow or save freely at ${s.poss} bank. If ${s.subj} consumed everything this year, ${s.subj} could consume at most ${n(c1max)} thousand €; if ${s.subj} consumed everything next year, at most ${n(c2max)} thousand €. What interest rate is ${s.subj} facing?`,
                 given: {
                     "Maximum consumption this year": `${n(c1max)} thousand €`,
                     "Maximum consumption next year": `${n(c2max)} thousand €`,
@@ -1125,7 +1125,7 @@ export const econ2Questions: Question[] = [
             const x = 10 * rng.int(1, c1max / 10 - 1);
             const answer = c2max - (1 + r / 100) * x;
             return {
-                prompt: `${s.name} faces an intertemporal budget line with intercepts ${n(c1max)} thousand € (consume everything this year) and ${n(c2max)} thousand € (consume everything next year). ${cap(s.subj)} decides to consume ${n(x)} thousand € this year. What is the **maximum** ${s.subj} can consume next year (in thousand €)?`,
+                prompt: `${s.name} faces an intertemporal budget line with intercepts ${n(c1max)} thousand € (consume everything this year) and ${n(c2max)} thousand € (consume everything next year). ${cap(s.subj)} decides to consume ${n(x)} thousand € this year. What is the maximum ${s.subj} can consume next year (in thousand €)?`,
                 given: {
                     "Maximum consumption this year": `${n(c1max)} thousand €`,
                     "Maximum consumption next year": `${n(c2max)} thousand €`,
@@ -1152,7 +1152,7 @@ export const econ2Questions: Question[] = [
             const R = rng.int(150, 600) / 100;
             const answer = T / R;
             return {
-                prompt: `The ${s.a} (currency of ${s.aC}) and the ${s.b} (currency of ${s.bC}) are both quoted against the ${s.c}: one ${s.c} costs ${n2(T)} ${s.as}, and one ${s.c} costs ${n2(R)} ${s.bs}. What is the cross rate in **${s.as} per ${s.b}**?`,
+                prompt: `The ${s.a} (currency of ${s.aC}) and the ${s.b} (currency of ${s.bC}) are both quoted against the ${s.c}: one ${s.c} costs ${n2(T)} ${s.as}, and one ${s.c} costs ${n2(R)} ${s.bs}. What is the cross rate in ${s.as} per ${s.b}?`,
                 given: {
                     [`${cap(s.as)} per ${s.c}`]: n2(T),
                     [`${cap(s.bs)} per ${s.c}`]: n2(R),
@@ -1177,7 +1177,7 @@ export const econ2Questions: Question[] = [
             const e1 = Math.round(e0 * (1 + c / 100) * 100) / 100;
             const answer = (e1 / e0 - 1) * 100;
             return {
-                prompt: `The exchange rate between the ${s.a} (${s.aC}) and the ${s.b} (${s.bC}) moves from ${n2(e0)} ${s.a} per ${s.b} in year 1 to ${n2(e1)} ${s.a} per ${s.b} in year 2. What is the **percentage change** of the exchange rate (${s.a} per ${s.b})? A negative number means the rate fell.`,
+                prompt: `The exchange rate between the ${s.a} (${s.aC}) and the ${s.b} (${s.bC}) moves from ${n2(e0)} ${s.a} per ${s.b} in year 1 to ${n2(e1)} ${s.a} per ${s.b} in year 2. What is the percentage change of the exchange rate (${s.a} per ${s.b})? A negative number means the rate fell.`,
                 given: {
                     [`Rate year 1 (${s.a} per ${s.b})`]: n2(e0),
                     [`Rate year 2 (${s.a} per ${s.b})`]: n2(e1),
@@ -1211,7 +1211,7 @@ export const econ2Questions: Question[] = [
             const real2 = p1 * q12 + p2 * q22;
             const answer = (real2 / real1 - 1) * 100;
             return {
-                prompt: `The economy of ${s.place} produces only ${s.gA} and ${s.gB}. In year 1 (the **base year**) it produces ${n(q11)} ${s.uA} at ${eur(p1)} each and ${n(q21)} ${s.uB} at ${eur(p2)} each; in year 2 it produces ${n(q12)} ${s.uA} at ${eur(p1b)} each and ${n(q22)} ${s.uB} at ${eur(p2b)} each. What is the growth rate of **real GDP** from year 1 to year 2?`,
+                prompt: `The economy of ${s.place} produces only ${s.gA} and ${s.gB}. In year 1 (the base year) it produces ${n(q11)} ${s.uA} at ${eur(p1)} each and ${n(q21)} ${s.uB} at ${eur(p2)} each; in year 2 it produces ${n(q12)} ${s.uA} at ${eur(p1b)} each and ${n(q22)} ${s.uB} at ${eur(p2b)} each. What is the growth rate of real GDP from year 1 to year 2?`,
                 given: {
                     [`${s.LA} year 1`]: `${n(q11)} ${s.uA} at ${eur(p1)}`,
                     [`${s.LB} year 1`]: `${n(q21)} ${s.uB} at ${eur(p2)}`,
@@ -1220,7 +1220,7 @@ export const econ2Questions: Question[] = [
                     "Base year": "year 1",
                 },
                 answer,
-                explanation: String.raw`$g^{real} = \frac{\sum p^{base} \, q_2}{\sum p^{base} \, q_1} - 1$ - value both years' quantities at **base-year** prices, so only quantity changes count. Year 1: ${eur(real1)}. Year 2 at year-1 prices: ${eur(p1)} · ${n(q12)} + ${eur(p2)} · ${n(q22)} = ${eur(real2)}. Growth: ${eur(real2)} / ${eur(real1)} − 1 = ${pct(answer)}. The year-2 prices are only needed for nominal GDP, not here.`,
+                explanation: String.raw`$g^{real} = \frac{\sum p^{base} \, q_2}{\sum p^{base} \, q_1} - 1$ - value both years' quantities at base-year prices, so only quantity changes count. Year 1: ${eur(real1)}. Year 2 at year-1 prices: ${eur(p1)} · ${n(q12)} + ${eur(p2)} · ${n(q22)} = ${eur(real2)}. Growth: ${eur(real2)} / ${eur(real1)} − 1 = ${pct(answer)}. The year-2 prices are only needed for nominal GDP, not here.`,
             };
         },
     },
@@ -1246,7 +1246,7 @@ export const econ2Questions: Question[] = [
             const nom2 = p1b * q12 + p2b * q22;
             const answer = (100 * nom2) / real2;
             return {
-                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year with prices ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1} (quantities: ${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}). In year 2 it produces ${n(q12)} ${s.uA} at ${eur(p1b)} and ${n(q22)} ${s.uB} at ${eur(p2b)}. What is the **GDP deflator** of year 2, on a scale where the base year equals 100?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year with prices ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1} (quantities: ${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}). In year 2 it produces ${n(q12)} ${s.uA} at ${eur(p1b)} and ${n(q22)} ${s.uB} at ${eur(p2b)}. What is the GDP deflator of year 2, on a scale where the base year equals 100?`,
                 given: {
                     "Prices year 1 (base)": `${s.lA} ${eur(p1)}, ${s.lB} ${eur(p2)}`,
                     "Quantities year 1": `${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}`,
@@ -1254,7 +1254,7 @@ export const econ2Questions: Question[] = [
                     "Quantities year 2": `${n(q12)} ${s.uA}, ${n(q22)} ${s.uB}`,
                 },
                 answer,
-                explanation: String.raw`$P_t = \frac{Y_t^{nominal}}{Y_t^{real}} \cdot 100$ - both valued with **year-2 quantities**. Nominal year 2: ${eur(p1b)} · ${n(q12)} + ${eur(p2b)} · ${n(q22)} = ${eur(nom2)}. Real year 2 (base-year prices): ${eur(p1)} · ${n(q12)} + ${eur(p2)} · ${n(q22)} = ${eur(real2)}. Deflator: 100 · ${eur(nom2)} / ${eur(real2)} = ${n2(answer)}.`,
+                explanation: String.raw`$P_t = \frac{Y_t^{nominal}}{Y_t^{real}} \cdot 100$ - both valued with year-2 quantities. Nominal year 2: ${eur(p1b)} · ${n(q12)} + ${eur(p2b)} · ${n(q22)} = ${eur(nom2)}. Real year 2 (base-year prices): ${eur(p1)} · ${n(q12)} + ${eur(p2)} · ${n(q22)} = ${eur(real2)}. Deflator: 100 · ${eur(nom2)} / ${eur(real2)} = ${n2(answer)}.`,
             };
         },
     },
@@ -1280,7 +1280,7 @@ export const econ2Questions: Question[] = [
             const now = p1b * q11 + p2b * q21;
             const answer = (now / base - 1) * 100;
             return {
-                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. In year 1, prices were ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1}, and the consumption basket was ${n(q11)} ${s.uA} and ${n(q21)} ${s.uB}. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and quantities happen to shift to ${n(q12)} ${s.uA} and ${n(q22)} ${s.uB}. What is the **CPI inflation rate** between year 1 and year 2?`,
+                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. In year 1, prices were ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1}, and the consumption basket was ${n(q11)} ${s.uA} and ${n(q21)} ${s.uB}. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and quantities happen to shift to ${n(q12)} ${s.uA} and ${n(q22)} ${s.uB}. What is the CPI inflation rate between year 1 and year 2?`,
                 given: {
                     "Prices year 1": `${s.lA} ${eur(p1)}, ${s.lB} ${eur(p2)}`,
                     "Basket (year 1)": `${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}`,
@@ -1288,7 +1288,7 @@ export const econ2Questions: Question[] = [
                     "Quantities year 2": `${n(q12)} ${s.uA}, ${n(q22)} ${s.uB}`,
                 },
                 answer,
-                explanation: String.raw`$\pi^{CPI} = \frac{\sum p_2 \, q^{base}}{\sum p_1 \, q^{base}} - 1$ - the CPI prices the **fixed base-year basket** at both years' prices, so the year-2 quantities are pure distractor data (they would matter for the GDP deflator, which uses current quantities). Basket at year-1 prices: ${eur(base)}; at year-2 prices: ${eur(p1b)} · ${n(q11)} + ${eur(p2b)} · ${n(q21)} = ${eur(now)}. Inflation: ${eur(now)} / ${eur(base)} − 1 = ${pct(answer)}.`,
+                explanation: String.raw`$\pi^{CPI} = \frac{\sum p_2 \, q^{base}}{\sum p_1 \, q^{base}} - 1$ - the CPI prices the fixed base-year basket at both years' prices, so the year-2 quantities are pure distractor data (they would matter for the GDP deflator, which uses current quantities). Basket at year-1 prices: ${eur(base)}; at year-2 prices: ${eur(p1b)} · ${n(q11)} + ${eur(p2b)} · ${n(q21)} = ${eur(now)}. Inflation: ${eur(now)} / ${eur(base)} − 1 = ${pct(answer)}.`,
                 hint: String.raw`The consumer price index prices one and the same basket - the base-year quantities - at both years' prices, so what consumers happen to buy later plays no role: $\pi^{CPI} = \frac{\sum p_2 \, q^{base}}{\sum p_1 \, q^{base}} - 1$.`,
             };
         },
@@ -1309,7 +1309,7 @@ export const econ2Questions: Question[] = [
             const piInfl = rng.int(5, 40) / 10;
             const answer = rw + piInfl;
             return {
-                prompt: `${s.union} negotiates wages for next year. It targets **real** wage growth of ${pct(rw)}, and inflation is expected to be ${pct(piInfl)}. What nominal wage growth must the union demand?`,
+                prompt: `${s.union} negotiates wages for next year. It targets real wage growth of ${pct(rw)}, and inflation is expected to be ${pct(piInfl)}. What nominal wage growth must the union demand?`,
                 given: {
                     "Target real wage growth": pct(rw),
                     "Expected inflation": pct(piInfl),
@@ -1333,13 +1333,13 @@ export const econ2Questions: Question[] = [
             const piInfl = (rng.int(5, 30) / 10) * rng.pick([1, -1]);
             const answer = i - piInfl;
             return {
-                prompt: `${s.product} pays a nominal interest rate of ${pct(i)}. Inflation over the same year is ${pct(piInfl)}. What is the **real** interest rate on the ${s.noun} (Fisher approximation)?`,
+                prompt: `${s.product} pays a nominal interest rate of ${pct(i)}. Inflation over the same year is ${pct(piInfl)}. What is the real interest rate on the ${s.noun} (Fisher approximation)?`,
                 given: {
                     "Nominal interest rate i": pct(i),
                     "Inflation π": pct(piInfl),
                 },
                 answer,
-                explanation: String.raw`$r = i - \pi$ - the Fisher approximation: ${pct(i)} − ${piInfl < 0 ? `(${pct(piInfl)})` : pct(piInfl)} = ${pct(answer)}. ${piInfl < 0 ? "Deflation (negative inflation) is **subtracted as a negative**, so it raises the real rate above the nominal rate." : "Inflation eats part of the nominal return, so the real rate is below the nominal rate."}`,
+                explanation: String.raw`$r = i - \pi$ - the Fisher approximation: ${pct(i)} − ${piInfl < 0 ? `(${pct(piInfl)})` : pct(piInfl)} = ${pct(answer)}. ${piInfl < 0 ? "Deflation (negative inflation) is subtracted as a negative, so it raises the real rate above the nominal rate." : "Inflation eats part of the nominal return, so the real rate is below the nominal rate."}`,
             };
         },
     },
@@ -1362,7 +1362,7 @@ export const econ2Questions: Question[] = [
             const s = x * ratio;
             const answer = ratio * ratio;
             return {
-                prompt: String.raw`A Solow economy has production per effective worker $f(k) = \sqrt{k}$. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. What is the **steady-state** capital stock per effective worker $k^*$?`,
+                prompt: String.raw`A Solow economy has production per effective worker $f(k) = \sqrt{k}$. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. What is the steady-state capital stock per effective worker $k^*$?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = \sqrt{k}$`,
                     "Savings rate s": pct(s),
@@ -1393,7 +1393,7 @@ export const econ2Questions: Question[] = [
             const answer = cfg.r0 ** 2;
             const Astr = cfg.A === 1 ? "" : `${cfg.A} `;
             return {
-                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. What is the **golden-rule** capital stock per effective worker $k^{gr}$?`,
+                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. What is the golden-rule capital stock per effective worker $k^{gr}$?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = ${Astr}\sqrt{k}$`,
                     "Savings rate s": pct(s),
@@ -1428,7 +1428,7 @@ export const econ2Questions: Question[] = [
             const delta = rng.int(3, 8);
             const answer = (alpha.num / alpha.den) * 100;
             return {
-                prompt: String.raw`A Solow economy produces with $Y = ${A} \, K^{${alpha.num}/${alpha.den}} (LE)^{${alpha.den - alpha.num}/${alpha.den}}$. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. Which **savings rate** would put the economy on its golden-rule steady state?`,
+                prompt: String.raw`A Solow economy produces with $Y = ${A} \, K^{${alpha.num}/${alpha.den}} (LE)^{${alpha.den - alpha.num}/${alpha.den}}$. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. Which savings rate would put the economy on its golden-rule steady state?`,
                 given: {
                     "Production function": String.raw`$Y = ${A} \, K^{${alpha.num}/${alpha.den}} (LE)^{${alpha.den - alpha.num}/${alpha.den}}$`,
                     "Population growth n": pct(nPop),
@@ -1459,7 +1459,7 @@ export const econ2Questions: Question[] = [
             const answer = (cfg.A * cfg.r0) / 2;
             const Astr = cfg.A === 1 ? "" : `${cfg.A} `;
             return {
-                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$, population growth of ${pct(nPop)}, technological progress of ${pct(g)}, and depreciation of ${pct(delta)}. What is the **maximum sustainable consumption per effective worker**?`,
+                prompt: String.raw`A Solow economy has production per effective worker $f(k) = ${Astr}\sqrt{k}$, population growth of ${pct(nPop)}, technological progress of ${pct(g)}, and depreciation of ${pct(delta)}. What is the maximum sustainable consumption per effective worker?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = ${Astr}\sqrt{k}$`,
                     "Population growth n": pct(nPop),
@@ -1491,7 +1491,7 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(WORLD_COUNTRIES);
             const answer = (y2 / y0 - 1) * 100;
             return {
-                prompt: `Real GDP of ${country} was ${n(y0)} billion € in year 1, ${n(y1)} billion € in year 2 and ${n(y2)} billion € in year 3. By what percentage did real GDP change over the **whole period** from year 1 to year 3?`,
+                prompt: `Real GDP of ${country} was ${n(y0)} billion € in year 1, ${n(y1)} billion € in year 2 and ${n(y2)} billion € in year 3. By what percentage did real GDP change over the whole period from year 1 to year 3?`,
                 given: {
                     "GDP year 1": `${n(y0)} billion €`,
                     "GDP year 2": `${n(y1)} billion €`,
@@ -1516,7 +1516,7 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(WORLD_COUNTRIES);
             const answer = ((1 + g / 100) ** T - 1) * 100;
             return {
-                prompt: `Suppose real GDP of ${country} grows at a constant rate of ${pct(g)} per year for ${n(T)} consecutive years. By what **total** percentage is GDP higher at the end of the ${n(T)} years than at the start?`,
+                prompt: `Suppose real GDP of ${country} grows at a constant rate of ${pct(g)} per year for ${n(T)} consecutive years. By what total percentage is GDP higher at the end of the ${n(T)} years than at the start?`,
                 given: {
                     "Annual growth rate g": pct(g),
                     "Number of years T": n(T),
@@ -1540,7 +1540,7 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(WORLD_COUNTRIES);
             const answer = ((1 + gY / 100) / (1 + gN / 100) - 1) * 100;
             return {
-                prompt: `Last year, total GDP of ${country} grew by ${pct(gY)} while its population grew by ${pct(gN)}. What was the growth rate of GDP **per capita**? (Use the exact ratio, not the approximation.)`,
+                prompt: `Last year, total GDP of ${country} grew by ${pct(gY)} while its population grew by ${pct(gN)}. What was the growth rate of GDP per capita? (Use the exact ratio, not the approximation.)`,
                 given: {
                     "Total GDP growth": pct(gY),
                     "Population growth": pct(gN),
@@ -1564,7 +1564,7 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(WORLD_COUNTRIES);
             const answer = ((1 + gpc / 100) * (1 + gN / 100) - 1) * 100;
             return {
-                prompt: `The government of ${country} targets GDP **per capita** growth of ${pct(gpc)} for next year. The population is projected to grow by ${pct(gN)}. What growth rate of **total** GDP is required to hit the target exactly?`,
+                prompt: `The government of ${country} targets GDP per capita growth of ${pct(gpc)} for next year. The population is projected to grow by ${pct(gN)}. What growth rate of total GDP is required to hit the target exactly?`,
                 given: {
                     "Target GDP per capita growth": pct(gpc),
                     "Projected population growth": pct(gN),
@@ -1594,7 +1594,7 @@ export const econ2Questions: Question[] = [
             const b1 = Math.round(b0 * (1 + gB / 100));
             const answer = (a1 / a0 - b1 / b0) * 100;
             return {
-                prompt: `Real GDP of ${cA} rose from ${n(a0)} to ${n(a1)} billion € between year 1 and year 2; real GDP of ${cB} moved from ${n(b0)} to ${n(b1)} billion €. By how many **percentage points** did the growth rate of ${cA} exceed that of ${cB}? (Negative if it was lower.)`,
+                prompt: `Real GDP of ${cA} rose from ${n(a0)} to ${n(a1)} billion € between year 1 and year 2; real GDP of ${cB} moved from ${n(b0)} to ${n(b1)} billion €. By how many percentage points did the growth rate of ${cA} exceed that of ${cB}? (Negative if it was lower.)`,
                 given: {
                     [`${cA}: GDP year 1 / year 2`]: `${n(a0)} / ${n(a1)} billion €`,
                     [`${cB}: GDP year 1 / year 2`]: `${n(b0)} / ${n(b1)} billion €`,
@@ -1618,7 +1618,7 @@ export const econ2Questions: Question[] = [
             const pop = rng.int(10, 85);
             const answer = (gdp / pop) * 1000;
             return {
-                prompt: `${country[0].toUpperCase()}${country.slice(1)} reports a GDP of ${n(gdp)} billion € and a population of ${n(pop)} million. What is GDP **per capita** in euros?`,
+                prompt: `${country[0].toUpperCase()}${country.slice(1)} reports a GDP of ${n(gdp)} billion € and a population of ${n(pop)} million. What is GDP per capita in euros?`,
                 given: {
                     "GDP": `${n(gdp)} billion €`,
                     "Population": `${n(pop)} million`,
@@ -1677,7 +1677,7 @@ export const econ2Questions: Question[] = [
             const M = 10 * rng.int(10, X / 10 - 5);
             const gdp = C + I + G + X - M;
             return {
-                prompt: `Statisticians in ${country} know GDP is ${n(gdp)} billion € and have measured (in billion €): consumption ${n(C)}, investment ${n(I)}, government purchases ${n(G)} and exports ${n(X)}. The import figure is still missing. How large must **imports** be, in billion €?`,
+                prompt: `Statisticians in ${country} know GDP is ${n(gdp)} billion € and have measured (in billion €): consumption ${n(C)}, investment ${n(I)}, government purchases ${n(G)} and exports ${n(X)}. The import figure is still missing. How large must imports be, in billion €?`,
                 given: {
                     "GDP": n(gdp),
                     "Consumption C": n(C),
@@ -1704,7 +1704,7 @@ export const econ2Questions: Question[] = [
             const M = 10 * rng.int(25, 140);
             const answer = X - M;
             return {
-                prompt: `${country[0].toUpperCase()}${country.slice(1)} exports goods and services worth ${n(X)} billion € and imports goods and services worth ${n(M)} billion €. What is its **trade balance** (net exports), in billion €? A negative number means a trade deficit.`,
+                prompt: `${country[0].toUpperCase()}${country.slice(1)} exports goods and services worth ${n(X)} billion € and imports goods and services worth ${n(M)} billion €. What is its trade balance (net exports), in billion €? A negative number means a trade deficit.`,
                 given: {
                     "Exports X": n(X),
                     "Imports M": n(M),
@@ -1735,7 +1735,7 @@ export const econ2Questions: Question[] = [
             const va3 = s3 - buy;
             const answer = va2 + va3;
             return {
-                prompt: `A small economy has exactly two producers. A **${s.f1}** imports ${s.imp} for ${eur(m1)} and sells ${s.prod1} worth ${eur(s2)} in total - ${pct(frac * 100)} of it to a domestic ${s.f2}, the rest directly to households. It pays ${eur(w2)} in wages. The **${s.f2}** turns the ${s.prod1Short} it bought into ${s.prod2} sold for ${eur(s3)} and pays ${eur(w3)} in wages. What is the GDP of this economy?`,
+                prompt: `A small economy has exactly two producers. A ${s.f1} imports ${s.imp} for ${eur(m1)} and sells ${s.prod1} worth ${eur(s2)} in total - ${pct(frac * 100)} of it to a domestic ${s.f2}, the rest directly to households. It pays ${eur(w2)} in wages. The ${s.f2} turns the ${s.prod1Short} it bought into ${s.prod2} sold for ${eur(s3)} and pays ${eur(w3)} in wages. What is the GDP of this economy?`,
                 given: {
                     [`${s.F1}: imported ${s.impShort}`]: eur(m1),
                     [`${s.F1}: total sales`]: eur(s2),
@@ -1765,7 +1765,7 @@ export const econ2Questions: Question[] = [
             const k = 1000 * rng.int(1, 5);
             const answer = s - d - m;
             return {
-                prompt: `${sc.firm} sells output worth ${eur(s)} in one year. To produce it, the firm buys ${sc.dom} for ${eur(d)} and imports ${sc.imp} from abroad for ${eur(m)}. It pays ${eur(w)} in wages and ${eur(k)} in capital costs. What is the firm's **value added**?`,
+                prompt: `${sc.firm} sells output worth ${eur(s)} in one year. To produce it, the firm buys ${sc.dom} for ${eur(d)} and imports ${sc.imp} from abroad for ${eur(m)}. It pays ${eur(w)} in wages and ${eur(k)} in capital costs. What is the firm's value added?`,
                 given: {
                     "Sales": eur(s),
                     "Domestic intermediate inputs": eur(d),
@@ -1803,7 +1803,7 @@ export const econ2Questions: Question[] = [
             const nom2 = pa2 * qa2 + pb2 * qb2;
             const answer = (nom2 / nom1 - 1) * 100;
             return {
-                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. In year 1 it produces ${n(qa1)} ${s.uA} of ${s.gA} at ${eur(pa1)} each and ${n(qb1)} ${s.uB} of ${s.gB} at ${eur(pb1)} each; in year 2 it produces ${n(qa2)} ${s.uA} at ${eur(pa2)} and ${n(qb2)} ${s.uB} at ${eur(pb2)}. What is the growth rate of **nominal** GDP from year 1 to year 2?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. In year 1 it produces ${n(qa1)} ${s.uA} of ${s.gA} at ${eur(pa1)} each and ${n(qb1)} ${s.uB} of ${s.gB} at ${eur(pb1)} each; in year 2 it produces ${n(qa2)} ${s.uA} at ${eur(pa2)} and ${n(qb2)} ${s.uB} at ${eur(pb2)}. What is the growth rate of nominal GDP from year 1 to year 2?`,
                 given: {
                     [`${s.LA} year 1`]: `${n(qa1)} ${s.uA} at ${eur(pa1)}`,
                     [`${s.LB} year 1`]: `${n(qb1)} ${s.uB} at ${eur(pb1)}`,
@@ -1833,14 +1833,14 @@ export const econ2Questions: Question[] = [
             const qb2 = rng.int(60, 400);
             const answer = pa1 * qa2 + pb1 * qb2;
             return {
-                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year, with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 it produces ${n(qa2)} ${s.uA} of ${s.gA} (price now ${eur(pa2)}) and ${n(qb2)} ${s.uB} of ${s.gB} (price now ${eur(pb2)}). What is **real** GDP of year 2?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year, with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 it produces ${n(qa2)} ${s.uA} of ${s.gA} (price now ${eur(pa2)}) and ${n(qb2)} ${s.uB} of ${s.gB} (price now ${eur(pb2)}). What is real GDP of year 2?`,
                 given: {
                     "Base-year prices": `${s.gA} ${eur(pa1)}, ${s.gB} ${eur(pb1)}`,
                     "Year-2 quantities": `${n(qa2)} ${s.uA} ${s.gA}, ${n(qb2)} ${s.uB} ${s.gB}`,
                     "Year-2 prices": `${s.gA} ${eur(pa2)}, ${s.gB} ${eur(pb2)}`,
                 },
                 answer,
-                explanation: String.raw`$Y_2^{real} = \sum p^{base} \, q_2$ - real GDP values current quantities at **base-year** prices, so only quantities matter: ${eur(pa1)} · ${n(qa2)} + ${eur(pb1)} · ${n(qb2)} = ${eur(answer)}. The year-2 prices are needed for nominal GDP, not here.`,
+                explanation: String.raw`$Y_2^{real} = \sum p^{base} \, q_2$ - real GDP values current quantities at base-year prices, so only quantities matter: ${eur(pa1)} · ${n(qa2)} + ${eur(pb1)} · ${n(qb2)} = ${eur(answer)}. The year-2 prices are needed for nominal GDP, not here.`,
                 hint: String.raw`Real GDP strips price changes out by valuing the quantities of the year in question at the prices of the base year: $Y_t^{real} = \sum p^{base} \, q_t$.`,
             };
         },
@@ -1865,14 +1865,14 @@ export const econ2Questions: Question[] = [
             const real2 = pa1 * qa2 + pb1 * qb2;
             const answer = (nom2 / real2 - 1) * 100;
             return {
-                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 the economy produces ${n(qa2)} ${s.uA} of ${s.gA} at ${eur(pa2)} and ${n(qb2)} ${s.uB} of ${s.gB} at ${eur(pb2)}. Measured by the **GDP deflator**, what is the inflation rate between year 1 and year 2?`,
+                prompt: `${s.place} produces only ${s.gA} and ${s.gB}. Year 1 is the base year with prices of ${eur(pa1)} per ${s.uA1} of ${s.gA} and ${eur(pb1)} per ${s.uB1} of ${s.gB}. In year 2 the economy produces ${n(qa2)} ${s.uA} of ${s.gA} at ${eur(pa2)} and ${n(qb2)} ${s.uB} of ${s.gB} at ${eur(pb2)}. Measured by the GDP deflator, what is the inflation rate between year 1 and year 2?`,
                 given: {
                     "Base-year prices": `${s.gA} ${eur(pa1)}, ${s.gB} ${eur(pb1)}`,
                     "Year-2 quantities": `${n(qa2)} ${s.uA}, ${n(qb2)} ${s.uB}`,
                     "Year-2 prices": `${s.gA} ${eur(pa2)}, ${s.gB} ${eur(pb2)}`,
                 },
                 answer,
-                explanation: String.raw`$\pi = \frac{P_2}{P_1} - 1$ with $P_t = \frac{Y_t^{nominal}}{Y_t^{real}} \cdot 100$ and $P_1 = 100$ in the base year, so $\pi = \frac{Y_2^{nominal}}{Y_2^{real}} - 1$, both valued with **year-2 quantities**. Nominal: ${eur(pa2)} · ${n(qa2)} + ${eur(pb2)} · ${n(qb2)} = ${eur(nom2)}. Real: ${eur(pa1)} · ${n(qa2)} + ${eur(pb1)} · ${n(qb2)} = ${eur(real2)}. Inflation: ${eur(nom2)} / ${eur(real2)} − 1 = ${pct(answer)}.`,
+                explanation: String.raw`$\pi = \frac{P_2}{P_1} - 1$ with $P_t = \frac{Y_t^{nominal}}{Y_t^{real}} \cdot 100$ and $P_1 = 100$ in the base year, so $\pi = \frac{Y_2^{nominal}}{Y_2^{real}} - 1$, both valued with year-2 quantities. Nominal: ${eur(pa2)} · ${n(qa2)} + ${eur(pb2)} · ${n(qb2)} = ${eur(nom2)}. Real: ${eur(pa1)} · ${n(qa2)} + ${eur(pb1)} · ${n(qb2)} = ${eur(real2)}. Inflation: ${eur(nom2)} / ${eur(real2)} − 1 = ${pct(answer)}.`,
             };
         },
     },
@@ -1896,14 +1896,14 @@ export const econ2Questions: Question[] = [
             const now = pa2 * qa1 + pb2 * qb1;
             const answer = (100 * now) / base;
             return {
-                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. The base-year basket is ${n(qa1)} ${s.uA} of ${s.lA} and ${n(qb1)} ${s.uB} of ${s.lB}, at base-year prices of ${eur(pa1)} per ${s.uA1} and ${eur(pb1)} per ${s.uB1}. This year, prices are ${eur(pa2)} per ${s.uA1} and ${eur(pb2)} per ${s.uB1}. What is this year's **Consumer Price Index (CPI)**, on a scale where the base year equals 100?`,
+                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. The base-year basket is ${n(qa1)} ${s.uA} of ${s.lA} and ${n(qb1)} ${s.uB} of ${s.lB}, at base-year prices of ${eur(pa1)} per ${s.uA1} and ${eur(pb1)} per ${s.uB1}. This year, prices are ${eur(pa2)} per ${s.uA1} and ${eur(pb2)} per ${s.uB1}. What is this year's Consumer Price Index (CPI), on a scale where the base year equals 100?`,
                 given: {
                     "Basket (base year)": `${n(qa1)} ${s.uA}, ${n(qb1)} ${s.uB}`,
                     "Base-year prices": `${s.lA} ${eur(pa1)}, ${s.lB} ${eur(pb1)}`,
                     "Current prices": `${s.lA} ${eur(pa2)}, ${s.lB} ${eur(pb2)}`,
                 },
                 answer,
-                explanation: String.raw`$CPI_t = \frac{\sum p_t \, q^{base}}{\sum p^{base} \, q^{base}} \cdot 100$ - the **fixed base-year basket** is priced at both years' prices. At base prices the basket costs ${eur(base)}; at current prices ${eur(pa2)} · ${n(qa1)} + ${eur(pb2)} · ${n(qb1)} = ${eur(now)}. CPI = 100 · ${eur(now)} / ${eur(base)} = ${n2(answer)}.`,
+                explanation: String.raw`$CPI_t = \frac{\sum p_t \, q^{base}}{\sum p^{base} \, q^{base}} \cdot 100$ - the fixed base-year basket is priced at both years' prices. At base prices the basket costs ${eur(base)}; at current prices ${eur(pa2)} · ${n(qa1)} + ${eur(pb2)} · ${n(qb1)} = ${eur(now)}. CPI = 100 · ${eur(now)} / ${eur(base)} = ${n2(answer)}.`,
             };
         },
     },
@@ -1923,7 +1923,7 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(EU_COUNTRIES);
             const answer = gW - piInfl;
             return {
-                prompt: `In ${country}, nominal wages grew by ${pct(gW)} last year while consumer prices rose by ${pct(piInfl)}. What was the growth rate of **real** wages? (Use the approximation, not the exact ratio.)`,
+                prompt: `In ${country}, nominal wages grew by ${pct(gW)} last year while consumer prices rose by ${pct(piInfl)}. What was the growth rate of real wages? (Use the approximation, not the exact ratio.)`,
                 given: {
                     "Nominal wage growth": pct(gW),
                     "Inflation": pct(piInfl),
@@ -1948,7 +1948,7 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(EU_COUNTRIES);
             const answer = piLag + gap;
             return {
-                prompt: `In ${country}, wage bargainers form their inflation expectations **adaptively**. Last year's inflation was ${pct(piLag)}. Unemployment is ${gap > 0 ? "below" : "above"} its equilibrium level, creating a bargaining gap of ${pct(gap)}. According to the Phillips curve with expectations, what is this year's inflation rate?`,
+                prompt: `In ${country}, wage bargainers form their inflation expectations adaptively. Last year's inflation was ${pct(piLag)}. Unemployment is ${gap > 0 ? "below" : "above"} its equilibrium level, creating a bargaining gap of ${pct(gap)}. According to the Phillips curve with expectations, what is this year's inflation rate?`,
                 given: {
                     "Last year's inflation": pct(piLag),
                     "Bargaining gap": pct(gap),
@@ -1975,14 +1975,14 @@ export const econ2Questions: Question[] = [
             const country = rng.pick(EU_COUNTRIES);
             const answer = pi0 + N * gap;
             return {
-                prompt: `${country[0].toUpperCase()}${country.slice(1)} starts in year 0 with inflation of ${pct(pi0)} and a labour market in equilibrium. From year 1 on, a boom keeps unemployment below equilibrium, creating a constant **positive bargaining gap of ${pct(gap)}** in every year. Expectations are **adaptive**. What is the inflation rate in year ${n(N)}?`,
+                prompt: `${country[0].toUpperCase()}${country.slice(1)} starts in year 0 with inflation of ${pct(pi0)} and a labour market in equilibrium. From year 1 on, a boom keeps unemployment below equilibrium, creating a constant positive bargaining gap of ${pct(gap)} in every year. Expectations are adaptive. What is the inflation rate in year ${n(N)}?`,
                 given: {
                     "Inflation in year 0": pct(pi0),
                     "Bargaining gap (each year from year 1)": pct(gap),
                     "Expectations": "adaptive",
                 },
                 answer,
-                explanation: String.raw`$\pi_t = \pi_{t-1} + \text{gap}$ - with adaptive expectations, $\pi_t = \pi_t^e + \text{gap} = \pi_{t-1} + \text{gap}$, so a constant gap makes inflation **ratchet up every year**: after ${n(N)} years, $\pi_{${N}} = ${n(pi0)}\,\% + ${n(N)} \cdot ${n(gap)}\,\%$ = ${pct(answer)}. Inflation does not stay at ${pct(pi0 + gap)} - that is the classic mistake.`,
+                explanation: String.raw`$\pi_t = \pi_{t-1} + \text{gap}$ - with adaptive expectations, $\pi_t = \pi_t^e + \text{gap} = \pi_{t-1} + \text{gap}$, so a constant gap makes inflation ratchet up every year: after ${n(N)} years, $\pi_{${N}} = ${n(pi0)}\,\% + ${n(N)} \cdot ${n(gap)}\,\%$ = ${pct(answer)}. Inflation does not stay at ${pct(pi0 + gap)} - that is the classic mistake.`,
                 hint: String.raw`With adaptive expectations the rate expected this year is last year's actual rate, so a gap that persists is added on again in every single year instead of once: $\pi_t = \pi_{t-1} + \text{gap}$.`,
             };
         },
@@ -2003,7 +2003,7 @@ export const econ2Questions: Question[] = [
             const piInfl = rng.int(5, Math.max(6, 10 * i - 5)) / 10;
             const answer = i - piInfl;
             return {
-                prompt: `${s.name} lends ${eur(P)} to a friend in ${s.country} for one year and receives a repayment of ${eur(R)}. Over that year, inflation turns out to be ${pct(piInfl)}. What **real** interest rate did ${s.name} earn (Fisher approximation)?`,
+                prompt: `${s.name} lends ${eur(P)} to a friend in ${s.country} for one year and receives a repayment of ${eur(R)}. Over that year, inflation turns out to be ${pct(piInfl)}. What real interest rate did ${s.name} earn (Fisher approximation)?`,
                 given: {
                     "Amount lent": eur(P),
                     "Repayment after one year": eur(R),
@@ -2028,7 +2028,7 @@ export const econ2Questions: Question[] = [
             const piInfl = rng.int(8, 45) / 10;
             const answer = r + piInfl;
             return {
-                prompt: `${s.investor} wants its one-year bond investments to earn a **real** return of ${pct(r)}. It expects inflation of ${pct(piInfl)} over the year. What nominal interest rate must the bonds pay (Fisher approximation)?`,
+                prompt: `${s.investor} wants its one-year bond investments to earn a real return of ${pct(r)}. It expects inflation of ${pct(piInfl)} over the year. What nominal interest rate must the bonds pay (Fisher approximation)?`,
                 given: {
                     "Target real return r": pct(r),
                     "Expected inflation π": pct(piInfl),
@@ -2052,7 +2052,7 @@ export const econ2Questions: Question[] = [
             const piInfl = rng.int(2, 9);
             const answer = X / (1 + piInfl / 100);
             return {
-                prompt: `${s.who} keeps ${eur(X)} ${s.how} for exactly one year, during which prices rise by ${pct(piInfl)}. What is the **real value** of the cash at the end of the year, expressed in start-of-year euros?`,
+                prompt: `${s.who} keeps ${eur(X)} ${s.how} for exactly one year, during which prices rise by ${pct(piInfl)}. What is the real value of the cash at the end of the year, expressed in start-of-year euros?`,
                 given: {
                     "Nominal amount": eur(X),
                     "Inflation over the year": pct(piInfl),
@@ -2083,7 +2083,7 @@ export const econ2Questions: Question[] = [
             const mult = 1 / D;
             const answer = dG * mult;
             return {
-                prompt: String.raw`In ${s.place}, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. In addition, households spend a fraction $m = ${n(m)}$ of every extra unit of income on **imports** (the marginal propensity to import). The government raises its purchases by ${n(dG)}. By how much does equilibrium output rise?`,
+                prompt: String.raw`In ${s.place}, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. In addition, households spend a fraction $m = ${n(m)}$ of every extra unit of income on imports (the marginal propensity to import). The government raises its purchases by ${n(dG)}. By how much does equilibrium output rise?`,
                 given: {
                     "Marginal propensity to consume $c_1$": n(c1),
                     "Income tax rate t": pct(t * 100),
@@ -2091,7 +2091,7 @@ export const econ2Questions: Question[] = [
                     "Increase in G": n(dG),
                 },
                 answer,
-                explanation: String.raw`$\Delta Y = \frac{1}{1 - c_1 (1 - t) + m} \cdot \Delta G$ - import spending leaks out of the domestic circular flow, so $m$ **adds** to the multiplier denominator: 1 − ${n(c1)} · ${n(1 - t)} + ${n(m)} = ${n(D)}, multiplier ${n2(mult)}, so ΔY = ${n2(mult)} · ${n(dG)} = ${n2(answer)} - noticeably less than the closed-economy multiplier of ${n2(1 / (1 - c1 * (1 - t)))} would deliver.`,
+                explanation: String.raw`$\Delta Y = \frac{1}{1 - c_1 (1 - t) + m} \cdot \Delta G$ - import spending leaks out of the domestic circular flow, so $m$ adds to the multiplier denominator: 1 − ${n(c1)} · ${n(1 - t)} + ${n(m)} = ${n(D)}, multiplier ${n2(mult)}, so ΔY = ${n2(mult)} · ${n(dG)} = ${n2(answer)} - noticeably less than the closed-economy multiplier of ${n2(1 / (1 - c1 * (1 - t)))} would deliver.`,
             };
         },
     },
@@ -2111,7 +2111,7 @@ export const econ2Questions: Question[] = [
             const D = 1 - c1 * (1 - t);
             const answer = dI / D;
             return {
-                prompt: String.raw`${s.shock} ${n(dI)}. Consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and an income tax rate of ${pct(t * 100)}; all other demand components are unchanged. By how much does equilibrium output **fall**? (Give the fall as a positive number.)`,
+                prompt: String.raw`${s.shock} ${n(dI)}. Consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and an income tax rate of ${pct(t * 100)}; all other demand components are unchanged. By how much does equilibrium output fall? (Give the fall as a positive number.)`,
                 given: {
                     "Fall in investment": n(dI),
                     "Marginal propensity to consume $c_1$": n(c1),
@@ -2165,7 +2165,7 @@ export const econ2Questions: Question[] = [
             const I0 = d.I + dI;
             const G0 = d.G - dG;
             return {
-                prompt: String.raw`The economy of ${s.place} has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a tax rate of ${pct(d.t * 100)}; exports are ${n(d.X)} and imports ${n(d.M)}. Initially, investment is ${n(I0)} and government purchases are ${n(G0)}. Then ${s.cause} ${n(d.I)}, and the government responds by raising its purchases to ${n(d.G)}. What is the **new** equilibrium output?`,
+                prompt: String.raw`The economy of ${s.place} has consumption $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a tax rate of ${pct(d.t * 100)}; exports are ${n(d.X)} and imports ${n(d.M)}. Initially, investment is ${n(I0)} and government purchases are ${n(G0)}. Then ${s.cause} ${n(d.I)}, and the government responds by raising its purchases to ${n(d.G)}. What is the new equilibrium output?`,
                 given: {
                     "Autonomous consumption $c_0$": n(d.c0),
                     "Marginal propensity to consume $c_1$": n(d.c1),
@@ -2175,7 +2175,7 @@ export const econ2Questions: Question[] = [
                     "Government purchases: before / after": `${n(G0)} / ${n(d.G)}`,
                 },
                 answer: d.Y,
-                explanation: String.raw`$Y = \frac{c_0 + I + G + X - M}{1 - c_1 (1 - t)}$ - only the **new** values of $I$ and $G$ matter for the new equilibrium. Autonomous demand: ${n(d.c0)} + ${n(d.I)} + ${n(d.G)} + ${n(d.X)} − ${n(d.M)} = ${n(d.A)}; denominator: 1 − ${n(d.c1)} · ${n(1 - d.t)} = ${n(d.D)}; so Y = ${n(d.A)} / ${n(d.D)} = ${n(d.Y)}.`,
+                explanation: String.raw`$Y = \frac{c_0 + I + G + X - M}{1 - c_1 (1 - t)}$ - only the new values of $I$ and $G$ matter for the new equilibrium. Autonomous demand: ${n(d.c0)} + ${n(d.I)} + ${n(d.G)} + ${n(d.X)} − ${n(d.M)} = ${n(d.A)}; denominator: 1 − ${n(d.c1)} · ${n(1 - d.t)} = ${n(d.D)}; so Y = ${n(d.A)} / ${n(d.D)} = ${n(d.Y)}.`,
             };
         },
     },
@@ -2192,7 +2192,7 @@ export const econ2Questions: Question[] = [
             const d = drawGM2(rng);
             const answer = d.t * d.Y;
             return {
-                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's **tax revenue** in the goods-market equilibrium?`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(d.c0)}$, $c_1 = ${n(d.c1)}$ and a proportional income tax of ${pct(d.t * 100)}. Investment is ${n(d.I)}, government purchases ${n(d.G)}, exports ${n(d.X)}, imports ${n(d.M)}. What is the government's tax revenue in the goods-market equilibrium?`,
                 given: gm2Given(d),
                 answer,
                 explanation: String.raw`$T = t \cdot Y^*$ - first solve for equilibrium output: $Y^* = \frac{c_0 + I + G + X - M}{1 - c_1(1-t)}$ = ${n(d.A)} / ${n(d.D)} = ${n(d.Y)}. Then tax revenue is ${n(d.t)} · ${n(d.Y)} = ${n(answer)}. The budget balance would additionally subtract G (${n(d.G)}), giving ${n(answer - d.G)}.`,
@@ -2216,7 +2216,7 @@ export const econ2Questions: Question[] = [
             const e = rng.pick([0.4, 0.5, 0.6, 0.75, 0.8] as const);
             const answer = w / e;
             return {
-                prompt: `${s.firm} pays its ${s.workers} a wage of ${eur(w)} per hour. At that wage, one ${s.worker} provides ${n(e)} units of effort per hour. What is the firm's **cost per unit of effort**?`,
+                prompt: `${s.firm} pays its ${s.workers} a wage of ${eur(w)} per hour. At that wage, one ${s.worker} provides ${n(e)} units of effort per hour. What is the firm's cost per unit of effort?`,
                 given: {
                     "Hourly wage w": eur(w),
                     "Effort per hour e": n(e),
@@ -2240,7 +2240,7 @@ export const econ2Questions: Question[] = [
             const mu = rng.pick([0.1, 0.15, 0.2, 0.25] as const);
             const answer = lam * (1 - mu);
             return {
-                prompt: `In ${s.sector}, output per worker is ${eur(lam)} per day. Competition in the product market pins the firms' markup at ${pct(mu * 100)}. According to the price-setting curve, what **real wage** per worker and day results when all firms set their profit-maximizing prices?`,
+                prompt: `In ${s.sector}, output per worker is ${eur(lam)} per day. Competition in the product market pins the firms' markup at ${pct(mu * 100)}. According to the price-setting curve, what real wage per worker and day results when all firms set their profit-maximizing prices?`,
                 given: {
                     "Output per worker λ": eur(lam),
                     "Markup μ": pct(mu * 100),
@@ -2264,7 +2264,7 @@ export const econ2Questions: Question[] = [
             const mu = rng.pick([0.1, 0.15, 0.2, 0.25] as const);
             const answer = lam * mu;
             return {
-                prompt: `Firms in ${s.sector} produce output worth ${eur(lam)} per worker and day and, given the intensity of competition, charge a markup of ${pct(mu * 100)}. What is the **real profit per worker** and day that accrues to the owners?`,
+                prompt: `Firms in ${s.sector} produce output worth ${eur(lam)} per worker and day and, given the intensity of competition, charge a markup of ${pct(mu * 100)}. What is the real profit per worker and day that accrues to the owners?`,
                 given: {
                     "Output per worker λ": eur(lam),
                     "Markup μ": pct(mu * 100),
@@ -2293,7 +2293,7 @@ export const econ2Questions: Question[] = [
             const weeks = rng.int(20, 45);
             const answer = dB * weeks;
             return {
-                prompt: `${s.who} earns ${eur(w)} per hour for ${n(H)} hours a week; ${s.poss} disutility of effort is ${eur(dis)} per hour. If dismissed, ${s.subj} would expect ${n(weeks)} weeks of unemployment with a weekly benefit of ${eur(B)}. The government now **raises** the weekly unemployment benefit by ${eur(dB)}. By how much does ${s.poss} **total employment rent** for the expected unemployment spell **fall**?`,
+                prompt: `${s.who} earns ${eur(w)} per hour for ${n(H)} hours a week; ${s.poss} disutility of effort is ${eur(dis)} per hour. If dismissed, ${s.subj} would expect ${n(weeks)} weeks of unemployment with a weekly benefit of ${eur(B)}. The government now raises the weekly unemployment benefit by ${eur(dB)}. By how much does ${s.poss} total employment rent for the expected unemployment spell fall?`,
                 given: {
                     "Hourly wage": eur(w),
                     "Hours per week": n(H),
@@ -2322,13 +2322,13 @@ export const econ2Questions: Question[] = [
             const U = rng.int(8, 60) / 10;
             const answer = (U / (E + U)) * 100;
             return {
-                prompt: `In ${country}, ${n(E)} million people are employed and ${n(U)} million are unemployed according to the ILO definition. What is the **unemployment rate**?`,
+                prompt: `In ${country}, ${n(E)} million people are employed and ${n(U)} million are unemployed according to the ILO definition. What is the unemployment rate?`,
                 given: {
                     "Employed": `${n(E)} million`,
                     "Unemployed": `${n(U)} million`,
                 },
                 answer,
-                explanation: String.raw`$u = \frac{U}{\text{labour force}} = \frac{U}{E + U}$ - the denominator is the labour force (employed **plus** unemployed), not the population: ${n(U)} / ${n(E + U)} = ${pct(answer)}.`,
+                explanation: String.raw`$u = \frac{U}{\text{labour force}} = \frac{U}{E + U}$ - the denominator is the labour force (employed plus unemployed), not the population: ${n(U)} / ${n(E + U)} = ${pct(answer)}.`,
             };
         },
     },
@@ -2347,7 +2347,7 @@ export const econ2Questions: Question[] = [
             const wap = Math.round((E + U) * (1 + rng.int(20, 60) / 100) * 10) / 10;
             const answer = ((E + U) / wap) * 100;
             return {
-                prompt: `The working-age population of ${country} is ${n(wap)} million. Of these, ${n(E)} million are employed and ${n(U)} million are unemployed; the rest are not in the labour force. What is the **participation rate**?`,
+                prompt: `The working-age population of ${country} is ${n(wap)} million. Of these, ${n(E)} million are employed and ${n(U)} million are unemployed; the rest are not in the labour force. What is the participation rate?`,
                 given: {
                     "Working-age population": `${n(wap)} million`,
                     "Employed": `${n(E)} million`,
@@ -2373,14 +2373,14 @@ export const econ2Questions: Question[] = [
             const wap = Math.round((E + U) * (1 + rng.int(20, 60) / 100) * 10) / 10;
             const answer = (E / wap) * 100;
             return {
-                prompt: `In ${country}, the working-age population is ${n(wap)} million, of whom ${n(E)} million are employed and ${n(U)} million are unemployed. What is the **employment rate**?`,
+                prompt: `In ${country}, the working-age population is ${n(wap)} million, of whom ${n(E)} million are employed and ${n(U)} million are unemployed. What is the employment rate?`,
                 given: {
                     "Working-age population": `${n(wap)} million`,
                     "Employed": `${n(E)} million`,
                     "Unemployed": `${n(U)} million`,
                 },
                 answer,
-                explanation: String.raw`$\text{employment rate} = \frac{E}{WAP}$ - employed relative to the **working-age population**, not to the labour force: ${n(E)} / ${n(wap)} = ${pct(answer)}. (Dividing by the labour force ${n(E + U)} would mix it up with the unemployment rate's denominator - that is why a country can have a low unemployment rate and a low employment rate at the same time.)`,
+                explanation: String.raw`$\text{employment rate} = \frac{E}{WAP}$ - employed relative to the working-age population, not to the labour force: ${n(E)} / ${n(wap)} = ${pct(answer)}. (Dividing by the labour force ${n(E + U)} would mix it up with the unemployment rate's denominator - that is why a country can have a low unemployment rate and a low employment rate at the same time.)`,
             };
         },
     },
@@ -2400,7 +2400,7 @@ export const econ2Questions: Question[] = [
             const lf = wap * (part / 100);
             const answer = lf * (1 - u / 100);
             return {
-                prompt: `${country[0].toUpperCase()}${country.slice(1)} has a working-age population of ${n(wap)} million, a participation rate of ${pct(part)} and an unemployment rate of ${pct(u)}. How many million people are **employed**?`,
+                prompt: `${country[0].toUpperCase()}${country.slice(1)} has a working-age population of ${n(wap)} million, a participation rate of ${pct(part)} and an unemployment rate of ${pct(u)}. How many million people are employed?`,
                 given: {
                     "Working-age population": `${n(wap)} million`,
                     "Participation rate": pct(part),
@@ -2428,7 +2428,7 @@ export const econ2Questions: Question[] = [
             const c1 = y1 / 2;
             const answer = (1 + r / 100) * c1;
             return {
-                prompt: String.raw`${s.name} in ${s.country} earns ${n(y1)} thousand € this year and nothing next year. ${cap(s.subj)} can save any part of it at an interest rate of ${pct(r)} and has the utility function $U = C_1^{0.5} \cdot C_2^{0.5}$ over consumption this year ($C_1$) and next year ($C_2$). How much does ${s.subj} optimally consume **next year**, in thousand €?`,
+                prompt: String.raw`${s.name} in ${s.country} earns ${n(y1)} thousand € this year and nothing next year. ${cap(s.subj)} can save any part of it at an interest rate of ${pct(r)} and has the utility function $U = C_1^{0.5} \cdot C_2^{0.5}$ over consumption this year ($C_1$) and next year ($C_2$). How much does ${s.subj} optimally consume next year, in thousand €?`,
                 given: {
                     "Income this year": `${n(y1)} thousand €`,
                     "Income next year": "0",
@@ -2507,14 +2507,14 @@ export const econ2Questions: Question[] = [
             const y1 = 10 * rng.int(2, 10);
             const answer = y1 + pv2;
             return {
-                prompt: `${s.name} in ${s.country} earns ${n(y1)} thousand € this year and will earn ${n(y2)} thousand € next year. ${cap(s.poss)} bank lets ${s.obj} borrow freely against next year's income at an interest rate of ${pct(r)}. What is the **maximum** ${s.subj} could consume this year, in thousand €?`,
+                prompt: `${s.name} in ${s.country} earns ${n(y1)} thousand € this year and will earn ${n(y2)} thousand € next year. ${cap(s.poss)} bank lets ${s.obj} borrow freely against next year's income at an interest rate of ${pct(r)}. What is the maximum ${s.subj} could consume this year, in thousand €?`,
                 given: {
                     "Income this year": `${n(y1)} thousand €`,
                     "Income next year": `${n(y2)} thousand €`,
                     "Interest rate r": pct(r),
                 },
                 answer,
-                explanation: String.raw`$C_1^{max} = y_1 + \frac{y_2}{1 + r}$ - ${s.subj} can consume ${s.poss} current income plus the **present value** of next year's income, because a loan of $\frac{y_2}{1+r}$ today is exactly repaid by $y_2$ next year: ${n(y1)} + ${n(y2)} / ${n(1 + r / 100)} = ${n(y1)} + ${n(pv2)} = ${n(answer)} thousand €. Adding the two incomes without discounting is the classic trap.`,
+                explanation: String.raw`$C_1^{max} = y_1 + \frac{y_2}{1 + r}$ - ${s.subj} can consume ${s.poss} current income plus the present value of next year's income, because a loan of $\frac{y_2}{1+r}$ today is exactly repaid by $y_2$ next year: ${n(y1)} + ${n(y2)} / ${n(1 + r / 100)} = ${n(y1)} + ${n(pv2)} = ${n(answer)} thousand €. Adding the two incomes without discounting is the classic trap.`,
             };
         },
     },
@@ -2593,7 +2593,7 @@ export const econ2Questions: Question[] = [
             const costs = [w * L1 + p * R1, w * L2 + p * R2, w * L3 + p * R3];
             const answer = Math.max(...costs) - Math.min(...costs);
             return {
-                prompt: `${s.firm} can ${s.action} with technology **A** (${n(L1)} workers, ${n(R1)} MWh), **B** (${n(L2)} workers, ${n(R2)} MWh) or **C** (${n(L3)} workers, ${n(R3)} MWh). The wage is ${eur(w)} per worker and energy costs ${eur(p)} per MWh. By how much do the total costs of the **most expensive** and the **cheapest** technology differ?`,
+                prompt: `${s.firm} can ${s.action} with technology A (${n(L1)} workers, ${n(R1)} MWh), B (${n(L2)} workers, ${n(R2)} MWh) or C (${n(L3)} workers, ${n(R3)} MWh). The wage is ${eur(w)} per worker and energy costs ${eur(p)} per MWh. By how much do the total costs of the most expensive and the cheapest technology differ?`,
                 given: {
                     "Technology A": `${n(L1)} workers + ${n(R1)} MWh`,
                     "Technology B": `${n(L2)} workers + ${n(R2)} MWh`,
@@ -2625,7 +2625,7 @@ export const econ2Questions: Question[] = [
             const cNew = w * L + p * (R - dR);
             const answer = cOld - cNew;
             return {
-                prompt: `${s.firm} ${s.action} with ${n(L)} workers and ${n(R)} MWh of ${s.energy} (wage ${eur(w)}, ${s.energy} ${eur(p)} per MWh). A process innovation cuts the ${s.energy} requirement to ${n(R - dR)} MWh with the same number of workers. What is the **innovation rent** per batch?`,
+                prompt: `${s.firm} ${s.action} with ${n(L)} workers and ${n(R)} MWh of ${s.energy} (wage ${eur(w)}, ${s.energy} ${eur(p)} per MWh). A process innovation cuts the ${s.energy} requirement to ${n(R - dR)} MWh with the same number of workers. What is the innovation rent per batch?`,
                 given: {
                     "Old process": `${n(L)} workers + ${n(R)} MWh`,
                     "New process": `${n(L)} workers + ${n(R - dR)} MWh`,
@@ -2662,7 +2662,7 @@ export const econ2Questions: Question[] = [
             const q = 50 * rng.int(2, 10);
             const answer = (cB - cA) * q;
             return {
-                prompt: `All ${s.firms} in ${s.town} ${s.verb} with technique **B** (${plural(LB, "worker")}, ${n(RB)} MWh per batch). One ${s.firm} pioneers the energy-intensive technique **A** (${plural(LA, "worker")}, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the ${s.firm} produces ${n(q)} batches per year. What **annual innovation rent** does the first mover earn?`,
+                prompt: `All ${s.firms} in ${s.town} ${s.verb} with technique B (${plural(LB, "worker")}, ${n(RB)} MWh per batch). One ${s.firm} pioneers the energy-intensive technique A (${plural(LA, "worker")}, ${n(RA)} MWh per batch). The wage is ${eur(w)} per worker, energy costs ${eur(p)} per MWh, and the ${s.firm} produces ${n(q)} batches per year. What annual innovation rent does the first mover earn?`,
                 given: {
                     "Technique A": `${plural(LA, "worker")} + ${n(RA)} MWh`,
                     "Technique B": `${plural(LB, "worker")} + ${n(RB)} MWh`,
@@ -2744,13 +2744,13 @@ export const econ2Questions: Question[] = [
             const E1 = Math.round(E0 * (1 + c / 100));
             const answer = (E0 / E1 - 1) * 100;
             return {
-                prompt: `The yen-per-euro exchange rate moves from ${n(E0)} in year 1 to ${n(E1)} in year 2. By what percentage does the **euro-per-yen** rate change over the same period? A negative number means it fell.`,
+                prompt: `The yen-per-euro exchange rate moves from ${n(E0)} in year 1 to ${n(E1)} in year 2. By what percentage does the euro-per-yen rate change over the same period? A negative number means it fell.`,
                 given: {
                     "Yen per euro, year 1": n(E0),
                     "Yen per euro, year 2": n(E1),
                 },
                 answer,
-                explanation: String.raw`$\Delta E^{-1} \, [\%] = \left( \frac{E_0}{E_1} - 1 \right) \cdot 100$ - the euro-per-yen rate is the reciprocal $1/E$, so its growth factor is $E_0 / E_1$: ${n(E0)} / ${n(E1)} − 1 = ${pct(answer)}. Note that the reciprocal rate does **not** simply change by ${pct(-((E1 / E0 - 1) * 100))} with the opposite sign - reciprocals are not symmetric in percentages.`,
+                explanation: String.raw`$\Delta E^{-1} \, [\%] = \left( \frac{E_0}{E_1} - 1 \right) \cdot 100$ - the euro-per-yen rate is the reciprocal $1/E$, so its growth factor is $E_0 / E_1$: ${n(E0)} / ${n(E1)} − 1 = ${pct(answer)}. Note that the reciprocal rate does not simply change by ${pct(-((E1 / E0 - 1) * 100))} with the opposite sign - reciprocals are not symmetric in percentages.`,
             };
         },
     },
@@ -2771,7 +2771,7 @@ export const econ2Questions: Question[] = [
             const cross1 = W1 / F1;
             const answer = (cross1 / cross0 - 1) * 100;
             return {
-                prompt: `Both the South Korean won and the Swiss franc are quoted against the euro. In year 1, one euro costs ${n(W0)} won and ${n2(F0)} francs; in year 2, it costs ${n(W1)} won and ${n2(F1)} francs. By what percentage does the **cross rate in won per franc** change from year 1 to year 2? A positive number means the franc appreciated against the won.`,
+                prompt: `Both the South Korean won and the Swiss franc are quoted against the euro. In year 1, one euro costs ${n(W0)} won and ${n2(F0)} francs; in year 2, it costs ${n(W1)} won and ${n2(F1)} francs. By what percentage does the cross rate in won per franc change from year 1 to year 2? A positive number means the franc appreciated against the won.`,
                 given: {
                     "Won per euro: year 1 / year 2": `${n(W0)} / ${n(W1)}`,
                     "Francs per euro: year 1 / year 2": `${n2(F0)} / ${n2(F1)}`,
@@ -2803,7 +2803,7 @@ export const econ2Questions: Question[] = [
             const answer = A * A * ratio;
             const Astr = A === 1 ? "" : `${A} `;
             return {
-                prompt: String.raw`A Solow economy produces with $f(k) = ${Astr}\sqrt{k}$ per effective worker. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. What is **output per effective worker** $y^*$ in the steady state?`,
+                prompt: String.raw`A Solow economy produces with $f(k) = ${Astr}\sqrt{k}$ per effective worker. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. What is output per effective worker $y^*$ in the steady state?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = ${Astr}\sqrt{k}$`,
                     "Savings rate s": pct(s),
@@ -2837,7 +2837,7 @@ export const econ2Questions: Question[] = [
             const answer = (1 - s / 100) * yStar;
             const Astr = A === 1 ? "" : `${A} `;
             return {
-                prompt: String.raw`A Solow economy has $f(k) = ${Astr}\sqrt{k}$ per effective worker, a savings rate of ${pct(s)}, population growth of ${pct(nPop)}, technological progress of ${pct(g)} and depreciation of ${pct(delta)}. What is **consumption per effective worker** $c^*$ in the steady state?`,
+                prompt: String.raw`A Solow economy has $f(k) = ${Astr}\sqrt{k}$ per effective worker, a savings rate of ${pct(s)}, population growth of ${pct(nPop)}, technological progress of ${pct(g)} and depreciation of ${pct(delta)}. What is consumption per effective worker $c^*$ in the steady state?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = ${Astr}\sqrt{k}$`,
                     "Savings rate s": pct(s),
@@ -2866,7 +2866,7 @@ export const econ2Questions: Question[] = [
             const x = nPop + g + delta;
             const answer = (x / 100) * k;
             return {
-                prompt: String.raw`In a Solow economy, the capital stock per effective worker is currently $k = ${n(k)}$. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. How much **investment per effective worker** is needed just to keep $k$ constant (the break-even investment)?`,
+                prompt: String.raw`In a Solow economy, the capital stock per effective worker is currently $k = ${n(k)}$. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. How much investment per effective worker is needed just to keep $k$ constant (the break-even investment)?`,
                 given: {
                     "Capital per effective worker k": n(k),
                     "Population growth n": pct(nPop),
@@ -2892,7 +2892,7 @@ export const econ2Questions: Question[] = [
             const delta = rng.int(3, 8);
             const s = rng.int(15, 40);
             return {
-                prompt: String.raw`A Solow economy is in its steady state. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology progresses at ${pct(g)}, and capital depreciates at ${pct(delta)}. At what rate does **output per capita** grow in the steady state?`,
+                prompt: String.raw`A Solow economy is in its steady state. The savings rate is ${pct(s)}, population grows at ${pct(nPop)}, technology progresses at ${pct(g)}, and capital depreciates at ${pct(delta)}. At what rate does output per capita grow in the steady state?`,
                 given: {
                     "Savings rate s": pct(s),
                     "Population growth n": pct(nPop),
@@ -2900,7 +2900,7 @@ export const econ2Questions: Question[] = [
                     "Depreciation rate δ": pct(delta),
                 },
                 answer: g,
-                explanation: String.raw`$g_y = g$ - in the steady state, output per **effective** worker is constant, so output per capita grows exactly at the rate of technological progress: ${pct(g)}. Neither the savings rate nor population growth affects the long-run growth rate - they only shift the **level** of the steady-state path.`,
+                explanation: String.raw`$g_y = g$ - in the steady state, output per effective worker is constant, so output per capita grows exactly at the rate of technological progress: ${pct(g)}. Neither the savings rate nor population growth affects the long-run growth rate - they only shift the level of the steady-state path.`,
             };
         },
     },
@@ -2922,7 +2922,7 @@ export const econ2Questions: Question[] = [
             const kStar = r * r;
             const answer = x * r;
             return {
-                prompt: String.raw`A Solow economy produces with $f(k) = \sqrt{k}$ per effective worker. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. Which **savings rate** $s$ sustains a steady state with a capital stock of exactly $k^* = ${n(kStar)}$ per effective worker?`,
+                prompt: String.raw`A Solow economy produces with $f(k) = \sqrt{k}$ per effective worker. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and depreciation is ${pct(delta)}. Which savings rate $s$ sustains a steady state with a capital stock of exactly $k^* = ${n(kStar)}$ per effective worker?`,
                 given: {
                     "Production per effective worker": String.raw`$f(k) = \sqrt{k}$`,
                     "Target steady-state capital $k^*$": n(kStar),
@@ -2951,7 +2951,7 @@ export const econ2Questions: Question[] = [
             const bank = 10 * rng.int(20, 120);
             const answer = base + bank;
             return {
-                prompt: `In ${country}, the central bank has issued base money (notes, coins and central-bank reserves) of ${n(base)} billion €. Commercial banks have created bank money of ${n(bank)} billion € by extending loans. What is **broad money**, in billion €?`,
+                prompt: `In ${country}, the central bank has issued base money (notes, coins and central-bank reserves) of ${n(base)} billion €. Commercial banks have created bank money of ${n(bank)} billion € by extending loans. What is broad money, in billion €?`,
                 given: {
                     "Base money": `${n(base)} billion €`,
                     "Bank money": `${n(bank)} billion €`,
@@ -2975,7 +2975,7 @@ export const econ2Questions: Question[] = [
             const assets = 10 * rng.int(30, 120);
             const liab = assets - nw;
             return {
-                prompt: `${s.bank} holds total assets (base money, loans to customers, financial assets and buildings) of ${n(assets)} billion € and total liabilities (deposits and borrowing) of ${n(liab)} billion €. What is the bank's **net worth** (equity), in billion €?`,
+                prompt: `${s.bank} holds total assets (base money, loans to customers, financial assets and buildings) of ${n(assets)} billion € and total liabilities (deposits and borrowing) of ${n(liab)} billion €. What is the bank's net worth (equity), in billion €?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Total liabilities": `${n(liab)} billion €`,
@@ -2999,7 +2999,7 @@ export const econ2Questions: Question[] = [
             const mult = rng.int(8, 30);
             const assets = E * mult;
             return {
-                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth (equity) of ${n(E)} billion €. What is its **leverage ratio**?`,
+                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth (equity) of ${n(E)} billion €. What is its leverage ratio?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Net worth (equity)": `${n(E)} billion €`,
@@ -3024,7 +3024,7 @@ export const econ2Questions: Question[] = [
             const E = rng.int(8, 60);
             const answer = (E / assets) * 100;
             return {
-                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth of ${n(E)} billion €. By what **percentage** would the value of its assets have to fall to wipe out the bank's net worth entirely?`,
+                prompt: `${s.bank} has total assets of ${n(assets)} billion € and a net worth of ${n(E)} billion €. By what percentage would the value of its assets have to fall to wipe out the bank's net worth entirely?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Net worth (equity)": `${n(E)} billion €`,
@@ -3051,7 +3051,7 @@ export const econ2Questions: Question[] = [
             const D = L - 10 * rng.int(0, 15); // D <= L keeps net interest income positive
             const answer = (L * iL) / 100 - (D * iD) / 100;
             return {
-                prompt: `${s.bank} has extended loans of ${n(L)} million € on which it charges an average lending rate of ${pct(iL)}. It funds itself with deposits of ${n(D)} million € on which it pays ${pct(iD)}. What is the bank's annual **net interest income**, in million €?`,
+                prompt: `${s.bank} has extended loans of ${n(L)} million € on which it charges an average lending rate of ${pct(iL)}. It funds itself with deposits of ${n(D)} million € on which it pays ${pct(iD)}. What is the bank's annual net interest income, in million €?`,
                 given: {
                     "Loans outstanding": `${n(L)} million €`,
                     "Lending rate": pct(iL),
@@ -3077,7 +3077,7 @@ export const econ2Questions: Question[] = [
             const Y = 50 * rng.int(1, 8) + 25;
             const answer = X + Y;
             return {
-                prompt: `${s.saver} deposits ${n(X)} € of cash at ${s.bank}, which credits ${s.poss} account with ${n(X)} €. The bank then grants ${s.borrower} a loan of ${n(Y)} € by crediting ${s.borrowerPoss} account - no cash changes hands. How much **broad money** now exists in this small banking system, in €?`,
+                prompt: `${s.saver} deposits ${n(X)} € of cash at ${s.bank}, which credits ${s.poss} account with ${n(X)} €. The bank then grants ${s.borrower} a loan of ${n(Y)} € by crediting ${s.borrowerPoss} account - no cash changes hands. How much broad money now exists in this small banking system, in €?`,
                 given: {
                     "Cash deposited": `${n(X)} €`,
                     "Loan granted by account credit": `${n(Y)} €`,
