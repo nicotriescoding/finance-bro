@@ -14,11 +14,11 @@
  * `amz` (search link) stays for the few items where no listing qualifies
  * and for /library. Both carry the tag once AMAZON_TAG is set.
  *
- * TODO(Nico): after PartnerNet signup, put your tag here (e.g. "financebro-21")
- * and every link on /products and /library is tagged. Until then the links
- * work untagged.
+ * Tag: PartnerNet DE store ID (set 2026-09-11). Every link on /products and
+ * /library carries it. A US Associates tag (financebro0f-20) also exists but
+ * only earns on amazon.com - not used here.
  */
-export const AMAZON_TAG = "";
+export const AMAZON_TAG = "financebro0a-21";
 
 /** Build an Amazon.de search link, tagged once AMAZON_TAG is set. */
 export function amz(search: string): string {

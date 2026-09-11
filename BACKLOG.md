@@ -109,11 +109,15 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Next up
 
-- **Amazon PartnerNet:** once approved, set `AMAZON_TAG` in
-  `src/lib/affiliate.ts`; product images stay stock photos and the Library
-  keeps its generated covers (Associates only allows API-served images,
-  which needs 10 sales in 30 days - that API is also the only clean way to
-  get real book covers back, decided 2026-09-08).
+- **Amazon PartnerNet:** `AMAZON_TAG = "financebro0a-21"` set 2026-09-11
+  (DE store ID, verified with the PartnerNet Link Checker). Still owed:
+  3 qualifying sales within 180 days or the account is closed. Product
+  images stay stock photos and the Library keeps its generated covers
+  (Associates only allows API-served images, which needs 10 sales in 30
+  days - that API is also the only clean way to get real book covers back,
+  decided 2026-09-08). Owed check: `npm run check` could not run this
+  session (cloud npm registry blocked, sandbox must not run npm on the
+  mount); only `tsc --noEmit` ran green. Run the gate locally once.
 - **AdSense:** site review + publish the GDPR consent message
   (`docs/adsense-setup.md`, steps still open). **PostHog:** retention ≤ 24
   months in the project settings (privacy policy promises it).
