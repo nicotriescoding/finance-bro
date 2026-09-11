@@ -131,6 +131,14 @@ export default function QuizClient() {
         start();
     }, [session, view, stop, reset, start]);
 
+    // end your career: the run is dropped, the balance is kept
+    const endCareer = useCallback(() => {
+        if (!session) return;
+        stop();
+        clearSession();
+        router.push(`/career?subject=${session.subjectId}`);
+    }, [session, stop, router]);
+
     const handleNext = useCallback(() => {
         if (!session) return;
         if (session.queue.length === 0) {
@@ -203,6 +211,7 @@ export default function QuizClient() {
                 session={session}
                 score={score}
                 posting={view.posting}
+                onEnd={endCareer}
             />
 
             <div className="mx-auto max-w-[1440px] px-4 pt-4 lg:px-[22px] lg:pt-[18px]">
@@ -229,6 +238,14 @@ export default function QuizClient() {
                                     🔥 {streak} streak
                                 </span>
                             )}
+                            <button
+                                type="button"
+                                onClick={endCareer}
+                                title="Leaves the run - the balance stays, the open postings do not"
+                                className="ml-auto rounded-[8px] border border-hairline bg-surface px-3 py-1.5 text-[12px] font-bold text-muted transition hover:border-[#c8d3de] hover:text-ink"
+                            >
+                                End your career
+                            </button>
                         </div>
 
                         <QuestionCard
@@ -256,16 +273,6 @@ export default function QuizClient() {
                             <AdSlot variant="feed" refreshKey={view.instance.key} />
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-                                clearSession();
-                                router.push(`/career?subject=${session.subjectId}`);
-                            }}
-                            className="self-start text-sm text-muted underline underline-offset-4 transition hover:text-ink"
-                        >
-                            End session
-                        </button>
                     </div>
 
                     {/* right rail - the account */}
@@ -293,11 +300,13 @@ function PhoneProgressStack({
     session,
     score,
     posting,
+    onEnd,
 }: {
     courseName: string;
     session: StoredSession;
     score: number;
     posting: number;
+    onEnd: () => void;
 }) {
     const totals = sessionTotals(session);
     const states = segmentStates(session);
@@ -333,6 +342,13 @@ function PhoneProgressStack({
                     <span className="caps-label text-[10px] text-muted-light">
                         Posting {String(posting).padStart(2, "0")} · {totals.left} left
                     </span>
+                    <button
+                        type="button"
+                        onClick={onEnd}
+                        className="rounded-[6px] border border-ink-track px-2 py-0.5 text-[10px] font-bold text-[#b7c8d9] transition hover:text-white"
+                    >
+                        End your career
+                    </button>
                 </div>
                 <span className="h-px bg-ink-track" />
                 <div className="flex flex-col gap-1.5">
