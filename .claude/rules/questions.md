@@ -111,6 +111,10 @@ prompts, `given` keys and values and explanations. Rules:
 
 ## Non-negotiables
 
+0. **No text styling.** No `**bold**`, italics or underline anywhere in
+   `prompt`, `given`, `hint` or `explanation` - an exam sheet has none
+   (decision 2026-09-11). Emphasis is not a substitute for clear wording.
+
 1. **One draw feeds both.** Every number in `prompt`, `given`, `answer` and
    `explanation` comes from the same `rng` call sequence. Never compute the
    prompt from one set of numbers and the answer from another.

@@ -5,11 +5,12 @@ Nico's machine, what is next, what is undecided, what is known to be weak.
 Not a changelog - the session log is `git log`; feature status is the table
 in `SPEC.md`. Keep every section short enough to read at session start.
 
-## Current state (2026-09-09)
+## Current state (2026-09-11)
 
 - **Code:** 447 numeric questions (Finance 159, Econ 1 107, Econ 2 90, Cost
   Accounting 91; since 2026-09-08 281 of them rotate a seed-picked story
-  line - see the session note below; Financial Accounting, Entrepreneurship, Marketing empty until
+  line; since 2026-09-11 no bold markup in any question string and ~110
+  authored hints; Financial Accounting, Entrepreneurship, Marketing empty until
   their exams arrive). Gate = typecheck + verify (447 × 200 seeds) + build +
   104 smoke checks; `worker/test/e2e.ts` 26 checks. `npm run lint` is clean
   (0 errors, 17 warnings from the React Compiler rules - see Known gaps).
@@ -44,9 +45,28 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Owed on Nico's machine (real Chrome, dark mode)
 
-- **Nico's decisions from the 2026-09-09 exam-fidelity audit** (the
-  reviewers kept these; change on his word): (a) "too easy vs exam" -
-  `e1-mono-*` (5 q) print "so $MC = c\,q$" next to the cost function;
+- **2026-09-11 (latest):** (1) `/quiz` - the "End your career" button now
+  sits at the right end of the desktop progress strip and in the navy
+  phone header (was an underlined "End session" link under the ads). Seen
+  in no browser at all this session - the sandbox cannot start `next dev`
+  (Terminal is click-only, npm registry blocked in the cloud). Look at it
+  on desktop and phone width, dark mode. (2) Run `npm run check` once:
+  typecheck + verify (447 x 200 seeds) ran green on the Mac's VM, build +
+  smoke could not.
+- **Exam-fidelity, round two (2026-09-11):** Nico overruled the (b) list
+  below - definitions of the ratio being tested ("asset turnover (sales ÷
+  total assets)"), "to correct the underinvestment", "a negative answer
+  means ..." are out of 43 prompts and in `hint` now; the opening-stock
+  clause in `ca-pl-noe-absorption-profit` is a plain data sentence. Bold
+  markup (`**`) is gone from every question string (559 spots) - prompts
+  read like the exam sheet. The (a) list stays as is (data handed over, not
+  definitions). Borderline items the audit agents KEPT, for Nico to
+  overrule: `ca-alloc-*` "(before any levy for cost coverage)", sign
+  conventions "(Negative = deficit.)", "(loss is a negative number)",
+  `e1-pctl-cap-*` "below the market-clearing price", "(equivalence number
+  1)", "(Use the exact ratio / approximation)".
+- **Nico's decisions from the 2026-09-09 exam-fidelity audit** (kept;
+  change on his word): "too easy vs exam" -
   `e1-pctl-cap-*` (3 q) say the cap "lies below the market-clearing
   price"; `fin-bond-dmod` / `fin-bond-modified-duration` hand over the
   Macaulay duration; `fin-cs-eps-leverage` gives both new debt and shares
@@ -54,14 +74,7 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   `ec2-lm-price-setting` / `ec2-lm-profit-per-worker` give λ and μ
   directly; `ec2-ls-employed-count` gives the rates, not head counts;
   `ca-proc-wa-ending-wip` / `ca-proc-wa-completed-costs` hand over the
-  cost per equivalent unit. (b) kept as exam data, arguably coaching:
-  `fin-ratio-dupont` / `fin-ratio-book-leverage` / `fin-ratio-nfl` gloss
-  their input ratios; `fin-eq-pvgo` / `fin-inv-npv-perpetual` explain what
-  a negative answer means; `e1-mkt-total-surplus` "(consumer plus producer
-  surplus)"; `e2-rd-subsidy` "to correct the underinvestment"; the
-  `ca-alloc-*` "(before any levy)" clauses; `ca-pl-noe-absorption-profit`
-  opening-stock valuation clause; `fin-ratio-roa` lost its definition
-  (Berk/DeMarzo add-back form assumed).
+  cost per equivalent unit.
 - A quiz run with the 💡 button on a few authored hints (Pareto, sunk
   cost, quick ratio) - seen only in headless dark-mode Chromium.
 - Two runs in a row on the same topic: the second must open with a
@@ -156,8 +169,8 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Known gaps
 
-- **Hint = authored `hint` + lecture formula** since 2026-09-09 (80 of 447
-  questions carry an authored hint; the rest show the first `$…$` of the
+- **Hint = authored `hint` + lecture formula** since 2026-09-09 (~110 of 447
+  questions carry an authored hint after the 2026-09-11 round; the rest show the first `$…$` of the
   explanation, which for a handful of special-case annuities is a given
   rather than the formula). Never leaking - verify guards that.
 - `fin-bond-modified-duration` asks for a signed percentage price change, so

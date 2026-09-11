@@ -92,7 +92,7 @@ skipping it silently.
 - `src/components/career/CareerSetup.tsx` - subject + topic setup (`/career`).
   `src/components/quiz/` - `QuizClient` (runner + empty-bank state; redirects
   to `/career` when no run is stored), `QuestionCard`, `ProgressSegments`,
-  `RichText` (renders `$…$` KaTeX and `**bold**` in all question text).
+  `RichText` (renders `$…$` KaTeX in all question text; it still understands `**bold**`, but question strings carry no bold - the exam sheet has none, decision 2026-09-11).
 - `src/components/account/` - balance pill/card, career track, activity
   ledger, PROMOTED overlay. `src/components/landing/AccountStatement.tsx` -
   the bank statement on `/`.
