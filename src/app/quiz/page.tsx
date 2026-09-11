@@ -5,11 +5,12 @@ import QuizClient from "@/components/quiz/QuizClient";
 import { SUBJECTS, getSubject } from "@/content/subjects";
 import { countForSubject } from "@/content/questions";
 import { QUIZ_INTRO, SUBJECT_INTROS } from "@/content/subject-intros";
+import { SUBJECT_DE, pageMeta } from "@/lib/seo";
 
 type Search = Promise<{ subject?: string | string[] }>;
 
 const DEFAULT_DESCRIPTION =
-    "Practice exam-style business-administration calculation questions by subject and topic: Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing.";
+    "Practice exam-style business-administration (BWL) calculation questions by subject and topic - Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing - built for the BWL bachelor in München and Garching.";
 
 function pickSubject(raw: string | string[] | undefined) {
     const id = Array.isArray(raw) ? raw[0] : raw;
@@ -18,12 +19,13 @@ function pickSubject(raw: string | string[] | undefined) {
 
 export async function generateMetadata({ searchParams }: { searchParams: Search }): Promise<Metadata> {
     const subject = pickSubject((await searchParams).subject);
-    if (!subject) return { title: "Quiz", description: DEFAULT_DESCRIPTION };
+    if (!subject) return pageMeta({ title: "Quiz", description: DEFAULT_DESCRIPTION, path: "/quiz" });
     const n = countForSubject(subject.id);
-    return {
+    return pageMeta({
         title: `${subject.label} - exam-style practice`,
-        description: `${n > 0 ? `${n} exam-style calculation questions` : "Exam-style calculation questions"} for the TUM course ${subject.label}: ${subject.description} Fresh numbers every run, instant grading, worked solutions.`,
-    };
+        description: `${n > 0 ? `${n} exam-style calculation questions` : "Exam-style calculation questions"} for the TUM course ${subject.label} (${SUBJECT_DE[subject.id]}), BWL bachelor München / Garching: ${subject.description} Fresh numbers every run, instant grading, worked solutions.`,
+        path: `/quiz?subject=${subject.id}`,
+    });
 }
 
 /**

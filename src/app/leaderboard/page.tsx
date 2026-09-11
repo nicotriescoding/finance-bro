@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import AdRail from "@/components/AdRail";
 import ScoreboardClient from "@/components/scoreboard/ScoreboardClient";
 import { countForSubject } from "@/content/questions";
 import { SUBJECTS } from "@/content/subjects";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Leaderboard 🏆",
     description:
         "The semester leaderboard - who earned the most BroDollars this semester, overall and per subject. Resets every semester, trauma does not.",
-};
+    path: "/leaderboard",
+});
 
 /**
  * The semester scoreboard (2026-09-02): BroDollars earned this semester,

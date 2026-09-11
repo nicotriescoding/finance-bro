@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
-import { amz } from "@/lib/affiliate";
+import { pageMeta } from "@/lib/seo";
+import { amzProduct } from "@/lib/affiliate";
 import AffiliateLabel from "@/components/AffiliateLabel";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Library",
     description:
         "The finance-bro bookshelf - the books behind the bravado, rated by ROI multiplier.",
-};
+    path: "/library",
+});
 
 /**
  * The Library (redesigned 2026-08-29): the shelf is now a two-column card
  * grid styled like a portfolio statement - every book is a "position", the
  * header strip shows the fund totals, and the legal/rating small print is
  * one compact footnote card instead of two dominant ones (per Nico).
+ *
+ * Since 2026-09-11 every book links one specific amazon.de listing (the
+ * English paperback where one exists - SPIN Selling is the McGraw-Hill
+ * hardcover, the only edition in print) via `amzProduct`; `amz` search links
+ * are gone from this page.
  *
  * Two hard rules for this page:
  *   1. NO AdSlot - Nico wants the Library ad-free (and the smoke test asserts
@@ -42,8 +49,8 @@ export const metadata: Metadata = {
 type Book = {
     title: string;
     author: string;
-    /** Amazon search query for the affiliate link. */
-    q: string;
+    /** amazon.de listing (ASIN / ISBN-10) for the affiliate link - the English paperback, picked 2026-09-11. */
+    asin: string;
     /** Nico's ROI multiplier, e.g. 7.5 - null until he rates it. */
     roi: number | null;
     /** Nico's personal one-paragraph opinion - null until he writes it. */
@@ -60,7 +67,7 @@ const SECTIONS: Section[] = [
             {
                 title: "The Lean Startup",
                 author: "Eric Ries",
-                q: "the lean startup eric ries",
+                asin: "0670921602",
                 roi: 67,
                 review:
                     "Opens the startup black box and shows you the machine inside: a system you can learn, measure, and actually steer. Once you see it, decisions stop being vibes and start being iterations. Must-read before you found anything.",
@@ -68,7 +75,7 @@ const SECTIONS: Section[] = [
             {
                 title: "SPIN Selling",
                 author: "Neil Rackham",
-                q: "spin selling neil rackham",
+                asin: "0070511136",
                 roi: 21,
                 review:
                     "The book that explains why selling software to a company is nothing like selling ketchup to a person. Focused on B2B, but the small-ticket lessons ride along for free. Understanding these dynamics is the difference between chasing your first customer and closing them - and keeping them.",
@@ -82,7 +89,7 @@ const SECTIONS: Section[] = [
             {
                 title: "The Psychology of Money",
                 author: "Morgan Housel",
-                q: "the psychology of money morgan housel",
+                asin: "0857197681",
                 roi: 13,
                 review:
                     "Less about picking stocks, more about understanding the person holding them. Teaches you to see investing as behavior you can leverage - the payoff compounds the longer your horizon. ×13 today, higher if you hold.",
@@ -96,7 +103,7 @@ const SECTIONS: Section[] = [
             {
                 title: "What Every BODY Is Saying",
                 author: "Joe Navarro",
-                q: "what every body is saying joe navarro",
+                asin: "0061438294",
                 roi: 9,
                 review:
                     "Body language decoded by an FBI agent: the clues people leak constantly and everyone misses. Must-read for better social reads - helps you spot a liar and sharpens your negotiations as a side effect.",
@@ -104,7 +111,7 @@ const SECTIONS: Section[] = [
             {
                 title: "Never Split the Difference",
                 author: "Chris Voss",
-                q: "never split the difference chris voss",
+                asin: "1847941494",
                 roi: 7,
                 review:
                     "Hostage negotiation applied to everyday deals. Brilliant material, but it does not work by reading alone - the ROI only pays out if you put in the reps. Read it anyway.",
@@ -112,7 +119,7 @@ const SECTIONS: Section[] = [
             {
                 title: "How to Win Friends and Influence People",
                 author: "Dale Carnegie",
-                q: "how to win friends and influence people dale carnegie",
+                asin: "0091906814",
                 roi: 8,
                 review:
                     "The OG. Genuinely surprising the first time, because how humans actually think is not obvious. Not a cheat code - it does not always work - but the fundamentals have compounded since 1936.",
@@ -126,7 +133,7 @@ const SECTIONS: Section[] = [
             {
                 title: "Atomic Habits",
                 author: "James Clear",
-                q: "atomic habits james clear",
+                asin: "1847941834",
                 roi: 6,
                 review:
                     "Habits compound, and compounding is the closest thing to magic this site respects. Brutally hard to apply - the interest rate is high precisely because most people quit - but stick it out and the position pays for life.",
@@ -134,7 +141,7 @@ const SECTIONS: Section[] = [
             {
                 title: "The Child in You",
                 author: "Stefanie Stahl",
-                q: "the child in you stefanie stahl",
+                asin: "0241473373",
                 roi: 11,
                 review:
                     "The surprise position in the portfolio: a book about understanding yourself. Real insight into why you work the way you do - read it to grasp yourself better, and watch your relationships collect the dividend.",
@@ -216,7 +223,7 @@ function BookCard({ book, emoji }: { book: Book; emoji: string }) {
                 <div className="flex flex-col items-start gap-1.5">
                     <AffiliateLabel />
                     <a
-                        href={amz(book.q)}
+                        href={amzProduct(book.asin)}
                         target="_blank"
                         rel="sponsored nofollow noopener"
                         className="inline-flex items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"

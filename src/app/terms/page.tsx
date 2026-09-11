@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { CONTACT_EMAIL, REPORT_MAILTO } from "@/lib/legal";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Terms · Name rules",
     description:
         "Terms of use for finance-bro.de: what the service is, the rules for display names on the leaderboard and in duels, how to report a name, and the DSA point of contact.",
-};
+    path: "/terms",
+});
 
 /**
  * Terms of use + Digital Services Act (DSA) page (2026-09-08 legal audit).

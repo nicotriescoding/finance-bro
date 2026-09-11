@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SUBJECTS } from "@/content/subjects";
+import { SITE_URL as BASE } from "@/lib/seo";
 
-const BASE = "https://www.finance-bro.de";
+// /career?subject=x is a setup variant that canonicalises to /career (2026-09-11) -
+// the per-subject entries are the /quiz subject pages.
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const now = new Date();
@@ -10,16 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${BASE}/career`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
         { url: `${BASE}/quiz`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
         ...SUBJECTS.map((s) => ({
-            url: `${BASE}/career?subject=${s.id}`,
-            lastModified: now,
-            changeFrequency: "weekly" as const,
-            priority: 0.8,
-        })),
-        ...SUBJECTS.map((s) => ({
             url: `${BASE}/quiz?subject=${s.id}`,
             lastModified: now,
             changeFrequency: "weekly" as const,
-            priority: 0.7,
+            priority: 0.8,
         })),
         { url: `${BASE}/products`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.4 },
         { url: `${BASE}/multiplayer`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.4 },

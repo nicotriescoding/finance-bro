@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Impressum",
-    description: "Legal notice (Impressum) for finance-bro.de pursuant to § 5 DDG.",
-};
+    description:
+        "Legal notice (Impressum) for finance-bro.de pursuant to § 5 DDG.",
+    path: "/impressum",
+});
 
 /**
  * Legal notice for a privately run site without a legal entity. Required

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import CookieSettingsLink from "@/components/consent/CookieSettingsLink";
 import { adsEnabled } from "@/lib/ads";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Privacy Policy",
     description:
         "Privacy policy (Datenschutzerklärung) for finance-bro.de - what data the site touches, and the analytics that only ever run with your consent.",
-};
+    path: "/privacy",
+});
 
 /**
  * Datenschutzerklärung (Art. 13 GDPR), in English like the rest of the site.

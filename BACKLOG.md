@@ -45,6 +45,18 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Owed on Nico's machine (real Chrome, dark mode)
 
+- **2026-09-11 SEO scenario A + shop links (latest, unverified build):**
+  `npm run check` could not run anywhere this session (cloud npm registry
+  403s on one package, sandbox must not run npm on the mount) - only
+  `tsc --noEmit` ran green on the mount. Run the gate once: 14 new smoke
+  checks (per-page canonicals, og:image on /library and /products, TUM-free
+  metadata on every route except /, /career, /quiz?subject=, München +
+  Garching in the root description, the JSON-LD `@graph`). If Next
+  serialises `<link rel="canonical">` differently than
+  `rel="canonical" href="https://www.finance-bro.de/library"`, fix the
+  smoke string, not the metadata. Then eyeball a share card (e.g. paste
+  `/library` into a Slack DM) - the og:image is re-attached by `pageMeta()`.
+
 - **2026-09-11 (latest):** (1) `/quiz` - the "End your career" button now
   sits at the right end of the desktop progress strip and in the navy
   phone header (was an underlined "End session" link under the ads). Seen
@@ -163,9 +175,28 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   `library/page.tsx` still hardcode en-US and would move to one shared
   formatter first. Then the question text (parallel bank vs. translation
   layer), routing (`/de/…` vs. subdomain) and `hreflang`.
-- **SEO after the language switch.** finance-bro.de serves English metadata
-  to an audience that searches in German. Watch Search Console; the German
-  locale above is the fix, not reverting.
+- **SEO (decided 2026-09-11, scenario A shipped).** Metadata + structured
+  data only, nothing visible: `src/lib/seo.ts` (`pageMeta()`) gives every
+  route its own canonical and Open Graph block (the root used to set
+  canonical "/" and a TUM-naming OG description for ALL pages); geo terms
+  in the root description (München, Garching, Arcisstraße, Straubing,
+  Heilbronn, Ottobrunn); German search terms in the description and the
+  meta keywords (deliberate - the audience googles "Klausur"; the German
+  locale stays a separate plan); JSON-LD `@graph` = Organization
+  (`areaServed`, no address - no premises, no LocalBusiness, no Google
+  Business Profile, Arcisstraße 21 is TUM's) + WebSite + WebApplication
+  (EducationalAudience). `/career?subject=` left the sitemap (canonical is
+  `/career`). **TUM rules (Nico):** TUM in metadata only on `/`, `/career`,
+  `/quiz?subject=` - never elsewhere (smoke-guarded per route); no
+  "official / approved / in cooperation"; no professor or chair names in
+  titles; no TUM logo, wordmark, corporate blue, domain or handles; the
+  above-the-fold disclaimer on every page is still open (footer only).
+  **Not done, Nico's call:** scenario B (a small geo/disclaimer line only
+  visible at the very bottom, like the photo credits; no FAQ) and C
+  (static `/finance`, `/econ-1`, ... routes + one "BWL München" entrance
+  page, reachable from the sitemap only, no nav item). **Search Console is
+  NOT verified** (no `google-site-verification` meta on the live site, no
+  TXT record on finance-bro.de) - nothing can be measured until it is.
 
 ## Known gaps
 
@@ -283,7 +314,8 @@ card), Prosecco → Dom Pérignon Vintage 2015 (B0BT7W5T9V, card renamed
 Emergency Champagne), mat → Amazon Basics black (B0CJJNSM9V, 4.4 - best
 black option), Bialetti → Moka Express 3-cup black (B06ZYYDGYN), tower →
 GOODS+GADGETS 5 L column (B0BFBYHYC5, 4.2 - the category has no 4.5),
-speaker → JBL PartyBox 310 (B08HBG3M7M). Beer mortar removed (no
+speaker → JBL PartyBox 310 (B08HBG3M7M; since 2026-09-11 the JBL Flip 7,
+B0DXKMXPXW, Nico's pick - the PartyBox photo stays, the note is the joke). Beer mortar removed (no
 listing worth linking), "Beer Pong, Regulation Set" → "Beer Pong Set",
 Party Kit chips 5 positions / 5 liters. (4) Photos: Stock free tier for
 calculator (165040606), iPad+pencil (437346634), champagne (555201757),

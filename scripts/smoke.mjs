@@ -114,9 +114,32 @@ try {
         "/ has an English meta description",
         /<meta name="description" content="Free exam trainer/.test(homeHtml)
     );
+    // Body only: since 2026-09-11 the <head> deliberately carries German search
+    // terms ("Klausuraufgaben", the meta keywords) - that is how the audience
+    // googles, and it is metadata, not copy. See src/lib/seo.ts.
+    // The JSON-LD <script> sits in the body and carries the same terms - strip
+    // scripts, keep the copy.
+    const bodyStart = homeHtml.indexOf("<body");
+    check("/ has a <body>", bodyStart > 0);
+    const homeBody = homeHtml.slice(bodyStart).replace(/<script[\s\S]*?<\/script>/g, "");
     for (const german of ["Zinsen", "Aufgaben", "Klausur", "Themen", "Kapitalkosten"]) {
-        check(`/ has no leftover German ("${german}")`, !homeHtml.includes(german));
+        check(`/ has no leftover German in the body ("${german}")`, !homeBody.includes(german));
     }
+    // --- search metadata (scenario A, 2026-09-11) -------------------------
+    // Every page carries its own canonical (the root used to set "/" for all
+    // of them) and the geo terms sit in the root description.
+    check(
+        "/ canonical is the root",
+        /<link rel="canonical" href="https:\/\/www\.finance-bro\.de\/?"\/?>/.test(homeHtml)
+    );
+    check(
+        "/ description names München and Garching",
+        /<meta name="description" content="[^"]*München[^"]*Garching/.test(homeHtml)
+    );
+    check(
+        "/ ships the Organization + WebSite + WebApplication graph",
+        /"@graph"/.test(homeHtml) && /"areaServed"/.test(homeHtml) && /"EducationalAudience"/.test(homeHtml)
+    );
     // The landing page's one job (2026-08-22) is pointing at /career; the
     // course names stay below in the subject strip for SEO. Since 2026-08-25
     // it does so dressed as a banking app.
@@ -205,6 +228,14 @@ try {
     const quiz = await fetch(`${BASE}/quiz?subject=finance`);
     const quizHtml = await quiz.text();
     check("/quiz has no ad-rail meta label", !quizHtml.includes("kept away from the maths"));
+    check(
+        "/quiz?subject=finance canonical keeps the subject query",
+        quizHtml.includes('rel="canonical" href="https://www.finance-bro.de/quiz?subject=finance"')
+    );
+    check(
+        "/quiz?subject=finance description carries the German course name and the city",
+        /<meta name="description" content="[^"]*Investition und Finanzierung[^"]*München/.test(quizHtml)
+    );
     // 2026-09-06: the quiz page server-renders a real h1 + subject intro so a
     // crawler / AdSense reviewer never lands on a bare "Loading..." shell.
     const quizText = quizHtml
@@ -224,6 +255,7 @@ try {
     );
     const quizBare = await (await fetch(`${BASE}/quiz`)).text();
     check("/quiz without a subject lists the subjects", quizBare.includes("Cost Accounting"));
+    check("/quiz without a subject has a TUM-free description", !/<meta[^>]+TUM/.test(quizBare));
     // the navy chrome links every page to the setup
     check("/ links the Career page", homeHtml.includes("Career 🪦"));
 
@@ -241,6 +273,17 @@ try {
     );
     // Nico's rule: the Library is ad-free. "Sponsored" is AdSlot's label.
     check("/library carries no ad slots", !libraryHtml.includes("Sponsored"));
+    check(
+        "/library has its own canonical",
+        libraryHtml.includes('rel="canonical" href="https://www.finance-bro.de/library"')
+    );
+    // Nico's TUM rule (2026-09-11): TUM in metadata only on /, /career and the
+    // /quiz subject pages - never on /library or /products. The root Open Graph
+    // block used to leak onto both.
+    check("/library metadata never names TUM", !/<meta[^>]+TUM/.test(libraryHtml));
+    // Per-page Open Graph blocks replace the root one wholesale in Next, so
+    // the file-based /opengraph-image must be re-attached by pageMeta().
+    check("/library keeps the og:image", /property="og:image"/.test(libraryHtml));
     // 2026-09-08 legal audit: no publisher cover art (generated CoverCard
     // instead) and the PartnerNet disclosure sentence visible on the page.
     check(
@@ -258,6 +301,12 @@ try {
     const productsHtml = await products.text();
     check("/products returns 200", products.status === 200, `got ${products.status}`);
     check("/products links Amazon", productsHtml.includes("amazon.de"));
+    check(
+        "/products has its own canonical",
+        productsHtml.includes('rel="canonical" href="https://www.finance-bro.de/products"')
+    );
+    check("/products metadata never names TUM", !/<meta[^>]+TUM/.test(productsHtml));
+    check("/products keeps the og:image", /property="og:image"/.test(productsHtml));
     check(
         "/products lost the dead placeholder links",
         !productsHtml.includes("affiliate-link.de")
@@ -481,6 +530,17 @@ try {
             termsHtml.includes("Point of contact")
     );
     check("/terms ships no em dashes", !termsHtml.includes(EM_DASH));
+    // TUM rule (2026-09-11): only /, /career and the /quiz subject pages may
+    // name TUM in their metadata.
+    for (const [route, html] of [
+        ["/leaderboard", boardHtml],
+        ["/multiplayer", mpHtml],
+        ["/impressum", impressumHtml],
+        ["/privacy", privacyHtml],
+        ["/terms", termsHtml],
+    ]) {
+        check(`${route} metadata never names TUM`, !/<meta[^>]+TUM/.test(html));
+    }
     check("/ footer links the terms page", homeHtml.includes('href="/terms"'));
     check(
         "/privacy links the terms and names Art. 6 (1) (f) for the leaderboard",

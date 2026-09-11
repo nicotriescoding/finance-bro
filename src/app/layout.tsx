@@ -10,6 +10,7 @@ import ConsentBridge from "@/components/consent/ConsentBridge";
 import AnchorAd from "@/components/AnchorAd";
 import PromotionOverlay from "@/components/account/PromotionOverlay";
 import { AD_CONSENT_BOOTSTRAP, ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
+import { KEYWORDS, PLACES, SITE_NAME, SITE_URL, pageMeta } from "@/lib/seo";
 
 const manrope = Manrope({
     subsets: ["latin"],
@@ -23,35 +24,28 @@ const plexMono = IBM_Plex_Mono({
     variable: "--font-plex-mono",
 });
 
-const SITE_URL = "https://www.finance-bro.de";
-const TITLE = "FinanceBro";
+const TITLE = SITE_NAME;
+// Root description = the / page (and the fallback for routes without their
+// own). The smoke test asserts it starts with "Free exam trainer".
 const DESCRIPTION =
-    "Free exam trainer for business administration, made by a TUM student for TUM students: exam-style calculation questions for the courses Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing - with instant feedback.";
+    "Free exam trainer for the business administration (BWL) bachelor in München - built by a TUM student for TUM students in Garching, on Arcisstraße, in Straubing, Heilbronn and Ottobrunn: exam-style calculation questions (Klausuraufgaben) for Finance, Econ 1 & 2, Financial Accounting, Cost Accounting, Entrepreneurship and Marketing, with instant feedback.";
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
+    ...pageMeta({
+        title: TITLE,
+        description: DESCRIPTION,
+        path: "/",
+        ogTitle: "FinanceBro - free BWL exam trainer for München",
+    }),
     title: {
         default: TITLE,
         template: "%s · FinanceBro",
     },
-    description: DESCRIPTION,
     applicationName: TITLE,
-    authors: [{ name: "FinanceBro" }],
-    creator: "FinanceBro",
-    alternates: { canonical: "/" },
-    openGraph: {
-        type: "website",
-        locale: "en_US",
-        url: SITE_URL,
-        siteName: TITLE,
-        title: "FinanceBro - exam training for business administration",
-        description: DESCRIPTION,
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "FinanceBro - exam training for business administration",
-        description: DESCRIPTION,
-    },
+    authors: [{ name: TITLE }],
+    creator: TITLE,
+    keywords: KEYWORDS,
     robots: {
         index: true,
         follow: true,
@@ -66,16 +60,58 @@ export const viewport: Viewport = {
     initialScale: 1,
 };
 
+/**
+ * Structured data. One graph: the site, its publisher (with the places it is
+ * built for - `areaServed`, not an address: no premises, no LocalBusiness,
+ * see src/lib/seo.ts) and the app itself with its audience. TUM appears only
+ * in the description, as the course the questions train for.
+ */
 const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    name: TITLE,
-    url: SITE_URL,
-    applicationCategory: "EducationalApplication",
-    operatingSystem: "Web",
-    inLanguage: "en",
-    description: DESCRIPTION,
-    offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+    "@graph": [
+        {
+            "@type": "Organization",
+            "@id": `${SITE_URL}/#org`,
+            name: TITLE,
+            url: SITE_URL,
+            logo: `${SITE_URL}/icon.png`,
+            areaServed: PLACES.map((name) => ({ "@type": "City", name })),
+        },
+        {
+            "@type": "WebSite",
+            "@id": `${SITE_URL}/#website`,
+            name: TITLE,
+            url: SITE_URL,
+            inLanguage: "en",
+            publisher: { "@id": `${SITE_URL}/#org` },
+        },
+        {
+            "@type": "WebApplication",
+            "@id": `${SITE_URL}/#app`,
+            name: TITLE,
+            url: SITE_URL,
+            applicationCategory: "EducationalApplication",
+            operatingSystem: "Web",
+            inLanguage: "en",
+            isAccessibleForFree: true,
+            description: DESCRIPTION,
+            keywords: KEYWORDS.join(", "),
+            audience: {
+                "@type": "EducationalAudience",
+                educationalRole: "student",
+                audienceType: "business administration bachelor students in München and Garching",
+            },
+            about: [
+                "Investment and Financial Management",
+                "Microeconomics",
+                "Macroeconomics",
+                "Cost Accounting",
+                "Financial Accounting",
+            ].map((name) => ({ "@type": "Thing", name })),
+            offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+            publisher: { "@id": `${SITE_URL}/#org` },
+        },
+    ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

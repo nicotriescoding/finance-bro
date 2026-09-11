@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import AdRail from "@/components/AdRail";
 import { amzProduct } from "@/lib/affiliate";
 import AffiliateLabel from "@/components/AffiliateLabel";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Bro Shop",
     description:
         "The FinanceBro shop - eight curated bundles: from the Starter Pack and BWL Marie to the After-Exam Party Kit.",
-};
+    path: "/products",
+});
 
 /**
  * The Bro Shop (rebuilt 2026-08-29, images upgraded same day, four more
@@ -42,7 +44,9 @@ export const metadata: Metadata = {
  * Three photos are Wikimedia Commons CC BY-SA 4.0 (2026-09-08, Nico wanted
  * the real thing and Stock has no branded cans/speakers/towers): the Red
  * Bull can (Klaas van Buiten, "Red Bull ice.jpg", can cropped out), the
- * JBL PartyBox 710 (TaurusEmerald, background removed) and the beer tower
+ * JBL PartyBox 710 (TaurusEmerald, background removed; since 2026-09-11 the
+ * card links the JBL Flip 7, B0DXKMXPXW, Nico's pick - the mismatch is the
+ * joke in the card's note) and the beer tower
  * (Pundit, "Beer tower.jpg", background removed, cropped to the column).
  * Their credit lines in the footer are a license condition - keep them, and
  * keep the Birkin one.
@@ -323,13 +327,13 @@ const BUNDLES: Bundle[] = [
                 href: amzProduct("B06ZYYDGYN"),
             },
             {
-                name: "The 89 € Interview Suit",
+                name: "The Suspiciously Cheap Interview Suit",
                 img: {
                     src: "/products/suit.jpg",
                     alt: "A dark suit with white shirt and tie on an invisible mannequin",
                 },
                 blurb:
-                    "Looks like 800 € on Zoom, feels like 89 € in person. Schedule accordingly: first rounds are always remote.",
+                    "Looks like Savile Row on Zoom, feels like a shower curtain in person. Schedule accordingly: first rounds are always remote, and the camera stops at the waist.",
                 href: amzProduct("B085SQWGQW"),
             },
             {
@@ -646,8 +650,9 @@ const BUNDLES: Bundle[] = [
                     alt: "A tall black JBL party speaker with glowing orange light rings",
                 },
                 blurb:
-                    "JBL PartyBox: loud enough to get a noise complaint filed before the first tower is empty. Pairs with three phones and one very unfortunate playlist decision at 2 AM.",
-                href: amzProduct("B08HBG3M7M"),
+                    "JBL Flip 7: fits in a Kånken, survives a beer-tower incident (IP68) and runs 16 hours - longer than anyone at the party. Loud enough for a noise complaint before the first tower is empty; pair a second one via Auracast and the complaint becomes a portfolio.",
+                href: amzProduct("B0DXKMXPXW"),
+                note: "The photo shows the PartyBox you wanted. The link is the Flip you can afford. Same brand, same neighbor, fits in a backpack.",
             },
             {
                 name: "The Decanter",

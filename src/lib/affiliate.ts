@@ -11,8 +11,9 @@
  * Since 2026-09-07 every shop product links a specific amazon.de listing
  * (`amzProduct`, picked per item: 4.5+ stars where the category has one,
  * decent review count, and the listing that looks most like our photo).
- * `amz` (search link) stays for the few items where no listing qualifies
- * and for /library. Both carry the tag once AMAZON_TAG is set.
+ * Since 2026-09-11 /library links one listing per book as well (ISBN-10 of
+ * the English paperback). `amz` (search link) is kept as the fallback for
+ * items where no listing qualifies. Both carry the tag.
  *
  * Tag: PartnerNet DE store ID (set 2026-09-11). Every link on /products and
  * /library carries it. A US Associates tag (financebro0f-20) also exists but
