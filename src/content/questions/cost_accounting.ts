@@ -1275,7 +1275,7 @@ export const costAccountingQuestions: Question[] = [
             const revenue = p1 * s1 + p2 * s2;
             const answer = revenue - M1 - M2 - G + i2 * m2 - d1 * m1;
             return {
-                prompt: `${sc.firm} builds ${sc.what}. The ${sc.a} ${sc.unit} sells at ${eur(p1)}: ${n(q1p)} units are produced and ${n(s1)} are sold (the difference comes from opening stock, valued at the same unit manufacturing cost). The ${sc.b} ${sc.unit} sells at ${eur(p2)}: ${n(q2p)} units are produced and ${n(s2)} are sold. Full manufacturing costs of the quantity produced are ${eur(M1)} for ${sc.a} (${eur(m1)} per unit) and ${eur(M2)} for ${sc.b} (${eur(m2)} per unit). Administration and selling costs of the period are ${eur(G)}. What is the profit according to the nature of expense method under absorption costing (Gesamtkostenverfahren)?`,
+                prompt: `${sc.firm} builds ${sc.what}. The ${sc.a} ${sc.unit} sells at ${eur(p1)}: ${n(q1p)} units are produced and ${n(s1)} are sold. The ${sc.b} ${sc.unit} sells at ${eur(p2)}: ${n(q2p)} units are produced and ${n(s2)} are sold. Full manufacturing costs of the quantity produced are ${eur(M1)} for ${sc.a} (${eur(m1)} per unit) and ${eur(M2)} for ${sc.b} (${eur(m2)} per unit). Opening stock of ${sc.a} is valued at the same unit manufacturing cost as this period's output. Administration and selling costs of the period are ${eur(G)}. What is the profit according to the nature of expense method under absorption costing (Gesamtkostenverfahren)?`,
                 given: {
                     [`Price ${sc.a} / ${sc.b}`]: `${eur(p1)} / ${eur(p2)}`,
                     [`Produced ${sc.a} / ${sc.b}`]: `${n(q1p)} / ${n(q2p)} units`,
@@ -1286,6 +1286,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$\pi = \text{revenues} + \Delta \text{inventory increase} - \Delta \text{inventory decrease} - \text{total costs of the period}$, with inventory changes valued at full manufacturing costs. Revenues: ${n(s1)} × ${eur(p1)} + ${n(s2)} × ${eur(p2)} = ${eur(revenue)}. Total costs: ${eur(M1)} + ${eur(M2)} + ${eur(G)}. The ${sc.b} build-up adds ${n(i2)} × ${eur(m2)} = ${eur(i2 * m2)}; the ${sc.a} draw-down subtracts ${n(d1)} × ${eur(m1)} = ${eur(d1 * m1)}. Profit: ${eur(answer)}.`,
+                hint: String.raw`The nature of expense method sets the period's total costs against revenues corrected for inventory changes: $\pi = R + \Delta \text{Inventory} - K_{period}$, where a stock build-up counts as positive and a draw-down as negative. Under absorption costing the inventory change is valued at full manufacturing costs per unit.`,
             };
         },
     },
@@ -2262,7 +2263,7 @@ export const costAccountingQuestions: Question[] = [
             const M = rate * base;
             const answer = dmA * (1 + rate);
             return {
-                prompt: `${sc.firm} produces ${n(qA)} ${sc.as} (direct material ${eur(dmA)} per unit) and ${n(qB)} ${sc.bs} (direct material ${eur(dmB)} per unit). Material overheads of ${eur(M)} are allocated as a surcharge on direct material. What are the total material costs per ${sc.a} (direct material plus material overhead)?`,
+                prompt: `${sc.firm} produces ${n(qA)} ${sc.as} (direct material ${eur(dmA)} per unit) and ${n(qB)} ${sc.bs} (direct material ${eur(dmB)} per unit). Material overheads of ${eur(M)} are allocated as a surcharge on direct material. What are the total material costs per ${sc.a}?`,
                 given: {
                     [`Direct material ${sc.a} / ${sc.b}`]: `${eur(dmA)} / ${eur(dmB)} per unit`,
                     [`Produced ${sc.as} / ${sc.bs}`]: `${n(qA)} / ${n(qB)} units`,
@@ -2270,6 +2271,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$k_{mat} = k_{DM} \cdot (1 + z_{mat})$ with $z_{mat} = \frac{\text{material overheads}}{\text{total direct material}}$. The base is ${n(qA)} × ${eur(dmA)} + ${n(qB)} × ${eur(dmB)} = ${eur(base)}, so z = ${eur(M)} / ${eur(base)} = ${pct(rate * 100)}. Per ${sc.a}: ${eur(dmA)} + ${pct(rate * 100)} × ${eur(dmA)} = ${eur(answer)}.`,
+                hint: String.raw`Total material costs per unit are the direct material plus the material overhead surcharge on it: $k_{mat} = k_{DM} \cdot (1 + z_{mat})$, where the surcharge rate $z_{mat}$ is the material overheads over the total direct material of all products.`,
             };
         },
     },
@@ -2381,7 +2383,7 @@ export const costAccountingQuestions: Question[] = [
             const V = kEU * eu;
             const answer = kEU * mult;
             return {
-                prompt: `${sc.firm} produces the ${sc.items} ${sc.a} (${n(w1)} kg) and ${sc.b} (${n(w2)} kg) in one ${sc.process}; costs are assumed proportional to product weight, so the equivalence number method is used with ${sc.a} as the reference product. This period, ${n(q1)} ${sc.a} and ${n(q2)} ${sc.b} ${sc.items} are produced and variable manufacturing costs of ${eur(V)} are incurred. What are the variable manufacturing costs per ${sc.b} ${sc.item}?`,
+                prompt: `${sc.firm} produces the ${sc.items} ${sc.a} (${n(w1)} kg) and ${sc.b} (${n(w2)} kg) in one ${sc.process}. Costs are proportional to product weight; the equivalence number method is applied with ${sc.a} as the reference product. This period, ${n(q1)} ${sc.a} and ${n(q2)} ${sc.b} ${sc.items} are produced and variable manufacturing costs of ${eur(V)} are incurred. What are the variable manufacturing costs per ${sc.b} ${sc.item}?`,
                 given: {
                     [`Weight ${sc.a} / ${sc.b}`]: `${n(w1)} kg / ${n(w2)} kg`,
                     [`Produced ${sc.a} / ${sc.b}`]: `${n(q1)} / ${n(q2)} units`,
@@ -2496,7 +2498,7 @@ export const costAccountingQuestions: Question[] = [
             const dl = rng.int(3, 10);
             const answer = p * s - (dm + dl) * q;
             return {
-                prompt: `${sc.firm} sells ${n(s)} ${sc.bs} at ${eur(p)} each; ${n(q)} ${sc.bs} were produced this period (the difference goes to or comes from stock). Direct material is ${eur(dm)} and direct labor ${eur(dl)} per ${sc.unit}. What is the revenue for ${sc.bs} minus the direct costs actually incurred for ${sc.bs} this period?`,
+                prompt: `${sc.firm} sells ${n(s)} ${sc.bs} at ${eur(p)} each; ${n(q)} ${sc.bs} were produced this period. Direct material is ${eur(dm)} and direct labor ${eur(dl)} per ${sc.unit}. What is the revenue for ${sc.bs} minus the direct costs actually incurred for ${sc.bs} this period?`,
                 given: {
                     "Sold / produced": `${n(s)} / ${n(q)} units`,
                     "Price": eur(p),
@@ -2759,7 +2761,7 @@ export const costAccountingQuestions: Question[] = [
             const q2 = s2 + rng.pick([-2, 2, 3]) * 100;
             const answer = (p1 - k1) * s1 + (p2 - k2) * s2;
             return {
-                prompt: `${sc.firm} sells ${n(s1)} units of the model ${sc.a} at ${eur(p1)} and ${n(s2)} units of the model ${sc.b} at ${eur(p2)} (production this period: ${n(q1)} ${sc.a}, ${n(q2)} ${sc.b}). The full total costs per unit (manufacturing plus administrative and selling) are ${eur(k1)} for ${sc.a} and ${eur(k2)} for ${sc.b}. What is the profit according to the cost-of-sales method under absorption costing?`,
+                prompt: `${sc.firm} sells ${n(s1)} units of the model ${sc.a} at ${eur(p1)} and ${n(s2)} units of the model ${sc.b} at ${eur(p2)} (production this period: ${n(q1)} ${sc.a}, ${n(q2)} ${sc.b}). The full total costs per unit are ${eur(k1)} for ${sc.a} and ${eur(k2)} for ${sc.b}. What is the profit according to the cost-of-sales method under absorption costing?`,
                 given: {
                     [`Price ${sc.a} / ${sc.b}`]: `${eur(p1)} / ${eur(p2)}`,
                     [`Sold ${sc.a} / ${sc.b}`]: `${n(s1)} / ${n(s2)} units`,
@@ -2768,6 +2770,7 @@ export const costAccountingQuestions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$\pi = \sum_i (p_i - k_{total,i}) \cdot x_{sold,i}$ - the cost-of-sales method matches the full costs of the quantity sold against revenue; the produced quantities do not enter. ${sc.a}: ${n(s1)} × (${eur(p1)} − ${eur(k1)}) = ${eur((p1 - k1) * s1)}; ${sc.b}: ${n(s2)} × (${eur(p2)} − ${eur(k2)}) = ${eur((p2 - k2) * s2)}; profit: ${eur(answer)}.`,
+                hint: String.raw`Full total costs per unit already contain the manufacturing costs and the administrative and selling costs. The cost-of-sales method matches them against the units sold only: $\pi = \sum_i (p_i - k_{total,i}) \cdot x_{sold,i}$.`,
             };
         },
     },
@@ -2842,13 +2845,14 @@ export const costAccountingQuestions: Question[] = [
             const v = rng.int(10, 60);
             const p = v + cm;
             return {
-                prompt: `${sc.firm} sells the model ${sc.a} at ${eur(p)} per unit. The controller has already determined the variable total costs (manufacturing plus selling) as ${eur(v)} per unit. What is the contribution margin per unit?`,
+                prompt: `${sc.firm} sells the model ${sc.a} at ${eur(p)} per unit. The variable total costs are ${eur(v)} per unit. What is the contribution margin per unit?`,
                 given: {
                     "Price": eur(p),
                     "Variable total costs per unit": eur(v),
                 },
                 answer: cm,
                 explanation: String.raw`$cm = p - k_{var}$ - the contribution margin per unit is the price minus all variable costs per unit: ${eur(p)} − ${eur(v)} = ${eur(cm)}. It states what each sold unit contributes to covering fixed costs and profit.`,
+                hint: String.raw`The contribution margin per unit is the price minus all variable costs per unit, manufacturing and selling alike: $cm = p - k_{var}$.`,
             };
         },
     },

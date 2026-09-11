@@ -738,7 +738,7 @@ export const econ2Questions: Question[] = [
             const answer = sqrtC * sqrtC;
             const cPrivate = (m / 2) ** 2;
             return {
-                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. To correct the underinvestment caused by the spillover, the government now covers ${pct(sPct)} of every euro spent on research. What research spending $C_i$ does each lab choose with the subsidy?`,
+                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit) and obtain $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, each worth a profit of 1 million €. The government now covers ${pct(sPct)} of every euro spent on research. What research spending $C_i$ does each lab choose with the subsidy?`,
                 given: {
                     [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
                     [`Profit per ${s.item}`]: `${n(1)} million €`,
@@ -746,6 +746,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$\frac{m}{2\sqrt{C_i}} = 1 - \sigma$ - the subsidy lowers the marginal cost of research from 1 to $1 - \sigma$. With $m = ${m}$ and $\sigma = ${n(sPct / 100)}$: $\sqrt{C_i} = ${n(m)} / (2 \cdot ${n(netCost)}) = ${n(sqrtC)}$, so $C_i = ${n(answer)}$ - up from the unsubsidized optimum of ${n(cPrivate)}.`,
+                hint: String.raw`Because part of each lab's research spills over to the rival, each lab on its own invests too little; a subsidy that pays a share $\sigma$ of research costs lowers what a lab actually pays per unit of research, and the lab again spends until its own marginal output equals that net cost: $\frac{\partial D_i}{\partial C_i} = 1 - \sigma$.`,
             };
         },
     },
@@ -885,7 +886,7 @@ export const econ2Questions: Question[] = [
             const I = A - c0 - NX;
             const G = (tPct / 100) * Y;
             return {
-                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(c0)}$ and $c_1 = ${n(c1)}$. Investment is ${n(I)} and net exports are ${n(NX)}. The government must run a strictly balanced budget, so its purchases equal its tax revenue: $G = t \cdot Y$. Which tax rate $t$ makes the equilibrium output come out at exactly ${n(Y)}?`,
+                prompt: String.raw`${s.placePoss} consumption is $C = c_0 + c_1 (1 - t) Y$ with $c_0 = ${n(c0)}$ and $c_1 = ${n(c1)}$. Investment is ${n(I)} and net exports are ${n(NX)}. The government must run a strictly balanced budget: $G = t \cdot Y$. Which tax rate $t$ makes the equilibrium output come out at exactly ${n(Y)}?`,
                 given: {
                     "Autonomous consumption $c_0$": n(c0),
                     "Marginal propensity to consume $c_1$": n(c1),
@@ -896,6 +897,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer: tPct,
                 explanation: String.raw`$Y = c_0 + c_1 (1 - t) Y + I + t \cdot Y + NX$ - substitute the budget rule $G = tY$ into the equilibrium condition, then solve for $t$: $t = 1 - \frac{c_0 + I + NX}{(1 - c_1) \, Y}$. With $c_0 + I + NX$ = ${n(A)} and $(1 - c_1) Y$ = ${n(1 - c1)} · ${n(Y)} = ${n((1 - c1) * Y)}: t = 1 − ${n(A)} / ${n((1 - c1) * Y)} = ${n(tPct / 100)}, i.e. ${pct(tPct)}. Government purchases are then G = ${n(G)}.`,
+                hint: String.raw`A balanced budget means government purchases are exactly the revenue of the proportional income tax, so $G$ is not a fixed number but depends on $Y$ and $t$; substitute it into the equilibrium condition and solve for the tax rate: $Y = c_0 + c_1 (1 - t) Y + I + t \cdot Y + NX$.`,
             };
         },
     },
@@ -1177,7 +1179,7 @@ export const econ2Questions: Question[] = [
             const e1 = Math.round(e0 * (1 + c / 100) * 100) / 100;
             const answer = (e1 / e0 - 1) * 100;
             return {
-                prompt: `The exchange rate between the ${s.a} (${s.aC}) and the ${s.b} (${s.bC}) moves from ${n2(e0)} ${s.a} per ${s.b} in year 1 to ${n2(e1)} ${s.a} per ${s.b} in year 2. What is the percentage change of the exchange rate (${s.a} per ${s.b})? A negative number means the rate fell.`,
+                prompt: `The exchange rate between the ${s.a} (${s.aC}) and the ${s.b} (${s.bC}) moves from ${n2(e0)} ${s.a} per ${s.b} in year 1 to ${n2(e1)} ${s.a} per ${s.b} in year 2. What is the percentage change of the exchange rate (${s.a} per ${s.b})?`,
                 given: {
                     [`Rate year 1 (${s.a} per ${s.b})`]: n2(e0),
                     [`Rate year 2 (${s.a} per ${s.b})`]: n2(e1),
@@ -1280,7 +1282,7 @@ export const econ2Questions: Question[] = [
             const now = p1b * q11 + p2b * q21;
             const answer = (now / base - 1) * 100;
             return {
-                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. In year 1, prices were ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1}, and the consumption basket was ${n(q11)} ${s.uA} and ${n(q21)} ${s.uB}. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and quantities happen to shift to ${n(q12)} ${s.uA} and ${n(q22)} ${s.uB}. What is the CPI inflation rate between year 1 and year 2?`,
+                prompt: `Consumers in ${s.place} buy only ${s.gA} and ${s.gB}. In year 1, prices were ${eur(p1)} per ${s.uA1} and ${eur(p2)} per ${s.uB1}, and the consumption basket was ${n(q11)} ${s.uA} and ${n(q21)} ${s.uB}. In year 2, prices are ${eur(p1b)} and ${eur(p2b)}, and consumers buy ${n(q12)} ${s.uA} and ${n(q22)} ${s.uB}. What is the CPI inflation rate between year 1 and year 2?`,
                 given: {
                     "Prices year 1": `${s.lA} ${eur(p1)}, ${s.lB} ${eur(p2)}`,
                     "Basket (year 1)": `${n(q11)} ${s.uA}, ${n(q21)} ${s.uB}`,
@@ -1704,7 +1706,7 @@ export const econ2Questions: Question[] = [
             const M = 10 * rng.int(25, 140);
             const answer = X - M;
             return {
-                prompt: `${country[0].toUpperCase()}${country.slice(1)} exports goods and services worth ${n(X)} billion € and imports goods and services worth ${n(M)} billion €. What is its trade balance (net exports), in billion €? A negative number means a trade deficit.`,
+                prompt: `${country[0].toUpperCase()}${country.slice(1)} exports goods and services worth ${n(X)} billion € and imports goods and services worth ${n(M)} billion €. What is its trade balance (net exports), in billion €?`,
                 given: {
                     "Exports X": n(X),
                     "Imports M": n(M),
@@ -2083,7 +2085,7 @@ export const econ2Questions: Question[] = [
             const mult = 1 / D;
             const answer = dG * mult;
             return {
-                prompt: String.raw`In ${s.place}, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. In addition, households spend a fraction $m = ${n(m)}$ of every extra unit of income on imports (the marginal propensity to import). The government raises its purchases by ${n(dG)}. By how much does equilibrium output rise?`,
+                prompt: String.raw`In ${s.place}, consumption follows $C = c_0 + c_1 (1 - t) Y$ with $c_1 = ${n(c1)}$ and a tax rate of ${pct(t * 100)}. The marginal propensity to import is $m = ${n(m)}$. The government raises its purchases by ${n(dG)}. By how much does equilibrium output rise?`,
                 given: {
                     "Marginal propensity to consume $c_1$": n(c1),
                     "Income tax rate t": pct(t * 100),
@@ -2092,6 +2094,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$\Delta Y = \frac{1}{1 - c_1 (1 - t) + m} \cdot \Delta G$ - import spending leaks out of the domestic circular flow, so $m$ adds to the multiplier denominator: 1 − ${n(c1)} · ${n(1 - t)} + ${n(m)} = ${n(D)}, multiplier ${n2(mult)}, so ΔY = ${n2(mult)} · ${n(dG)} = ${n2(answer)} - noticeably less than the closed-economy multiplier of ${n2(1 / (1 - c1 * (1 - t)))} would deliver.`,
+                hint: String.raw`The marginal propensity to import is the fraction of every extra unit of income that households spend on imports; that spending leaks out of the domestic circular flow, so it enters the multiplier denominator with the same sign as taxes: $\Delta Y = \frac{1}{1 - c_1 (1 - t) + m} \cdot \Delta G$.`,
             };
         },
     },
@@ -2480,7 +2483,7 @@ export const econ2Questions: Question[] = [
             const r = 3 * rng.int(1, 10) * rng.pick([1, -1]);
             const F = y1 * (1 + r / 100);
             return {
-                prompt: `${s.name} in ${s.country} earns ${n(y1)} thousand € this year and nothing next year. If ${s.subj} invests ${s.poss} entire income in ${s.poss} ${s.venture}, ${s.subj} can consume at most ${n(F)} thousand € next year (there is no other way to transfer income between the years). What rate of return does ${s.poss} investment yield? A negative number means the investment loses value.`,
+                prompt: `${s.name} in ${s.country} earns ${n(y1)} thousand € this year and nothing next year. If ${s.subj} invests ${s.poss} entire income in ${s.poss} ${s.venture}, ${s.subj} can consume at most ${n(F)} thousand € next year (there is no other way to transfer income between the years). What rate of return does ${s.poss} investment yield?`,
                 given: {
                     "Maximum consumption this year": `${n(y1)} thousand €`,
                     "Maximum consumption next year": `${n(F)} thousand €`,
@@ -2744,7 +2747,7 @@ export const econ2Questions: Question[] = [
             const E1 = Math.round(E0 * (1 + c / 100));
             const answer = (E0 / E1 - 1) * 100;
             return {
-                prompt: `The yen-per-euro exchange rate moves from ${n(E0)} in year 1 to ${n(E1)} in year 2. By what percentage does the euro-per-yen rate change over the same period? A negative number means it fell.`,
+                prompt: `The yen-per-euro exchange rate moves from ${n(E0)} in year 1 to ${n(E1)} in year 2. By what percentage does the euro-per-yen rate change over the same period?`,
                 given: {
                     "Yen per euro, year 1": n(E0),
                     "Yen per euro, year 2": n(E1),
@@ -2771,7 +2774,7 @@ export const econ2Questions: Question[] = [
             const cross1 = W1 / F1;
             const answer = (cross1 / cross0 - 1) * 100;
             return {
-                prompt: `Both the South Korean won and the Swiss franc are quoted against the euro. In year 1, one euro costs ${n(W0)} won and ${n2(F0)} francs; in year 2, it costs ${n(W1)} won and ${n2(F1)} francs. By what percentage does the cross rate in won per franc change from year 1 to year 2? A positive number means the franc appreciated against the won.`,
+                prompt: `Both the South Korean won and the Swiss franc are quoted against the euro. In year 1, one euro costs ${n(W0)} won and ${n2(F0)} francs; in year 2, it costs ${n(W1)} won and ${n2(F1)} francs. By what percentage does the cross rate in won per franc change from year 1 to year 2?`,
                 given: {
                     "Won per euro: year 1 / year 2": `${n(W0)} / ${n(W1)}`,
                     "Francs per euro: year 1 / year 2": `${n2(F0)} / ${n2(F1)}`,
@@ -2866,7 +2869,7 @@ export const econ2Questions: Question[] = [
             const x = nPop + g + delta;
             const answer = (x / 100) * k;
             return {
-                prompt: String.raw`In a Solow economy, the capital stock per effective worker is currently $k = ${n(k)}$. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. How much investment per effective worker is needed just to keep $k$ constant (the break-even investment)?`,
+                prompt: String.raw`In a Solow economy, the capital stock per effective worker is currently $k = ${n(k)}$. Population grows at ${pct(nPop)}, technology at ${pct(g)}, and capital depreciates at ${pct(delta)}. What is the break-even investment per effective worker?`,
                 given: {
                     "Capital per effective worker k": n(k),
                     "Population growth n": pct(nPop),
@@ -2875,6 +2878,7 @@ export const econ2Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`$i^{\text{break-even}} = (n + g + \delta) \cdot k$ - investment must replace depreciated capital ($\delta k$) and equip both the extra workers ($n k$) and the extra effective labor from technological progress ($g k$): ${pct(x)} · ${n(k)} = ${n2(answer)}.`,
+                hint: String.raw`Break-even investment is the investment per effective worker that just keeps $k$ constant - enough to replace worn-out capital and to equip the growing effective labor force: $i^{\text{break-even}} = (n + g + \delta) \cdot k$.`,
             };
         },
     },
@@ -2951,13 +2955,14 @@ export const econ2Questions: Question[] = [
             const bank = 10 * rng.int(20, 120);
             const answer = base + bank;
             return {
-                prompt: `In ${country}, the central bank has issued base money (notes, coins and central-bank reserves) of ${n(base)} billion €. Commercial banks have created bank money of ${n(bank)} billion € by extending loans. What is broad money, in billion €?`,
+                prompt: `In ${country}, the central bank has issued base money of ${n(base)} billion €, and commercial banks have created bank money of ${n(bank)} billion €. What is broad money, in billion €?`,
                 given: {
                     "Base money": `${n(base)} billion €`,
                     "Bank money": `${n(bank)} billion €`,
                 },
                 answer,
                 explanation: String.raw`$\text{broad money} = \text{base money} + \text{bank money}$: ${n(base)} + ${n(bank)} = ${n(answer)} billion €. Only the central bank creates legal tender, but most of the money in circulation is bank money created when commercial banks lend.`,
+                hint: String.raw`Base money is the notes, coins and central-bank reserves the central bank issues; bank money is the deposits commercial banks create when they lend. Broad money counts both: $\text{broad money} = \text{base money} + \text{bank money}$.`,
             };
         },
     },
@@ -2975,13 +2980,14 @@ export const econ2Questions: Question[] = [
             const assets = 10 * rng.int(30, 120);
             const liab = assets - nw;
             return {
-                prompt: `${s.bank} holds total assets (base money, loans to customers, financial assets and buildings) of ${n(assets)} billion € and total liabilities (deposits and borrowing) of ${n(liab)} billion €. What is the bank's net worth (equity), in billion €?`,
+                prompt: `${s.bank} holds total assets of ${n(assets)} billion € and total liabilities of ${n(liab)} billion €. What is the bank's net worth (equity), in billion €?`,
                 given: {
                     "Total assets": `${n(assets)} billion €`,
                     "Total liabilities": `${n(liab)} billion €`,
                 },
                 answer: nw,
                 explanation: String.raw`$\text{net worth} = \text{assets} - \text{liabilities}$: ${n(assets)} − ${n(liab)} = ${n(nw)} billion €. This equity is the buffer that absorbs losses before the depositors and other creditors are hit.`,
+                hint: String.raw`A bank's assets are what it owns (base money, loans to customers, financial assets, buildings); its liabilities are what it owes (deposits and borrowing). Net worth is what remains for the owners: $\text{net worth} = \text{assets} - \text{liabilities}$.`,
             };
         },
     },

@@ -1152,7 +1152,7 @@ export const econ1Questions: Question[] = [
             const pS = (c + b) / (a + d * tau); // net producer price
             const answer = tau * pS; // gross consumer price
             return {
-                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p_S - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p_D$. The government introduces an ad-valorem tax of ${pct(t)} on consumers, so the gross price is $p_D = ${n(tau)} \cdot p_S$. What price do consumers pay (including tax) in the new equilibrium?`,
+                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p_S - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p_D$. The government introduces an ad-valorem tax of ${pct(t)} on consumers; $p_D$ is the gross price consumers pay and $p_S$ the net price producers receive. What price do consumers pay (including tax) in the new equilibrium?`,
                 given: {
                     "Supply": String.raw`$Q_S = ${n(a)} p_S - ${n(b)}$`,
                     "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p_D$`,
@@ -1160,6 +1160,7 @@ export const econ1Questions: Question[] = [
                 },
                 answer,
                 explanation: String.raw`With an ad-valorem tax on consumers, $p_D = (1 + t) \cdot p_S$; set $Q_S(p_S) = Q_D(p_D)$ and solve for the net price: $${n(a)} p_S - ${n(b)} = ${n(c)} - ${n(d)} \cdot ${n(tau)}\, p_S$, so $p_S = \frac{${n(c)} + ${n(b)}}{${n(a)} + ${n(d)} \cdot ${n(tau)}}$ = ${n2(pS)}. Consumers pay $p_D = ${n(tau)} \cdot p_S$ = ${eur(answer)}. Both sides bear part of the tax: without it the price was ${eur(pStar)} - producers now net less, consumers pay more.`,
+                hint: String.raw`An ad-valorem tax of rate $t$ on consumers puts a proportional wedge between the gross and the net price: $p_D = (1 + t) \cdot p_S$. Substitute that into demand and clear the market for $p_S$, then scale up.`,
             };
         },
     },
@@ -1632,13 +1633,14 @@ export const econ1Questions: Question[] = [
             const c = pS * (s + d * tau);
             const answer = (t / 100) * pS * Q;
             return {
-                prompt: String.raw`In the competitive market for ${sc.good}, demand is $Q_D = ${n(c)} - ${n(d)} p_D$ and supply is $Q_S = ${n(s)} p_S$. A value-added tax of ${pct(t)} is introduced, so that $p_D = ${n(tau)} \cdot p_S$. How much tax revenue does the government collect in the new equilibrium?`,
+                prompt: String.raw`In the competitive market for ${sc.good}, demand is $Q_D = ${n(c)} - ${n(d)} p_D$ and supply is $Q_S = ${n(s)} p_S$. A value-added tax of ${pct(t)} on the net producer price is introduced; $p_D$ is the gross price consumers pay and $p_S$ the net price producers receive. How much tax revenue does the government collect in the new equilibrium?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p_D$`,
                     "Supply": String.raw`$Q_S = ${n(s)} p_S$`,
                     "VAT rate t": pct(t),
                 },
                 answer,
+                hint: String.raw`VAT is charged on the net price, so the gross price is $p_D = (1 + t) \cdot p_S$. Clear the market for $p_S$ with that wedge in place; the revenue is the tax per unit times the quantity actually traded, $T = t \cdot p_S \cdot Q$.`,
                 explanation: String.raw`$T = t \cdot p_S \cdot Q$ - the tax is levied on the net producer price. The net price solves $Q_D\big((1 + t)\, p_S\big) = Q_S(p_S)$: $${n(c)} - ${n(d)} \cdot ${n(tau)}\, p_S = ${n(s)} p_S$ gives $p_S = \frac{${n(c)}}{${n(s)} + ${n(d)} \cdot ${n(tau)}}$ = ${eur(pS)}. Quantity: $Q$ = ${n(s)} · ${n(pS)} = ${n(Q)}, and consumers pay $p_D$ = ${eur(tau * pS)}. Revenue: ${pct(t)} · ${eur(pS)} · ${n(Q)} = ${eur(answer)}. The wedge between ${eur(tau * pS)} and ${eur(pS)} is shared between the two market sides.`,
             };
         },
@@ -2154,7 +2156,7 @@ export const econ1Questions: Question[] = [
             const ownTea = XU - tau * m; // = X_U (1 - tau X_E / Y_U)
             const answer = XE + ownTea;
             return {
-                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} or at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} or at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. Trade takes place at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}. ${s.a} specializes completely in ${s.x}, so it can deliver at most its full harvest of ${n(XE)} tonnes and consumes none of it. ${s.b} wants to consume as many tonnes of ${s.x} as possible: it buys everything ${s.a} delivers, grows the ${s.y} for the bill itself and uses the rest of its land for its own ${s.x}. How many tonnes of ${s.x} can ${s.b} consume at most?`,
+                prompt: `In one season ${s.a} can produce at most ${n(XE)} tonnes of ${s.x} or at most ${n(YE)} tonnes of ${s.y}, ${s.b} at most ${n(XU)} tonnes of ${s.x} or at most ${n(YU)} tonnes of ${s.y}; both frontiers are straight lines. Trade takes place at ${n(tau)} tonnes of ${s.y} per tonne of ${s.x}. ${s.a} specializes completely in ${s.x}, consumes none of it and delivers its full harvest of ${n(XE)} tonnes. ${s.b} wants to consume as many tonnes of ${s.x} as possible: it buys everything ${s.a} delivers, grows the ${s.y} for the bill itself and uses the rest of its land for its own ${s.x}. How many tonnes of ${s.x} can ${s.b} consume at most?`,
                 given: {
                     [`${s.a}: ${s.x} or ${s.y}`]: `${n(XE)} or ${n(YE)} tonnes`,
                     [`${s.b}: ${s.x} or ${s.y}`]: `${n(XU)} or ${n(YU)} tonnes`,
@@ -2584,7 +2586,7 @@ export const econ1Questions: Question[] = [
             const answer = rng.int(3, 14); // q1*, drawn first so the budget stays clean
             const M = (p1 + r * p2) * answer;
             return {
-                prompt: String.raw`${s.who} treats ${s.g1} ($q_1$) and ${s.g2} ($q_2$) as perfect complements: ${s.subj} always ${s.verbPre} exactly ${n(r)} ${s.g2} ${s.verbPost} each ${s.g1One}, so $U(q_1, q_2) = \min\{ ${n(r)}\, q_1,\; q_2 \}$. ${s.one1} costs ${eur(p1)}, ${s.one2} ${eur(p2)}, and ${s.subj} has ${eur(M)} to spend. How many ${s.g1} does ${s.subj} buy at the optimum?`,
+                prompt: String.raw`${s.who} treats ${s.g1} ($q_1$) and ${s.g2} ($q_2$) as perfect complements: ${s.subj} always ${s.verbPre} exactly ${n(r)} ${s.g2} ${s.verbPost} each ${s.g1One}. ${cap(s.subj)} has the utility function $U(q_1, q_2) = \min\{ ${n(r)}\, q_1,\; q_2 \}$. ${s.one1} costs ${eur(p1)}, ${s.one2} ${eur(p2)}, and ${s.subj} has ${eur(M)} to spend. How many ${s.g1} does ${s.subj} buy at the optimum?`,
                 given: {
                     "Utility": String.raw`$U = \min\{ ${n(r)}\, q_1,\; q_2 \}$`,
                     "Price $p_1$": eur(p1),
@@ -3090,7 +3092,7 @@ export const econ1Questions: Question[] = [
             const b = rng.int(4, 30); // min AVC
             const lr = b + 2 * a * qm; // long-run break-even price
             return {
-                prompt: String.raw`${s.who} has the short-run cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$, where ${eur(F)} is the fixed cost of the plant and cannot be recovered this season. Below which market price per ${s.one} does ${s.short} stop producing altogether in the short run?`,
+                prompt: String.raw`${s.who} has the short-run cost $C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$, where ${eur(F)} is the fixed cost of the plant. Below which market price per ${s.one} does ${s.short} stop producing altogether in the short run?`,
                 given: {
                     "Cost function": String.raw`$C(q) = ${co(a)}q^2 + ${co(b)}q + ${n(F)}$`,
                     "Fixed cost": eur(F),
@@ -3275,12 +3277,13 @@ export const econ1Questions: Question[] = [
             const PS = nStar * F;
             const answer = CS + PS;
             return {
-                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$, and entry is free. Inverse market demand is $p = \frac{${n(A)} - Q}{${n(d)}}$, with $Q$ in ${s.units} per day. What is the total surplus (consumer plus producer surplus) in the long-run equilibrium?`,
+                prompt: String.raw`${s.who} all have the cost function $C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$ and $C(0) = 0$, and entry is free. Inverse market demand is $p = \frac{${n(A)} - Q}{${n(d)}}$, with $Q$ in ${s.units} per day. What is the total surplus in the long-run equilibrium?`,
                 given: {
                     "Cost per firm": String.raw`$C(q) = ${n(F)} + ${co(b)}q + ${co(c)}q^2$ for $q > 0$`,
                     "Inverse demand": String.raw`$p = \frac{${n(A)} - Q}{${n(d)}}$`,
                 },
                 answer,
+                hint: String.raw`Total surplus is consumer surplus plus producer surplus, $TS = CS + PS$. Free entry pins $p^* = \min AC$ and $q^*$ per firm; $CS$ is the triangle under demand above $p^*$, and $PS$ is revenue minus variable cost summed over the firms - not zero, even though profit is.`,
                 explanation: String.raw`$TS = CS + PS$, with $CS = \frac{1}{2}\left(p_{max} - p^*\right) Q^*$ and, under free entry, $PS = n^* F$. Efficient scale $q^* = \sqrt{F / c}$ = ${n(qm)} ${s.units} and $p^* = \min AC$ = ${eur(pStar)}. Market quantity: $Q^*$ = ${n(A)} − ${n(d)} · ${n(pStar)} = ${n(Q)} ${s.units}, so $n^*$ = ${n(Q)} / ${n(qm)} = ${n(nStar)} firms. Choke price: $p_{max}$ = ${n(A)} / ${n(d)} = ${eur(choke)}, hence $CS$ = ½ · (${n(choke)} − ${n(pStar)}) · ${n(Q)} = ${eur(CS)}. Producer surplus is not zero even though profits are: $PS$ = ${n(nStar)} · ${eur(F)} = ${eur(PS)}. Total: ${eur(CS)} + ${eur(PS)} = ${eur(answer)}.`,
             };
         },
@@ -3486,13 +3489,14 @@ export const econ1Questions: Question[] = [
             // p_D = (A + B + s t) / (d + s); tot divides 100, so this is exact to 2 decimals
             const answer = Math.round((pStar + (s * t) / tot) * 100) / 100;
             return {
-                prompt: String.raw`In the market for ${sc.good}, demand is $Q_D = ${n(A)} - ${n(d)} p_D$ and supply is $Q_S = ${n(s)} p_S - ${n(B)}$, in ${sc.units} per day. The government levies a per-unit tax of ${eur(t)} on the producers, so that $p_S = p_D - ${n(t)}$. What price do consumers pay per ${sc.one} once the market has adjusted?`,
+                prompt: String.raw`In the market for ${sc.good}, demand is $Q_D = ${n(A)} - ${n(d)} p_D$ and supply is $Q_S = ${n(s)} p_S - ${n(B)}$, in ${sc.units} per day. The government levies a per-unit tax of ${eur(t)} on the producers; $p_D$ is the price consumers pay and $p_S$ the price producers keep. What price do consumers pay per ${sc.one} once the market has adjusted?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${n(d)} p_D$`,
                     "Supply": String.raw`$Q_S = ${n(s)} p_S - ${n(B)}$`,
                     "Per-unit tax t": eur(t),
                 },
                 answer,
+                hint: String.raw`A per-unit tax on producers drives a fixed wedge between the two prices: $p_S = p_D - t$. Substitute that into supply, set $Q_D = Q_S$ and solve for $p_D$.`,
                 explanation: String.raw`Clearing the market with the tax gives $p_D = \frac{A + B + s\, t}{d + s}$ - substitute $p_S = p_D - t$ into supply and solve for the consumer price. Here $${n(A)} - ${n(d)} p_D = ${n(s)}\left(p_D - ${n(t)}\right) - ${n(B)}$, so $p_D$ = (${n(A)} + ${n(B)} + ${n(s)} · ${n(t)}) / ${n(tot)} = ${eur(answer)}. Without the tax the price was ${eur(pStar)}, so consumers bear ${eur(answer - pStar)} of the ${eur(t)}; producers receive ${eur(answer - t)} and bear the rest. The side with the less elastic curve carries the larger share, no matter who hands the money to the tax office.`,
             };
         },
@@ -3523,13 +3527,14 @@ export const econ1Questions: Question[] = [
             const Qt = Math.round((Q - (d * s * t) / tot) * 100) / 100; // traded quantity with the tax
             const answer = Math.round(t * Qt * 100) / 100;
             return {
-                prompt: String.raw`${sc.good} are traded competitively, with demand $Q_D = ${n(A)} - ${n(d)} p_D$ and supply $Q_S = ${n(s)} p_S - ${n(B)}$ per week. The government introduces a per-unit tax of ${eur(t)} on the producers, so that $p_S = p_D - ${n(t)}$. How much tax revenue does it collect per week?`,
+                prompt: String.raw`${sc.good} are traded competitively, with demand $Q_D = ${n(A)} - ${n(d)} p_D$ and supply $Q_S = ${n(s)} p_S - ${n(B)}$ per week. The government introduces a per-unit tax of ${eur(t)} on the producers; $p_D$ is the price consumers pay and $p_S$ the price producers keep. How much tax revenue does it collect per week?`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${n(d)} p_D$`,
                     "Supply": String.raw`$Q_S = ${n(s)} p_S - ${n(B)}$`,
                     "Per-unit tax t": eur(t),
                 },
                 answer,
+                hint: String.raw`A per-unit tax on producers drives a fixed wedge between the two prices, $p_S = p_D - t$. Clear the market with that wedge to find the quantity still traded; revenue is $T = t \cdot Q_t$.`,
                 explanation: String.raw`Tax revenue is $T = t \cdot Q_t$, so the traded quantity after the tax is what matters. With $p_S = p_D - t$ the consumer price is $p_D = \frac{A + B + s\, t}{d + s}$ = (${n(A)} + ${n(B)} + ${n(s)} · ${n(t)}) / ${n(tot)} = ${eur(pD)}, and $Q_t$ = ${n(A)} − ${n(d)} · ${n(pD)} = ${n2(Qt)} ${sc.units}. Revenue: ${eur(t)} · ${n2(Qt)} = ${eur(answer)}. Using the pre-tax quantity ${n(Q)} instead would overstate the take, because the tax itself shrinks the market.`,
             };
         },
@@ -3558,12 +3563,13 @@ export const econ1Questions: Question[] = [
             const PS = 0.5 * gap * Q;
             const answer = CS + PS;
             return {
-                prompt: String.raw`${sc.good} are traded in a competitive market with demand $Q_D = ${n(A)} - ${co(d)}p$ and supply $Q_S = ${co(s)}p - ${n(B)}$, in ${sc.units} per month. Compute the total surplus (consumer plus producer surplus) in the untaxed market equilibrium.`,
+                prompt: String.raw`${sc.good} are traded in a competitive market with demand $Q_D = ${n(A)} - ${co(d)}p$ and supply $Q_S = ${co(s)}p - ${n(B)}$, in ${sc.units} per month. Compute the total surplus in the untaxed market equilibrium.`,
                 given: {
                     "Demand": String.raw`$Q_D = ${n(A)} - ${co(d)}p$`,
                     "Supply": String.raw`$Q_S = ${co(s)}p - ${n(B)}$`,
                 },
                 answer,
+                hint: String.raw`Total surplus is consumer surplus plus producer surplus: $TS = CS + PS$, the triangle under demand above $p^*$ plus the triangle above supply below $p^*$, both out to $Q^*$.`,
                 explanation: String.raw`$TS = CS + PS = \frac{1}{2}\left(p_{max} - p^*\right) Q^* + \frac{1}{2}\left(p^* - p_{min}\right) Q^*$ - the two triangles that meet at the equilibrium. Equilibrium: $p^* = \frac{${n(A)} + ${n(B)}}{${n(d)} + ${n(s)}}$ = ${eur(pStar)} and $Q^*$ = ${n(Q)} ${sc.units}. Choke price of demand: $p_{max}$ = ${n(A)} / ${n(d)} = ${eur(choke)}, so $CS$ = ½ · (${n(choke)} − ${n(pStar)}) · ${n(Q)} = ${eur(CS)}. Supply starts at $p_{min}$ = ${n(B)} / ${n(s)} = ${eur(p0)}, so $PS$ = ½ · (${n(pStar)} − ${n(p0)}) · ${n(Q)} = ${eur(PS)}. Total: ${eur(CS)} + ${eur(PS)} = ${eur(answer)}.`,
             };
         },
@@ -4040,7 +4046,7 @@ export const econ1Questions: Question[] = [
             const Qm = a / (b + g);
             const answer = mec * Qs;
             return {
-                prompt: String.raw`${s.intro}. Demand is $P = ${n(a)} - ${co(b)}Q$ and supply is $P = ${co(g)}Q$, with $P$ in euros per ${s.one} and $Q$ in ${s.units} per day. ${s.why}, so the marginal external cost rises with output: $MEC = ${co(mec)}Q$. Which per-unit tax on producers implements the socially optimal quantity?`,
+                prompt: String.raw`${s.intro}. Demand is $P = ${n(a)} - ${co(b)}Q$ and supply is $P = ${co(g)}Q$, with $P$ in euros per ${s.one} and $Q$ in ${s.units} per day. ${s.why}; the marginal external cost is $MEC = ${co(mec)}Q$. Which per-unit tax on producers implements the socially optimal quantity?`,
                 given: {
                     Demand: String.raw`$P = ${n(a)} - ${co(b)}Q$`,
                     Supply: String.raw`$P = ${co(g)}Q$`,

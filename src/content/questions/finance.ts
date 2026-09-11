@@ -240,10 +240,11 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(2, 8);
             const answer = C0 * (1 + N * (r / 100));
             return {
-                prompt: `You invest ${eur(C0)} for ${N} years at ${pct(r)} p.a. The interest is not itself reinvested (simple interest). What amount do you receive at the end?`,
+                prompt: `You invest ${eur(C0)} for ${N} years at ${pct(r)} p.a. simple interest. What amount do you receive at the end?`,
                 given: { "Initial capital $C_0$": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
                 explanation: String.raw`$C_N = C_0 \cdot (1 + N \cdot i)$ - simple interest earns $N \cdot i$ on the initial capital: ${eur(C0)} · (1 + ${N} · ${n(r / 100)}) = ${eur(answer)}`,
+                hint: String.raw`With simple interest the interest is not reinvested: every year earns $i$ on the initial capital only, so $C_N = C_0 \cdot (1 + N \cdot i)$.`,
             };
         },
     },
@@ -260,10 +261,11 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(3, 15);
             const answer = C0 * (1 + r / 100) ** N;
             return {
-                prompt: `${eur(C0)} earns ${pct(r)} p.a. for ${N} years, with the interest reinvested each year (compound interest). What is the final capital?`,
+                prompt: `${eur(C0)} earns ${pct(r)} p.a. for ${N} years with annual compound interest. What is the final capital?`,
                 given: { "Initial capital $C_0$": eur(C0), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
                 explanation: String.raw`$C_N = C_0 \cdot q^N$ with $q = 1 + i = ${n(1 + r / 100)}$ and $q^{${N}} = ${n2((1 + r / 100) ** N)}$: ${eur(C0)} · ${n2((1 + r / 100) ** N)} = ${eur(answer)}`,
+                hint: String.raw`With compound interest each year's interest is reinvested and itself earns interest, so the capital grows by the factor $q = 1 + i$ every year: $C_N = C_0 \cdot q^N$.`,
             };
         },
     },
@@ -1770,10 +1772,11 @@ export const financeQuestions: NumericQuestion[] = [
             const E = rng.int(200, 800) * 1000;
             const answer = NFO / E;
             return {
-                prompt: `Net financial obligations (debt minus financial assets) are ${eur(NFO)}, the book value of equity is ${eur(E)}. What is the net financial leverage (NFL)?`,
+                prompt: `Net financial obligations are ${eur(NFO)}, the book value of equity is ${eur(E)}. What is the net financial leverage (NFL)?`,
                 given: { "Net financial obligations NFO": eur(NFO), "Equity E": eur(E) },
                 answer,
                 explanation: String.raw`$NFL = \frac{NFO}{E}$ = ${eur(NFO)} / ${eur(E)} = ${n2(answer)}`,
+                hint: String.raw`Net financial obligations are the interest-bearing debt less the financial assets; the net financial leverage puts them against the book value of equity: $NFL = \frac{NFO}{E}$.`,
             };
         },
     },
@@ -2077,7 +2080,7 @@ export const financeQuestions: NumericQuestion[] = [
             const multiplier = rng.float(1.2, 3.5, 2);
             const answer = margin * turnover * multiplier;
             return {
-                prompt: `Break down the return on equity with the DuPont identity: the net profit margin is ${pct(margin)}, the asset turnover (sales ÷ total assets) is ${n2(turnover)} and the equity multiplier (total assets ÷ equity) is ${n2(multiplier)}. What is the ROE?`,
+                prompt: `Break down the return on equity with the DuPont identity: the net profit margin is ${pct(margin)}, the asset turnover is ${n2(turnover)} and the equity multiplier is ${n2(multiplier)}. What is the ROE?`,
                 given: {
                     "Net profit margin": pct(margin),
                     "Asset turnover": n2(turnover),
@@ -2085,6 +2088,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`DuPont: $ROE = \text{net margin} \cdot \text{asset turnover} \cdot \text{equity multiplier}$ = ${pct(margin)} · ${n2(turnover)} · ${n2(multiplier)} = ${pct(answer)}`,
+                hint: String.raw`The DuPont identity splits ROE into three ratios - net margin $\frac{NI}{\text{Sales}}$, asset turnover $\frac{\text{Sales}}{TA}$ and equity multiplier $\frac{TA}{E}$ - whose product is $\frac{NI}{E}$.`,
             };
         },
     },
@@ -2102,15 +2106,16 @@ export const financeQuestions: NumericQuestion[] = [
             const tauC = rng.pick([0.25, 0.3, 0.32]);
             const answer = roic + nfl * (roic - nfe * (1 - tauC));
             return {
-                prompt: `Compute the ROE with the book-leverage equation: the after-tax ROIC is ${pct(roic)}, net financial leverage (net financial obligations ÷ equity) is ${n2(nfl)}, the net financial expense (financial expenses as a percentage of net financial obligations, before tax) is ${pct(nfe)} and the tax rate is ${pct(tauC * 100)}.`,
+                prompt: `Compute the ROE with the book-leverage equation: the after-tax ROIC is ${pct(roic)}, the net financial leverage is ${n2(nfl)}, the net financial expense (before tax) is ${pct(nfe)} and the tax rate is ${pct(tauC * 100)}.`,
                 given: {
                     "ROIC after tax": pct(roic),
                     "Net financial leverage NFL": n2(nfl),
-                    "Net financial expense NFE": pct(nfe),
+                    "Net financial expense NFE (before tax)": pct(nfe),
                     "$τ_C$": pct(tauC * 100),
                 },
                 answer,
                 explanation: String.raw`$ROE = ROIC + NFL \cdot \left(ROIC - NFE \cdot (1 - \tau_C)\right)$ - the after-tax NFE is ${pct(nfe * (1 - tauC))}, so the leverage spread is ${pct(roic - nfe * (1 - tauC))}: ${pct(roic)} + ${n2(nfl)} · ${pct(roic - nfe * (1 - tauC))} = ${pct(answer)}`,
+                hint: String.raw`Net financial leverage is $NFL = \frac{NFO}{E}$ and the net financial expense $NFE = \frac{FE}{NFO}$ is a pre-tax rate on the net debt. Leverage adds the after-tax spread to the operating return: $ROE = ROIC + NFL \cdot (ROIC - NFE \cdot (1 - \tau_C))$.`,
             };
         },
     },
@@ -2133,7 +2138,7 @@ export const financeQuestions: NumericQuestion[] = [
             const nopat = EBIT * (1 - tauC);
             const answer = nopat + depr + ncExp - ncEarn + dNwc + cfi;
             return {
-                prompt: `Compute the free cash flow to the firm (FCF) from: EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, depreciation ${eur(depr)}, other non-cash expenses ${eur(ncExp)}, other non-cash earnings ${eur(ncEarn)}, change in net working capital ${eur(dNwc)} and cash flow from investments ${eur(cfi)}. The last two are already stated as signed cash-flow effects, so a negative figure reduces the cash flow.`,
+                prompt: `Compute the free cash flow to the firm (FCF) from: EBIT ${eur(EBIT)}, tax rate ${pct(tauC * 100)}, depreciation ${eur(depr)}, other non-cash expenses ${eur(ncExp)}, other non-cash earnings ${eur(ncEarn)}, change in net working capital ${eur(dNwc)} and cash flow from investments ${eur(cfi)}. The last two are stated as signed cash-flow effects.`,
                 given: {
                     EBIT: eur(EBIT),
                     "$τ_C$": pct(tauC * 100),
@@ -2166,7 +2171,7 @@ export const financeQuestions: NumericQuestion[] = [
             const cff = rng.int(1, 12) * 5000 * rng.pick([1, -1]);
             const answer = NI + depr + ncExp - ncEarn + dNwc + cfi + cff;
             return {
-                prompt: `Compute the free cash flow to equity (FCFE) from: net income ${eur(NI)}, depreciation ${eur(depr)}, other non-cash expenses ${eur(ncExp)}, other non-cash earnings ${eur(ncEarn)}, change in net working capital ${eur(dNwc)}, cash flow from investments ${eur(cfi)} and cash flow from financing ${eur(cff)}. The last three are already stated as signed cash-flow effects, so a negative figure reduces the cash flow.`,
+                prompt: `Compute the free cash flow to equity (FCFE) from: net income ${eur(NI)}, depreciation ${eur(depr)}, other non-cash expenses ${eur(ncExp)}, other non-cash earnings ${eur(ncEarn)}, change in net working capital ${eur(dNwc)}, cash flow from investments ${eur(cfi)} and cash flow from financing ${eur(cff)}. The last three are stated as signed cash-flow effects.`,
                 given: {
                     "Net income": eur(NI),
                     Depreciation: eur(depr),
@@ -2469,15 +2474,15 @@ export const financeQuestions: NumericQuestion[] = [
             const Pcum = rng.int(60, 220);
             const answer = Pcum / (1 + 1 / BV);
             return {
-                prompt: `A capital increase from company funds (Kapitalerhöhung aus Gesellschaftsmitteln) converts reserves into share capital. Shareholders receive the new shares free of charge, so no subscription price is paid in. The subscription ratio is ${BV}:1 (${BV} old shares carry one new share) and the price cum rights is ${eur(Pcum)}. What is the price after the capital increase ($P_{ex}$)?`,
+                prompt: `A capital increase from company funds (Kapitalerhöhung aus Gesellschaftsmitteln) is carried out at a subscription ratio of ${BV}:1. The price cum rights is ${eur(Pcum)}. What is the price after the capital increase ($P_{ex}$)?`,
                 given: {
-                    "Capital increase": "from company funds (nothing paid in)",
+                    "Capital increase": "from company funds",
                     "Subscription ratio": `${BV}:1`,
                     "$P_{cum}$": eur(Pcum),
                 },
                 answer,
                 explanation: String.raw`$P_{ex} = \frac{P_{cum}}{1 + \frac{1}{BV}}$ = ${eur(Pcum)} / ${n2(1 + 1 / BV)} = ${eur(answer)} - the value of ${BV} old shares at ${eur(Pcum)} is spread over ${BV + 1} shares. There is no issue-price term, unlike a rights issue against cash contributions.`,
-                hint: `Nothing is paid in, so the market value of the company stays the same and is only spread over more shares. There is no issue-price term as in a rights issue against cash contributions.`,
+                hint: String.raw`A capital increase from company funds converts reserves into share capital: shareholders receive the new shares free of charge, nothing is paid in, so the market value of the company stays the same and is only spread over more shares: $P_{ex} = \frac{P_{cum}}{1 + \frac{1}{BV}}$.`,
             };
         },
     },
@@ -2548,7 +2553,7 @@ export const financeQuestions: NumericQuestion[] = [
             const value = npv(flows, r / 100);
             const answer = value / I0;
             return {
-                prompt: `Capital is rationed, so projects are ranked by their profitability index. A project ties up ${eur(I0)} of capital today and returns ${eur(cf)} at the end of each of the next ${T} years; the discount rate is ${pct(r)}. What is its profitability index?`,
+                prompt: `Capital is rationed. A project ties up ${eur(I0)} of capital today and returns ${eur(cf)} at the end of each of the next ${T} years; the discount rate is ${pct(r)}. What is its profitability index?`,
                 given: {
                     "Capital consumed $I_0$": eur(I0),
                     "Cash flow p.a.": eur(cf),
@@ -2605,10 +2610,11 @@ export const financeQuestions: NumericQuestion[] = [
             const N = rng.int(2, 8);
             const answer = CN / (1 + (r / 100) * N);
             return {
-                prompt: `A savings product pays simple interest (no compounding) at ${pct(r)} p.a. What amount do you have to invest today to receive exactly ${eur(CN)} in ${N} years?`,
+                prompt: `A savings product pays simple interest at ${pct(r)} p.a. What amount do you have to invest today to receive exactly ${eur(CN)} in ${N} years?`,
                 given: { "Target amount $C_N$": eur(CN), "Interest rate r": pct(r), "Term N": `${N} years` },
                 answer,
                 explanation: String.raw`$C_0 = \frac{C_N}{1 + N \cdot i}$ - with simple interest the initial capital earns $N \cdot i = ${n(N * (r / 100))}$ in total: ${eur(CN)} / ${n2(1 + N * (r / 100))} = ${eur(answer)}`,
+                hint: String.raw`Simple interest is never reinvested, so the capital grows linearly: $C_N = C_0 \cdot (1 + N \cdot i)$ - solve this for $C_0$.`,
             };
         },
     },
@@ -3249,10 +3255,11 @@ export const financeQuestions: NumericQuestion[] = [
             const i = r / 100;
             const answer = (1 + i) / i;
             return {
-                prompt: `A perpetual bond (consol) pays a fixed coupon forever and is never redeemed. The market interest rate is ${pct(r)}. What is the Macaulay duration of this bond?`,
-                given: { "Market rate r": pct(r), "Maturity": "perpetual (no redemption)" },
+                prompt: `A perpetual bond (consol) pays a fixed annual coupon. The market interest rate is ${pct(r)}. What is the Macaulay duration of this bond?`,
+                given: { "Market rate r": pct(r), "Maturity": "perpetual" },
                 answer,
                 explanation: String.raw`For a perpetual bond the duration converges to $D_{perp} = \frac{1 + i}{i}$ = ${n(1 + i)} / ${n(i)} = ${n2(answer)} years - finite even though the maturity is infinite, because distant coupons carry almost no present-value weight.`,
+                hint: String.raw`A consol is never redeemed, yet its duration is finite because distant coupons carry almost no present-value weight: $D_{perp} = \frac{1 + i}{i}$.`,
             };
         },
     },
@@ -3385,10 +3392,11 @@ export const financeQuestions: NumericQuestion[] = [
             const rE = rng.int(8, 14);
             const answer = P0 - EPS1 / (rE / 100);
             return {
-                prompt: `${s.firm} share trades at ${eur(P0)}. Expected earnings per share for next year are ${eur(EPS1)} and the cost of equity is ${pct(rE)}. What is the present value of growth opportunities (PVGO) priced into the share? A negative value means the market prices the firm's reinvestment policy as value-destroying.`,
+                prompt: `${s.firm} share trades at ${eur(P0)}. Expected earnings per share for next year are ${eur(EPS1)} and the cost of equity is ${pct(rE)}. What is the present value of growth opportunities (PVGO) priced into the share?`,
                 given: { "Share price $P_0$": eur(P0), "$EPS_1$": eur(EPS1), "$r_E$": pct(rE) },
                 answer,
                 explanation: String.raw`The zero-growth value (all earnings paid out forever) is $P_0^* = \frac{EPS_1}{r_E}$ = ${eur(EPS1)} / ${n(rE / 100)} = ${eur(EPS1 / (rE / 100))}. Everything above it is growth value: $PVGO = P_0 - \frac{EPS_1}{r_E}$ = ${eur(P0)} − ${eur(EPS1 / (rE / 100))} = ${eur(answer)}`,
+                hint: String.raw`PVGO is the part of the price not explained by paying out all earnings forever: $PVGO = P_0 - \frac{EPS_1}{r_E}$. A negative value means the market expects reinvestment to destroy value.`,
             };
         },
     },
@@ -3555,10 +3563,11 @@ export const financeQuestions: NumericQuestion[] = [
             const cf = Math.round((I0 * (r / 100) * rng.float(0.75, 1.7, 3)) / 100) * 100;
             const answer = -I0 + cf / (r / 100);
             return {
-                prompt: `${s.who} can buy ${s.asset} for ${eur(I0)} that produces a constant cash flow of ${eur(cf)} at the end of every year forever. The cost of capital is ${pct(r)}. What is the NPV of the project? A negative answer means the project destroys value.`,
+                prompt: `${s.who} can buy ${s.asset} for ${eur(I0)} that produces a constant cash flow of ${eur(cf)} at the end of every year forever. The cost of capital is ${pct(r)}. What is the NPV of the project?`,
                 given: { "Investment $I_0$": eur(I0), "Perpetual CF p.a.": eur(cf), "r": pct(r) },
                 answer,
                 explanation: String.raw`The inflows form a perpetuity: $NPV = -I_0 + \frac{CF}{i}$ = −${eur(I0)} + ${eur(cf)} / ${n(r / 100)} = −${eur(I0)} + ${eur(cf / (r / 100))} = ${eur(answer)}`,
+                hint: String.raw`The perpetual inflows are worth $\frac{CF}{i}$ today; the NPV nets that present value against the purchase price, and a negative result means the project destroys value.`,
             };
         },
     },
@@ -3720,7 +3729,7 @@ export const financeQuestions: NumericQuestion[] = [
             const ebit = rev - costs - depr;
             const answer = ebit * (1 - tau) + depr - dNwc;
             return {
-                prompt: `Compute a project's free cash flow for one year: revenues ${eur(rev)}, cash operating costs ${eur(costs)}, depreciation ${eur(depr)}, tax rate ${pct(tau * 100)}. Net working capital ${dNwc >= 0 ? "increases" : "decreases"} by ${eur(Math.abs(dNwc))} during the year${dNwc < 0 ? " (working capital is released)" : ""}. There are no capital expenditures this year.`,
+                prompt: `Compute a project's free cash flow for one year: revenues ${eur(rev)}, cash operating costs ${eur(costs)}, depreciation ${eur(depr)}, tax rate ${pct(tau * 100)}. Net working capital ${dNwc >= 0 ? "increases" : "decreases"} by ${eur(Math.abs(dNwc))} during the year. There are no capital expenditures this year.`,
                 given: {
                     "Revenues": eur(rev),
                     "Operating costs": eur(costs),
@@ -3730,6 +3739,7 @@ export const financeQuestions: NumericQuestion[] = [
                 },
                 answer,
                 explanation: String.raw`$FCF = (\text{Rev} - \text{Cost} - \text{Depr}) \cdot (1 - \tau_C) + \text{Depr} - \Delta NWC$ - depreciation is added back because it is no cash outflow, it only shields taxes: ${eur(ebit * (1 - tau))} + ${eur(depr)} − (${eur(dNwc)}) = ${eur(answer)}`,
+                hint: String.raw`Start from unlevered net income $(\text{Rev} - \text{Cost} - \text{Depr}) \cdot (1 - \tau_C)$, add back the depreciation and subtract the change in net working capital - a decrease in NWC releases cash.`,
             };
         },
     },
@@ -4225,7 +4235,7 @@ export const financeQuestions: NumericQuestion[] = [
             const prem = rng.float(2, 9, 2);
             const answer = K + prem;
             return {
-                prompt: `A trader writes (sells) a European call with strike ${eur(K)} and collects a premium of ${eur(prem)}. At what share price at maturity $S_T$ does the writer exactly break even - neither profit nor loss?`,
+                prompt: `A trader writes (sells) a European call with strike ${eur(K)} and collects a premium of ${eur(prem)}. At what share price at maturity $S_T$ does the writer exactly break even?`,
                 given: { "Strike K": eur(K), "Premium received C": eur(prem) },
                 answer,
                 explanation: String.raw`The writer's profit is $C - \max(S_T - K,\ 0)$. Below the strike she keeps the full premium; above it the exercise loss grows one-for-one with $S_T$. The premium is used up exactly at $S_T = K + C$ = ${eur(K)} + ${eur(prem)} = ${eur(answer)} - above that the position loses money.`,
