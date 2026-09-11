@@ -530,8 +530,57 @@ try {
             termsHtml.includes("Point of contact")
     );
     check("/terms ships no em dashes", !termsHtml.includes(EM_DASH));
-    // TUM rule (2026-09-11): only /, /career and the /quiz subject pages may
-    // name TUM in their metadata.
+    // --- static course pages + city page (scenario C, 2026-09-11) ----------
+    for (const [slug, h1] of [
+        ["finance", "Investment &amp; Financial Management"],
+        ["econ-1", "Economics 1"],
+        ["econ-2", "Economics 2"],
+        ["financial-accounting", "Financial Accounting"],
+        ["cost-accounting", "Cost Accounting"],
+        ["entrepreneurship", "Entrepreneurship"],
+        ["marketing", "Marketing"],
+    ]) {
+        const r = await fetch(`${BASE}/${slug}`);
+        const html = await r.text();
+        check(`/${slug} returns 200`, r.status === 200, `got ${r.status}`);
+        check(`/${slug} renders the course h1`, new RegExp(`<h1[^>]*>[^<]*${h1}`).test(html.replace(/<!-- -->/g, "")));
+        check(
+            `/${slug} has its own canonical`,
+            html.includes(`rel="canonical" href="https://www.finance-bro.de/${slug}"`)
+        );
+        check(`/${slug} names München in the description`, /<meta name="description" content="[^"]*München/.test(html));
+        const disclaimerAt = html.indexOf("not affiliated");
+        const h1At = html.indexOf("<h1");
+        check(`/${slug} opens with the not-affiliated line`, disclaimerAt > -1 && h1At > -1 && disclaimerAt < h1At);
+        check(`/${slug} ships LearningResource structured data`, html.includes('"LearningResource"'));
+        check(`/${slug} ships no em dashes`, !html.includes(EM_DASH));
+    }
+    const finance = await (await fetch(`${BASE}/finance`)).text();
+    check(
+        "/finance shows the live question count and topics",
+        /\d+ questions<\/strong> across/.test(finance.replace(/<!-- -->/g, "")) && finance.includes("Capital Budgeting")
+    );
+    check("/finance links the run setup", finance.includes('href="/career?subject=finance"'));
+    const city = await fetch(`${BASE}/bwl-muenchen`);
+    const cityHtml = await city.text();
+    check("/bwl-muenchen returns 200", city.status === 200, `got ${city.status}`);
+    const cityDisclaimerAt = cityHtml.indexOf("not affiliated");
+    check("/bwl-muenchen opens with the not-affiliated line", cityDisclaimerAt > -1 && cityDisclaimerAt < cityHtml.indexOf("<h1"));
+    for (const place of ["Garching", "Arcisstraße", "Straubing", "Heilbronn", "Ottobrunn"]) {
+        check(`/bwl-muenchen names ${place}`, cityHtml.includes(place));
+    }
+    check("/bwl-muenchen metadata never names TUM", !/<meta[^>]+TUM/.test(cityHtml));
+    check("/bwl-muenchen links every course page", cityHtml.includes('href="/econ-1"') && cityHtml.includes('href="/marketing"'));
+    check("/bwl-muenchen ships no em dashes", !cityHtml.includes(EM_DASH));
+    const missing = await fetch(`${BASE}/definitely-not-a-course`);
+    check("unknown root slug is a 404, not a rendered course page", missing.status === 404, `got ${missing.status}`);
+    // the first root-level dynamic segment must not shadow public/
+    const adsTxt = await fetch(`${BASE}/ads.txt`);
+    check("/ads.txt still comes from public/", adsTxt.status === 200, `got ${adsTxt.status}`);
+    check("/ footer links the course pages and BWL München", homeHtml.includes('href="/cost-accounting"') && homeHtml.includes('href="/bwl-muenchen"'));
+
+    // TUM rule (2026-09-11): only /, /career, the /quiz subject pages and the
+    // static course pages may name TUM in their metadata.
     for (const [route, html] of [
         ["/leaderboard", boardHtml],
         ["/multiplayer", mpHtml],
@@ -605,6 +654,12 @@ try {
         "/sitemap.xml lists every subject",
         ["finance", "econ1", "econ2", "financial_accounting", "cost_accounting", "entrepreneurship", "marketing"]
             .every((s) => sitemapXml.includes(`subject=${s}`))
+    );
+    check(
+        "/sitemap.xml lists the course pages and BWL München (scenario C)",
+        sitemapXml.includes("finance-bro.de/bwl-muenchen") &&
+            ["finance", "econ-1", "econ-2", "financial-accounting", "cost-accounting", "entrepreneurship", "marketing"]
+                .every((slug) => sitemapXml.includes(`finance-bro.de/${slug}</loc>`))
     );
 
     const og = await fetch(`${BASE}/opengraph-image`);

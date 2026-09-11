@@ -13,9 +13,10 @@ import type { SubjectId } from "@/lib/questions/types";
  * own canonical, description and Open Graph block.
  *
  * Nico's TUM rules (he is a TUM student; the site is not a TUM product):
- *   - "TUM" in metadata only on /, /career and the /quiz subject pages -
- *     never on /products, /library, the bare /quiz or anything else (the
- *     smoke test asserts it per route). Descriptive use of the
+ *   - "TUM" in metadata only on /, /career, the /quiz subject pages and the
+ *     static course pages (/finance, /econ-1, ...) - never on /products,
+ *     /library, the bare /quiz, /bwl-muenchen or anything else (the smoke
+ *     test asserts it per route). Descriptive use of the
  *     word mark (naming the course the questions train for, § 23 MarkenG);
  *     never "official", "approved", "in cooperation with", never a professor
  *     or chair name, no TUM logo, wordmark or corporate blue anywhere.
@@ -65,6 +66,27 @@ export const SUBJECT_DE: Record<SubjectId, string> = {
     entrepreneurship: "Entrepreneurship",
     marketing: "Marketing",
 };
+
+/** Static course-page slugs (scenario C, 2026-09-11): `/finance`, `/econ-1`,
+ *  ... - real routes for the subject pages, because `/quiz?subject=x` is a
+ *  query-string URL that search engines rank poorly. Reachable from the
+ *  footer's course line and the sitemap only - no nav item, on purpose. */
+export const SUBJECT_SLUG: Record<SubjectId, string> = {
+    finance: "finance",
+    econ1: "econ-1",
+    econ2: "econ-2",
+    financial_accounting: "financial-accounting",
+    cost_accounting: "cost-accounting",
+    entrepreneurship: "entrepreneurship",
+    marketing: "marketing",
+};
+
+export const SLUG_TO_SUBJECT: Record<string, SubjectId> = Object.fromEntries(
+    (Object.entries(SUBJECT_SLUG) as [SubjectId, string][]).map(([id, slug]) => [slug, id])
+);
+
+/** The city entrance page. */
+export const CITY_PATH = "/bwl-muenchen";
 
 /** Per-page metadata with its own canonical and Open Graph block. `path` is
  *  the canonical route including any query string that identifies the page. */

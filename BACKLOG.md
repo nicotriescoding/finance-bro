@@ -45,7 +45,13 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Owed on Nico's machine (real Chrome, dark mode)
 
-- **2026-09-11 SEO scenario A + shop links (latest, unverified build):**
+- **2026-09-11 scenario C (latest, unverified build + unseen):** the seven
+  course pages and `/bwl-muenchen` were seen in no browser - open `/finance`
+  and `/bwl-muenchen` on desktop and phone width, dark mode; the footer's
+  new course line on `/`. Run `npm run check`: 60+ new smoke checks (course
+  pages 200 + h1 + canonical + München + disclaimer-before-h1 + JSON-LD,
+  city page places, unknown-slug 404, `/ads.txt` still served, sitemap).
+- **2026-09-11 SEO scenario A + shop links (unverified build):**
   `npm run check` could not run anywhere this session (cloud npm registry
   403s on one package, sandbox must not run npm on the mount) - only
   `tsc --noEmit` ran green on the mount. Run the gate once: 14 new smoke
@@ -190,13 +196,21 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   `/quiz?subject=` - never elsewhere (smoke-guarded per route); no
   "official / approved / in cooperation"; no professor or chair names in
   titles; no TUM logo, wordmark, corporate blue, domain or handles; the
-  above-the-fold disclaimer on every page is still open (footer only).
-  **Not done, Nico's call:** scenario B (a small geo/disclaimer line only
-  visible at the very bottom, like the photo credits; no FAQ) and C
-  (static `/finance`, `/econ-1`, ... routes + one "BWL München" entrance
-  page, reachable from the sitemap only, no nav item). **Search Console is
-  NOT verified** (no `google-site-verification` meta on the live site, no
-  TXT record on finance-bro.de) - nothing can be measured until it is.
+  above-the-fold disclaimer exists on the course and city pages
+  (`NotAffiliated`), the other pages still have it in the footer only.
+  **Scenario C shipped the same day (Nico: "implement C, link discreetly at
+  the bottom, jokes welcome"):** static course pages `/finance`, `/econ-1`,
+  `/econ-2`, `/financial-accounting`, `/cost-accounting`,
+  `/entrepreneurship`, `/marketing` (`src/app/[subject]/page.tsx`,
+  `dynamicParams = false`, copy in `src/content/course-pages.ts`) and the
+  city page `/bwl-muenchen`; linked from the footer's course line and the
+  sitemap only, no nav item. Course pages may name TUM in metadata (they
+  are subject pages); the city page may not (smoke-guarded). German on
+  these pages = the course's timetable name in quotes, nothing else.
+  Scenario B (no FAQ) is covered by the footer line + the city page.
+  **Search Console is NOT verified** (no `google-site-verification` meta on
+  the live site, no TXT record on finance-bro.de) - nothing can be measured
+  until it is; Nico creates the property, the meta tag goes in `layout.tsx`.
 
 ## Known gaps
 
