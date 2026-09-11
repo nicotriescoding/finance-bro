@@ -1152,7 +1152,7 @@ export const econ1Questions: Question[] = [
             const pS = (c + b) / (a + d * tau); // net producer price
             const answer = tau * pS; // gross consumer price
             return {
-                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p_S - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p_D$. The government introduces an ad-valorem tax of ${pct(t)} on consumers; $p_D$ is the gross price consumers pay and $p_S$ the net price producers receive. What price do consumers pay (including tax) in the new equilibrium?`,
+                prompt: String.raw`In the market for ${s.good}, supply is $Q_S = ${n(a)} p_S - ${n(b)}$ and demand is $Q_D = ${n(c)} - ${n(d)} p_D$. The government introduces an ad-valorem tax of ${pct(t)} on consumers, charged on the net producer price; $p_D$ is the gross price consumers pay and $p_S$ the net price producers receive. What price do consumers pay (including tax) in the new equilibrium?`,
                 given: {
                     "Supply": String.raw`$Q_S = ${n(a)} p_S - ${n(b)}$`,
                     "Demand": String.raw`$Q_D = ${n(c)} - ${n(d)} p_D$`,
