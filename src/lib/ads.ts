@@ -59,7 +59,7 @@ export const AD_SLOTS: Record<AdSlotName, string> = {
     // 300 x 250 medium rectangle at the foot of the quiz's account rail
     // (2026-09-12). Create it in AdSense (Display, fixed 300x250, name
     // fb-rectangle) and paste the id; until then the slot renders nothing.
-    rectangle: "",
+    rectangle: "7799463888",
     anchor: "4978500057",
 };
 

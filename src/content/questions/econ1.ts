@@ -146,15 +146,15 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const E1_CA_SPECIALIZATION_TOTAL_SCENARIOS = [
     { intro: "Two carpenters share a workshop", a: "Ava", b: "Ben", verb: "build", x: "chairs", y: "tables", yOne: "table", total: "pieces of furniture (chairs plus tables)", who: "the workshop" },
     { intro: "Two bakers run a small bakery", a: "Noor", b: "Elias", verb: "bake", x: "baguettes", y: "tarts", yOne: "tart", total: "baked goods (baguettes plus tarts)", who: "the bakery" },
-    { intro: "Two tailors share an atelier", a: "Mei", b: "Luca", verb: "sew", x: "shirts", y: "jackets", yOne: "jacket", total: "garments (shirts plus jackets)", who: "the atelier" },
+    { intro: "Two tailors share a small shop", a: "Mei", b: "Luca", verb: "sew", x: "shirts", y: "jackets", yOne: "jacket", total: "garments (shirts plus jackets)", who: "the shop" },
     { intro: "Two developers run a small app studio", a: "Priya", b: "Tom", verb: "ship", x: "bug fixes", y: "new features", yOne: "feature", total: "tickets (bug fixes plus features)", who: "the studio" },
 ] as const;
 
 const E1_CA_TRADE_PRICE_BOUND_SCENARIOS = [
-    { a: "Livonia", b: "Carinia", x: "sacks of grain", xUnit: "sacks of grain", xShort: "grain", y: "barrels of olive oil", yOne: "barrel of oil", yShort: "oil" },
-    { a: "Norland", b: "Sudmark", x: "tonnes of fish", xUnit: "tonnes of fish", xShort: "fish", y: "bales of wool", yOne: "bale of wool", yShort: "wool" },
-    { a: "Aurelia", b: "Bastia", x: "crates of apples", xUnit: "crates of apples", xShort: "apples", y: "casks of wine", yOne: "cask of wine", yShort: "wine" },
-    { a: "Veltria", b: "Osmara", x: "rolls of cloth", xUnit: "rolls of cloth", xShort: "cloth", y: "sacks of rice", yOne: "sack of rice", yShort: "rice" },
+    { a: "Italy", b: "Spain", x: "tons of wheat", xUnit: "tons of wheat", xShort: "wheat", y: "barrels of olive oil", yOne: "barrel of olive oil", yShort: "olive oil" },
+    { a: "Norway", b: "Denmark", x: "tons of fish", xUnit: "tons of fish", xShort: "fish", y: "tons of cheese", yOne: "ton of cheese", yShort: "cheese" },
+    { a: "Germany", b: "Austria", x: "crates of beer", xUnit: "crates of beer", xShort: "beer", y: "bottles of wine", yOne: "bottle of wine", yShort: "wine" },
+    { a: "Greece", b: "Portugal", x: "tons of rice", xUnit: "tons of rice", xShort: "rice", y: "tons of olives", yOne: "ton of olives", yShort: "olives" },
 ] as const;
 
 const E1_CT_COBB_DOUGLAS_DEMAND_SCENARIOS = [
@@ -167,7 +167,7 @@ const E1_CT_COBB_DOUGLAS_DEMAND_SCENARIOS = [
 const E1_PC_SHORTRUN_LOSS_SCENARIOS = [
     { firm: "brewery", one: "crate" },
     { firm: "bakery", one: "tray of loaves" },
-    { firm: "sawmill", one: "cubic metre" },
+    { firm: "coffee roaster", one: "bag of coffee" },
     { firm: "cheese dairy", one: "wheel" },
 ] as const;
 
@@ -215,7 +215,7 @@ const E1_MONO_UNIT_TAX_REVENUE_SCENARIOS = [
     { firm: "A city's only cable-car operator", one: "ride", units: "rides" },
     { firm: "A seaside town's only cinema", one: "ticket", units: "tickets" },
     { firm: "A town's single minigolf course", one: "round", units: "rounds" },
-    { firm: "The only ferry crossing a fjord", one: "crossing", units: "crossings" },
+    { firm: "The only ferry to a small island", one: "crossing", units: "crossings" },
 ] as const;
 
 const E1_OC_MIN_BENEFIT_SCENARIOS = [
@@ -266,7 +266,7 @@ const E1_CA_AUTARKY_ASSEMBLY_SCENARIOS = [
 const E1_CT_SUBSTITUTES_QUANTITY_SCENARIOS = [
     { who: "A commuter", subj: "she", poss: "her", g1: "regional-train tickets", g2: "express-bus tickets", one1: "A train ticket", one2: "a bus ticket", ask: "bus tickets", budget: "monthly travel budget", units: "tickets" },
     { who: "A student", subj: "he", poss: "his", g1: "canteen lunches", g2: "food-truck lunches", one1: "A canteen lunch", one2: "a food-truck lunch", ask: "food-truck lunches", budget: "monthly lunch budget", units: "lunches" },
-    { who: "A gardener", subj: "she", poss: "her", g1: "garden-centre compost bags", g2: "farm-shop compost bags", one1: "A garden-centre bag", one2: "a farm-shop bag", ask: "farm-shop bags", budget: "seasonal compost budget", units: "bags" },
+    { who: "A cyclist", subj: "she", poss: "her", g1: "bike-shop energy bars", g2: "supermarket energy bars", one1: "A bike-shop bar", one2: "a supermarket bar", ask: "supermarket bars", budget: "monthly snack budget", units: "bars" },
 ] as const;
 
 const E1_MKT_POINT_ELASTICITY_SCENARIOS = [
@@ -335,16 +335,16 @@ const E1_PROD_MINIMUM_WAGE_COST_SCENARIOS = [
 
 const E1_EXT_SOCIAL_OUTPUT_SCENARIOS = [
     { firm: "A gravel quarry", short: "the quarry", one: "ton", units: "tons", harm: "Its dust damages a neighboring vineyard", victim: "the vineyard", costLabel: "Quarry costs" },
-    { firm: "A paper mill", short: "the mill", one: "tonne", units: "tonnes", harm: "Its effluent hurts a trout farm downstream", victim: "the trout farm", costLabel: "Mill costs" },
+    { firm: "A paper mill", short: "the mill", one: "tonne", units: "tonnes", harm: "Its wastewater harms a fish farm downstream", victim: "the fish farm", costLabel: "Mill costs" },
     { firm: "An open-air concert venue", short: "the venue", one: "concert", units: "concerts", harm: "Its noise disturbs a neighboring hotel", victim: "the hotel", costLabel: "Venue costs" },
     { firm: "A charter airline", short: "the airline", one: "flight", units: "flights", harm: "Its noise burdens the residents under the flight path", victim: "the residents", costLabel: "Airline costs" },
 ] as const;
 
 const E1_EXT_INTERNALIZE_GAIN_SCENARIOS = [
-    { firm: "A dye plant", short: "the plant", one: "batch", units: "batches", harm: "its wastewater reduces a downstream oyster farm's profit", costLabel: "Plant costs" },
-    { firm: "A sawmill", short: "the mill", one: "truckload", units: "truckloads", harm: "its noise cuts the bookings of a neighbouring campsite, reducing its profit", costLabel: "Mill costs" },
-    { firm: "A fish smokehouse", short: "the smokehouse", one: "batch", units: "batches", harm: "its smoke drives customers away from a next-door café, reducing its profit", costLabel: "Smokehouse costs" },
-    { firm: "A haulage firm", short: "the haulier", one: "trip", units: "trips", harm: "its lorries wear out a farm's access road, reducing the farm's profit", costLabel: "Haulier costs" },
+    { firm: "A chemical plant", short: "the plant", one: "batch", units: "batches", harm: "its wastewater reduces the profit of a fish farm downstream", costLabel: "Plant costs" },
+    { firm: "A sawmill", short: "the mill", one: "truckload", units: "truckloads", harm: "its noise cuts the bookings of a campsite next door, reducing its profit", costLabel: "Mill costs" },
+    { firm: "A pizzeria with a wood-fired oven", short: "the pizzeria", one: "oven load", units: "oven loads", harm: "its smoke drives customers away from the cafe next door, reducing its profit", costLabel: "Pizzeria costs" },
+    { firm: "A trucking company", short: "the trucking company", one: "trip", units: "trips", harm: "its trucks wear out a farm's access road, reducing the farm's profit", costLabel: "Trucking costs" },
 ] as const;
 
 const E1_MONO_PRICE_MIDPOINT_SCENARIOS = [
@@ -363,28 +363,28 @@ const E1_MONO_DEADWEIGHT_LOSS_SCENARIOS = [
 
 const E1_CA_MINUTES_OPPORTUNITY_COST_SCENARIOS = [
     { intro: "Three pickers work on a fruit farm near Seville, each at a steady pace", names: ["Marta", "Diego", "Rosa"], verb: "picking", xOne: "crate of oranges", xUnit: "crates of oranges", xUnits: "crates", xShort: "crate", x: "oranges", yOne: "basket of almonds", yShort: "basket", y: "almonds" },
-    { intro: "Three cooks prep in a hotel kitchen in Bruges, each at a steady pace", names: ["Lotte", "Wout", "Femke"], verb: "cooking", xOne: "tray of croquettes", xUnit: "trays of croquettes", xUnits: "trays", xShort: "tray", x: "croquettes", yOne: "pot of soup", yShort: "pot", y: "soup" },
-    { intro: "Three volunteers pack aid parcels in a warehouse in Gdansk, each at a steady pace", names: ["Kasia", "Piotr", "Ola"], verb: "packing", xOne: "food parcel", xUnit: "food parcels", xUnits: "parcels", xShort: "parcel", x: "food parcels", yOne: "hygiene kit", yShort: "kit", y: "hygiene kits" },
-    { intro: "Three interns work at a bike-repair shop in Utrecht, each at a steady pace", names: ["Sanne", "Daan", "Noor"], verb: "doing", xOne: "puncture repair", xUnit: "puncture repairs", xUnits: "repairs", xShort: "repair", x: "puncture repairs", yOne: "gear tune-up", yShort: "tune-up", y: "gear tune-ups" },
+    { intro: "Three cooks prep in a hotel kitchen in Paris, each at a steady pace", names: ["Lotte", "Wout", "Femke"], verb: "cooking", xOne: "tray of croquettes", xUnit: "trays of croquettes", xUnits: "trays", xShort: "tray", x: "croquettes", yOne: "pot of soup", yShort: "pot", y: "soup" },
+    { intro: "Three volunteers pack aid parcels in a warehouse in Warsaw, each at a steady pace", names: ["Kasia", "Piotr", "Ola"], verb: "packing", xOne: "food parcel", xUnit: "food parcels", xUnits: "parcels", xShort: "parcel", x: "food parcels", yOne: "hygiene kit", yShort: "kit", y: "hygiene kits" },
+    { intro: "Three interns work at a bike-repair shop in Amsterdam, each at a steady pace", names: ["Sanne", "Daan", "Noor"], verb: "doing", xOne: "puncture repair", xUnit: "puncture repairs", xUnits: "repairs", xShort: "repair", x: "puncture repairs", yOne: "gear tune-up", yShort: "tune-up", y: "gear tune-ups" },
 ] as const;
 
 const E1_CA_HOURLY_OUTPUT_SPECIALIZED_SCENARIOS = [
-    { intro: "Three friends run a market stall in Lyon and work for exactly one hour", names: ["Camille", "Hugo", "Manon"], x: "macarons", xOne: "box of macarons", xShort: "box", y: "lemonade", yOne: "litre of lemonade", yUnits: "litres", yAsk: "litres of lemonade", doY: "pour lemonade" },
-    { intro: "Three students staff a charity bake sale in Cork and work for exactly one hour", names: ["Aoife", "Cian", "Niamh"], x: "scones", xOne: "batch of scones", xShort: "batch", y: "tea", yOne: "pot of tea", yUnits: "pots", yAsk: "pots of tea", doY: "brew tea" },
-    { intro: "Three friends run a beach kiosk in Split and work for exactly one hour", names: ["Ivana", "Luka", "Petra"], x: "smoothies", xOne: "smoothie", xShort: "smoothie", y: "sandwiches", yOne: "sandwich", yUnits: "sandwiches", yAsk: "sandwiches", doY: "make sandwiches" },
-    { intro: "Three apprentices work a florist's stand in Ghent for exactly one hour", names: ["Lore", "Jef", "Maud"], x: "bouquets", xOne: "bouquet", xShort: "bouquet", y: "wreaths", yOne: "wreath", yUnits: "wreaths", yAsk: "wreaths", doY: "bind wreaths" },
+    { intro: "Three friends run a market stall in Paris and work for exactly one hour", names: ["Camille", "Hugo", "Manon"], x: "macarons", xOne: "box of macarons", xShort: "box", y: "lemonade", yOne: "litre of lemonade", yUnits: "litres", yAsk: "litres of lemonade", doY: "pour lemonade" },
+    { intro: "Three students staff a charity bake sale in Dublin and work for exactly one hour", names: ["Aoife", "Cian", "Niamh"], x: "scones", xOne: "batch of scones", xShort: "batch", y: "tea", yOne: "pot of tea", yUnits: "pots", yAsk: "pots of tea", doY: "brew tea" },
+    { intro: "Three friends run a beach kiosk in Barcelona and work for exactly one hour", names: ["Ivana", "Luka", "Petra"], x: "smoothies", xOne: "smoothie", xShort: "smoothie", y: "sandwiches", yOne: "sandwich", yUnits: "sandwiches", yAsk: "sandwiches", doY: "make sandwiches" },
+    { intro: "Three apprentices work a florist's stand in Brussels for exactly one hour", names: ["Lore", "Jef", "Maud"], x: "bouquets", xOne: "bouquet", xShort: "bouquet", y: "wreaths", yOne: "wreath", yUnits: "wreaths", yAsk: "wreaths", doY: "bind wreaths" },
 ] as const;
 
 const E1_CA_JOINT_PPF_THREE_SCENARIOS = [
-    { intro: "Three workers on an olive farm in Puglia", names: ["Elena", "Marco", "Giulia"], team: "The farm", xOne: "crate of olives", xUnits: "crates", xShort: "crate", x: "olives", yOne: "litre of oil", yUnits: "litres", y: "oil", asMuch: "as much oil", doX: "pick", doXs: "picks", doY: "press oil" },
-    { intro: "Three bakers in a bakery in Bergen", names: ["Ida", "Sander", "Mia"], team: "The bakery", xOne: "tray of rolls", xUnits: "trays", xShort: "tray", x: "rolls", yOne: "loaf of bread", yUnits: "loaves", y: "bread", asMuch: "as much bread", doX: "bake", doXs: "bakes", doY: "bake bread" },
-    { intro: "Three gardeners at a nursery in Boskoop", names: ["Roos", "Tim", "Eva"], team: "The nursery", xOne: "flat of seedlings", xUnits: "flats", xShort: "flat", x: "seedlings", yOne: "bundle of cut flowers", yUnits: "bundles", y: "cut flowers", asMuch: "as many cut flowers", doX: "pot", doXs: "pots", doY: "cut flowers" },
+    { intro: "Three workers on an olive farm in Tuscany", names: ["Elena", "Marco", "Giulia"], team: "The farm", xOne: "crate of olives", xUnits: "crates", xShort: "crate", x: "olives", yOne: "litre of oil", yUnits: "litres", y: "oil", asMuch: "as much oil", doX: "pick", doXs: "picks", doY: "press oil" },
+    { intro: "Three bakers in a bakery in Copenhagen", names: ["Ida", "Sander", "Mia"], team: "The bakery", xOne: "tray of rolls", xUnits: "trays", xShort: "tray", x: "rolls", yOne: "loaf of bread", yUnits: "loaves", y: "bread", asMuch: "as much bread", doX: "bake", doXs: "bakes", doY: "bake bread" },
+    { intro: "Three gardeners at a nursery near Amsterdam", names: ["Roos", "Tim", "Eva"], team: "The nursery", xOne: "tray of seedlings", xUnits: "trays", xShort: "tray", x: "seedlings", yOne: "bundle of cut flowers", yUnits: "bundles", y: "cut flowers", asMuch: "as many cut flowers", doX: "pot", doXs: "pots", doY: "cut flowers" },
 ] as const;
 
 const E1_CA_TERMS_OF_TRADE_LOWER_BOUND_SCENARIOS = [
-    { intro: "Two potters share a studio in Porto", names: ["Tiago", "Sofia"], x: "mug", xs: "mugs", y: "bowl", ys: "bowls" },
-    { intro: "Two weavers share a loom hall in Kilkenny", names: ["Aoife", "Rory"], x: "scarf", xs: "scarves", y: "blanket", ys: "blankets" },
-    { intro: "Two jewellers share a bench in Antwerp", names: ["Lise", "Omar"], x: "ring", xs: "rings", y: "pendant", ys: "pendants" },
+    { intro: "Two potters share a studio in Lisbon", names: ["Tiago", "Sofia"], x: "mug", xs: "mugs", y: "bowl", ys: "bowls" },
+    { intro: "Two weavers share a workshop in Dublin", names: ["Aoife", "Rory"], x: "scarf", xs: "scarves", y: "blanket", ys: "blankets" },
+    { intro: "Two jewellers share a bench in Amsterdam", names: ["Lise", "Omar"], x: "ring", xs: "rings", y: "pendant", ys: "pendants" },
     { intro: "Two illustrators share a studio in Leipzig", names: ["Jana", "Milo"], x: "icon", xs: "icons", y: "poster", ys: "posters" },
 ] as const;
 
@@ -422,8 +422,8 @@ const E1_CA_CONSUMPTION_TARGET_IMPORTER_SCENARIOS = [
 
 const E1_OC_PARETO_THRESHOLD_SCENARIOS = [
     { intro: "Three flatmates in Lisbon can share the household budget in two ways", a: "Alina", b: "Bruno", c: "Chiara" },
-    { intro: "Three siblings in Zagreb can divide their grandmother's garden plots in two ways", a: "Ana", b: "Boris", c: "Dora" },
-    { intro: "Three founders in Tallinn can split the company's equity in two ways", a: "Kai", b: "Liis", c: "Mart" },
+    { intro: "Three siblings in Vienna can divide their grandmother's garden plots in two ways", a: "Ana", b: "Boris", c: "Dora" },
+    { intro: "Three founders in Stockholm can split the company's equity in two ways", a: "Kai", b: "Liis", c: "Mart" },
     { intro: "Three colleagues in Lyon can allocate the office desks in two ways", a: "Amir", b: "Bea", c: "Cyril" },
 ] as const;
 
@@ -436,15 +436,15 @@ const E1_OC_SUNK_COST_NET_BENEFIT_SCENARIOS = [
 ] as const;
 
 const E1_CT_CD_QUANTITY_AFTER_PRICE_CHANGE_SCENARIOS = [
-    { who: "A student in Lisbon", subj: "she", poss: "her", g1: "tram rides", g1One: "A tram ride", g1Units: "rides", g1Price: "the tram fare", g2: "pastéis de nata", g2One: "a pastel de nata", g2Units: "pastéis" },
-    { who: "A nurse in Manchester", subj: "he", poss: "his", g1: "gym sessions", g1One: "A gym session", g1Units: "sessions", g1Price: "the gym price", g2: "smoothies", g2One: "a smoothie", g2Units: "smoothies" },
-    { who: "A teacher in Kraków", subj: "she", poss: "her", g1: "cinema visits", g1One: "A cinema visit", g1Units: "visits", g1Price: "the cinema price", g2: "portions of pierogi", g2One: "a portion of pierogi", g2Units: "portions" },
+    { who: "A student in Lisbon", subj: "she", poss: "her", g1: "tram rides", g1One: "A tram ride", g1Units: "rides", g1Price: "the tram fare", g2: "custard tarts", g2One: "a custard tart", g2Units: "tarts" },
+    { who: "A nurse in London", subj: "he", poss: "his", g1: "gym sessions", g1One: "A gym session", g1Units: "sessions", g1Price: "the gym price", g2: "smoothies", g2One: "a smoothie", g2Units: "smoothies" },
+    { who: "A teacher in Warsaw", subj: "she", poss: "her", g1: "cinema visits", g1One: "A cinema visit", g1Units: "visits", g1Price: "the cinema price", g2: "portions of dumplings", g2One: "a portion of dumplings", g2Units: "portions" },
     { who: "An apprentice in Vienna", subj: "he", poss: "his", g1: "bouldering sessions", g1One: "A bouldering session", g1Units: "sessions", g1Price: "the bouldering price", g2: "slices of Sachertorte", g2One: "a slice of Sachertorte", g2Units: "slices" },
 ] as const;
 
 const E1_CT_CD_MAX_UTILITY_COEFFICIENT_SCENARIOS = [
-    { who: "A household in Bologna", g1: "plates of fresh pasta", g1Units: "plates", g2: "glasses of Lambrusco", g2One: "a glass of Lambrusco", g2Units: "glasses" },
-    { who: "A household in Istanbul", g1: "portions of simit", g1Units: "portions", g2: "cups of tea", g2One: "a cup of tea", g2Units: "cups" },
+    { who: "A household in Rome", g1: "plates of fresh pasta", g1Units: "plates", g2: "glasses of red wine", g2One: "a glass of red wine", g2Units: "glasses" },
+    { who: "A household in Istanbul", g1: "sesame bagels", g1Units: "bagels", g2: "cups of tea", g2One: "a cup of tea", g2Units: "cups" },
     { who: "A student flat in Munich", g1: "pretzels", g1Units: "pretzels", g2: "litres of apple spritz", g2One: "a litre of apple spritz", g2Units: "litres" },
 ] as const;
 
@@ -455,162 +455,162 @@ const E1_CT_CD_HYPOTHETICAL_INCOME_SCENARIOS = [
 ] as const;
 
 const E1_CT_LABOR_FREE_TIME_SCENARIOS = [
-    { who: "A freelance illustrator in Porto", subj: "she", poss: "her" },
+    { who: "A freelance illustrator in Lisbon", subj: "she", poss: "her" },
     { who: "A ride-share driver in Athens", subj: "he", poss: "his" },
-    { who: "A yoga instructor in Riga", subj: "she", poss: "her" },
+    { who: "A yoga instructor in Stockholm", subj: "she", poss: "her" },
 ] as const;
 
 const E1_CT_LABOR_HOURS_WORKED_SCENARIOS = [
-    { who: "A bike courier in Tallinn", subj: "he", poss: "his" },
-    { who: "A tour guide in Dubrovnik", subj: "she", poss: "her" },
-    { who: "A carpenter in Bergen", subj: "he", poss: "his" },
+    { who: "A bike courier in Berlin", subj: "he", poss: "his" },
+    { who: "A tour guide in Rome", subj: "she", poss: "her" },
+    { who: "A carpenter in Oslo", subj: "he", poss: "his" },
 ] as const;
 
 const E1_CT_LABOR_CONSUMPTION_SCENARIOS = [
-    { who: "A piano teacher in Ljubljana", subj: "she", poss: "her", work: "paid lessons", activity: "teaching" },
+    { who: "A piano teacher in Vienna", subj: "she", poss: "her", work: "paid lessons", activity: "teaching" },
     { who: "A tattoo artist in Berlin", subj: "he", poss: "his", work: "paid sessions", activity: "tattooing" },
-    { who: "A private tutor in Cork", subj: "she", poss: "her", work: "paid tutoring", activity: "tutoring" },
+    { who: "A private tutor in Dublin", subj: "she", poss: "her", work: "paid tutoring", activity: "tutoring" },
 ] as const;
 
 const E1_CT_LABOR_HYPOTHETICAL_BUNDLE_SCENARIOS = [
-    { who: "A data analyst in Bilbao", subj: "she", poss: "her" },
-    { who: "A welder in Ostrava", subj: "he", poss: "his" },
-    { who: "A pastry chef in Nice", subj: "she", poss: "her" },
+    { who: "A data analyst in Madrid", subj: "she", poss: "her" },
+    { who: "A welder in Prague", subj: "he", poss: "his" },
+    { who: "A pastry chef in Paris", subj: "she", poss: "her" },
 ] as const;
 
 const E1_CT_LABOR_HYPOTHETICAL_TIME_BUDGET_SCENARIOS = [
-    { who: "A translator in Turku", subj: "she", poss: "her" },
-    { who: "A physiotherapist in Graz", subj: "he", poss: "his" },
-    { who: "A sound engineer in Bristol", subj: "she", poss: "her" },
+    { who: "A translator in Helsinki", subj: "she", poss: "her" },
+    { who: "A physiotherapist in Zurich", subj: "he", poss: "his" },
+    { who: "A sound engineer in London", subj: "she", poss: "her" },
 ] as const;
 
 const E1_CT_LEONTIEF_DEMAND_SCENARIOS = [
-    { who: "A guest at a café in Valencia", subj: "he", g1: "coffees", g1One: "coffee", g2: "biscuits", verbPre: "eats", verbPost: "with", one1: "A coffee", one2: "a biscuit" },
-    { who: "A hobbyist at a hardware store in Leeds", subj: "he", g1: "shelves", g1One: "shelf", g2: "brackets", verbPre: "uses", verbPost: "with", one1: "A shelf", one2: "a bracket" },
-    { who: "A model builder at a hobby shop in Dresden", subj: "she", g1: "kits", g1One: "kit", g2: "paint pots", verbPre: "uses", verbPost: "for", one1: "A kit", one2: "a paint pot" },
-    { who: "A gardener at a nursery in Malmö", subj: "she", g1: "planters", g1One: "planter", g2: "seedlings", verbPre: "puts", verbPost: "in", one1: "A planter", one2: "a seedling" },
+    { who: "A guest at a cafe in Barcelona", subj: "he", g1: "coffees", g1One: "coffee", g2: "biscuits", verbPre: "eats", verbPost: "with", one1: "A coffee", one2: "a biscuit" },
+    { who: "A hobbyist at a hardware store in London", subj: "he", g1: "shelves", g1One: "shelf", g2: "brackets", verbPre: "uses", verbPost: "with", one1: "A shelf", one2: "a bracket" },
+    { who: "A model builder at a hobby shop in Berlin", subj: "she", g1: "kits", g1One: "kit", g2: "paint pots", verbPre: "uses", verbPost: "for", one1: "A kit", one2: "a paint pot" },
+    { who: "A gardener at a nursery in Stockholm", subj: "she", g1: "planters", g1One: "planter", g2: "seedlings", verbPre: "puts", verbPost: "in", one1: "A planter", one2: "a seedling" },
 ] as const;
 
 const E1_CT_SUBSTITUTES_MAX_UTILITY_SCENARIOS = [
-    { who: "A cyclist in Utrecht", subj: "she", good: "energy bars", one: "bar", units: "bars" },
-    { who: "A student in Bologna", subj: "he", good: "instant-noodle packs", one: "pack", units: "packs" },
+    { who: "A cyclist in Amsterdam", subj: "she", good: "energy bars", one: "bar", units: "bars" },
+    { who: "A student in Rome", subj: "he", good: "instant-noodle packs", one: "pack", units: "packs" },
     { who: "A painter in Lisbon", subj: "she", good: "tubes of white paint", one: "tube", units: "tubes" },
 ] as const;
 
 const E1_CT_CROSS_PRICE_QUANTITY_SCENARIOS = [
-    { who: "A supermarket chain in Antwerp", qty: "litres of oat drink", unit: "litres", g1: "oat drink", g2: "cow milk" },
-    { who: "A sports retailer in Leeds", qty: "pairs of running shoes", unit: "pairs", g1: "running shoes", g2: "gym memberships" },
+    { who: "A supermarket chain in Brussels", qty: "litres of oat drink", unit: "litres", g1: "oat drink", g2: "cow milk" },
+    { who: "A sports retailer in London", qty: "pairs of running shoes", unit: "pairs", g1: "running shoes", g2: "gym memberships" },
     { who: "A grocery chain in Vienna", qty: "boxes of frozen pizza", unit: "boxes", g1: "frozen pizza", g2: "delivery meals" },
-    { who: "A bike shop in Lyon", qty: "e-bikes", unit: "e-bikes", g1: "e-bikes", g2: "public-transport passes" },
+    { who: "A bike shop in Paris", qty: "e-bikes", unit: "e-bikes", g1: "e-bikes", g2: "public-transport passes" },
 ] as const;
 
 const E1_CT_OWN_PRICE_QUANTITY_CHANGE_SCENARIOS = [
-    { who: "A gym chain in Gothenburg", good: "its monthly passes", one: "a pass", units: "passes" },
-    { who: "A ferry line in Split", good: "its return tickets", one: "a ticket", units: "tickets" },
+    { who: "A gym chain in Stockholm", good: "its monthly passes", one: "a pass", units: "passes" },
+    { who: "A ferry line in Naples", good: "its return tickets", one: "a ticket", units: "tickets" },
     { who: "A streaming service in Dublin", good: "its subscriptions", one: "a subscription", units: "subscriptions" },
     { who: "A ski resort in Andorra", good: "its day passes", one: "a day pass", units: "day passes" },
 ] as const;
 
 const E1_PROD_MRTS_AT_POINT_SCENARIOS = [
-    { who: "A ceramics studio in Faenza", capital: "machines" },
-    { who: "A bookbindery in Ghent", capital: "presses" },
-    { who: "A microbrewery in Leuven", capital: "tanks" },
+    { who: "A ceramics studio in Florence", capital: "machines" },
+    { who: "A bookbindery in Amsterdam", capital: "presses" },
+    { who: "A microbrewery in Brussels", capital: "tanks" },
 ] as const;
 
 const E1_PROD_AVERAGE_PRODUCT_AT_POINT_SCENARIOS = [
-    { who: "A cannery in Vigo", unit: "tins" },
-    { who: "A bakery in Porto", unit: "loaves" },
-    { who: "A bottling plant in Graz", unit: "bottles" },
+    { who: "A fish cannery in Lisbon", unit: "tins" },
+    { who: "A bakery in Paris", unit: "loaves" },
+    { who: "A bottling plant in Vienna", unit: "bottles" },
 ] as const;
 
 const E1_PROD_RETURNS_TO_SCALE_FACTOR_SCENARIOS = [
-    { who: "A shipyard in Gdansk" },
-    { who: "A wind-turbine plant in Esbjerg" },
-    { who: "A furniture factory in Kaunas" },
+    { who: "A shipyard in Hamburg" },
+    { who: "A wind-turbine plant in Copenhagen" },
+    { who: "A furniture factory in Warsaw" },
 ] as const;
 
 const E1_PROD_COST_MIN_LABOR_BILINEAR_SCENARIOS = [
-    { who: "A glassworks in Murano" },
-    { who: "A tannery in Igualada" },
-    { who: "A candle factory in Aarhus" },
+    { who: "A glassworks in Venice" },
+    { who: "A shoe factory in Barcelona" },
+    { who: "A candle factory in Copenhagen" },
 ] as const;
 
 const E1_PROD_MIN_COST_BILINEAR_SCENARIOS = [
-    { who: "A brewery in Plzen" },
-    { who: "A cider press in Asturias" },
-    { who: "A chocolate factory in Turin" },
+    { who: "A brewery in Prague" },
+    { who: "A cider press in Normandy" },
+    { who: "A chocolate factory in Zurich" },
 ] as const;
 
 const E1_PROD_MIN_COST_COBB_DOUGLAS_SCENARIOS = [
-    { who: "A paper mill in Lahti" },
-    { who: "A steel foundry in Linz" },
-    { who: "A flour mill in Szeged" },
+    { who: "A paper mill in Stockholm" },
+    { who: "A steel plant in Linz" },
+    { who: "A flour mill in Budapest" },
 ] as const;
 
 const E1_PROD_OUTPUT_FROM_BUDGET_SCENARIOS = [
     { who: "A print shop in Leipzig" },
-    { who: "A textile mill in Lodz" },
-    { who: "A joinery in Bolzano" },
+    { who: "A textile mill in Warsaw" },
+    { who: "A carpentry shop in Tyrol" },
 ] as const;
 
 const E1_PROD_ZERO_PROFIT_PRICE_SCENARIOS = [
     { who: "A soap works in Marseille", short: "the soap works", units: "bars of soap", one: "bar" },
-    { who: "A candle maker in Tallinn", short: "the candle maker", units: "candles", one: "candle" },
+    { who: "A candle maker in Copenhagen", short: "the candle maker", units: "candles", one: "candle" },
     { who: "A cheese dairy in Gouda", short: "the dairy", units: "wheels of cheese", one: "wheel" },
 ] as const;
 
 const E1_PROD_MARGINAL_COST_FROM_TECHNOLOGY_SCENARIOS = [
-    { who: "A machine shop in Brno" },
-    { who: "A foundry in Bilbao" },
-    { who: "A pottery in Stoke-on-Trent" },
+    { who: "A machine shop in Prague" },
+    { who: "A foundry in Madrid" },
+    { who: "A pottery in London" },
 ] as const;
 
 const E1_PROD_UNIT_COST_CRS_SCENARIOS = [
-    { who: "A blade plant in Aalborg", short: "the plant" },
-    { who: "A tile factory in Castellón", short: "the factory" },
-    { who: "A sawmill in Joensuu", short: "the mill" },
+    { who: "A solar-panel plant in Hamburg", short: "the plant" },
+    { who: "A tile factory in Valencia", short: "the factory" },
+    { who: "A sawmill in Bavaria", short: "the mill" },
 ] as const;
 
 const E1_PC_SHORTRUN_SUPPLY_FROM_MC_SCENARIOS = [
-    { who: "A price-taking olive mill in Jaén", short: "the mill", units: "hectolitres", one: "hectolitre", made: "of oil pressed", verb: "press" },
-    { who: "A price-taking cider press in Somerset", short: "the cidery", units: "hectolitres", one: "hectolitre", made: "of cider pressed", verb: "press" },
+    { who: "A price-taking olive mill in Tuscany", short: "the mill", units: "hectolitres", one: "hectolitre", made: "of oil pressed", verb: "press" },
+    { who: "A price-taking cider press in Normandy", short: "the cidery", units: "hectolitres", one: "hectolitre", made: "of cider pressed", verb: "press" },
     { who: "A price-taking honey farm in Provence", short: "the farm", units: "kilograms", one: "kilogram", made: "of honey harvested", verb: "harvest" },
 ] as const;
 
 const E1_PC_THRESHOLD_PRICE_NO_LINEAR_SCENARIOS = [
     { who: "A workshop for hand-glazed tiles in Lisbon", short: "the workshop", one: "crate of tiles", units: "crates" },
-    { who: "A small distillery on Islay", short: "the distillery", one: "cask of whisky", units: "casks" },
+    { who: "A small whisky distillery in Scotland", short: "the distillery", one: "cask of whisky", units: "casks" },
     { who: "A bindery for hand-bound notebooks in Florence", short: "the bindery", one: "box of notebooks", units: "boxes" },
 ] as const;
 
 const E1_PC_SHUTDOWN_PRICE_SCENARIOS = [
-    { who: "A mineral-water bottler in Bergen", short: "the bottler", one: "crate" },
-    { who: "A brick works in Leuven", short: "the works", one: "pallet" },
-    { who: "A mushroom farm in Wallonia", short: "the farm", one: "crate" },
+    { who: "A mineral-water bottler in the Alps", short: "the bottler", one: "crate" },
+    { who: "A brick works near Munich", short: "the works", one: "pallet" },
+    { who: "A mushroom farm near Paris", short: "the farm", one: "crate" },
 ] as const;
 
 const E1_PC_SHORTRUN_PROFIT_POSITIVE_SCENARIOS = [
-    { who: "A cheese dairy in Groningen", short: "the dairy", units: "wheels of cheese", one: "wheel", unitsShort: "wheels" },
-    { who: "A jam kitchen in Graz", short: "the kitchen", units: "cases of jam", one: "case", unitsShort: "cases" },
-    { who: "A charcoal maker in the Ardennes", short: "the maker", units: "sacks of charcoal", one: "sack", unitsShort: "sacks" },
+    { who: "A cheese dairy in Amsterdam", short: "the dairy", units: "wheels of cheese", one: "wheel", unitsShort: "wheels" },
+    { who: "A jam kitchen in Vienna", short: "the kitchen", units: "cases of jam", one: "case", unitsShort: "cases" },
+    { who: "A firewood seller in the Black Forest", short: "the seller", units: "bundles of firewood", one: "bundle", unitsShort: "bundles" },
 ] as const;
 
 const E1_PC_LONGRUN_QUANTITY_AT_PRICE_SCENARIOS = [
-    { who: "A tulip-bulb grower in Lisse", short: "the grower", one: "crate of bulbs", oneShort: "crate", units: "crates" },
+    { who: "A tulip-bulb grower near Amsterdam", short: "the grower", one: "crate of bulbs", oneShort: "crate", units: "crates" },
     { who: "A lavender distiller in Provence", short: "the distiller", one: "litre of lavender oil", oneShort: "litre", units: "litres" },
-    { who: "A salt works in Trapani", short: "the works", one: "tonne of sea salt", oneShort: "tonne", units: "tonnes" },
+    { who: "A salt works in Sicily", short: "the works", one: "tonne of sea salt", oneShort: "tonne", units: "tonnes" },
 ] as const;
 
 const E1_PC_LR_PRICE_WITH_FIXED_COST_SCENARIOS = [
-    { who: "Every actual and potential builder of steel bicycle frames in Utrecht", one: "frame", units: "frames" },
-    { who: "Every actual and potential maker of wooden surfboards in Biarritz", one: "board", units: "boards" },
-    { who: "Every actual and potential cooper of oak barrels in Jerez", one: "barrel", units: "barrels" },
+    { who: "Every actual and potential builder of steel bicycle frames in Amsterdam", one: "frame", units: "frames" },
+    { who: "Every actual and potential maker of wooden surfboards in Lisbon", one: "board", units: "boards" },
+    { who: "Every actual and potential maker of oak wine barrels in Tuscany", one: "barrel", units: "barrels" },
 ] as const;
 
 const E1_PC_LR_NUMBER_OF_FIRMS_LINEAR_TERM_SCENARIOS = [
-    { who: "Coffee roasters in Trieste", product: "roasted coffee", units: "sacks", firms: "roasters" },
+    { who: "Coffee roasters in Milan", product: "roasted coffee", units: "sacks", firms: "roasters" },
     { who: "Kombucha brewers in Hamburg", product: "kombucha", units: "crates", firms: "brewers" },
-    { who: "Candle workshops in Riga", product: "candles", units: "boxes", firms: "workshops" },
+    { who: "Candle workshops in Prague", product: "candles", units: "boxes", firms: "workshops" },
 ] as const;
 
 const E1_PC_LR_PRODUCER_SURPLUS_SCENARIOS = [
@@ -621,14 +621,14 @@ const E1_PC_LR_PRODUCER_SURPLUS_SCENARIOS = [
 
 const E1_PC_LR_TOTAL_SURPLUS_SCENARIOS = [
     { who: "Pasta makers in Bologna", units: "crates" },
-    { who: "Cheese makers in Gruyères", units: "wheels" },
-    { who: "Tortilla bakeries in Oaxaca", units: "crates" },
+    { who: "Cheese makers in the Swiss Alps", units: "wheels" },
+    { who: "Tortilla bakeries in Mexico City", units: "crates" },
 ] as const;
 
 const E1_PC_MARKET_SUPPLY_N_FIRMS_SCENARIOS = [
-    { who: "identical sawmills in Tampere", firm: "mill", firms: "mills", units: "cubic metres", one: "cubic metre", made: "of sawn timber" },
+    { who: "identical sawmills in Bavaria", firm: "mill", firms: "mills", units: "cubic metres", one: "cubic metre", made: "of sawn timber" },
     { who: "identical brick kilns in Tuscany", firm: "kiln", firms: "kilns", units: "pallets", one: "pallet", made: "of bricks" },
-    { who: "identical quarries in Carrara", firm: "quarry", firms: "quarries", units: "tonnes", one: "tonne", made: "of marble" },
+    { who: "identical gravel quarries in the Alps", firm: "quarry", firms: "quarries", units: "tonnes", one: "tonne", made: "of gravel" },
 ] as const;
 
 const E1_MKT_EQUILIBRIUM_QUANTITY_SCENARIOS = [
@@ -638,76 +638,76 @@ const E1_MKT_EQUILIBRIUM_QUANTITY_SCENARIOS = [
 ] as const;
 
 const E1_MKT_PRODUCER_SURPLUS_SCENARIOS = [
-    { good: "Farmed mussels in Galway" },
+    { good: "Fresh fish in Hamburg" },
     { good: "Smoked trout in Bavaria" },
-    { good: "Fresh figs in Izmir" },
+    { good: "Fresh figs in Athens" },
 ] as const;
 
 const E1_MKT_EQUILIBRIUM_FROM_WORDS_SCENARIOS = [
     { place: "the weekly market in Valencia", good: "strawberries", sellers: "The growers", why: "the berries spoil otherwise", unitsLong: "kilograms", units: "kg", one: "kilogram" },
-    { place: "the fish market in Porto", good: "fresh sardines", sellers: "The boat crews", why: "the catch spoils otherwise", unitsLong: "kilograms", units: "kg", one: "kilogram" },
-    { place: "the flower market in Aalsmeer", good: "cut tulips", sellers: "The growers", why: "the flowers wilt otherwise", unitsLong: "bunches", units: "bunches", one: "bunch" },
+    { place: "the fish market in Lisbon", good: "fresh sardines", sellers: "The boat crews", why: "the catch spoils otherwise", unitsLong: "kilograms", units: "kg", one: "kilogram" },
+    { place: "the flower market in Amsterdam", good: "cut tulips", sellers: "The growers", why: "the flowers wilt otherwise", unitsLong: "bunches", units: "bunches", one: "bunch" },
 ] as const;
 
 const E1_MKT_PS_TRAPEZOID_SCENARIOS = [
     { good: "firewood in Innsbruck", seller: "the local forestry", why: "thinning waste it has to clear anyway", units: "bundles" },
-    { good: "wood chips in Jyväskylä", seller: "the local sawmill", why: "offcuts it has to get rid of anyway", units: "cubic metres" },
-    { good: "compost in Utrecht", seller: "the municipal green-waste plant", why: "material it has to dispose of anyway", units: "sacks" },
+    { good: "wood chips in Stockholm", seller: "the local sawmill", why: "offcuts it has to get rid of anyway", units: "cubic metres" },
+    { good: "compost in Amsterdam", seller: "the municipal green-waste plant", why: "material it has to dispose of anyway", units: "sacks" },
 ] as const;
 
 const E1_MKT_ELASTICITY_AT_EQUILIBRIUM_SCENARIOS = [
     { good: "bicycle helmets in Amsterdam", units: "helmets" },
-    { good: "rain jackets in Bergen", units: "jackets" },
+    { good: "rain jackets in Oslo", units: "jackets" },
     { good: "sunglasses in Nice", units: "pairs" },
 ] as const;
 
 const E1_MKT_UNIT_TAX_CONSUMER_PRICE_SCENARIOS = [
-    { good: "ceramic mugs in Kraków", one: "mug", units: "mugs" },
+    { good: "ceramic mugs in Prague", one: "mug", units: "mugs" },
     { good: "leather belts in Florence", one: "belt", units: "belts" },
     { good: "wool hats in Reykjavik", one: "hat", units: "hats" },
 ] as const;
 
 const E1_MKT_UNIT_TAX_REVENUE_SCENARIOS = [
-    { good: "Wool blankets in Cardiff", units: "blankets" },
-    { good: "Linen tablecloths in Vilnius", units: "tablecloths" },
-    { good: "Cast-iron pans in Sheffield", units: "pans" },
+    { good: "Wool blankets in Scotland", units: "blankets" },
+    { good: "Linen tablecloths in Warsaw", units: "tablecloths" },
+    { good: "Cast-iron pans in Berlin", units: "pans" },
 ] as const;
 
 const E1_MKT_TOTAL_SURPLUS_SCENARIOS = [
-    { good: "Second-hand bicycles in Ghent", units: "bicycles" },
-    { good: "Used textbooks in Leuven", units: "textbooks" },
-    { good: "Refurbished laptops in Tallinn", units: "laptops" },
+    { good: "Second-hand bicycles in Amsterdam", units: "bicycles" },
+    { good: "Used textbooks in Munich", units: "textbooks" },
+    { good: "Refurbished laptops in Berlin", units: "laptops" },
 ] as const;
 
 const E1_PCTL_CAP_NONBINDING_QUANTITY_SCENARIOS = [
-    { intro: "On the Cypriot island bus route from Larnaca to the airport", units: "rides", one: "ride", price: "fare", authority: "The ministry of transport" },
-    { intro: "On the harbour ferry between Valletta and Sliema", units: "crossings", one: "crossing", price: "fare", authority: "The transport authority" },
-    { intro: "At the public swimming pool in Ljubljana", units: "entries", one: "entry", price: "price", authority: "The city council" },
-    { intro: "In the municipal car park of Bratislava's old town", units: "parking hours", one: "hour", price: "tariff", authority: "The city council" },
+    { intro: "On the airport bus in Athens", units: "rides", one: "ride", price: "fare", authority: "The ministry of transport" },
+    { intro: "On the harbor ferry in Hamburg", units: "crossings", one: "crossing", price: "fare", authority: "The transport authority" },
+    { intro: "At the public swimming pool in Zurich", units: "entries", one: "entry", price: "price", authority: "The city council" },
+    { intro: "In the municipal car park of Prague's old town", units: "parking hours", one: "hour", price: "tariff", authority: "The city council" },
 ] as const;
 
 const E1_PCTL_CAP_NONBINDING_SURPLUS_SCENARIOS = [
-    { place: "Casablanca", good: "butane cylinders", one: "cylinder", units: "cylinders", authority: "The regulator" },
-    { place: "Tunis", good: "cans of cooking oil", one: "can", units: "cans", authority: "The ministry of trade" },
+    { place: "Casablanca", good: "gas cylinders", one: "cylinder", units: "cylinders", authority: "The regulator" },
+    { place: "Istanbul", good: "bottles of cooking oil", one: "bottle", units: "bottles", authority: "The ministry of trade" },
     { place: "Lima", good: "sacks of rice", one: "sack", units: "sacks", authority: "The government" },
 ] as const;
 
 const E1_PCTL_CAP_BINDING_QUANTITY_SCENARIOS = [
     { place: "Cairo", good: "sacks of wheat flour", one: "sack", units: "sacks", purpose: "To keep flour affordable" },
-    { place: "Lagos", good: "bags of rice", one: "bag", units: "bags", purpose: "To keep rice affordable" },
+    { place: "Mumbai", good: "bags of rice", one: "bag", units: "bags", purpose: "To keep rice affordable" },
     { place: "Buenos Aires", good: "litres of milk", one: "litre", units: "litres", purpose: "To keep milk affordable" },
 ] as const;
 
 const E1_PCTL_CAP_BINDING_DWL_SCENARIOS = [
     { place: "Belgrade", good: "firewood", one: "cubic metre", units: "cubic metres", short: "m³", authority: "The city" },
     { place: "Sofia", good: "heating oil", one: "litre", units: "litres", short: "litres", authority: "The government" },
-    { place: "Sarajevo", good: "coal briquettes", one: "tonne", units: "tonnes", short: "tonnes", authority: "The canton" },
+    { place: "Warsaw", good: "coal", one: "ton", units: "tons", short: "tons", authority: "The city" },
 ] as const;
 
 const E1_PCTL_CAP_BINDING_CS_SCENARIOS = [
     { place: "Ankara", good: "bags of animal feed", one: "bag", units: "bags" },
     { place: "Nairobi", good: "bags of maize flour", one: "bag", units: "bags" },
-    { place: "Tbilisi", good: "sacks of fertiliser", one: "sack", units: "sacks" },
+    { place: "Bucharest", good: "sacks of fertilizer", one: "sack", units: "sacks" },
 ] as const;
 
 const E1_PCTL_FLOOR_DWL_SCENARIOS = [
@@ -717,22 +717,22 @@ const E1_PCTL_FLOOR_DWL_SCENARIOS = [
 ] as const;
 
 const E1_MONO_PRICE_QUADRATIC_COST_SCENARIOS = [
-    { firm: "The only ferry company serving the island of Heligoland", units: "return tickets", unitsShort: "tickets", price: "fare" },
-    { firm: "The only cable car up a Tyrolean peak", units: "return rides", unitsShort: "rides", price: "fare" },
+    { firm: "The only ferry company serving a small North Sea island", units: "return tickets", unitsShort: "tickets", price: "fare" },
+    { firm: "The only cable car up a peak in the Alps", units: "return rides", unitsShort: "rides", price: "fare" },
     { firm: "The only campsite on a small Croatian island", units: "overnight stays", unitsShort: "stays", price: "price" },
     { firm: "The only ice rink in a Finnish town", units: "session tickets", unitsShort: "tickets", price: "price" },
 ] as const;
 
 const E1_MONO_CONSUMER_SURPLUS_SCENARIOS = [
-    { firm: "The company holding the exclusive concession for parking at Riga airport", units: "parking days", per: "per day" },
+    { firm: "The company holding the exclusive concession for parking at Munich airport", units: "parking days", per: "per day" },
     { firm: "The company holding the sole licence for boat moorings in a Croatian marina", units: "mooring nights", per: "per night" },
     { firm: "The only operator of luggage lockers at Prague's main station", units: "locker days", per: "per day" },
 ] as const;
 
 const E1_MONO_PROFIT_SCENARIOS = [
-    { firm: "The only company selling day passes in the Andorran ski resort of Arinsal", units: "passes", one: "pass" },
+    { firm: "The only company selling day passes in a small Alpine ski resort", units: "passes", one: "pass" },
     { firm: "The only operator of glacier tours in a Swiss valley", units: "tours", one: "tour" },
-    { firm: "The only water park on the Costa Brava", units: "entries", one: "entry" },
+    { firm: "The only water park on Mallorca", units: "entries", one: "entry" },
 ] as const;
 
 const E1_MONO_PERFECT_DISCRIMINATION_QUANTITY_SCENARIOS = [
@@ -750,58 +750,58 @@ const E1_MONO_PERFECT_DISCRIMINATION_PROFIT_SCENARIOS = [
 const E1_MONO_PRICE_LINEAR_COST_GENERAL_SCENARIOS = [
     { firm: "The only natural-gas distributor on a Croatian island" },
     { firm: "The only district-heating supplier in a Lapland town" },
-    { firm: "The sole electricity supplier on a Faroese island" },
+    { firm: "The sole electricity supplier on a small Danish island" },
 ] as const;
 
 const E1_MONO_UNIT_TAX_PROFIT_SCENARIOS = [
-    { firm: "The only licensed bottler of spring water in Rogaska Slatina", short: "the bottler", state: "Slovenia", units: "crates", one: "crate" },
-    { firm: "The only licensed distillery on the island of Islay", short: "the distillery", state: "Scotland", units: "cases", one: "case" },
-    { firm: "The only licensed oyster farm in the bay of Arcachon", short: "the farm", state: "France", units: "crates", one: "crate" },
+    { firm: "The only licensed bottler of spring water in a Bavarian spa town", short: "the bottler", state: "Bavaria", units: "crates", one: "crate" },
+    { firm: "The only licensed whisky distillery on a Scottish island", short: "the distillery", state: "Scotland", units: "cases", one: "case" },
+    { firm: "The only licensed winery on a small Greek island", short: "the winery", state: "Greece", units: "cases", one: "case" },
 ] as const;
 
 const E1_EXT_DWL_NEGATIVE_SCENARIOS = [
-    { intro: "Sand is dredged from the Danube near Novi Sad and sold by the tonne", supply: "the dredgers' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne dredged costs downstream fishers", harmPost: "in lost catch, which no dredger pays for" },
-    { intro: "Gravel is quarried near Lake Bled and sold by the tonne", supply: "the quarries' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne quarried costs the lakeside hotels", harmPost: "in lost bookings from dust and noise, which no quarry pays for" },
-    { intro: "Coal is mined in a valley in Silesia and sold by the tonne", supply: "the mines' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne mined costs the nearby farms", harmPost: "in crop damage from the dust, which no mine pays for" },
+    { intro: "Sand is dredged from the Rhine near Cologne and sold by the tonne", supply: "the dredgers' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne dredged costs downstream fishers", harmPost: "in lost catch, which no dredger pays for" },
+    { intro: "Gravel is quarried near Lake Garda and sold by the tonne", supply: "the quarries' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne quarried costs the lakeside hotels", harmPost: "in lost bookings from dust and noise, which no quarry pays for" },
+    { intro: "Coal is mined in the Ruhr area and sold by the tonne", supply: "the mines' private supply", one: "tonne", units: "tonnes", harmPre: "Every tonne mined costs the nearby farms", harmPost: "in crop damage from the dust, which no mine pays for" },
 ] as const;
 
 const E1_EXT_PIGOU_TAX_RISING_DAMAGE_SCENARIOS = [
-    { intro: "Peat briquettes from a bog in County Offaly are traded by the tonne", one: "tonne", units: "tonnes", why: "Each extra tonne cut degrades the bog further" },
-    { intro: "Groundwater from an aquifer near Murcia is pumped and traded by the megalitre", one: "megalitre", units: "megalitres", why: "Each extra megalitre pumped lowers the water table further" },
-    { intro: "Whitefish from a lake in Carinthia are caught and traded by the tonne", one: "tonne", units: "tonnes", why: "Each extra tonne caught depletes the stock further" },
+    { intro: "Sand is dug from a beach near Lisbon and sold by the ton", one: "ton", units: "tons", why: "Each extra ton dug erodes the beach further" },
+    { intro: "Timber is cut in the Black Forest and sold by the ton", one: "ton", units: "tons", why: "Each extra ton cut thins the forest further" },
+    { intro: "Fish are caught in the Baltic Sea and sold by the ton", one: "ton", units: "tons", why: "Each extra ton caught depletes the fish stock further" },
 ] as const;
 
 const E1_EXT_POSITIVE_SOCIAL_QUANTITY_SCENARIOS = [
-    { who: "A clinic in Tampere sells flu shots", units: "shots", one: "shot", benefit: "Every shot also spares other people an infection worth", noun: "vaccination", subsidy: "per shot" },
-    { who: "A nursery in Ghent sells street trees to homeowners", units: "trees", one: "tree", benefit: "Every tree also cools and shades the neighbours' homes, a benefit worth", noun: "tree planting", subsidy: "per tree" },
-    { who: "A school in Bergen sells places on evening first-aid courses", units: "places", one: "place", benefit: "Every trained person also makes bystanders safer, a benefit worth", noun: "first-aid training", subsidy: "per place" },
-    { who: "An installer in Leeds sells rooftop solar panels", units: "panels", one: "panel", benefit: "Every panel also cuts emissions for everyone else, a benefit worth", noun: "solar installation", subsidy: "per panel" },
+    { who: "A clinic in Helsinki sells flu shots", units: "shots", one: "shot", benefit: "Every shot also spares other people an infection worth", noun: "vaccination", subsidy: "per shot" },
+    { who: "A nursery in Brussels sells street trees to homeowners", units: "trees", one: "tree", benefit: "Every tree also cools and shades the neighbours' homes, a benefit worth", noun: "tree planting", subsidy: "per tree" },
+    { who: "A school in Oslo sells places on evening first-aid courses", units: "places", one: "place", benefit: "Every trained person also makes bystanders safer, a benefit worth", noun: "first-aid training", subsidy: "per place" },
+    { who: "An installer in London sells rooftop solar panels", units: "panels", one: "panel", benefit: "Every panel also cuts emissions for everyone else, a benefit worth", noun: "solar installation", subsidy: "per panel" },
 ] as const;
 
 const E1_EXT_POSITIVE_DWL_SCENARIOS = [
-    { intro: "Beekeepers in Provence rent out hives for the almond bloom", buyers: "growers", units: "hives", one: "hive", per: "per hive-season", benefit: "Each hive also pollinates neighbouring orchards that pay nothing, an external benefit of", never: "rented" },
-    { intro: "Landscapers in Utrecht plant front-garden hedges", buyers: "homeowners", units: "hedges", one: "hedge", per: "per hedge", benefit: "Each hedge also cools and greens the street for neighbours who pay nothing, an external benefit of", never: "planted" },
-    { intro: "Language schools in Porto offer evening courses in sign language", buyers: "learners", units: "course places", one: "place", per: "per place", benefit: "Each trained person also makes daily life easier for deaf neighbours who pay nothing, an external benefit of", never: "filled" },
+    { intro: "Bike shops in Copenhagen sell e-bikes to commuters", buyers: "commuters", units: "e-bikes", one: "e-bike", per: "per e-bike", benefit: "Each e-bike also takes a car off the road, easing traffic for everyone else who pays nothing, an external benefit of", never: "sold" },
+    { intro: "Landscapers in Amsterdam plant front-garden trees", buyers: "homeowners", units: "trees", one: "tree", per: "per tree", benefit: "Each tree also cools and greens the street for neighbours who pay nothing, an external benefit of", never: "planted" },
+    { intro: "Language schools in Lisbon offer evening courses in sign language", buyers: "learners", units: "course places", one: "place", per: "per place", benefit: "Each trained person also makes daily life easier for deaf neighbours who pay nothing, an external benefit of", never: "filled" },
 ] as const;
 
 const E1_PG_EFFICIENT_PROVISION_IDENTICAL_SCENARIOS = [
-    { members: "households", member: "household", place: "of Ostuni", what: "the village fireworks show, a pure public good", one: "minute", units: "minutes", good: "fireworks", provider: "the pyrotechnician charges" },
+    { members: "households", member: "household", place: "of a village in Tuscany", what: "the village fireworks show, a pure public good", one: "minute", units: "minutes", good: "fireworks", provider: "the pyrotechnician charges" },
     { members: "flats", member: "flat", place: "in a Hamburg apartment block", what: "the lighting of the shared courtyard, a pure public good", one: "lamp", units: "lamps", good: "courtyard lighting", provider: "the electrician charges" },
     { members: "villages", member: "village", place: "along a Norwegian fjord", what: "the winter snow-clearing of their shared access road, a pure public good", one: "kilometre", units: "kilometres", good: "cleared road", provider: "the contractor charges" },
     { members: "cabins", member: "cabin", place: "around a Finnish lake", what: "the treatment of the lake against algae, a pure public good", one: "hour", units: "hours", good: "treatment", provider: "the contractor charges" },
 ] as const;
 
 const E1_PG_EFFICIENT_PROVISION_TWO_TYPES_SCENARIOS = [
-    { intro: "The Greek village of Kardamyli installs a shared Wi-Fi mast; its bandwidth $Q$ (in Mbit/s) is a pure public good", type1: "households", type1One: "household", type2: "guesthouses", type2One: "guesthouse", unit: "Mbit/s", unitOne: "Mbit/s", asks: "Which bandwidth is socially efficient?" },
-    { intro: "The Austrian village of Lech extends its avalanche-warning system; its coverage $Q$ (in monitored slopes) is a pure public good", type1: "residents", type1One: "resident", type2: "hotels", type2One: "hotel", unit: "slopes", unitOne: "slope", asks: "How many slopes should be monitored to be socially efficient?" },
-    { intro: "The Dutch town of Zierikzee raises its sea dyke; the extra height $Q$ (in centimetres) is a pure public good", type1: "homeowners", type1One: "homeowner", type2: "businesses", type2One: "business", unit: "centimetres", unitOne: "centimetre", asks: "Which extra height is socially efficient?" },
+    { intro: "A village on the Greek island of Crete installs a shared Wi-Fi mast; its bandwidth $Q$ (in Mbit/s) is a pure public good", type1: "households", type1One: "household", type2: "guesthouses", type2One: "guesthouse", unit: "Mbit/s", unitOne: "Mbit/s", asks: "Which bandwidth is socially efficient?" },
+    { intro: "The Swiss ski village of Zermatt extends its avalanche-warning system; its coverage $Q$ (in monitored slopes) is a pure public good", type1: "residents", type1One: "resident", type2: "hotels", type2One: "hotel", unit: "slopes", unitOne: "slope", asks: "How many slopes should be monitored to be socially efficient?" },
+    { intro: "The Dutch city of Rotterdam raises its sea dyke; the extra height $Q$ (in centimetres) is a pure public good", type1: "homeowners", type1One: "homeowner", type2: "businesses", type2One: "business", unit: "centimetres", unitOne: "centimetre", asks: "Which extra height is socially efficient?" },
 ] as const;
 
 const E1_PG_UNDERPROVISION_GAP_SCENARIOS = [
     { members: "households", member: "household", intro: "on a street in Naples can hire a night security patrol for the whole street, a pure public good", unit: "patrol hour", costPhrase: "an hour of patrolling costs" },
     { members: "farms", member: "farm", intro: "in a valley in Tyrol can hire a helicopter for hail-defence flights over the whole valley, a pure public good", unit: "flight hour", costPhrase: "an hour of flying costs" },
-    { members: "shops", member: "shop", intro: "in an arcade in Genoa can hire a cleaner for the shared passage, a pure public good", unit: "cleaning hour", costPhrase: "an hour of cleaning costs" },
-    { members: "boat owners", member: "boat owner", intro: "in a marina in Kiel can hire a night watch for all the pontoons, a pure public good", unit: "watch hour", costPhrase: "an hour of watch costs" },
+    { members: "shops", member: "shop", intro: "in a shopping arcade in Milan can hire a cleaner for the shared passage, a pure public good", unit: "cleaning hour", costPhrase: "an hour of cleaning costs" },
+    { members: "boat owners", member: "boat owner", intro: "in a marina in Hamburg can hire a night watch for all the pontoons, a pure public good", unit: "watch hour", costPhrase: "an hour of watch costs" },
 ] as const;
 
 export const econ1Questions: Question[] = [

@@ -153,124 +153,124 @@ const TECH_ENERGY_PRICES = [4, 6, 9, 11] as const;
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const E2_GR_TOTAL_GROWTH_SCENARIOS = [
-    { place: "The kingdom of Solmara" },
-    { place: "The island state of Kirrova" },
-    { place: "The federation of Ostmere" },
+    { place: "Egypt" },
+    { place: "Vietnam" },
+    { place: "The Philippines" },
 ] as const;
 
 const E2_GR_GDP_PC_GROWTH_SCENARIOS = [
-    { office: "The statistics office of Veldaria" },
-    { office: "The central bank of Brannock" },
-    { office: "The finance ministry of Ilmara" },
+    { office: "The statistics office of Egypt" },
+    { office: "The central bank of Vietnam" },
+    { office: "The finance ministry of the Philippines" },
 ] as const;
 
 const E2_GDP_VALUE_ADDED_SCENARIOS = [
-    { place: "Listrana", art1: "An", s1: "olive grower", L1: "Grower", subj1: "she", sale1: "her entire harvest", imp1: "fertilizer", s2: "oil mill", L2: "Mill", imp2: "glass bottles", prod2: "bottled oil", s3: "delicatessen maker", L3: "Delicatessen maker", make3: "turns the oil it bought into antipasti" },
-    { place: "Varnholm", art1: "A", s1: "sheep farmer", L1: "Farmer", subj1: "he", sale1: "his entire wool clip", imp1: "feed", s2: "spinning mill", L2: "Mill", imp2: "dye", prod2: "dyed yarn", s3: "knitwear maker", L3: "Knitwear maker", make3: "turns the yarn it bought into sweaters" },
-    { place: "Cazorra", art1: "A", s1: "cocoa farmer", L1: "Farmer", subj1: "she", sale1: "her entire bean harvest", imp1: "fertilizer", s2: "chocolate factory", L2: "Factory", imp2: "sugar", prod2: "chocolate", s3: "confectioner", L3: "Confectioner", make3: "turns the chocolate it bought into pralines" },
-    { place: "Rendale", art1: "A", s1: "wheat farmer", L1: "Farmer", subj1: "he", sale1: "his entire grain harvest", imp1: "seed", s2: "flour mill", L2: "Mill", imp2: "paper sacks", prod2: "flour", s3: "pastry bakery", L3: "Bakery", make3: "turns the flour it bought into pastries" },
+    { place: "Tuscany", art1: "An", s1: "olive grower", L1: "Grower", subj1: "she", sale1: "her entire olive harvest", imp1: "fertilizer", s2: "oil mill", L2: "Mill", imp2: "glass bottles", prod2: "bottled olive oil", s3: "pesto factory", L3: "Pesto factory", make3: "turns the oil it bought into jars of pesto" },
+    { place: "Ireland", art1: "A", s1: "sheep farmer", L1: "Farmer", subj1: "he", sale1: "his entire wool harvest", imp1: "animal feed", s2: "spinning mill", L2: "Mill", imp2: "dye", prod2: "wool yarn", s3: "sweater factory", L3: "Sweater factory", make3: "turns the yarn it bought into sweaters" },
+    { place: "Belgium", art1: "A", s1: "cocoa farmer", L1: "Farmer", subj1: "she", sale1: "her entire cocoa harvest", imp1: "fertilizer", s2: "chocolate factory", L2: "Factory", imp2: "sugar", prod2: "chocolate", s3: "praline maker", L3: "Praline maker", make3: "turns the chocolate it bought into boxes of pralines" },
+    { place: "Bavaria", art1: "A", s1: "wheat farmer", L1: "Farmer", subj1: "he", sale1: "his entire wheat harvest", imp1: "seed", s2: "flour mill", L2: "Mill", imp2: "paper sacks", prod2: "flour", s3: "bakery", L3: "Bakery", make3: "turns the flour it bought into pretzels" },
 ] as const;
 
 const E2_TECH_SWITCH_RENT_SCENARIOS = [
-    { firm: "A ceramics workshop in Tavia", batch: "fire one kiln batch", energy: "gas" },
-    { firm: "A bakery in Rulmond", batch: "bake one batch of loaves", energy: "gas" },
-    { firm: "A dye-house in Amberly", batch: "dye one batch of cloth", energy: "steam" },
-    { firm: "A foundry in Kestrin", batch: "cast one batch of fittings", energy: "coke" },
+    { firm: "A pizzeria in Naples", batch: "bake one batch of pizzas", energy: "gas" },
+    { firm: "A bakery in Vienna", batch: "bake one batch of bread", energy: "electricity" },
+    { firm: "A car wash in Hamburg", batch: "wash one batch of cars", energy: "water" },
+    { firm: "A glass factory in Venice", batch: "make one batch of glasses", energy: "gas" },
 ] as const;
 
 const E2_TECH_MPL_SCENARIOS = [
-    { firm: "A bicycle-frame manufacturer" },
+    { firm: "A bicycle factory" },
     { firm: "A furniture workshop" },
-    { firm: "A solar-panel assembler" },
+    { firm: "A solar-panel factory" },
 ] as const;
 
 const E2_RD_PRIVATE_OPTIMUM_SCENARIOS = [
-    { labs: "Two rival battery labs, Voltra and Cellix", items: "patentable cell designs", plural: "designs", item: "design", Items: "Designs" },
-    { labs: "Two rival drone makers, Aerix and Skylon", items: "patentable flight-controller designs", plural: "designs", item: "design", Items: "Designs" },
-    { labs: "Two rival materials labs, Ferrox and Alumet", items: "patentable alloys", plural: "alloys", item: "alloy", Items: "Alloys" },
+    { labs: "Two rival battery makers in Munich", items: "patentable battery designs", plural: "designs", item: "design", Items: "Designs" },
+    { labs: "Two rival e-scooter makers in Berlin", items: "patentable scooter designs", plural: "designs", item: "design", Items: "Designs" },
+    { labs: "Two rival phone makers in Tokyo", items: "patentable phone designs", plural: "designs", item: "design", Items: "Designs" },
 ] as const;
 
 const E2_RD_SUBSIDY_SCENARIOS = [
-    { labs: "Two rival vaccine labs", items: "candidate compounds", item: "compound", Items: "Compounds" },
-    { labs: "Two rival chip-design labs", items: "patentable chip layouts", item: "layout", Items: "Layouts" },
-    { labs: "Two rival enzyme labs", items: "patentable enzymes", item: "enzyme", Items: "Enzymes" },
+    { labs: "Two rival vaccine labs", items: "patentable vaccines", item: "vaccine", Items: "Vaccines" },
+    { labs: "Two rival chip makers", items: "patentable chip designs", item: "design", Items: "Designs" },
+    { labs: "Two rival bike makers", items: "patentable bike frames", item: "frame", Items: "Frames" },
 ] as const;
 
 const E2_RD_MERGER_SCENARIOS = [
-    { labs: "Two agri-tech labs", items: "patentable seed varieties", item: "variety", Items: "Varieties" },
-    { labs: "Two robotics labs", items: "patentable gripper designs", item: "design", Items: "Designs" },
-    { labs: "Two pharma labs", items: "patentable molecules", item: "molecule", Items: "Molecules" },
+    { labs: "Two seed companies", items: "patentable seed varieties", item: "variety", Items: "Varieties" },
+    { labs: "Two robotics labs", items: "patentable robot arms", item: "robot arm", Items: "Robot arms" },
+    { labs: "Two pharma labs", items: "patentable drugs", item: "drug", Items: "Drugs" },
 ] as const;
 
 const E2_GM_EQUILIBRIUM_OUTPUT_SCENARIOS = [
-    { place: "the open economy of Orvania" },
-    { place: "the open economy of Marrowin" },
-    { place: "the trading nation of Selvane" },
+    { place: "the open economy of Austria" },
+    { place: "the open economy of Ireland" },
+    { place: "the open economy of Sweden" },
 ] as const;
 
 const E2_GM_CONSUMPTION_SCENARIOS = [
-    { place: "The republic of Quenavia" },
-    { place: "The duchy of Ferrant" },
-    { place: "The island nation of Tolmere" },
+    { place: "Portugal" },
+    { place: "Greece" },
+    { place: "Norway" },
 ] as const;
 
 const E2_GM_MULTIPLIER_SCENARIOS = [
-    { place: "Bellmark", stimulus: "Parliament passes a stimulus that raises government purchases by" },
-    { place: "Corvath", stimulus: "The government launches a road-building programme that raises its purchases by" },
-    { place: "Ilsmere", stimulus: "A hospital-building plan raises government purchases by" },
+    { place: "Spain", stimulus: "Parliament passes a stimulus that raises government purchases by" },
+    { place: "Italy", stimulus: "The government launches a road-building program that raises its purchases by" },
+    { place: "France", stimulus: "A hospital-building plan raises government purchases by" },
 ] as const;
 
 const E2_GM_BUDGET_BALANCE_SCENARIOS = [
-    { placePoss: "Novaria's" },
-    { placePoss: "Estrel's" },
-    { placePoss: "Wendmark's" },
+    { placePoss: "Poland's" },
+    { placePoss: "Sweden's" },
+    { placePoss: "Austria's" },
 ] as const;
 
 const E2_GM_BALANCED_BUDGET_TAX_SCENARIOS = [
-    { placePoss: "Caldonia's" },
-    { placePoss: "Lorimar's" },
-    { placePoss: "Tessvane's" },
+    { placePoss: "Denmark's" },
+    { placePoss: "Ireland's" },
+    { placePoss: "Greece's" },
 ] as const;
 
 const E2_LM_EFFICIENCY_WAGE_SCENARIOS = [
-    { firm: "A fish cannery on the island of Skarvoy" },
-    { firm: "A call centre in the town of Brennholm" },
-    { firm: "A textile mill in Varduna" },
-    { firm: "A fruit-packing plant near Lomera" },
+    { firm: "A fish factory in Hamburg" },
+    { firm: "A call center in Berlin" },
+    { firm: "A textile factory in Milan" },
+    { firm: "An orange farm in Sicily" },
 ] as const;
 
 const E2_LM_UNEMPLOYMENT_SCENARIOS = [
-    { town: "Halvora", firm: "the cannery", units: "crates", unit: "crate" },
-    { town: "Norrhaven", firm: "the quarry", units: "pallets of stone", unit: "pallet" },
-    { town: "Ashmoor", firm: "the brickworks", units: "pallets of bricks", unit: "pallet" },
-    { town: "Kellmere", firm: "the dairy", units: "wheels of cheese", unit: "wheel" },
+    { town: "Sylt", firm: "the fish factory", units: "crates of fish", unit: "crate" },
+    { town: "Garmisch", firm: "the gravel pit", units: "tons of gravel", unit: "ton" },
+    { town: "Rosenheim", firm: "the brewery", units: "crates of beer", unit: "crate" },
+    { town: "Kempten", firm: "the dairy", units: "kg of cheese", unit: "kg" },
 ] as const;
 
 const E2_LM_PROFIT_SCENARIOS = [
-    { firm: "The only sawmill in the valley of Drenn", short: "the mill", units: "pallets of timber" },
-    { firm: "The only paper mill in the valley of Lisk", short: "the mill", units: "rolls of paper" },
-    { firm: "The only bottling plant in the valley of Orra", short: "the plant", units: "crates of mineral water" },
-    { firm: "The only tannery in the valley of Vell", short: "the tannery", units: "bundles of leather" },
+    { firm: "The only sawmill in a valley in the Alps", short: "the sawmill", units: "pallets of timber" },
+    { firm: "The only brewery on the island of Sylt", short: "the brewery", units: "crates of beer" },
+    { firm: "The only bottling plant in a village in Bavaria", short: "the plant", units: "crates of mineral water" },
+    { firm: "The only cheese dairy in a valley in Tyrol", short: "the dairy", units: "wheels of cheese" },
 ] as const;
 
 const E2_LM_MINIMUM_WAGE_SCENARIOS = [
-    { firm: "The mining company", town: "Corvane", units: "tons of ore" },
-    { firm: "The salt works", town: "Halvane", units: "tons of salt" },
-    { firm: "The peat company", town: "Moorkirk", units: "tons of peat" },
+    { firm: "The coal mine", town: "Essen", units: "tons of coal" },
+    { firm: "The salt works", town: "Salzburg", units: "tons of salt" },
+    { firm: "The gravel company", town: "Garmisch", units: "tons of gravel" },
 ] as const;
 
 const E2_LM_RENT_HOURLY_SCENARIOS = [
-    { who: "A crane operator in the port of Vestre", subj: "she", obj: "her", poss: "her" },
-    { who: "A tram driver in Aldbury", subj: "he", obj: "him", poss: "his" },
-    { who: "A welder at the shipyard of Norrvik", subj: "she", obj: "her", poss: "her" },
-    { who: "A night-shift baker in Carrow", subj: "he", obj: "him", poss: "his" },
+    { who: "A crane operator in the port of Hamburg", subj: "she", obj: "her", poss: "her" },
+    { who: "A tram driver in Vienna", subj: "he", obj: "him", poss: "his" },
+    { who: "A welder at a car factory in Stuttgart", subj: "she", obj: "her", poss: "her" },
+    { who: "A night-shift baker in Munich", subj: "he", obj: "him", poss: "his" },
 ] as const;
 
 const E2_LM_RENT_TOTAL_SCENARIOS = [
-    { who: "A machinist in Ostbro", subj: "he", obj: "him", poss: "his" },
-    { who: "A lab technician in Welmond", subj: "she", obj: "her", poss: "her" },
-    { who: "A forklift driver in Tarn", subj: "he", obj: "him", poss: "his" },
-    { who: "A pastry chef in Selmar", subj: "she", obj: "her", poss: "her" },
+    { who: "A car mechanic in Berlin", subj: "he", obj: "him", poss: "his" },
+    { who: "A lab technician in Zurich", subj: "she", obj: "her", poss: "her" },
+    { who: "A forklift driver in Rotterdam", subj: "he", obj: "him", poss: "his" },
+    { who: "A pastry chef in Paris", subj: "she", obj: "her", poss: "her" },
 ] as const;
 
 const E2_IT_INTEREST_RATE_SCENARIOS = [
@@ -286,45 +286,45 @@ const E2_IT_AFFORDABLE_SCENARIOS = [
 ] as const;
 
 const E2_FX_CROSS_RATE_SCENARIOS = [
-    { a: "taler", as: "talers", aC: "Aldunia", A: "T", b: "rupel", bs: "rupels", bC: "Brevia", B: "R", c: "denar", C: "D" },
-    { a: "florin", as: "florins", aC: "Marovia", A: "F", b: "pell", bs: "pells", bC: "Selunia", B: "P", c: "ducat", C: "D" },
-    { a: "crona", as: "cronas", aC: "Ithria", A: "C", b: "ryal", bs: "ryals", bC: "Ombra", B: "R", c: "lumen", C: "L" },
+    { a: "Danish krone", as: "kroner", aC: "Denmark", A: "DKK", b: "Polish zloty", bs: "zloty", bC: "Poland", B: "PLN", c: "euro", C: "EUR" },
+    { a: "Swedish krona", as: "kronor", aC: "Sweden", A: "SEK", b: "Brazilian real", bs: "reais", bC: "Brazil", B: "BRL", c: "euro", C: "EUR" },
+    { a: "Norwegian krone", as: "kroner", aC: "Norway", A: "NOK", b: "Polish zloty", bs: "zloty", bC: "Poland", B: "PLN", c: "US dollar", C: "USD" },
 ] as const;
 
-// Currency names whose plural equals the singular ("norn per kess").
+// Currency names whose plural equals the singular ("zloty per euro").
 const E2_FX_CHANGE_PCT_SCENARIOS = [
-    { a: "norn", aC: "Norvia", b: "kess", bC: "Kessland" },
-    { a: "vell", aC: "Vellia", b: "tor", bC: "Torland" },
-    { a: "quin", aC: "Quinar", b: "orm", bC: "Ormsk" },
+    { a: "zloty", aC: "Poland", b: "euro", bC: "euro area" },
+    { a: "yuan", aC: "China", b: "dollar", bC: "United States" },
+    { a: "yuan", aC: "China", b: "euro", bC: "euro area" },
 ] as const;
 
 // Two-good economy shared by the three original real/nominal questions (the
 // same economy appears in all three, as in the source design). Good A takes
 // the low price draw (2-6), good B the high one (8-15).
 const E2_RN_REAL_GROWTH_SCENARIOS = [
-    { place: "Miravel", gA: "rye bread", uA: "loaves", uA1: "loaf", lA: "bread", LA: "Bread", gB: "olive oil", uB: "liters", uB1: "liter", lB: "oil", LB: "Oil" },
-    { place: "Tarvenna", gA: "goat cheese", uA: "wheels", uA1: "wheel", lA: "cheese", LA: "Cheese", gB: "cider", uB: "casks", uB1: "cask", lB: "cider", LB: "Cider" },
-    { place: "Lorsk", gA: "honey", uA: "jars", uA1: "jar", lA: "honey", LA: "Honey", gB: "wool", uB: "bales", uB1: "bale", lB: "wool", LB: "Wool" },
+    { place: "Tuscany", gA: "bread", uA: "loaves", uA1: "loaf", lA: "bread", LA: "Bread", gB: "olive oil", uB: "liters", uB1: "liter", lB: "olive oil", LB: "Olive oil" },
+    { place: "Bavaria", gA: "beer", uA: "bottles", uA1: "bottle", lA: "beer", LA: "Beer", gB: "cheese", uB: "kg", uB1: "kg", lB: "cheese", LB: "Cheese" },
+    { place: "Mallorca", gA: "oranges", uA: "kg", uA1: "kg", lA: "oranges", LA: "Oranges", gB: "wine", uB: "bottles", uB1: "bottle", lB: "wine", LB: "Wine" },
 ] as const;
 const E2_RN_DEFLATOR_SCENARIOS = E2_RN_REAL_GROWTH_SCENARIOS;
 const E2_RN_CPI_INFLATION_SCENARIOS = E2_RN_REAL_GROWTH_SCENARIOS;
 
 const E2_II_NOMINAL_WAGE_SCENARIOS = [
-    { union: "The dockworkers' union of Port Havelin" },
-    { union: "The nurses' union of Brennmark" },
-    { union: "The metalworkers' union of Ostvale" },
+    { union: "The dockworkers' union of Hamburg" },
+    { union: "The nurses' union of Vienna" },
+    { union: "The metalworkers' union of Stuttgart" },
 ] as const;
 
 const E2_II_REAL_RATE_SCENARIOS = [
-    { product: "A one-year savings deposit in Meridia", noun: "deposit" },
-    { product: "A one-year government bond issued by Meridia", noun: "bond" },
-    { product: "A one-year fixed-term account at a bank in Calvera", noun: "account" },
+    { product: "A one-year savings deposit at a bank in Munich", noun: "deposit" },
+    { product: "A one-year government bond issued by Italy", noun: "bond" },
+    { product: "A one-year fixed-term account at a bank in Zurich", noun: "account" },
 ] as const;
 
 const E2_GDP_VA_TWO_STAGE_SCENARIOS = [
-    { f1: "roastery", F1: "Roastery", imp: "green coffee beans from Brazil", impShort: "beans", prod1: "roasted coffee", prod1Short: "coffee", f2: "café chain", F2: "Café chain", prod2: "drinks" },
-    { f1: "tannery", F1: "Tannery", imp: "raw hides from Argentina", impShort: "hides", prod1: "finished leather", prod1Short: "leather", f2: "shoemaker", F2: "Shoemaker", prod2: "shoes" },
-    { f1: "cotton mill", F1: "Cotton mill", imp: "raw cotton bales from Egypt", impShort: "cotton bales", prod1: "cloth", prod1Short: "cloth", f2: "tailoring workshop", F2: "Tailoring workshop", prod2: "garments" },
+    { f1: "coffee roaster", F1: "Coffee roaster", imp: "coffee beans from Brazil", impShort: "beans", prod1: "roasted coffee", prod1Short: "coffee", f2: "café chain", F2: "Café chain", prod2: "drinks" },
+    { f1: "juice factory", F1: "Juice factory", imp: "oranges from Spain", impShort: "oranges", prod1: "orange juice", prod1Short: "juice", f2: "cocktail bar chain", F2: "Cocktail bar chain", prod2: "cocktails" },
+    { f1: "pasta factory", F1: "Pasta factory", imp: "sacks of wheat from Canada", impShort: "sacks of wheat", prod1: "pasta", prod1Short: "pasta", f2: "restaurant chain", F2: "Restaurant chain", prod2: "meals" },
 ] as const;
 
 const E2_GDP_VA_FIRM_SCENARIOS = [
@@ -340,21 +340,21 @@ const E2_RN_NOMINAL_GROWTH_SCENARIOS = [
 ] as const;
 
 const E2_RN_REAL_LEVEL_SCENARIOS = [
-    { place: "A Danish coastal economy", gA: "butter", uA: "kg", uA1: "kg", gB: "herring", uB: "barrels", uB1: "barrel" },
-    { place: "A Swedish lakeside economy", gA: "flour", uA: "kg", uA1: "kg", gB: "crayfish", uB: "crates", uB1: "crate" },
-    { place: "A Portuguese coastal economy", gA: "salt", uA: "kg", uA1: "kg", gB: "sardines", uB: "barrels", uB1: "barrel" },
+    { place: "A Danish coastal economy", gA: "butter", uA: "kg", uA1: "kg", gB: "fish", uB: "crates", uB1: "crate" },
+    { place: "A Swedish lakeside economy", gA: "flour", uA: "kg", uA1: "kg", gB: "cheese", uB: "kg", uB1: "kg" },
+    { place: "A Portuguese coastal economy", gA: "olives", uA: "kg", uA1: "kg", gB: "wine", uB: "bottles", uB1: "bottle" },
 ] as const;
 
 const E2_RN_DEFLATOR_INFLATION_SCENARIOS = [
-    { place: "A Portuguese island economy", gA: "olives", uA: "crates", uA1: "crate", gB: "cork", uB: "bales", uB1: "bale" },
-    { place: "A Spanish highland economy", gA: "almonds", uA: "sacks", uA1: "sack", gB: "wool", uB: "bales", uB1: "bale" },
-    { place: "An Italian island economy", gA: "lemons", uA: "crates", uA1: "crate", gB: "wine", uB: "casks", uB1: "cask" },
+    { place: "A Portuguese island economy", gA: "oranges", uA: "crates", uA1: "crate", gB: "olive oil", uB: "liters", uB1: "liter" },
+    { place: "A Spanish village economy", gA: "tomatoes", uA: "crates", uA1: "crate", gB: "ham", uB: "kg", uB1: "kg" },
+    { place: "An Italian island economy", gA: "lemons", uA: "crates", uA1: "crate", gB: "wine", uB: "bottles", uB1: "bottle" },
 ] as const;
 
 const E2_RN_CPI_LEVEL_SCENARIOS = [
-    { place: "an Austrian valley", gA: "bread", uA: "loaves", uA1: "loaf", lA: "bread", gB: "mountain cheese", uB: "wheels", uB1: "wheel", lB: "cheese" },
+    { place: "an Austrian valley", gA: "bread", uA: "loaves", uA1: "loaf", lA: "bread", gB: "cheese", uB: "kg", uB1: "kg", lB: "cheese" },
     { place: "a Belgian town", gA: "beer", uA: "bottles", uA1: "bottle", lA: "beer", gB: "chocolate", uB: "boxes", uB1: "box", lB: "chocolate" },
-    { place: "a Polish village", gA: "milk", uA: "liters", uA1: "liter", lA: "milk", gB: "smoked sausage", uB: "rings", uB1: "ring", lB: "sausage" },
+    { place: "a Polish village", gA: "milk", uA: "liters", uA1: "liter", lA: "milk", gB: "sausage", uB: "kg", uB1: "kg", lB: "sausage" },
 ] as const;
 
 const E2_II_BORROWER_REAL_SCENARIOS = [
@@ -394,15 +394,15 @@ const E2_GM_C0_SHOCK_SCENARIOS = [
 ] as const;
 
 const E2_GM_NEW_EQUILIBRIUM_SCENARIOS = [
-    { place: "Portville", cause: "a recession abroad makes investment fall to" },
-    { place: "Kestwick", cause: "a banking crisis makes investment fall to" },
-    { place: "Sundmar", cause: "a surge in energy prices makes investment fall to" },
+    { place: "Ireland", cause: "a recession abroad makes investment fall to" },
+    { place: "Greece", cause: "a banking crisis makes investment fall to" },
+    { place: "Finland", cause: "a surge in energy prices makes investment fall to" },
 ] as const;
 
 const E2_GM_TAX_REVENUE_SCENARIOS = [
-    { placePoss: "Aldermoor's" },
-    { placePoss: "Brightmere's" },
-    { placePoss: "Vennock's" },
+    { placePoss: "Belgium's" },
+    { placePoss: "Portugal's" },
+    { placePoss: "Finland's" },
 ] as const;
 
 const E2_LM_EFFORT_COST_SCENARIOS = [
@@ -461,20 +461,20 @@ const E2_IT_REPAYMENT_SCENARIOS = [
 ] as const;
 
 const E2_TECH_COST_SCENARIOS = [
-    { firm: "A brick kiln in Brazil", action: "fires one batch of bricks" },
+    { firm: "A pizzeria in Rome", action: "bakes one batch of pizzas" },
     { firm: "A bakery in Canada", action: "bakes one batch of bread" },
-    { firm: "A paper mill in Sweden", action: "produces one batch of pulp" },
+    { firm: "A paper mill in Sweden", action: "produces one batch of paper" },
 ] as const;
 
 const E2_TECH_CHEAPEST_GAP_SCENARIOS = [
-    { firm: "A Spanish tile factory", action: "fire one batch" },
-    { firm: "A Polish glass factory", action: "melt one batch" },
-    { firm: "A Canadian sawmill", action: "dry one batch of timber" },
+    { firm: "A Spanish tile factory", action: "make one batch of tiles" },
+    { firm: "A Polish glass factory", action: "make one batch of bottles" },
+    { firm: "A Canadian sawmill", action: "cut one batch of timber" },
 ] as const;
 
 const E2_TECH_PROCESS_INNOVATION_SCENARIOS = [
-    { firm: "A glassworks in the Netherlands", action: "melts one batch", energy: "gas", Energy: "Gas" },
-    { firm: "A steel forge in Austria", action: "heats one batch of billets", energy: "gas", Energy: "Gas" },
+    { firm: "A glass factory in the Netherlands", action: "makes one batch of bottles", energy: "gas", Energy: "Gas" },
+    { firm: "A steel plant in Austria", action: "makes one batch of steel", energy: "gas", Energy: "Gas" },
     { firm: "A cold-storage plant in Norway", action: "freezes one batch of fish", energy: "electricity", Energy: "Electricity" },
 ] as const;
 
@@ -710,7 +710,7 @@ export const econ2Questions: Question[] = [
             const answer = h * h; // (m/2)²
             const dTotal = m * (1.5 * h); // output at the symmetric optimum
             return {
-                prompt: String.raw`${s.labs}, each choose research spending $C_i$ (in million €, at a cost of 1 per unit). Research spills over: lab $i$ obtains $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, and each ${s.item} earns a profit of 1 million €. Each lab maximizes its own profit, taking the rival's spending as given. What research spending $C_i$ does each lab choose?`,
+                prompt: String.raw`${s.labs} each choose research spending $C_i$ (in million €, at a cost of 1 per unit). Research spills over: lab $i$ obtains $D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$ ${s.items}, and each ${s.item} earns a profit of 1 million €. Each lab maximizes its own profit, taking the rival's spending as given. What research spending $C_i$ does each lab choose?`,
                 given: {
                     [`${s.Items} of lab i`]: String.raw`$D_i = ${m}\left(\sqrt{C_i} + \tfrac{1}{2}\sqrt{C_j}\right)$`,
                     [`Profit per ${s.item}`]: `${n(1)} million €`,
@@ -2699,7 +2699,7 @@ export const econ2Questions: Question[] = [
             const X = 10 * rng.int(5, 30);
             const answer = X * E;
             return {
-                prompt: `A machine part made in Germany costs ${eur(X)}. The exchange rate is ${n2(E)} ${cfg.cur} per euro. How much does the part cost a buyer in ${cfg.country}, in ${cfg.cur}?`,
+                prompt: `A pair of sneakers made in Germany costs ${eur(X)}. The exchange rate is ${n2(E)} ${cfg.cur} per euro. How much do the sneakers cost a buyer in ${cfg.country}, in ${cfg.cur}?`,
                 given: {
                     "Price in euros": eur(X),
                     "Exchange rate": `${n2(E)} ${cfg.cur} per euro`,

@@ -56,13 +56,13 @@ const FIN_REP_MAX_LOAN_SCENARIOS = [
     { who: "A young couple buying a flat", they: "the couple" },
     { who: "A dentist setting up a practice", they: "the dentist" },
     { who: "A farmer financing a new tractor", they: "the farmer" },
-    { who: "A brewery expanding its cellar", they: "the brewery" },
+    { who: "A brewery buying new beer tanks", they: "the brewery" },
 ] as const;
 
 const FIN_BOND_FINAL_WEALTH_SCENARIOS = [
     { who: "An investor", Pron: "She", poss: "her" },
     { who: "A retired teacher", Pron: "He", poss: "his" },
-    { who: "A family office", Pron: "It", poss: "its" },
+    { who: "A foundation", Pron: "It", poss: "its" },
     { who: "A dentist", Pron: "She", poss: "her" },
 ] as const;
 
@@ -77,7 +77,7 @@ const FIN_BOND_IMMUNIZE_SCENARIOS = [
     { who: "A pension fund", obl: "an obligation" },
     { who: "An insurer", obl: "a large claims payout" },
     { who: "A university endowment", obl: "a building payment" },
-    { who: "A shipping company", obl: "a balloon repayment on a ship loan" },
+    { who: "A shipping company", obl: "the final repayment of a ship loan" },
 ] as const;
 
 const FIN_BOND_HPR_1Y_SCENARIOS = [
@@ -110,7 +110,7 @@ const FIN_EQ_RETENTION_PRICE_SCENARIOS = [
 const FIN_EQ_PVGO_SCENARIOS = [
     { firm: "A logistics company's" },
     { firm: "A software company's" },
-    { firm: "A shipping line's" },
+    { firm: "A shipping company's" },
     { firm: "A packaging maker's" },
 ] as const;
 
@@ -136,15 +136,15 @@ const FIN_RATIO_AP_DAYS_SCENARIOS = [
 ] as const;
 
 const FIN_INV_NPV_PERPETUAL_SCENARIOS = [
-    { who: "A grid operator", asset: "a substation" },
+    { who: "An electricity company", asset: "a hydropower plant" },
     { who: "A water utility", asset: "a pumping station" },
-    { who: "A toll-road company", asset: "a bridge concession" },
-    { who: "A port authority", asset: "a quay" },
+    { who: "A toll-road company", asset: "a toll bridge" },
+    { who: "A port authority", asset: "a container terminal" },
 ] as const;
 
 const FIN_INV_IRR_LUMP_SCENARIOS = [
     { project: "A forestry project" },
-    { project: "A whisky-cask investment" },
+    { project: "A gold-bar investment" },
     { project: "A vineyard-land investment" },
     { project: "A vintage-car restoration" },
 ] as const;
@@ -160,27 +160,27 @@ const FIN_INV_IRR_PERP_GROWTH_SCENARIOS = [
 const FIN_CB_UNI_SCENARIOS = [
     { asset: "A new production line" },
     { asset: "A new bottling plant" },
-    { asset: "A new paint shop" },
+    { asset: "A new bakery line" },
     { asset: "A new packaging line" },
 ] as const;
 
 const FIN_CB_REPL_INITIAL_SCENARIOS = [
     { who: "A bakery", firm: "the bakery", item: "oven" },
-    { who: "A print shop", firm: "the print shop", item: "press" },
+    { who: "A print shop", firm: "the print shop", item: "printing press" },
     { who: "A sawmill", firm: "the sawmill", item: "band saw" },
     { who: "A dental practice", firm: "the practice", item: "scanner" },
     { who: "A farm", firm: "the farm", item: "tractor" },
 ] as const;
 
 const FIN_CB_REPL_ANNUAL_SCENARIOS = [
-    { who: "A print shop", machine: "press" },
-    { who: "A laundry", machine: "washing line" },
-    { who: "A car wash", machine: "wash system" },
+    { who: "A print shop", machine: "printing press" },
+    { who: "A laundry", machine: "washing machine" },
+    { who: "A car wash", machine: "car-wash system" },
 ] as const;
 
 const FIN_COC_DEBT_RETURN_SCENARIOS = [
     { firm: "A mining company's" },
-    { firm: "A shipping line's" },
+    { firm: "A shipping company's" },
     { firm: "An airline's" },
     { firm: "A steelmaker's" },
 ] as const;
@@ -202,7 +202,7 @@ const FIN_CS_TAX_SHIELD_ANNUAL_SCENARIOS = [
     { firm: "A retailer" },
     { firm: "A hotel chain" },
     { firm: "A car-rental firm" },
-    { firm: "A shipping line" },
+    { firm: "A shipping company" },
 ] as const;
 
 const FIN_CS_PV_SHIELD_GROWTH_SCENARIOS = [

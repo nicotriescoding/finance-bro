@@ -125,59 +125,59 @@ const CA_MAT_STOCK_SCENARIOS = [
     { firm: "Aurelia Bakery", mat: "rye flour" },
     { firm: "Kastell Foundry", mat: "copper scrap" },
     { firm: "Halden Paper Mill", mat: "wood pulp" },
-    { firm: "Sorrel & Sage Distillery", mat: "dried lavender" },
+    { firm: "Bavaria Chocolate", mat: "sugar" },
 ] as const;
 
 /** Material-valuation family 2 (drawStock2): firm, material and the process the issues go to. */
 const CA_MAT_STOCK2_SCENARIOS = [
     { firmIntro: "Vesuvio Roastery in Naples", firm: "Vesuvio Roastery", mat: "green coffee beans", matShort: "green coffee", use: "roasting" },
-    { firmIntro: "Cacao Lumiere in Lyon", firm: "Cacao Lumiere", mat: "cocoa beans", matShort: "cocoa", use: "the conching line" },
-    { firmIntro: "Teehaus Brandt in Bremen", firm: "Teehaus Brandt", mat: "loose-leaf tea", matShort: "tea", use: "blending" },
-    { firmIntro: "Molino Sereno in Bologna", firm: "Molino Sereno", mat: "durum wheat", matShort: "wheat", use: "milling" },
-    { firmIntro: "Olivar Real in Jaen", firm: "Olivar Real", mat: "olives", matShort: "olives", use: "pressing" },
+    { firmIntro: "Cacao Lumiere in Paris", firm: "Cacao Lumiere", mat: "cocoa beans", matShort: "cocoa", use: "grinding" },
+    { firmIntro: "Teehaus Brandt in Hamburg", firm: "Teehaus Brandt", mat: "loose-leaf tea", matShort: "tea", use: "blending" },
+    { firmIntro: "Molino Sereno in Rome", firm: "Molino Sereno", mat: "wheat", matShort: "wheat", use: "milling" },
+    { firmIntro: "Olivar Real in Seville", firm: "Olivar Real", mat: "olives", matShort: "olives", use: "pressing" },
 ] as const;
 
 const CA_DEP_STRAIGHT_LINE_SCENARIOS = [
     { firm: "A beverage producer", asset: "a bottling line" },
     { firm: "A dairy", asset: "a pasteurizer" },
-    { firm: "A print shop", asset: "an offset press" },
-    { firm: "A sawmill", asset: "a band-saw line" },
-    { firm: "A bakery chain", asset: "a tunnel oven" },
+    { firm: "A print shop", asset: "a printing press" },
+    { firm: "A sawmill", asset: "a sawing line" },
+    { firm: "A bakery chain", asset: "an industrial oven" },
 ] as const;
 
 const CA_DEP_DECLINING_RATE_SCENARIOS = [
     { asset: "A packaging machine" },
     { asset: "A delivery truck" },
-    { asset: "An injection-molding machine" },
-    { asset: "A CNC lathe" },
+    { asset: "A plastic molding machine" },
+    { asset: "A milling machine" },
 ] as const;
 
 const CA_DEP_UNITS_OF_PRODUCTION_SCENARIOS = [
     { asset: "A labeling machine", units: "bottles", done: "labeled" },
     { asset: "A stamping press", units: "parts", done: "stamped" },
     { asset: "A printing press", units: "sheets", done: "printed" },
-    { asset: "An embroidery machine", units: "garments", done: "embroidered" },
+    { asset: "An embroidery machine", units: "T-shirts", done: "embroidered" },
 ] as const;
 
 const CA_DEP_ARITHMETIC_DEGRESSIVE_SCENARIOS = [
     { asset: "A conveyor system" },
     { asset: "A forklift fleet" },
     { asset: "A paint booth" },
-    { asset: "A palletizer" },
+    { asset: "A packaging robot" },
 ] as const;
 
 /** Depreciation family 2 (one firm, three assets). */
 const CA_DEP_FIRM_SCENARIOS = [
-    { firmIntro: "Cicloval, a bicycle manufacturer in Porto", firm: "Cicloval", asset1: "a frame-welding robot", units: "frames", asset2: "a tube laser cutter", asset3: "powder-coating line" },
-    { firmIntro: "Bruma Kayaks, a kayak builder in Vigo", firm: "Bruma Kayaks", asset1: "a rotomolding machine", units: "hulls", asset2: "a CNC trimming cell", asset3: "drying oven" },
-    { firmIntro: "Ostwerk Drones, a drone maker in Dresden", firm: "Ostwerk Drones", asset1: "a pick-and-place machine", units: "circuit boards", asset2: "a reflow oven", asset3: "flight-test rig" },
-    { firmIntro: "Lumo Lighting, a lamp maker in Turku", firm: "Lumo Lighting", asset1: "a metal-spinning lathe", units: "lamp shades", asset2: "a laser engraver", asset3: "anodizing line" },
+    { firmIntro: "Cicloval, a bicycle manufacturer in Lisbon", firm: "Cicloval", asset1: "a frame-welding robot", units: "frames", asset2: "a laser cutter", asset3: "paint line" },
+    { firmIntro: "Bruma Kayaks, a kayak builder in Barcelona", firm: "Bruma Kayaks", asset1: "a molding machine", units: "hulls", asset2: "a cutting machine", asset3: "drying oven" },
+    { firmIntro: "Ostwerk Drones, a drone maker in Dresden", firm: "Ostwerk Drones", asset1: "a circuit-board assembly machine", units: "circuit boards", asset2: "a soldering oven", asset3: "test bench" },
+    { firmIntro: "Lumo Lighting, a lamp maker in Stockholm", firm: "Lumo Lighting", asset1: "a metal press", units: "lamp shades", asset2: "a laser engraver", asset3: "polishing line" },
 ] as const;
 
 /** Cost-allocation family 1: two indirect centers (first delivers svc1 in unit u1, second delivers hours), two direct centers. */
 const CA_ALLOC_OAKLINE_SCENARIOS = [
     { firm: "Oakline Furniture", ic1: "Boiler House", ic2: "Tool Shop", dc1: "Assembly", dc2: "Finishing", svc1: "heat", u1: "MWh" },
-    { firm: "Brixham Boatworks", ic1: "Power Plant", ic2: "Maintenance", dc1: "Hull Shop", dc2: "Fit-Out", svc1: "electricity", u1: "MWh" },
+    { firm: "Brixham Boatworks", ic1: "Power Plant", ic2: "Maintenance", dc1: "Hull Shop", dc2: "Interior", svc1: "electricity", u1: "MWh" },
     { firm: "Solano Textiles", ic1: "Steam Plant", ic2: "Repair Shop", dc1: "Weaving", dc2: "Dyeing", svc1: "steam", u1: "t" },
     { firm: "Kemper Dairy", ic1: "Water Works", ic2: "Workshop", dc1: "Bottling", dc2: "Cheesemaking", svc1: "water", u1: "m³" },
     { firm: "Aldan Glassworks", ic1: "Furnace House", ic2: "Mold Shop", dc1: "Pressing", dc2: "Decorating", svc1: "heat", u1: "MWh" },
@@ -187,35 +187,35 @@ const CA_ALLOC_OAKLINE_SCENARIOS = [
 const CA_ALLOC_STEPLADDER_TOTAL_SCENARIOS = [
     { firm: "Ferrovia Metalworks in Turin", ic1: "Steam Plant", ic2: "IT Services", dc1: "Milling", dc2: "Assembly", svc: "steam", u: "t" },
     { firm: "Nordlicht Shipyard in Kiel", ic1: "Power House", ic2: "Facility Services", dc1: "Welding", dc2: "Outfitting", svc: "electricity", u: "MWh" },
-    { firm: "Casa Verde Ceramics in Porto", ic1: "Kiln House", ic2: "Maintenance", dc1: "Glazing", dc2: "Packing", svc: "heat", u: "MWh" },
-    { firm: "Arlo Brewery in Leeds", ic1: "Boiler House", ic2: "Logistics", dc1: "Brewing", dc2: "Bottling", svc: "steam", u: "t" },
+    { firm: "Casa Verde Ceramics in Barcelona", ic1: "Kiln House", ic2: "Maintenance", dc1: "Glazing", dc2: "Packing", svc: "heat", u: "MWh" },
+    { firm: "Arlo Brewery in London", ic1: "Boiler House", ic2: "Logistics", dc1: "Brewing", dc2: "Bottling", svc: "steam", u: "t" },
 ] as const;
 
 /** Step-ladder on floor area (m² stays the driver) and the levy question of the same firm. */
 const CA_ALLOC_PRESSURA_SCENARIOS = [
-    { firm: "Pressura Print in Hamburg", firmShort: "Pressura Print", ic1: "Facility Services", ic2: "Power House", dc1: "Prepress", dc2: "Press" },
+    { firm: "Pressura Print in Hamburg", firmShort: "Pressura Print", ic1: "Facility Services", ic2: "Power House", dc1: "Layout", dc2: "Press" },
     { firm: "Bellmore Bindery in Dublin", firmShort: "Bellmore Bindery", ic1: "Building Services", ic2: "Boiler House", dc1: "Cutting", dc2: "Binding" },
-    { firm: "Ravel Optics in Lyon", firmShort: "Ravel Optics", ic1: "Site Services", ic2: "Compressor Station", dc1: "Grinding", dc2: "Coating" },
-    { firm: "Tarn Bakery in Toulouse", firmShort: "Tarn Bakery", ic1: "Cleaning", ic2: "Cold Store", dc1: "Dough Shop", dc2: "Ovens" },
+    { firm: "Ravel Optics in Zurich", firmShort: "Ravel Optics", ic1: "Site Services", ic2: "Compressor Station", dc1: "Grinding", dc2: "Coating" },
+    { firm: "Madeleine Bakery in Paris", firmShort: "Madeleine Bakery", ic1: "Cleaning", ic2: "Cold Store", dc1: "Dough Shop", dc2: "Ovens" },
 ] as const;
 
 /** Reciprocal / credits-and-debits family around one metalworks-style firm. */
 const CA_ALLOC_FERROVIA_SCENARIOS = [
     { firm: "Ferrovia Metalworks", ic1: "Steam Plant", ic2: "Repair Bay", dc1: "Milling", dc2: "Assembly", svc: "steam", u: "t", uLong: "tonne of steam", hour: "repair hour" },
     { firm: "Halvard Shipfitters", ic1: "Power House", ic2: "Maintenance Crew", dc1: "Welding", dc2: "Outfitting", svc: "electricity", u: "MWh", uLong: "MWh of electricity", hour: "maintenance hour" },
-    { firm: "Brenner Foundry", ic1: "Water Works", ic2: "Tool Room", dc1: "Casting", dc2: "Fettling", svc: "water", u: "m³", uLong: "cubic metre of water", hour: "tool-room hour" },
+    { firm: "Brenner Foundry", ic1: "Water Works", ic2: "Tool Room", dc1: "Casting", dc2: "Grinding", svc: "water", u: "m³", uLong: "cubic meter of water", hour: "tool-room hour" },
     { firm: "Corvina Cannery", ic1: "Refrigeration", ic2: "Cleaning Crew", dc1: "Filleting", dc2: "Packing", svc: "cooling", u: "MWh", uLong: "MWh of cooling", hour: "cleaning hour" },
 ] as const;
 
 const CA_ALLOC_RECIPROCAL_TOTAL_SCENARIOS = [
     { firm: "Nordkap Fish Cannery", ic1: "Power House", ic2: "Cleaning Crew", dc1: "Filleting", dc2: "Packing", svc: "power", u: "MWh" },
-    { firm: "Vellore Spinning Mills", ic1: "Steam Plant", ic2: "Maintenance Crew", dc1: "Spinning", dc2: "Winding", svc: "steam", u: "t" },
-    { firm: "Kirov Brickworks", ic1: "Kiln House", ic2: "Repair Crew", dc1: "Molding", dc2: "Firing", svc: "heat", u: "MWh" },
+    { firm: "Milano Spinning Mills", ic1: "Steam Plant", ic2: "Maintenance Crew", dc1: "Spinning", dc2: "Winding", svc: "steam", u: "t" },
+    { firm: "Berlin Brickworks", ic1: "Kiln House", ic2: "Repair Crew", dc1: "Molding", dc2: "Firing", svc: "heat", u: "MWh" },
     { firm: "Meadowbrook Creamery", ic1: "Refrigeration", ic2: "Sanitation Crew", dc1: "Churning", dc2: "Packaging", svc: "cooling", u: "MWh" },
 ] as const;
 
 const CA_ALLOC_RECIPROCAL_SUM_SCENARIOS = [
-    { firm: "Tallinn Shipfittings", ic1: "Power", ic2: "Workshop", dc1: "Fabrication", dc2: "Administration", u: "MWh" },
+    { firm: "Hamburg Shipfittings", ic1: "Power", ic2: "Workshop", dc1: "Fabrication", dc2: "Administration", u: "MWh" },
     { firm: "Ambra Furniture", ic1: "Boiler House", ic2: "Tool Shop", dc1: "Joinery", dc2: "Sales", u: "MWh" },
     { firm: "Lyra Electronics", ic1: "Compressor Station", ic2: "Test Lab", dc1: "Assembly", dc2: "Administration", u: "m³" },
     { firm: "Corvus Printing", ic1: "Steam Plant", ic2: "Maintenance", dc1: "Press Room", dc2: "Sales", u: "t" },
@@ -237,7 +237,7 @@ const CA_ALLOC_LEVY_TOTAL_SCENARIOS = [
 /** Product costing family 1: two products, second one is the one asked about. */
 const CA_PC_VELOTTA_SCENARIOS = [
     { firm: "Velotta Components", a: "saddle", as: "saddles", b: "handlebar", bs: "handlebars" },
-    { firm: "Orsa Kitchenware", a: "ladle", as: "ladles", b: "skillet", bs: "skillets" },
+    { firm: "Orsa Kitchenware", a: "pot", as: "pots", b: "frying pan", bs: "frying pans" },
     { firm: "Pinecrest Toys", a: "puzzle", as: "puzzles", b: "rocking horse", bs: "rocking horses" },
     { firm: "Fennel Cosmetics", a: "lip balm", as: "lip balms", b: "face cream", bs: "face creams" },
 ] as const;
@@ -259,8 +259,8 @@ const CA_PC_EQUIVALENCE_NUMBER_SCENARIOS = [
 
 const CA_PC_MULTISTAGE_SCENARIOS = [
     { firm: "A pottery", items: "ceramic mugs", itemsShort: "mugs", item: "mug", st1: "molding", st2: "glazing and firing", st3: "packaging", verb3: "packs" },
-    { firm: "A glassworks", items: "glass bottles", itemsShort: "bottles", item: "bottle", st1: "blowing", st2: "annealing", st3: "labeling", verb3: "labels" },
-    { firm: "A candle factory", items: "pillar candles", itemsShort: "candles", item: "candle", st1: "pouring", st2: "trimming and wicking", st3: "packaging", verb3: "packs" },
+    { firm: "A glassworks", items: "glass bottles", itemsShort: "bottles", item: "bottle", st1: "blowing", st2: "cooling", st3: "labeling", verb3: "labels" },
+    { firm: "A candle factory", items: "pillar candles", itemsShort: "candles", item: "candle", st1: "pouring", st2: "trimming", st3: "packaging", verb3: "packs" },
     { firm: "A tile factory", items: "floor tiles", itemsShort: "tiles", item: "tile", st1: "pressing", st2: "glazing and firing", st3: "packaging", verb3: "packs" },
 ] as const;
 
@@ -270,7 +270,7 @@ const CA_PROC_KAYAK_SCENARIOS = [
     { firm: "A tent maker", firmL: "a tent maker", dept: "sewing department", items: "tents" },
     { firm: "A guitar workshop", firmL: "a guitar workshop", dept: "finishing department", items: "guitars" },
     { firm: "An e-bike assembler", firmL: "an e-bike assembler", dept: "assembly department", items: "e-bikes" },
-    { firm: "A surfboard shaper", firmL: "a surfboard shaper", dept: "glassing department", items: "boards" },
+    { firm: "A surfboard maker", firmL: "a surfboard maker", dept: "coating department", items: "surfboards" },
 ] as const;
 
 /** Process costing family 2 (named firm, possessive). */
@@ -291,7 +291,7 @@ const CA_ABC_LUMEN_SCENARIOS = [
 
 /** ABC family 2: named firm with three product lines. */
 const CA_ABC_RHEIN_SCENARIOS = [
-    { firm: "Rhein Paintworks", lines: ["Fassade", "Lagune", "Metallic"], item: "can", items: "cans", kind: "paint" },
+    { firm: "Rhein Paintworks", lines: ["Wall", "Lagoon", "Metallic"], item: "can", items: "cans", kind: "paint" },
     { firm: "Donau Beverages", lines: ["Citrus", "Berry", "Cola"], item: "bottle", items: "bottles", kind: "soda" },
     { firm: "Isar Cereals", lines: ["Crunchy", "Choco", "Fruity"], item: "box", items: "boxes", kind: "cereal" },
     { firm: "Elbe Coatings", lines: ["Primer", "Gloss", "Matte"], item: "tin", items: "tins", kind: "coating" },
@@ -372,7 +372,7 @@ const CA_CVP_FIXED_COST_REDUCTION_SCENARIOS = [
 const CA_CVP_TAX_TRAP_SCENARIOS = [
     { firm: "Fjordlys", item: "trekking stove", itemShort: "stove" },
     { firm: "Solbrand", item: "smoker grill", itemShort: "grill" },
-    { firm: "Kaltberg", item: "avalanche beacon", itemShort: "beacon" },
+    { firm: "Kaltberg", item: "sled", itemShort: "sled" },
     { firm: "Marisol", item: "snorkel set", itemShort: "set" },
 ] as const;
 
@@ -429,43 +429,43 @@ const CA_PROG_PRICE_FLOOR_SCENARIOS = [
 
 /** Joinery-style firm with one bottleneck machine, used by three production-program items. */
 const CA_PROG_LINDQVIST_SCENARIOS = [
-    { firm: "Lindqvist Joinery", firmIntro: "Lindqvist Joinery in Gothenburg", machine: "CNC router", machineShort: "router", machineProg: "CNC-router", A: "cutting boards", a: "cutting board", as: "boards", B: "serving trays", b: "tray", bs: "trays", customer: "A hotel chain", order: "custom coat racks", orderOne: "coat rack", extra: "spice rack" },
+    { firm: "Lindqvist Joinery", firmIntro: "Lindqvist Joinery in Stockholm", machine: "cutting machine", machineShort: "machine", machineProg: "cutting-machine", A: "cutting boards", a: "cutting board", as: "boards", B: "serving trays", b: "tray", bs: "trays", customer: "A hotel chain", order: "custom coat racks", orderOne: "coat rack", extra: "spice rack" },
     { firm: "Tovar Ceramics", firmIntro: "Tovar Ceramics in Valencia", machine: "kiln", machineShort: "kiln", machineProg: "kiln", A: "mugs", a: "mug", as: "mugs", B: "bowls", b: "bowl", bs: "bowls", customer: "A cafe chain", order: "custom espresso cups", orderOne: "cup", extra: "butter dish" },
     { firm: "Marra Knitwear", firmIntro: "Marra Knitwear in Bologna", machine: "knitting machine", machineShort: "machine", machineProg: "knitting-machine", A: "scarves", a: "scarf", as: "scarves", B: "beanies", b: "beanie", bs: "beanies", customer: "A gym chain", order: "branded headbands", orderOne: "headband", extra: "wrist warmer" },
-    { firm: "Heron Leathercraft", firmIntro: "Heron Leathercraft in Bristol", machine: "stitching machine", machineShort: "machine", machineProg: "stitching-machine", A: "wallets", a: "wallet", as: "wallets", B: "belts", b: "belt", bs: "belts", customer: "An airline", order: "embossed luggage tags", orderOne: "tag", extra: "key fob" },
+    { firm: "Heron Leathercraft", firmIntro: "Heron Leathercraft in London", machine: "stitching machine", machineShort: "machine", machineProg: "stitching-machine", A: "wallets", a: "wallet", as: "wallets", B: "belts", b: "belt", bs: "belts", customer: "An airline", order: "embossed luggage tags", orderOne: "tag", extra: "key fob" },
 ] as const;
 
 const CA_PROG_FORGONE_CM_SCENARIOS = [
-    { intro: "Vela Marine, a boatyard in Split", line: "laminating line", xs: "dinghy hulls", xsShort: "dinghies", ys: "paddleboards", customer: "A marina chain", os: "kayak hulls" },
-    { intro: "Ferro Forge, a smithy in Brno", line: "forging line", xs: "axe heads", xsShort: "axes", ys: "horseshoes", customer: "A riding-school chain", os: "gate hinges" },
-    { intro: "Nubia Textiles, a weaving mill in Porto", line: "loom line", xs: "wool blankets", xsShort: "blankets", ys: "scarves", customer: "A hotel chain", os: "table runners" },
-    { intro: "Kite Loft, a sailmaker in Cork", line: "cutting line", xs: "jib sails", xsShort: "jibs", ys: "spinnakers", customer: "A sailing school", os: "storm sails" },
+    { intro: "Vela Marine, a boatyard in Venice", line: "laminating line", xs: "rowing boats", xsShort: "boats", ys: "paddle boards", customer: "A marina chain", os: "kayaks" },
+    { intro: "Ferro Forge, a smithy in Prague", line: "forging line", xs: "axe heads", xsShort: "axes", ys: "horseshoes", customer: "A riding-school chain", os: "gate hinges" },
+    { intro: "Nubia Textiles, a weaving mill in Milan", line: "loom line", xs: "wool blankets", xsShort: "blankets", ys: "scarves", customer: "A hotel chain", os: "table runners" },
+    { intro: "Kite Loft, a tent maker in Dublin", line: "sewing line", xs: "camping tents", xsShort: "tents", ys: "sun shades", customer: "A festival organizer", os: "party tents" },
 ] as const;
 
 /** Product costing family 2: one firm, two main products (a, b), a side product (c) and its raw material. */
 const CA_PC_MARLIN_SCENARIOS = [
-    { firm: "Marlin Surfboards", firmIntro: "Marlin Surfboards in Peniche", a: "shortboard", as: "shortboards", b: "longboard", bs: "longboards", mat: "foam blank material", matShort: "blank material", verb: "Shaping", c: "paddle", cs: "paddles", unit: "board" },
-    { firm: "Alder Skis", firmIntro: "Alder Skis in Innsbruck", a: "touring ski", as: "touring skis", b: "freeride ski", bs: "freeride skis", mat: "ash-wood core material", matShort: "core material", verb: "Pressing", c: "pole", cs: "poles", unit: "ski" },
-    { firm: "Brava Guitars", firmIntro: "Brava Guitars in Granada", a: "classical guitar", as: "classical guitars", b: "flamenco guitar", bs: "flamenco guitars", mat: "cedar tonewood", matShort: "tonewood", verb: "Carving", c: "strap", cs: "straps", unit: "guitar" },
-    { firm: "Kolva Kayaks", firmIntro: "Kolva Kayaks in Tampere", a: "sea kayak", as: "sea kayaks", b: "river kayak", bs: "river kayaks", mat: "polyethylene pellets", matShort: "pellets", verb: "Molding", c: "paddle", cs: "paddles", unit: "kayak" },
+    { firm: "Marlin Surfboards", firmIntro: "Marlin Surfboards in Lisbon", a: "shortboard", as: "shortboards", b: "longboard", bs: "longboards", mat: "foam", matShort: "foam", verb: "Shaping", c: "paddle", cs: "paddles", unit: "board" },
+    { firm: "Alder Skis", firmIntro: "Alder Skis in Innsbruck", a: "touring ski", as: "touring skis", b: "freeride ski", bs: "freeride skis", mat: "ash wood", matShort: "wood", verb: "Pressing", c: "pole", cs: "poles", unit: "ski" },
+    { firm: "Brava Guitars", firmIntro: "Brava Guitars in Madrid", a: "classical guitar", as: "classical guitars", b: "flamenco guitar", bs: "flamenco guitars", mat: "cedar wood", matShort: "wood", verb: "Carving", c: "strap", cs: "straps", unit: "guitar" },
+    { firm: "Kolva Kayaks", firmIntro: "Kolva Kayaks in Oslo", a: "sea kayak", as: "sea kayaks", b: "river kayak", bs: "river kayaks", mat: "plastic pellets", matShort: "pellets", verb: "Molding", c: "paddle", cs: "paddles", unit: "kayak" },
 ] as const;
 
 const CA_PC_EQUIVALENCE_LINE_SCENARIOS = [
     { intro: "Savonne, a Marseille soap maker", units: "bars", a: "Classic", b: "Grand", weight: "bar weight" },
     { intro: "Dolce Vita, a Turin chocolatier", units: "chocolate bars", a: "Mini", b: "Maxi", weight: "bar weight" },
-    { intro: "Nordbrot, a Bergen bakery", units: "loaves", a: "Half", b: "Whole", weight: "loaf weight" },
+    { intro: "Nordbrot, an Oslo bakery", units: "loaves", a: "Half", b: "Whole", weight: "loaf weight" },
     { intro: "Alba Wax, a Lisbon candle maker", units: "candles", a: "Slim", b: "Pillar", weight: "candle weight" },
 ] as const;
 
 const CA_PC_EQUIVALENCE_VARIABLE_SCENARIOS = [
     { firm: "Terra Ceramica", items: "planters", item: "planter", a: "Small", b: "Large", process: "molding process" },
-    { firm: "Ferrum Cookware", items: "dutch ovens", item: "dutch oven", a: "Compact", b: "Family", process: "casting process" },
-    { firm: "Bergstein Stoneworks", items: "urns", item: "urn", a: "Mini", b: "Grande", process: "carving process" },
-    { firm: "Verdant Pots", items: "garden troughs", item: "trough", a: "Short", b: "Long", process: "pressing process" },
+    { firm: "Ferrum Cookware", items: "casserole pots", item: "pot", a: "Compact", b: "Family", process: "casting process" },
+    { firm: "Bergstein Stoneworks", items: "stone vases", item: "vase", a: "Mini", b: "Grande", process: "carving process" },
+    { firm: "Verdant Pots", items: "planter boxes", item: "box", a: "Short", b: "Long", process: "pressing process" },
 ] as const;
 
 const CA_PC_MULTISTAGE2_SCENARIOS = [
-    { firm: "Alpenglas", items: "drinking glasses", itemsShort: "glasses", item: "glass", st1: "forming", st2: "annealing", loss: "breakage" },
+    { firm: "Alpenglas", items: "drinking glasses", itemsShort: "glasses", item: "glass", st1: "forming", st2: "cooling", loss: "breakage" },
     { firm: "Rondo Ceramics", items: "dinner plates", itemsShort: "plates", item: "plate", st1: "pressing", st2: "firing", loss: "breakage" },
     { firm: "Fjell Knives", items: "knife blades", itemsShort: "blades", item: "blade", st1: "forging", st2: "hardening", loss: "rejects" },
     { firm: "Bel Cuoio", items: "leather wallets", itemsShort: "wallets", item: "wallet", st1: "cutting", st2: "stitching", loss: "rejects" },

@@ -45,6 +45,18 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Owed on Nico's machine (real Chrome, dark mode)
 
+- **2026-09-12 scenario audit:** every story line in the four banks now
+  uses well-known places (Munich, Paris, Lisbon, the Alps ...) and everyday
+  goods (pizza, beer, gravel, sneakers ...) per Nico ("peat briquettes from
+  County Offaly" was the trigger); ids, numbers and answers unchanged - the
+  question-reviewer diffed 447 x 60 seeds byte-identical, then flagged three
+  wording defects (real countries with impossible GDP/population -> Egypt,
+  Vietnam, the Philippines, whose real figures fit the draw ranges; a stray
+  comma; "wheat are") which are fixed. Read a handful of Econ 1 / Econ 2
+  prompts in a run for anything that still reads odd. Pre-existing, still
+  open: "1 tons of rice" / "1 hours" when a draw hits 1 (a `plural(n, word)`
+  helper in `_helpers.ts` would clear them all).
+
 - **2026-09-12 shop + ads (latest):** `/products` - the Party Kit's eighth
   card "The Insider Position" (big "?", counter line, "Reveal the offer"
   opens the Rickroll in a new tab) and "The Burn Rate Desk" (four
@@ -54,10 +66,10 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   table, self-created by `ensureSchema`). **Deploy the worker**
   (`cd worker && npm run deploy`) - the counter endpoint does not exist on
   the live worker until then; the card shows "An undisclosed number of
-  bros" until it does. AdSense: create a seventh unit (Display, fixed
-  300x250, name fb-rectangle) and paste its id into `AD_SLOTS.rectangle`
-  in `src/lib/ads.ts` - it renders at the foot of the quiz's account rail
-  only once the id is there. Gate ran green in the cloud clone (typecheck,
+  bros" until it does. AdSense: the seventh unit (300x250,
+  id 7799463888) is in `AD_SLOTS.rectangle` since the same day - look at
+  the foot of the quiz's account rail on desktop once the site review is
+  through. Gate ran green in the cloud clone (typecheck,
   verify, build, 202 smoke) and `worker/test/e2e.ts` 30 checks against a
   local wrangler dev.
 
