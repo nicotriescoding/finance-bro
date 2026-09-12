@@ -7,6 +7,8 @@
  *   GET  /api/leaderboard?subject=all|<id>&pid=  -> semester scoreboard (BroDollars)
  *   POST /api/earnings              -> one settled solo posting, re-graded here
  *   POST /api/players/name          -> claim / change the desk name
+ *   GET  /api/counters/:key         -> { value } - site-wide click counter
+ *   POST /api/counters/:key         -> increment, returns { value }
  *
  * One Durable Object per lobby (id = idFromName(code)). The DO grades every
  * answer server-side with the same engine the client renders with, so the
@@ -29,6 +31,8 @@ import { Lobby } from "./lobby";
 import {
     PID_RE,
     bookEarnings,
+    bumpCounter,
+    readCounter,
     claimPosting,
     displayName,
     readScoreboard,
@@ -89,6 +93,9 @@ function randomCode(): string {
     }
     return code;
 }
+
+/** counters the worker accepts - see /api/counters/:key */
+const COUNTER_KEYS = new Set(["mystery"]);
 
 const worker = {
     async fetch(request: Request, env: Env): Promise<Response> {
@@ -191,6 +198,24 @@ const worker = {
             const ok = await renamePlayer(env.DB, body.pid, name);
             if (!ok) return json({ error: "leaderboard_unavailable" }, 503);
             return json({ ok: true, name });
+        }
+
+        // ------------------------------------------------------------------
+        // site-wide click counters (the Bro Shop's secret position). Only the
+        // keys listed here exist - anything else is a 404, so nobody can fill
+        // D1 with rows. No identity, no replay guard: one click, one count.
+        const counterMatch = path.match(/^\/api\/counters\/([a-z]+)$/);
+        if (counterMatch && COUNTER_KEYS.has(counterMatch[1])) {
+            const key = counterMatch[1];
+            const value =
+                request.method === "POST"
+                    ? await bumpCounter(env.DB, key)
+                    : request.method === "GET"
+                      ? await readCounter(env.DB, key)
+                      : undefined;
+            if (value === undefined) return json({ error: "method_not_allowed" }, 405);
+            if (value === null) return json({ error: "counter_unavailable" }, 503);
+            return json({ value });
         }
 
         return json({ error: "not_found" }, 404);

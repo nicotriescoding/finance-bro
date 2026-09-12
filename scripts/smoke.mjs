@@ -401,6 +401,25 @@ try {
             productsHtml.includes("Beer Pong Set") &&
             !productsHtml.includes("Beer Mortar")
     );
+    // 2026-09-12: the secret "?" position (Rickroll, worker-side counter -
+    // SSR shows the fallback copy) and the subscription desk with the
+    // Amazon bounties, Prime Student first and tagged.
+    check(
+        "/products hides the Insider Position behind a question mark",
+        productsHtml.includes("The Insider Position") &&
+            productsHtml.includes("youtube.com/watch?v=dQw4w9WgXcQ") &&
+            productsHtml.includes("Not one of them has forgotten it")
+    );
+    check(
+        "/products runs the Burn Rate Desk with the student Prime deal",
+        productsHtml.includes("The Burn Rate Desk") &&
+            productsHtml.indexOf("Prime Student") < productsHtml.indexOf("Audible") &&
+            productsHtml.includes("6 months free") &&
+            /amazon\.de\/amazonprime\?[^"]*tag=financebro0a-21/.test(productsHtml) &&
+            /amazon\.de\/hz\/audible\/mlp\?tag=/.test(productsHtml) &&
+            /amazon\.de\/music\/unlimited\?tag=/.test(productsHtml) &&
+            /amazon\.de\/kindle-dbs\/hz\/subscribe\/ku\?tag=/.test(productsHtml)
+    );
     check(
         "/products dropped the ketchup and the cigarettes",
         !productsHtml.includes("Ketchup") &&

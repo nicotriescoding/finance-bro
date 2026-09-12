@@ -29,6 +29,7 @@ import { formatMoney, MONEY } from "@/lib/money";
 import QuestionCard from "./QuestionCard";
 import ProgressSegments from "./ProgressSegments";
 import AdSlot from "@/components/AdSlot";
+import { slotLive } from "@/lib/ads";
 import BalanceCard from "@/components/account/BalanceCard";
 import ActivityLedger from "@/components/account/ActivityLedger";
 import CareerTrack from "@/components/account/CareerTrack";
@@ -265,11 +266,15 @@ export default function QuizClient() {
                         />
 
                         {/* in-flow units re-request an ad per posting (user-driven
-                            content change); the sticky rails above never refresh */}
-                        <div className="hidden md:block">
+                            content change); the sticky rails above never refresh.
+                            The 728 x 90 is a FIXED-size unit: below ~1320px viewport
+                            the centre column is narrower than 728px (rails + gaps)
+                            and AdSense refuses to fill it ("availableWidth" error,
+                            seen 2026-09-12) - so the 320 x 100 serves up to there. */}
+                        <div className="hidden min-[1320px]:block">
                             <AdSlot variant="leaderboard" refreshKey={view.instance.key} />
                         </div>
-                        <div className="md:hidden">
+                        <div className="min-[1320px]:hidden">
                             <AdSlot variant="feed" refreshKey={view.instance.key} />
                         </div>
 
@@ -280,6 +285,10 @@ export default function QuizClient() {
                         <BalanceCard score={score} recentCredit={award ?? undefined} />
                         <ActivityLedger log={session.log} />
                         <CareerTrack score={score} />
+                        {/* 300 x 250 under the account cards - never above the answer
+                            field, never sticky; renders only once its AdSense id is
+                            set (src/lib/ads.ts) so no placeholder ships live */}
+                        {slotLive("rectangle") && <AdSlot variant="rectangle" />}
                     </aside>
                 </div>
 

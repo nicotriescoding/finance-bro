@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import AdRail from "@/components/AdRail";
-import { amzProduct } from "@/lib/affiliate";
+import { amzPage, amzProduct } from "@/lib/affiliate";
 import AffiliateLabel from "@/components/AffiliateLabel";
+import MysteryCard from "@/components/shop/MysteryCard";
+import { MONEY_PATTERN } from "@/components/shop/pattern";
 
 export const metadata: Metadata = pageMeta({
     title: "Bro Shop",
@@ -72,6 +74,15 @@ export const metadata: Metadata = pageMeta({
  * https://www.fa.mgt.tum.de/fm/teaching/calculator-policy/ - the other is
  * the TI-30X IIS.
  *
+ * 2026-09-12 (Nico): (1) the Party Kit's eighth card is the secret "?"
+ * position (`mystery: true` -> MysteryCard, a Rickroll with a worker-side
+ * click counter). (2) Below the
+ * bundles sits "The Burn Rate Desk": the Amazon subscription bounties
+ * (Prime Student first - the student special, 6 months free then half
+ * price -, Audible, Music Unlimited, Kindle Unlimited), each linked to its
+ * official offer page via `amzPage` because PartnerNet only pays the trial
+ * bounty for signups that run through that page.
+ *
  * Affiliate links come from src/lib/affiliate.ts (Amazon PartnerNet; the
  * rationale and Nico's tag TODO live there). Since 2026-09-07 each product
  * links one specific amazon.de listing (amzProduct + ASIN), chosen for
@@ -92,6 +103,8 @@ type Product = {
     soldOut?: string;
     /** Small print under the link. */
     note?: string;
+    /** The secret position: rendered by MysteryCard instead (img/blurb unused). */
+    mystery?: true;
 };
 
 type Bundle = {
@@ -601,7 +614,7 @@ const BUNDLES: Bundle[] = [
         tint: ["#ffe1d0", "#fff0b8"],
         emoji: "🍾",
         tagline: "Grades are lagging indicators. The party is priced in tonight.",
-        chips: ["7 positions", "risk: blackout", "liquidity: 5 liters"],
+        chips: ["8 positions", "risk: blackout", "liquidity: 5 liters"],
         products: [
             {
                 name: "The Aperol Tower",
@@ -674,6 +687,12 @@ const BUNDLES: Bundle[] = [
                     "Lets you set a whiskey on fire in front of people who watched you fail Cost Accounting six hours ago. Six smoke flavours, and every one of them tastes like 'I have processed the grade'. The smoke alarm joins in around round two - that is the applause.",
                 href: amzProduct("B0BJV68C17"),
             },
+            {
+                name: "The Insider Position",
+                img: { src: "", alt: "" },
+                blurb: "",
+                mystery: true,
+            },
         ],
     },
 ];
@@ -691,15 +710,7 @@ const BUNDLES: Bundle[] = [
  * instead of tattooing it. Photos should still be shot on white so the tile
  * edge is invisible.
  */
-const MONEY_PATTERN = `url("data:image/svg+xml,${encodeURIComponent(
-    "<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>" +
-        "<g font-family='ui-sans-serif,system-ui' font-weight='800' fill='#1c6b45' fill-opacity='.13'>" +
-        "<text x='8' y='30' font-size='22' transform='rotate(-18 8 30)'>$</text>" +
-        "<text x='70' y='40' font-size='16' transform='rotate(12 70 40)'>%</text>" +
-        "<text x='30' y='90' font-size='18' transform='rotate(8 30 90)'>€</text>" +
-        "<text x='84' y='100' font-size='24' transform='rotate(-10 84 100)'>$</text></g>" +
-        "<g font-size='14' fill-opacity='.4'><text x='50' y='70'>💸</text><text x='100' y='20'>📈</text></g></svg>"
-)}")`;
+// MONEY_PATTERN lives in src/components/shop/pattern.ts (shared with MysteryCard).
 
 function ProductCard({ p, tint }: { p: Product; tint: [string, string] }) {
     return (
@@ -740,14 +751,14 @@ function ProductCard({ p, tint }: { p: Product; tint: [string, string] }) {
                             href={p.href}
                             target="_blank"
                             rel="sponsored nofollow noopener"
-                            className="inline-flex items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
+                            className="inline-flex min-h-11 items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
                         >
                             See the offer on Amazon →
                         </a>
                     </div>
                 )}
                 {p.note && (
-                    <p className="mt-2 text-[11px] italic leading-relaxed text-muted-light">
+                    <p className="mt-2 text-[11px] italic leading-relaxed text-muted">
                         {p.note}
                     </p>
                 )}
@@ -755,6 +766,115 @@ function ProductCard({ p, tint }: { p: Product; tint: [string, string] }) {
         </div>
     );
 }
+
+/**
+ * The Burn Rate Desk (2026-09-12): Amazon's subscription bounties. Each
+ * entry links the official offer page (PartnerNet pays the trial bounty only
+ * for signups through that page - see src/lib/affiliate.ts). Prime Student
+ * leads because it is the actual student special: 6 months free, then half
+ * the regular Prime price for students, apprentices and 18-24-year-olds.
+ * Audible has no student tariff on amazon.de (the trial is the deal), Music
+ * Unlimited has a student plan, Kindle Unlimited a trial. Prices are kept
+ * out of the copy on purpose - they change, the jokes should not.
+ */
+type Subscription = {
+    name: string;
+    emoji: string;
+    /** caps chip next to the name */
+    chip: string;
+    blurb: string;
+    href: string;
+    cta: string;
+    note?: string;
+};
+
+const SUBSCRIPTIONS: Subscription[] = [
+    {
+        name: "Prime Student",
+        emoji: "🎓",
+        chip: "Student special · 6 months free",
+        blurb:
+            "The one subscription with an actual student deal: six months of Prime for free, then half the regular price for students, apprentices and anyone 18 to 24. Next-day delivery for the calculator you should have bought in week one, Prime Video for the nights you call 'reviewing Econ 2'. Cancel before month seven or it becomes a fixed cost - your first real lesson in cost accounting.",
+        href: amzPage(
+            "/amazonprime?planOptimizationId=WLPStudentMonthlyEligiblePlans&primeCampaignId=studentWlpPrimeRedir"
+        ),
+        cta: "Start the free student trial on Amazon →",
+        note: "Needs a valid student or apprenticeship proof (or a birth date between 18 and 24). Free months are a one-time thing - Amazon remembers.",
+    },
+    {
+        name: "Audible",
+        emoji: "🎧",
+        chip: "Free trial",
+        blurb:
+            "No student tariff, but the trial is free and that is the student tariff. One audiobook a month: 'read' The Intelligent Investor on the U6 to Garching and quote it in the seminar as if you took notes. Prime members get an even longer trial.",
+        href: amzPage("/hz/audible/mlp"),
+        cta: "Start the free trial on Amazon →",
+    },
+    {
+        name: "Amazon Music Unlimited",
+        emoji: "🎵",
+        chip: "Student plan",
+        blurb:
+            "Student plan at a fraction of the regular price, free trial for new members. Lo-fi beats to write off postings to, plus the one album you will play at 200 percent on the Party Kit speaker at 3 a.m.",
+        href: amzPage("/music/unlimited"),
+        cta: "See the student plan on Amazon →",
+        note: "The student price needs proof of enrollment; the trial does not.",
+    },
+    {
+        name: "Kindle Unlimited",
+        emoji: "📚",
+        chip: "Free trial",
+        blurb:
+            "Every book from our Library that is in the program, plus a few million others, for less than one Aperol Spritz a month. Free trial first. Reading is optional; the subscription alone looks great on the desk.",
+        href: amzPage("/kindle-dbs/hz/subscribe/ku"),
+        cta: "Start the free trial on Amazon →",
+    },
+];
+
+function SubscriptionCard({ s, tint }: { s: Subscription; tint: [string, string] }) {
+    return (
+        <div className="flex flex-col overflow-hidden rounded-[14px] border border-hairline bg-surface shadow-[0_1px_2px_rgba(15,33,55,.05)]">
+            <div
+                className="flex h-40 flex-none items-center justify-center border-b border-hairline-soft px-4 py-4"
+                style={{
+                    backgroundColor: tint[0],
+                    backgroundImage: `${MONEY_PATTERN}, linear-gradient(135deg, ${tint[0]} 0%, ${tint[1]} 100%)`,
+                }}
+            >
+                <div className="flex h-full w-[68%] items-center justify-center rounded-[12px] bg-white p-3 shadow-[0_2px_8px_rgba(15,33,55,.14)]">
+                    <span aria-hidden="true" className="select-none text-6xl leading-none">
+                        {s.emoji}
+                    </span>
+                </div>
+            </div>
+            <div className="flex flex-1 flex-col p-4">
+                <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-extrabold">{s.name}</p>
+                    <span className="caps-label inline-flex items-center rounded-full bg-brand-tint px-2 py-0.5 text-[9px] font-extrabold tracking-[.14em] text-brand">
+                        {s.chip}
+                    </span>
+                </div>
+                <p className="mb-3 mt-1 flex-1 text-sm leading-relaxed text-muted">{s.blurb}</p>
+                <div className="flex flex-col items-start gap-1.5">
+                    <AffiliateLabel />
+                    <a
+                        href={s.href}
+                        target="_blank"
+                        rel="sponsored nofollow noopener"
+                        className="inline-flex min-h-11 items-center gap-2 self-start rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
+                    >
+                        {s.cta}
+                    </a>
+                </div>
+                {s.note && (
+                    <p className="mt-2 text-[11px] italic leading-relaxed text-muted">{s.note}</p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+const BURN_RATE_TINT: [string, string] = ["#e6f0ff", "#f1e9ff"];
 
 /**
  * The four Wikimedia Commons photos on this page and their licence facts.
@@ -820,15 +940,16 @@ export default function ProductsPage() {
                         📦 The Bro Shop
                     </h1>
                     <p className="mt-1.5 leading-relaxed text-muted">
-                        Eight curated bundles, zero due diligence. Pick the portfolio
-                        that matches the person you are pretending to be this semester.
+                        Eight curated bundles, one subscription desk, zero due diligence.
+                        Pick the portfolio that matches the person you are pretending to
+                        be this semester.
                     </p>
                     {/* Transparency: affiliate links are advertising (§ 5a UWG) */}
                     <p className="mt-3 text-xs leading-relaxed text-muted-light">
                         <span className="caps-label text-[9px] tracking-[.14em]">
                             Transparency · advertising:
                         </span>{" "}
-                        every &quot;See the offer on Amazon&quot; button is an affiliate
+                        every &quot;... on Amazon&quot; button on this page is an affiliate
                         link (Amazon PartnerNet) - buy through one and the site earns a
                         small commission while your price stays exactly the same.{" "}
                         <strong className="text-muted">
@@ -864,12 +985,47 @@ export default function ProductsPage() {
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            {bundle.products.map((p) => (
-                                <ProductCard key={p.name} p={p} tint={bundle.tint} />
-                            ))}
+                            {bundle.products.map((p) =>
+                                p.mystery ? (
+                                    <MysteryCard key={p.name} tint={bundle.tint} />
+                                ) : (
+                                    <ProductCard key={p.name} p={p} tint={bundle.tint} />
+                                )
+                            )}
                         </div>
                     </section>
                 ))}
+
+                {/* The Burn Rate Desk - subscriptions (2026-09-12) */}
+                <section className="flex flex-col gap-4" id="burn-rate">
+                    <div className="rounded-[14px] border border-hairline bg-surface p-5 shadow-[0_1px_2px_rgba(15,33,55,.05)]">
+                        <h2 className="text-xl font-extrabold tracking-[-0.02em]">
+                            🔥 The Burn Rate Desk
+                        </h2>
+                        <p className="mt-1 text-sm leading-relaxed text-muted">
+                            Subscriptions: the fixed costs a student can actually
+                            afford, because the first months are free and the rest is
+                            discounted. Recurring revenue - just not yours.
+                        </p>
+                        <div className="mt-2.5 flex flex-wrap gap-1.5">
+                            {["4 positions", "risk: forgetting to cancel", "yield: monthly, forever", "student deals inside"].map(
+                                (chip) => (
+                                    <span
+                                        key={chip}
+                                        className="caps-label inline-flex items-center rounded-full bg-chip px-2.5 py-1 text-[9px] tracking-[.14em] text-muted"
+                                    >
+                                        {chip}
+                                    </span>
+                                )
+                            )}
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        {SUBSCRIPTIONS.map((sub) => (
+                            <SubscriptionCard key={sub.name} s={sub} tint={BURN_RATE_TINT} />
+                        ))}
+                    </div>
+                </section>
 
                 {/* Photo note - Adobe Stock standard license (no attribution owed)
                     plus the four CC BY-SA photos. Each credit is a licence condition

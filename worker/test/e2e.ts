@@ -276,10 +276,23 @@ async function leaderboard() {
     console.log(`scoreboard semester: ${data.semester}`);
 }
 
+/** the Bro Shop's secret position: GET reads, POST increments, unknown keys 404 */
+async function counters() {
+    const read = async () => ((await (await fetch(`${BASE}/api/counters/mystery`)).json()) as { value?: number }).value ?? -1;
+    const before = await read();
+    check("counter: readable", before >= 0, String(before));
+    const bumped = ((await (await fetch(`${BASE}/api/counters/mystery`, { method: "POST" })).json()) as { value?: number }).value;
+    check("counter: POST increments by one", bumped === before + 1, `${before} -> ${bumped}`);
+    check("counter: increment persists", (await read()) === before + 1);
+    const unknown = await fetch(`${BASE}/api/counters/whatever`, { method: "POST" });
+    check("counter: unknown key is 404", unknown.status === 404, String(unknown.status));
+}
+
 const t0 = Date.now();
 await bullRunGame();
 await frontRunGame();
 await rapidGame();
 await leaderboard();
+await counters();
 console.log(`\n${failures === 0 ? "ALL GREEN" : `${failures} FAILURE(S)`} in ${Date.now() - t0}ms`);
 process.exit(failures === 0 ? 0 : 1);

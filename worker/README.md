@@ -54,6 +54,8 @@ exercises the scoreboard endpoints against it.
 | GET    | /api/leaderboard      | semester scoreboard: `?subject=all\|<id>&pid=` -> rows + your rank |
 | POST   | /api/earnings         | one settled solo posting `{pid,name,qid,seed,value,amount}` - re-graded, capped, paid once |
 | POST   | /api/players/name     | claim/change the desk name `{pid,name}` |
+| GET    | /api/counters/:key    | site-wide click counter -> `{value}`; keys are whitelisted (`mystery`), unknown key 404, other methods 405, D1 down 503 |
+| POST   | /api/counters/:key    | increment the counter, returns the new `{value}` (D1 table `counters`, self-created by `ensureSchema`) |
 
 ## Design notes
 

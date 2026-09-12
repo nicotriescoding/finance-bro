@@ -5,7 +5,7 @@ Nico's machine, what is next, what is undecided, what is known to be weak.
 Not a changelog - the session log is `git log`; feature status is the table
 in `SPEC.md`. Keep every section short enough to read at session start.
 
-## Current state (2026-09-11)
+## Current state (2026-09-12)
 
 - **Code:** 447 numeric questions (Finance 159, Econ 1 107, Econ 2 90, Cost
   Accounting 91; since 2026-09-08 281 of them rotate a seed-picked story
@@ -44,6 +44,22 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   aligned with `ranks`, build fails if the counts differ).
 
 ## Owed on Nico's machine (real Chrome, dark mode)
+
+- **2026-09-12 shop + ads (latest):** `/products` - the Party Kit's eighth
+  card "The Insider Position" (big "?", counter line, "Reveal the offer"
+  opens the Rickroll in a new tab) and "The Burn Rate Desk" (four
+  subscription cards with emoji tiles) - seen in headless dark-mode
+  Chromium at 1440 and 400 only. Click the "?" button once: the counter
+  line must move by one and stay after a reload (worker + D1 `counters`
+  table, self-created by `ensureSchema`). **Deploy the worker**
+  (`cd worker && npm run deploy`) - the counter endpoint does not exist on
+  the live worker until then; the card shows "An undisclosed number of
+  bros" until it does. AdSense: create a seventh unit (Display, fixed
+  300x250, name fb-rectangle) and paste its id into `AD_SLOTS.rectangle`
+  in `src/lib/ads.ts` - it renders at the foot of the quiz's account rail
+  only once the id is there. Gate ran green in the cloud clone (typecheck,
+  verify, build, 202 smoke) and `worker/test/e2e.ts` 30 checks against a
+  local wrangler dev.
 
 - **2026-09-11 scenario C (latest, unverified build + unseen):** the seven
   course pages and `/bwl-muenchen` were seen in no browser - open `/finance`
@@ -146,7 +162,16 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   images stay stock photos and the Library keeps its generated covers
   (Associates only allows API-served images, which needs 10 sales in 30
   days - that API is also the only clean way to get real book covers back,
-  decided 2026-09-08). Owed check: `npm run check` could not run this
+  decided 2026-09-08). Re-checked 2026-09-12 in the PartnerNet dashboard:
+  0 orders, 0 clicks, so no PA-API and no official images - SiteStripe
+  image links were removed by Amazon in 2024, so there is no other legal
+  route; revisit only once the dashboard shows 10 sales in a 30-day
+  window. The dashboard also nags "Zahlungsinformationen einreichen" -
+  fill in the payment details so a first commission is not held.
+  Subscription bounties since 2026-09-12 (Burn Rate Desk): Prime trial
+  3 EUR, Audible trial 10 EUR, Music Unlimited trial 4.50 EUR, Kindle
+  Unlimited per PartnerNet - only for signups through the linked offer
+  pages. Owed check: `npm run check` could not run this
   session (cloud npm registry blocked, sandbox must not run npm on the
   mount); only `tsc --noEmit` ran green. Run the gate locally once.
 - **AdSense:** site review + publish the GDPR consent message
@@ -162,8 +187,6 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   tasks (SPEC #12).
 - **Nav overflow at 1024 px:** the desktop nav pushes the balance pill
   off-screen with a 3-digit balance (seen 2026-09-07).
-- **Party Kit sixth card** so the last row is not a lone card, if it bothers
-  Nico.
 - **Impressum email is temporary.** nicolas.dumpe@gmx.de is public on
   `/impressum` + `/privacy`; swap to a finance-bro.de address once mail exists.
 - **Cowork project description** in Claude Desktop still says

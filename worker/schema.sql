@@ -30,6 +30,13 @@ CREATE TABLE IF NOT EXISTS settled_postings (
     PRIMARY KEY (player_id, qid, seed)
 );
 
+-- Site-wide click counters (2026-09-12): the Bro Shop's secret "?" position
+-- counts every click under key 'mystery'. Written via POST /api/counters/:key.
+CREATE TABLE IF NOT EXISTS counters (
+    key   TEXT    PRIMARY KEY,
+    value INTEGER NOT NULL DEFAULT 0
+);
+
 -- The wins-based v1 table is no longer written or read (2026-09-02, the
 -- board ranks BroDollars now). Drop it once the new schema is live:
 --   DROP TABLE IF EXISTS leaderboard;

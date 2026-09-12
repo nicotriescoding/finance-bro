@@ -56,6 +56,10 @@ const SCHEMA: string[] = [
         created_at INTEGER NOT NULL,
         PRIMARY KEY (player_id, qid, seed)
     )`,
+    `CREATE TABLE IF NOT EXISTS counters (
+        key   TEXT    PRIMARY KEY,
+        value INTEGER NOT NULL DEFAULT 0
+    )`,
 ];
 
 let schemaReady: Promise<void> | null = null;
@@ -229,4 +233,35 @@ export async function readScoreboard(
         }
     }
     return { semester, scope, rows, you };
+}
+
+/**
+ * Site-wide click counters (2026-09-12): one row per key, e.g. the Bro
+ * Shop's secret "?" position. `bump` increments and returns the new value;
+ * `readCounter` only reads. Both go through ensureSchema like everything
+ * else; a failure returns null and the caller shows its fallback copy.
+ */
+export async function readCounter(db: D1Database, key: string): Promise<number | null> {
+    try {
+        await ensureSchema(db);
+        const row = await db.prepare("SELECT value FROM counters WHERE key = ?").bind(key).first<{ value: number }>();
+        return row?.value ?? 0;
+    } catch {
+        return null;
+    }
+}
+
+export async function bumpCounter(db: D1Database, key: string): Promise<number | null> {
+    try {
+        await ensureSchema(db);
+        const row = await db
+            .prepare(
+                "INSERT INTO counters (key, value) VALUES (?, 1) ON CONFLICT(key) DO UPDATE SET value = value + 1 RETURNING value"
+            )
+            .bind(key)
+            .first<{ value: number }>();
+        return row?.value ?? null;
+    } catch {
+        return null;
+    }
 }

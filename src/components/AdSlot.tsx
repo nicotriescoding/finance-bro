@@ -16,7 +16,7 @@
 import AdUnit from "@/components/AdUnit";
 import { slotLive } from "@/lib/ads";
 
-type Variant = "skyscraper" | "square" | "leaderboard" | "feed" | "sponsored-career";
+type Variant = "skyscraper" | "square" | "leaderboard" | "feed" | "sponsored-career" | "rectangle";
 
 const SPEC: Record<
     Variant,
@@ -37,6 +37,10 @@ const SPEC: Record<
     feed: {
         height: 100,
         lines: ["320 × 100 · large mobile banner, next card in the feed"],
+    },
+    rectangle: {
+        height: 250,
+        lines: ["300 × 250", "medium rectangle", "foot of the account rail,", "below every number that matters"],
     },
     "sponsored-career": {
         height: 60,
@@ -79,7 +83,11 @@ export default function AdSlot({ variant, note, refreshKey }: Props) {
                     <span>Sponsored</span>
                     <span>AD</span>
                 </div>
-                <div className="flex justify-center" style={{ height: spec.height }}>
+                {/* -mx-px: the card border eats 2px, so a 200-wide rail leaves a
+                    198px content box and AdSense refuses the fixed 200 x 200
+                    ("availableWidth=198", seen 2026-09-12). The negative margin
+                    hands the two border pixels back to the unit. */}
+                <div className="-mx-px flex justify-center" style={{ height: spec.height }}>
                     <AdUnit name={variant} refreshKey={refreshKey} />
                 </div>
             </div>

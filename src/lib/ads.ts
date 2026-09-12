@@ -35,6 +35,7 @@ export type AdSlotName =
     | "leaderboard"
     | "feed"
     | "sponsored-career"
+    | "rectangle"
     | "anchor";
 
 /** Pixel size of every unit - must match the "fixed size" entered in AdSense. */
@@ -44,6 +45,7 @@ export const AD_SIZES: Record<AdSlotName, { width: number; height: number }> = {
     leaderboard: { width: 728, height: 90 },
     feed: { width: 320, height: 100 },
     "sponsored-career": { width: 468, height: 60 },
+    rectangle: { width: 300, height: 250 },
     anchor: { width: 320, height: 50 },
 };
 
@@ -54,6 +56,10 @@ export const AD_SLOTS: Record<AdSlotName, string> = {
     leaderboard: "9829652850",
     feed: "7203489515",
     "sponsored-career": "5116277029",
+    // 300 x 250 medium rectangle at the foot of the quiz's account rail
+    // (2026-09-12). Create it in AdSense (Display, fixed 300x250, name
+    // fb-rectangle) and paste the id; until then the slot renders nothing.
+    rectangle: "",
     anchor: "4978500057",
 };
 
