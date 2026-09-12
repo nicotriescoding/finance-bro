@@ -1,8 +1,9 @@
 # AdSense + consent dialog + PostHog - go-live steps (Nico)
 
 Code is done (2026-09-06): PostHog token, AdSense client id and slot ids are
-all baked in. Still open (account work): AdSense site review (step 2.3), the
-GDPR consent message (step 2.4), payments (step 2.6) and the Amazon tag (3).
+all baked in. Done since: GDPR consent message published (step 4,
+2026-09-06), Amazon tag set (2026-09-11). Still open: AdSense site review
+(step 3, pending) and payments (step 6).
 
 ## 1. PostHog - DONE in code (2026-09-06)
 

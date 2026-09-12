@@ -186,9 +186,14 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   pages. Owed check: `npm run check` could not run this
   session (cloud npm registry blocked, sandbox must not run npm on the
   mount); only `tsc --noEmit` ran green. Run the gate locally once.
-- **AdSense:** site review + publish the GDPR consent message
-  (`docs/adsense-setup.md`, steps still open). **PostHog:** retention ≤ 24
-  months in the project settings (privacy policy promises it).
+- **AdSense:** site review still pending (tag, ads.txt, Impressum, privacy
+  verified live 2026-09-12; reviews take days to weeks). The GDPR consent
+  message IS published (Privacy & messaging, since 2026-09-06, en + 31
+  languages) - the "still owed" notes from the legal audit were stale.
+  **PostHog:** event retention is plan-bound (free plan: 1 year, no
+  setting), session replay off - the 24-month promise holds without a
+  change; re-check only if the project ever moves to a paid plan (7 years
+  there, then ask support to cap it).
 - **D1 hygiene:** old-semester rows in `earnings` / `settled_postings` must be
   purged within 12 months (privacy policy) - nothing built yet; a scheduled
   worker cron or a manual `DELETE ... WHERE semester <> ?` at semester start.
