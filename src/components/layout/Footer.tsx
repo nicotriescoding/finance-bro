@@ -4,6 +4,7 @@ import Link from "next/link";
 import { openCookieSettings } from "@/lib/analytics";
 import { SUBJECTS } from "@/content/subjects";
 import { CITY_PATH, SUBJECT_SLUG } from "@/lib/seo";
+import { FINANCE_BRO_PATH } from "@/content/finance-bro";
 
 /**
  * Site-wide footer. The legally required links live here so the Impressum is
@@ -13,7 +14,7 @@ import { CITY_PATH, SUBJECT_SLUG } from "@/lib/seo";
  * phone tab bar.
  *
  * The course line (2026-09-11, scenario C) is the only internal link to the
- * static course pages and the BWL München page - deliberately discreet,
+ * static course pages, the BWL München page and the finance-bro field guide - deliberately discreet,
  * same size as the small print; search engines follow it, students scroll
  * past it.
  */
@@ -46,18 +47,22 @@ export default function Footer() {
             </p>
             <p className="max-w-xl text-[11px] leading-relaxed text-muted-light">
                 Courses:{" "}
-                {SUBJECTS.map((s, i) => (
-                    <span key={s.id}>
-                        {i > 0 && " · "}
-                        <Link href={`/${SUBJECT_SLUG[s.id]}`} className="transition hover:text-ink">
-                            {s.short}
-                        </Link>
+                {[
+                    ...SUBJECTS.map((s) => ({ href: `/${SUBJECT_SLUG[s.id]}`, label: s.short })),
+                    { href: CITY_PATH, label: "BWL München" },
+                    { href: FINANCE_BRO_PATH, label: "What is a Finance Bro?" },
+                ].map((item, i, all) => (
+                    // separator trails its item, so a wrapped line never starts with "·"
+                    <span key={item.href}>
+                        {i > 0 && " "}
+                        <span className="whitespace-nowrap">
+                            <Link href={item.href} className="transition hover:text-ink">
+                                {item.label}
+                            </Link>
+                            {i < all.length - 1 && " ·"}
+                        </span>
                     </span>
                 ))}
-                {" · "}
-                <Link href={CITY_PATH} className="transition hover:text-ink">
-                    BWL München
-                </Link>
             </p>
             <p className="max-w-xl text-[11px] leading-relaxed text-muted-light">
                 An independent student project. Not affiliated with, endorsed by or

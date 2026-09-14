@@ -5,7 +5,7 @@ Nico's machine, what is next, what is undecided, what is known to be weak.
 Not a changelog - the session log is `git log`; feature status is the table
 in `SPEC.md`. Keep every section short enough to read at session start.
 
-## Current state (2026-09-12)
+## Current state (2026-09-14)
 
 - **Code:** 447 numeric questions (Finance 159, Econ 1 107, Econ 2 90, Cost
   Accounting 91; since 2026-09-08 281 of them rotate a seed-picked story
@@ -44,6 +44,17 @@ in `SPEC.md`. Keep every section short enough to read at session start.
   aligned with `ranks`, build fails if the counts differ).
 
 ## Owed on Nico's machine (real Chrome, dark mode)
+
+- **2026-09-14 finance-bro field guide (latest):** `/what-is-a-finance-bro`
+  seen in headless dark-mode Chromium at 1440 and 400 only (page is pinned
+  light, so "dark mode" changes nothing - verify that holds in real
+  Chrome). Look at: both photos (the lazy watch photo below the fold), the
+  two-column glossary, the footer's course line now wrapping onto two rows
+  with "· BWL München" / "· What is a Finance Bro?" kept whole
+  (`whitespace-nowrap`), and the "Start the career" CTA (now `py-2.5`, also
+  on `/bwl-muenchen`). Gate ran green in the cloud clone (typecheck, verify
+  447 x 200, build, 214 smoke). After the push: Search Console is still
+  unverified, so nothing measures this page until that property exists.
 
 - **2026-09-12 scenario audit:** every story line in the four banks now
   uses well-known places (Munich, Paris, Lisbon, the Alps ...) and everyday
@@ -215,6 +226,41 @@ in `SPEC.md`. Keep every section short enough to read at session start.
 
 ## Open decisions
 
+- **Ads vs. Vercel Hobby (audited 2026-09-14).** Vercel's Fair Use
+  Guidelines restrict Hobby teams to "non-commercial personal use" and
+  name "the inclusion of advertisements, including ... Google AdSense" as
+  commercial usage; the ToS lets Vercel shut Hobby deployments "without
+  notice". Donations are explicitly fine. Supabase (ToS + AUP) and
+  Next.js/React/Tailwind (MIT) carry no ad or commercial restriction.
+  **If finance-bro.de is on Vercel Hobby, AdSense must not go live there.**
+  Options, cheapest compliant first: (a) Vercel Pro, 20 USD/month, zero
+  code changes; (b) Cloudflare Workers via `@opennextjs/cloudflare`,
+  0-5 USD/month, Next 16 App Router supported, no Edge runtime / Node
+  middleware, images need Cloudflare Images - and the worker already lives
+  there; (c) Hetzner CX23 (~6 EUR) + Coolify with `output: "standalone"`
+  Docker, own uptime; (d) Netlify / Railway / Render, 0-20 USD, plain
+  Node or Docker. Nico decides; check the plan in the Vercel dashboard
+  first (Team settings -> Billing).
+- **Feedback option (planned 2026-09-14, not built).** Proposal: a
+  "Feedback" entry in the footer (next to Cookie settings) and a small
+  "Report this question" link under the worked solution on `/quiz`, both
+  opening one `FeedbackDialog` (client component, same styling as the
+  cookie banner) with a category select (wrong answer / typo / idea /
+  other), a free-text field (max 1,000 chars), an optional email, and a
+  hidden honeypot. Submits `POST /api/feedback` on the existing Cloudflare
+  worker: `{ category, message, email?, page, questionId?, seed?, ua }`
+  into a new D1 table `feedback` (self-created by `ensureSchema()` like
+  `counters`), 5 per IP per hour via the same per-IP pattern as the
+  counters, size-capped, no auth. Reading: a `GET /api/feedback?token=`
+  behind a worker secret for Nico (or `wrangler d1 execute` for now), plus
+  an optional email notification via Cloudflare Email Workers / Resend
+  later. Hard rule 1 holds: the dialog renders without the worker and
+  shows the `mailto:` from `src/lib/legal.ts` as its error state. Privacy
+  policy gets one paragraph (Art. 6 (1) (f), 12-month retention, IP
+  hashed). Cheaper interim if this is too much: a Tally/Google Form link
+  in the footer - zero code, but a third-party page and its own GDPR line.
+  Per-question feedback is the valuable half: it lands `questionId` +
+  `seed` so a wrong answer is reproducible.
 - **German edition.** Planned as a **second locale**, not a revert. The
   question formatters share `LOCALE` in `_helpers.ts`; `grading.ts`,
   `money.ts`, `AccountStatement.tsx`, `CorporateLadder.tsx` and

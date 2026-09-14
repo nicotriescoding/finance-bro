@@ -63,7 +63,7 @@ export default function CityPage() {
                 <p className="mt-3">
                     <Link
                         href="/career"
-                        className="inline-flex items-center gap-2 rounded-[9px] border border-brand-border bg-brand-input px-3 py-1.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
+                        className="inline-flex items-center gap-2 rounded-[9px] border border-brand-border bg-brand-input px-3 py-2.5 text-sm font-extrabold text-brand transition hover:bg-brand-tint"
                     >
                         Pick a course and start →
                     </Link>

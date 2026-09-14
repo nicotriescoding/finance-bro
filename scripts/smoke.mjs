@@ -591,12 +591,29 @@ try {
     check("/bwl-muenchen metadata never names TUM", !/<meta[^>]+TUM/.test(cityHtml));
     check("/bwl-muenchen links every course page", cityHtml.includes('href="/econ-1"') && cityHtml.includes('href="/marketing"'));
     check("/bwl-muenchen ships no em dashes", !cityHtml.includes(EM_DASH));
+    // 2026-09-14: the finance-bro field guide (/what-is-a-finance-bro).
+    const bro = await fetch(`${BASE}/what-is-a-finance-bro`);
+    const broHtml = await bro.text();
+    check("/what-is-a-finance-bro returns 200", bro.status === 200, `got ${bro.status}`);
+    check("/what-is-a-finance-bro has the h1 and the definition", broHtml.includes("<h1") && broHtml.includes("What is a Finance Bro?"));
+    check("/what-is-a-finance-bro names BWL Marie and Jura Justus", broHtml.includes("BWL Marie") && broHtml.includes("Jura Justus"));
+    check("/what-is-a-finance-bro serves both photos", broHtml.includes("/bro/finance-bro-on-the-phone.jpg") && broHtml.includes("/bro/finance-bro-watch.jpg"));
+    for (const img of ["/bro/finance-bro-on-the-phone.jpg", "/bro/finance-bro-watch.jpg"]) {
+        const r = await fetch(`${BASE}${img}`);
+        check(`${img} is served`, r.status === 200 && (r.headers.get("content-type") ?? "").includes("image/jpeg"), `got ${r.status}`);
+    }
+    check("/what-is-a-finance-bro ships FAQPage + Article JSON-LD", broHtml.includes('"@type":"FAQPage"') && broHtml.includes('"@type":"Article"'));
+    check("/what-is-a-finance-bro has its own canonical", broHtml.includes('rel="canonical" href="https://www.finance-bro.de/what-is-a-finance-bro"'));
+    check("/what-is-a-finance-bro metadata never names TUM", !/<meta[^>]+TUM/.test(broHtml));
+    check("/what-is-a-finance-bro ships no em dashes", !broHtml.includes(EM_DASH));
+    check("/what-is-a-finance-bro links the career page", broHtml.includes('href="/career"'));
     const missing = await fetch(`${BASE}/definitely-not-a-course`);
     check("unknown root slug is a 404, not a rendered course page", missing.status === 404, `got ${missing.status}`);
     // the first root-level dynamic segment must not shadow public/
     const adsTxt = await fetch(`${BASE}/ads.txt`);
     check("/ads.txt still comes from public/", adsTxt.status === 200, `got ${adsTxt.status}`);
     check("/ footer links the course pages and BWL München", homeHtml.includes('href="/cost-accounting"') && homeHtml.includes('href="/bwl-muenchen"'));
+    check("/ footer links the finance-bro field guide", homeHtml.includes('href="/what-is-a-finance-bro"'));
 
     // TUM rule (2026-09-11): only /, /career, the /quiz subject pages and the
     // static course pages may name TUM in their metadata.
@@ -677,6 +694,7 @@ try {
     check(
         "/sitemap.xml lists the course pages and BWL München (scenario C)",
         sitemapXml.includes("finance-bro.de/bwl-muenchen") &&
+            sitemapXml.includes("finance-bro.de/what-is-a-finance-bro") &&
             ["finance", "econ-1", "econ-2", "financial-accounting", "cost-accounting", "entrepreneurship", "marketing"]
                 .every((slug) => sitemapXml.includes(`finance-bro.de/${slug}</loc>`))
     );
